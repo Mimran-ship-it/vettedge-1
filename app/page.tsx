@@ -1,0 +1,27 @@
+import { HeroSection } from "@/components/sections/hero-section"
+import { StatsSection } from "@/components/sections/stats-section"
+import { FeaturedDomains } from "@/components/sections/featured-domains"
+import { TrustSection } from "@/components/sections/trust-section"
+import { TestimonialsSection } from "@/components/sections/testimonials-section"
+import { BlogPreview } from "@/components/sections/blog-preview"
+import { ContactSection } from "@/components/sections/contact-section"
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
+
+export default function HomePage() {
+  return (
+    <div className="min-h-screen">
+      <Header />
+      <main>
+        <HeroSection />
+        <StatsSection />
+        <FeaturedDomains />
+        <TrustSection />
+        <TestimonialsSection />
+        <BlogPreview />
+        <ContactSection />
+      </main>
+      <Footer />
+    </div>
+  )
+}
