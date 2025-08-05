@@ -23,7 +23,7 @@ import {
   Star,
 } from "lucide-react"
 import type { Domain } from "@/types/domain"
-import { useCart } from "@/hooks/use-cart"
+import { useCart } from "@/components/providers/cart-provider"
 import { useWishlist } from "@/hooks/use-wishlist"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
@@ -86,7 +86,6 @@ export default function DomainDetailsPage() {
       id: domain.id,
       name: domain.name,
       price: domain.price,
-      quantity: 1,
       domain: domain,
     })
 

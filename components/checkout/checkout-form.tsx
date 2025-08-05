@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { PaymentMethods } from "./payment-methods"
-import { useCart } from "@/hooks/use-cart"
+import { useCart } from "@/components/providers/cart-provider"
 import { useAuth } from "@/components/providers/auth-provider"
 
 export function CheckoutForm() {

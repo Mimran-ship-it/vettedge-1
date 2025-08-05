@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Trash2, TrendingUp, LinkIcon, Globe, Calendar } from "lucide-react"
-import { useCart } from "@/hooks/use-cart"
+import { useCart } from "@/components/providers/cart-provider"
 import { useToast } from "@/hooks/use-toast"
 
 export function CartItems() {

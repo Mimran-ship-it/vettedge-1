@@ -11,89 +11,23 @@ export function FeaturedDomains() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    const fetchFeaturedDomains = async () => {
+      try {
+        const response = await fetch("/api/domains?featured=true&limit=6")
+        if (!response.ok) throw new Error(`HTTP error ${response.status}`)
+        
+        const data: Domain[] = await response.json()
+        setDomains(data)
+      } catch (error) {
+        console.error("Failed to fetch featured domains:", error)
+        setDomains([]) // Ensures component still renders cleanly
+      } finally {
+        setLoading(false)
+      }
+    }
+
     fetchFeaturedDomains()
   }, [])
-
-  const fetchFeaturedDomains = async () => {
-    try {
-      const response = await fetch("/api/domains?featured=true&limit=6")
-      if (response.ok) {
-        const data = await response.json()
-        setDomains(data.slice(0, 6)) // Limit to 6 domains
-      } else {
-        // Fallback to mock data if API fails
-        const mockDomains: Domain[] = [
-          {
-            id: "1",
-            name: "techstartup.com",
-            description: "Perfect domain for technology startups and innovation companies",
-            price: 2500,
-            isAvailable: true,
-            isSold: false,
-            tld: ".com",
-            metrics: {
-              domainRank: 45,
-              referringDomains: 1250,
-              authorityLinks: 890,
-              avgAuthorityDR: 65,
-              monthlyTraffic: 15000,
-              year: 2018,
-              language: "English",
-            },
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            id: "2",
-            name: "digitalmarketing.net",
-            description: "Established domain in the digital marketing niche",
-            price: 1800,
-            isAvailable: true,
-            isSold: false,
-            tld: ".net",
-            metrics: {
-              domainRank: 38,
-              referringDomains: 980,
-              authorityLinks: 650,
-              avgAuthorityDR: 58,
-              monthlyTraffic: 12000,
-              year: 2019,
-              language: "English",
-            },
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            id: "3",
-            name: "healthwellness.com",
-            description: "Premium health and wellness domain with strong backlink profile",
-            price: 4500,
-            isAvailable: true,
-            isSold: false,
-            tld: ".com",
-            metrics: {
-              domainRank: 62,
-              referringDomains: 2100,
-              authorityLinks: 1650,
-              avgAuthorityDR: 78,
-              monthlyTraffic: 35000,
-              year: 2016,
-              language: "English",
-            },
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-        ]
-        setDomains(mockDomains)
-      }
-    } catch (error) {
-      console.error("Error fetching featured domains:", error)
-      // Set empty array on error
-      setDomains([])
-    } finally {
-      setLoading(false)
-    }
-  }
 
   if (loading) {
     return (
@@ -136,7 +70,7 @@ export function FeaturedDomains() {
           <>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
               {domains.map((domain) => (
-                <DomainCard key={domain.id} domain={domain} />
+                <DomainCard key={domain.id || domain._id} domain={domain} />
               ))}
             </div>
 

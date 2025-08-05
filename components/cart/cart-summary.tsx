@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { useCart } from "@/hooks/use-cart"
+import { useCart } from "@/components/providers/cart-provider"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
 import { CreditCard, Shield } from "lucide-react"

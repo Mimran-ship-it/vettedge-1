@@ -67,47 +67,49 @@ export function Header() {
               </Button>
             </Link>
 
-            {/* User Menu */}
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm">
-                    <User className="h-5 w-5" />
-                    <span className="ml-2 hidden sm:inline">{user.name}</span>
+            {/* User Menu (Desktop Only) */}
+            <div className="hidden md:flex items-center space-x-2">
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm">
+                      <User className="h-5 w-5" />
+                      <span className="ml-2 hidden sm:inline">{user.name}</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard">Dashboard</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/orders">My Orders</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/wishlist">Wishlist</Link>
+                    </DropdownMenuItem>
+                    {user.role === "admin" && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                          <Link href="/admin">Admin Panel</Link>
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link href="/auth/signin">Sign In</Link>
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard">Dashboard</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/orders">My Orders</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/wishlist">Wishlist</Link>
-                  </DropdownMenuItem>
-                  {user.role === "admin" && (
-                    <>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link href="/admin">Admin Panel</Link>
-                      </DropdownMenuItem>
-                    </>
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href="/auth/signin">Sign In</Link>
-                </Button>
-                <Button size="sm" asChild>
-                  <Link href="/auth/signup">Sign Up</Link>
-                </Button>
-              </div>
-            )}
+                  <Button size="sm" asChild>
+                    <Link href="/auth/signup">Sign Up</Link>
+                  </Button>
+                </>
+              )}
+            </div>
 
             {/* Mobile Menu Button */}
             <Button variant="ghost" size="sm" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -135,6 +137,51 @@ export function Header() {
               <Link href="/contact" className="text-gray-700 hover:text-cyan-600 transition-colors">
                 Contact Us
               </Link>
+               <>
+    <Link href="/auth/signin" className="text-gray-700 hover:text-cyan-600 transition-colors">
+      Sign In
+    </Link>
+    <Link href="/auth/signup" className="text-gray-700 hover:text-cyan-600 transition-colors">
+      Sign Up
+    </Link>
+  </>
+
+              {/* Mobile User Buttons */}
+              <div className="pt-4 border-t">
+                {user ? (
+                  <>
+                    <Link href="/dashboard" className="text-gray-700 hover:text-cyan-600">
+                      Dashboard
+                    </Link>
+                    <Link href="/orders" className="text-gray-700 hover:text-cyan-600">
+                      My Orders
+                    </Link>
+                    <Link href="/wishlist" className="text-gray-700 hover:text-cyan-600">
+                      Wishlist
+                    </Link>
+                    {user.role === "admin" && (
+                      <Link href="/admin" className="text-gray-700 hover:text-cyan-600">
+                        Admin Panel
+                      </Link>
+                    )}
+                    <Button onClick={signOut} variant="ghost" className="justify-start px-0 text-left">
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                <>
+    {/* Show only on desktop */}
+    <div className="hidden md:flex items-center space-x-2">
+      <Button variant="ghost" size="sm" asChild>
+        <Link href="/auth/signin">Sign In</Link>
+      </Button>
+      <Button size="sm" asChild>
+        <Link href="/auth/signup">Sign Up</Link>
+      </Button>
+    </div>
+  </>
+                )}
+              </div>
             </nav>
           </div>
         )}

@@ -120,33 +120,43 @@ export function TestimonialsSection() {
         </div>
 
         {/* Overall Rating */}
-        <div className="mt-16 text-center">
-          <Card className="inline-block bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200">
-            <CardContent className="pt-6 pb-6 px-8">
-              <div className="flex items-center space-x-6">
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-gray-900 mb-1">4.9</div>
-                  <div className="flex items-center justify-center space-x-1 mb-2">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
-                    ))}
-                  </div>
-                  <div className="text-sm text-gray-600">Average Rating</div>
-                </div>
-                <div className="h-12 w-px bg-gray-300"></div>
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-gray-900 mb-1">2,847</div>
-                  <div className="text-sm text-gray-600">Customer Reviews</div>
-                </div>
-                <div className="h-12 w-px bg-gray-300"></div>
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-gray-900 mb-1">98%</div>
-                  <div className="text-sm text-gray-600">Satisfaction Rate</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="mt-16 text-center px-4">
+  <Card className="inline-block bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200 w-full max-w-xl mx-auto">
+    <CardContent className="pt-6 pb-6 px-4 md:px-8">
+      <div className="flex flex-col md:flex-row items-center md:space-x-6 space-y-6 md:space-y-0">
+        {/* Rating */}
+        <div className="text-center">
+          <div className="text-4xl font-bold text-gray-900 mb-1">4.9</div>
+          <div className="flex items-center justify-center space-x-1 mb-2">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+            ))}
+          </div>
+          <div className="text-sm text-gray-600">Average Rating</div>
         </div>
+
+        {/* Divider */}
+        <div className="hidden md:block h-12 w-px bg-gray-300"></div>
+
+        {/* Reviews */}
+        <div className="text-center">
+          <div className="text-4xl font-bold text-gray-900 mb-1">2,847</div>
+          <div className="text-sm text-gray-600">Customer Reviews</div>
+        </div>
+
+        {/* Divider */}
+        <div className="hidden md:block h-12 w-px bg-gray-300"></div>
+
+        {/* Satisfaction */}
+        <div className="text-center">
+          <div className="text-4xl font-bold text-gray-900 mb-1">98%</div>
+          <div className="text-sm text-gray-600">Satisfaction Rate</div>
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+</div>
+
       </div>
     </section>
   )

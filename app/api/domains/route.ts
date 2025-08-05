@@ -1,43 +1,33 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { domainService } from "@/lib/services/domain-service";
+// app/api/domains/route.ts
+
+import { NextRequest, NextResponse } from "next/server";
+import { getDatabase } from "@/lib/mongodb";
 
 export async function GET(request: NextRequest) {
   try {
+    const db = await getDatabase();
+    const domainsCollection = db.collection("domains");
+
+    // Optional: get "search" param from URL
     const { searchParams } = new URL(request.url);
+    const search = searchParams.get("search");
 
-    const search = searchParams.get("search") || undefined;
-    const tldsParam = searchParams.get("tlds");
-    const tlds = tldsParam ? tldsParam.split(",").filter(Boolean) : undefined;
+    let query = {};
 
-    const priceMin = searchParams.get("priceMin");
-    const priceMax = searchParams.get("priceMax");
-    const availability = searchParams.get("availability");
-    const category = searchParams.get("category") || undefined;
-
-    const filters: any = {};
-    if (search) filters.search = search;
-    if (tlds?.length) filters.tlds = tlds;
-    if (!isNaN(Number(priceMin)) && !isNaN(Number(priceMax))) {
-      filters.priceRange = [parseInt(priceMin), parseInt(priceMax)];
+    if (search) {
+      query = {
+        name: { $regex: search, $options: "i" },
+      };
     }
-    if (availability) filters.availability = availability === "true";
-    if (category) filters.category = category;
 
-    const domains = await domainService.getAllDomains(filters);
+    const domains = await domainsCollection.find(query).toArray();
+
     return NextResponse.json(domains);
   } catch (error) {
     console.error("Error fetching domains:", error);
-    return NextResponse.json({ error: "Failed to fetch domains" }, { status: 500 });
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const domainData = await request.json();
-    const domain = await domainService.createDomain(domainData);
-    return NextResponse.json(domain, { status: 201 });
-  } catch (error) {
-    console.error("Error creating domain:", error);
-    return NextResponse.json({ error: "Failed to create domain" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch domains" },
+      { status: 500 }
+    );
   }
 }

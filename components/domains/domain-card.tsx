@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Heart, ShoppingCart, TrendingUp, LinkIcon, Globe, Calendar } from "lucide-react"
 import type { Domain } from "@/types/domain"
-import { useCart } from "@/hooks/use-cart"
+import { useCart } from "@/components/providers/cart-provider"
 import { useWishlist } from "@/hooks/use-wishlist"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
@@ -19,6 +19,8 @@ export function DomainCard({ domain }: DomainCardProps) {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
   const { toast } = useToast()
 
+  const domainId = domain.id || domain._id
+
   const handleAddToCart = () => {
     if (domain.isSold || !domain.isAvailable) {
       toast({
@@ -30,10 +32,9 @@ export function DomainCard({ domain }: DomainCardProps) {
     }
 
     addItem({
-      id: domain.id,
+      id: domainId,
       name: domain.name,
       price: domain.price,
-      quantity: 1,
       domain: domain,
     })
 
@@ -44,14 +45,14 @@ export function DomainCard({ domain }: DomainCardProps) {
   }
 
   const handleWishlistToggle = () => {
-    if (isInWishlist(domain.id)) {
-      removeFromWishlist(domain.id)
+    if (isInWishlist(domainId)) {
+      removeFromWishlist(domainId)
       toast({
         title: "Removed from Wishlist",
         description: `${domain.name} has been removed from your wishlist.`,
       })
     } else {
-      addToWishlist(domain)
+      addToWishlist({ ...domain, id: domainId })
       toast({
         title: "Added to Wishlist",
         description: `${domain.name} has been added to your wishlist.`,
@@ -86,9 +87,9 @@ export function DomainCard({ domain }: DomainCardProps) {
             variant="ghost"
             size="sm"
             onClick={handleWishlistToggle}
-            className={cn("p-2", isInWishlist(domain.id) && "text-red-500")}
+            className={cn("p-2", isInWishlist(domainId) && "text-red-500")}
           >
-            <Heart className={cn("h-4 w-4", isInWishlist(domain.id) && "fill-current")} />
+            <Heart className={cn("h-4 w-4", isInWishlist(domainId) && "fill-current")} />
           </Button>
         </div>
         <p className="text-sm text-gray-600 line-clamp-2">{domain.description}</p>
@@ -130,7 +131,7 @@ export function DomainCard({ domain }: DomainCardProps) {
             Add to Cart
           </Button>
           <Button variant="outline" size="sm" asChild>
-            <a href={`/domains/${domain.id}`}>View Details</a>
+            <a href={`/domains/${domainId}`}>View Details</a>
           </Button>
         </div>
       </CardContent>
