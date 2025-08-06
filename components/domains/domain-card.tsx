@@ -19,7 +19,7 @@ export function DomainCard({ domain }: DomainCardProps) {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
   const { toast } = useToast()
 
-  const domainId = domain.id || domain._id
+  const domainId = domain.id 
 
   const handleAddToCart = () => {
     if (domain.isSold || !domain.isAvailable) {
@@ -98,8 +98,8 @@ export function DomainCard({ domain }: DomainCardProps) {
       <CardContent className="space-y-4">
         {/* Price */}
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold text-gray-900">${domain.price.toLocaleString()}</span>
-          <Badge variant={domain.isAvailable ? "default" : "secondary"}>
+          <span className="text-2xl font-bold  text-gray-900">${domain.price.toLocaleString()}</span>
+          <Badge className="bg-[#33BDC7]" variant={domain.isAvailable ? "default" : "secondary"}>
             {domain.isAvailable ? "Available" : "Unavailable"}
           </Badge>
         </div>
@@ -126,7 +126,7 @@ export function DomainCard({ domain }: DomainCardProps) {
 
         {/* Action Buttons */}
         <div className="flex space-x-2 pt-2">
-          <Button className="flex-1" onClick={handleAddToCart} disabled={domain.isSold || !domain.isAvailable}>
+          <Button className="flex-1 bg-[#33BDC7] hover:cursor-pointer hover:bg-[#33bdc7]" onClick={handleAddToCart} disabled={domain.isSold || !domain.isAvailable}>
             <ShoppingCart className="h-4 w-4 mr-2" />
             Add to Cart
           </Button>

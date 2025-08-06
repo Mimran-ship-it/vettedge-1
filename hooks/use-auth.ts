@@ -1,32 +1,30 @@
+// hooks/use-auth.ts
 "use client"
 
 import { createContext, useContext } from "react"
 
-interface User {
+export interface User {
   id: string
   name: string
   email: string
-  role: "admin" | "customer"
+  role: "admin" | "customer" | string
 }
 
 interface AuthContextType {
   user: User | null
-  signIn: (email: string, password: string) => Promise<void>
-  signUp: (name: string, email: string, password: string) => Promise<void>
-  signInWithGoogle: () => Promise<void>
-  signOut: () => void
   loading: boolean
+  signIn: (email: string, password: string) => Promise<User>
+  signUp?: (...args: any[]) => void
+  signOut: () => void
+  signInWithGoogle?: () => void
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function useAuth() {
   const context = useContext(AuthContext)
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useAuth must be used within an AuthProvider")
   }
   return context
 }
-
-export { AuthContext }
-export type { User, AuthContextType }

@@ -1,9 +1,11 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import Link from "next/link"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,32 +13,47 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { useAuth } from "@/hooks/use-auth"
 import { useToast } from "@/hooks/use-toast"
-import Link from "next/link"
-import { Loader2, Eye, EyeOff } from "lucide-react"
 
 export default function SignInPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const { signIn, signInWithGoogle } = useAuth()
+
   const { toast } = useToast()
+  const { user, signIn } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams.get("redirect") || "/"
 
+  // 🔒 Redirect logged-in user
+  useEffect(() => {
+    if (user) {
+      router.push("/")
+    }
+  }, [user, router])
+
+  // 🧠 Form handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      await signIn(email, password)
+      const user = await signIn(email, password) // backend handles secure cookie
+
       toast({
         title: "Welcome back!",
         description: "You have been signed in successfully.",
       })
-      router.push(redirect)
-    } catch (error) {
+
+      // 🔐 Role-based redirect
+      if (user.role === "admin") {
+        window.location.href = "/admin"
+
+      } else {
+        router.push(redirect)
+      }
+    } catch (error: any) {
       toast({
         title: "Sign in failed",
         description: "Please check your credentials and try again.",
@@ -44,23 +61,6 @@ export default function SignInPage() {
       })
     } finally {
       setLoading(false)
-    }
-  }
-
-  const handleGoogleSignIn = async () => {
-    try {
-      await signInWithGoogle()
-      toast({
-        title: "Welcome back!",
-        description: "You have been signed in successfully.",
-      })
-      router.push(redirect)
-    } catch (error) {
-      toast({
-        title: "Google sign in failed",
-        description: "There was an error with Google authentication.",
-        variant: "destructive",
-      })
     }
   }
 
@@ -76,11 +76,17 @@ export default function SignInPage() {
           <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
           <p className="text-sm text-gray-600">Sign in to your Vettedge account</p>
         </CardHeader>
+
         <CardContent className="space-y-4">
           <Button
             variant="outline"
             className="w-full bg-white hover:bg-gray-50 border-gray-200"
-            onClick={handleGoogleSignIn}
+            onClick={() => {
+              toast({
+                title: "Not implemented",
+                description: "Google sign-in is not configured yet.",
+              })
+            }}
           >
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
               <path
@@ -124,6 +130,7 @@ export default function SignInPage() {
                 required
               />
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">

@@ -14,7 +14,6 @@ export interface Domain {
   _id?: ObjectId
   id?: string
   name: string
-  description: string
   price: number
   isAvailable: boolean
   isSold: boolean

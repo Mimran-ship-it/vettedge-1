@@ -1,28 +1,26 @@
 // lib/mongodb.ts
-import { MongoClient } from "mongodb";
+import mongoose from "mongoose"
 
-const uri = process.env.MONGODB_URI!;
-const options = {};
+const uri = process.env.MONGODB_URI!
+const dbName = "vettedge"
 
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
-
-if (!process.env.MONGODB_URI) {
-  throw new Error("Please add your MongoDB URI to .env.local");
+if (!uri) {
+  throw new Error("❌ Please define the MONGODB_URI environment variable in .env.local")
 }
 
-if (process.env.NODE_ENV === "development") {
-  if (!(global as any)._mongoClientPromise) {
-    client = new MongoClient(uri, options);
-    (global as any)._mongoClientPromise = client.connect();
+let isConnected = false // To avoid re-connecting in dev mode
+
+export default async function connectDB() {
+  if (isConnected) return
+
+  try {
+    await mongoose.connect(uri, {
+      dbName,
+    })
+    isConnected = true
+    console.log("✅ Connected to MongoDB via Mongoose")
+  } catch (error) {
+    console.error("❌ Mongoose connection error:", error)
+    throw error
   }
-  clientPromise = (global as any)._mongoClientPromise;
-} else {
-  client = new MongoClient(uri, options);
-  clientPromise = client.connect();
-}
-
-export async function getDatabase() {
-  const client = await clientPromise;
-  return client.db("vettedge"); // ✅ Replace with your actual DB name
 }

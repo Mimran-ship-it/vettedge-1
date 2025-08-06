@@ -39,14 +39,14 @@ export function HeroSection() {
             <div className="space-y-6">
               <Badge
                 variant="secondary"
-                className="bg-[#3DDC91]/10 text-[#3DDC91] border-[#3DDC91]/30 px-4 py-2 mx-auto lg:mx-0"
+                className="bg-[#33BDC7]/10 text-[#33BDC7] border-[#33BDC7]/30 px-4 py-2 mx-auto lg:mx-0"
               >
                 🔥 Premium Domain Marketplace
               </Badge>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight break-words">
                 <span className="block">Expired Domains With</span>
-                <span className="block text-[#00BFFF]">Real Authority</span>
+                <span className="block text-[#33BDC7]">Real Authority</span>
               </h1>
 
               <p className="text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
@@ -64,14 +64,14 @@ export function HeroSection() {
                     placeholder="Search for your perfect domain... (e.g., tech, marketing, health)"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-12 h-14 text-lg bg-white border border-gray-300 text-gray-800 placeholder:text-gray-400 focus:ring-2 focus:ring-[#3DDC91]"
+                    className="pl-12 h-14 text-lg bg-white border border-gray-300 text-gray-800 placeholder:text-gray-400 focus:ring-2 focus:ring-[#33BDC7]"
                   />
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full sm:w-auto flex-1 bg-[#3DDC91] hover:bg-[#30c97c] text-white font-semibold h-12 text-lg shadow hover:shadow-md transition-all duration-200"
+                    className="w-full sm:w-auto flex-1 bg-[#38C172] hover:bg-[#30c97c] text-white font-semibold h-12 text-lg shadow hover:shadow-md transition-all duration-200"
                   >
                     <Search className="h-5 w-5 mr-2" />
                     Search Domains
@@ -79,7 +79,7 @@ export function HeroSection() {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="w-full sm:w-auto border-gray-300 text-[#3DDC91] hover:bg-[#3DDC91]/10 h-12 px-8 font-semibold"
+                    className="w-full sm:w-auto border-gray-300 text-[#33BDC7] hover:bg-[#33BDC7]/10 h-12 px-8 font-semibold"
                     asChild
                   >
                     <Link href="/domains">
@@ -98,7 +98,7 @@ export function HeroSection() {
                 <span className="font-medium">15,000+ Domains Sold</span>
               </div>
               <div className="flex items-center space-x-2">
-                <Zap className="h-5 w-5 text-teal-500" />
+                <Zap className="h-5 w-5 text-[#33BDC7]" />
                 <span className="font-medium">98% Success Rate</span>
               </div>
               <div className="flex items-center space-x-2">
@@ -115,7 +115,7 @@ export function HeroSection() {
                 
                 {/* Features */}
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-[#3DDC91] rounded-xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-[#33BDC7] rounded-xl flex items-center justify-center">
                     <span className="text-white font-bold text-xl">V</span>
                   </div>
                   <div>
@@ -127,8 +127,8 @@ export function HeroSection() {
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
                   {[{
                     Icon: Search,
-                    color: "text-[#00BFFF]",
-                    bg: "from-[#00BFFF]/10 to-[#00BFFF]/20",
+                    color: "text-[#33BDC7]",
+                    bg: "from-[#33BDC7]/10 to-[#33BDC7]/20",
                     title: "Search Expired Domains",
                     desc: "Browse thousands of valuable domains"
                   }, {
@@ -141,7 +141,7 @@ export function HeroSection() {
                     Icon: ShoppingBag,
                     color: "text-green-500",
                     bg: "from-green-500/10 to-green-500/20",
-                    title: "Buy or Bid Instantly",
+                    title: "Buy Instantly",
                     desc: "Secure the perfect domain for your brand"
                   }].map(({ Icon, color, bg, title, desc }, i) => (
                     <div className="text-center space-y-3 group" key={i}>
@@ -164,7 +164,7 @@ export function HeroSection() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500">Backlinks:</span>
-                      <span className="text-[#00BFFF] font-medium">1,250+</span>
+                      <span className="text-[#33BDC7] font-medium">1,250+</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500">Monthly Traffic:</span>
@@ -179,7 +179,7 @@ export function HeroSection() {
 
                 {/* CTA Button */}
                 <Button
-                  className="w-full bg-[#3DDC91] hover:bg-[#30c97c] text-white font-semibold h-12 text-lg shadow hover:shadow-md transform hover:scale-105 transition-all duration-200"
+                  className="w-full bg-[#38C172] hover:bg-[#30c97c] text-white font-semibold h-12 text-lg shadow hover:shadow-md transform hover:scale-105 transition-all duration-200"
                   size="lg"
                   asChild
                 >

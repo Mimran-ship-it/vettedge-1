@@ -11,21 +11,7 @@ export default function AdminPage() {
   const { user } = useAuth()
   const router = useRouter()
 
-  useEffect(() => {
-    if (!user) {
-      router.push("/auth/signin?redirect=/admin")
-      return
-    }
 
-    if (user.role !== "admin") {
-      router.push("/")
-      return
-    }
-  }, [user, router])
-
-  if (!user || user.role !== "admin") {
-    return null
-  }
 
   return (
     <SidebarProvider>

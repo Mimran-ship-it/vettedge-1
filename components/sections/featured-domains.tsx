@@ -9,18 +9,23 @@ import type { Domain } from "@/types/domain"
 export function FeaturedDomains() {
   const [domains, setDomains] = useState<Domain[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchFeaturedDomains = async () => {
       try {
         const response = await fetch("/api/domains?featured=true&limit=6")
-        if (!response.ok) throw new Error(`HTTP error ${response.status}`)
-        
+
+        if (!response.ok) {
+          throw new Error(`Server returned ${response.status}`)
+        }
+
         const data: Domain[] = await response.json()
         setDomains(data)
-      } catch (error) {
-        console.error("Failed to fetch featured domains:", error)
-        setDomains([]) // Ensures component still renders cleanly
+      } catch (err: any) {
+        console.error("Failed to fetch featured domains:", err)
+        setError("Unable to load featured domains at the moment.")
+        setDomains([])
       } finally {
         setLoading(false)
       }
@@ -29,20 +34,22 @@ export function FeaturedDomains() {
     fetchFeaturedDomains()
   }, [])
 
-  if (loading) {
-    return (
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Featured Domains</h2>
-            <p className="text-lg text-gray-600">Discover premium expired domains with proven authority</p>
-          </div>
+  return (
+    <section className="py-16 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Featured Domains</h2>
+          <p className="text-lg text-gray-600">Discover premium expired domains with proven authority</p>
+        </div>
+
+        {/* Loading Skeleton */}
+        {loading && (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
+            {[...Array(6)].map((_, i) => (
               <Card key={i} className="animate-pulse">
                 <CardHeader>
                   <div className="h-6 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2 mt-2"></div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
@@ -53,24 +60,26 @@ export function FeaturedDomains() {
               </Card>
             ))}
           </div>
-        </div>
-      </section>
-    )
-  }
+        )}
 
-  return (
-    <section className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Featured Domains</h2>
-          <p className="text-lg text-gray-600">Discover premium expired domains with proven authority</p>
-        </div>
+        {/* Error or No Data */}
+        {!loading && (error || domains.length === 0) && (
+          <div className="text-center py-12">
+            <p className="text-gray-600 mb-4">
+              {error ? error : "No featured domains available at the moment."}
+            </p>
+            <Button size="lg" asChild>
+              <a href="/domains">Browse All Domains</a>
+            </Button>
+          </div>
+        )}
 
-        {domains.length > 0 ? (
+        {/* Domains List */}
+        {!loading && domains.length > 0 && (
           <>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
               {domains.map((domain) => (
-                <DomainCard key={domain.id || domain._id} domain={domain} />
+                <DomainCard key={domain.id} domain={domain} />
               ))}
             </div>
 
@@ -80,13 +89,6 @@ export function FeaturedDomains() {
               </Button>
             </div>
           </>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-gray-600 mb-4">No featured domains available at the moment.</p>
-            <Button size="lg" asChild>
-              <a href="/domains">Browse All Domains</a>
-            </Button>
-          </div>
         )}
       </div>
     </section>

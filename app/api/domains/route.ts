@@ -1,11 +1,11 @@
 // app/api/domains/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
-import { getDatabase } from "@/lib/mongodb";
+import  connectDB  from "@/lib/mongodb";
 
 export async function GET(request: NextRequest) {
   try {
-    const db = await getDatabase();
+    const db = await connectDB();
     const domainsCollection = db.collection("domains");
 
     // Optional: get "search" param from URL
