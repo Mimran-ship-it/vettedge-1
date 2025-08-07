@@ -1,42 +1,61 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { domainService } from "@/lib/services/domain-service"
+import { NextRequest, NextResponse } from "next/server"
+import connectDB from "@/lib/mongodb"
+import Domain from "@/lib/models/domain" // Make sure this is your Mongoose model
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, context: { params: { id: string } }) {
   try {
-    const domain = await domainService.getDomainById(params.id)
+    await connectDB()
+    const { id } = context.params
+
+    const domain = await Domain.findById(id)
+
     if (!domain) {
       return NextResponse.json({ error: "Domain not found" }, { status: 404 })
     }
+
     return NextResponse.json(domain)
   } catch (error) {
-    console.error("Error fetching domain:", error)
+    console.error("❌ GET Error:", error)
     return NextResponse.json({ error: "Failed to fetch domain" }, { status: 500 })
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, context: { params: { id: string } }) {
   try {
-    const updates = await request.json()
-    const success = await domainService.updateDomain(params.id, updates)
-    if (!success) {
-      return NextResponse.json({ error: "Domain not found" }, { status: 404 })
+    await connectDB();
+    const { id } = context.params;
+    const updates = await request.json();
+
+    const updatedDomain = await Domain.findByIdAndUpdate(id, updates, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedDomain) {
+      return NextResponse.json({ error: "Domain not found" }, { status: 404 });
     }
-    return NextResponse.json({ success: true })
+
+    return NextResponse.json({ success: true, domain: updatedDomain });
   } catch (error) {
-    console.error("Error updating domain:", error)
-    return NextResponse.json({ error: "Failed to update domain" }, { status: 500 })
+    console.error("❌ PUT Error:", error);
+    return NextResponse.json({ error: "Failed to update domain" }, { status: 500 });
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
   try {
-    const success = await domainService.deleteDomain(params.id)
-    if (!success) {
+    await connectDB()
+    const { id } = context.params
+
+    const deletedDomain = await Domain.findByIdAndDelete(id)
+
+    if (!deletedDomain) {
       return NextResponse.json({ error: "Domain not found" }, { status: 404 })
     }
+
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("Error deleting domain:", error)
+    console.error("❌ DELETE Error:", error)
     return NextResponse.json({ error: "Failed to delete domain" }, { status: 500 })
   }
 }

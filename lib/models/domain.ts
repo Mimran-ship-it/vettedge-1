@@ -1,66 +1,33 @@
-import type { ObjectId } from "mongodb"
+import mongoose, { Schema, models, model } from "mongoose";
 
-export interface DomainMetrics {
-  domainRank: number
-  referringDomains: number
-  authorityLinks: number
-  avgAuthorityDR: number
-  monthlyTraffic: number
-  year: number
-  language: string
-}
+const DomainSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    description: { type: String },
+    image: { type: [String], default: [] }, // Image array
+    price: { type: Number, required: true },
+    isAvailable: { type: Boolean, default: true },
+    isHot: { type: Boolean, default: false },
+    isSold: { type: Boolean, default: false },
+    tld: { type: String, required: true },
+    type: { type: String, enum: ["traffic", "aged"], required: true },
+    metrics: {
+      domainRank: Number,
+      referringDomains: Number,
+      authorityLinks: Number,
+      avgAuthorityDR: Number,
+      domainAuthority: Number,
+      trustFlow: Number,
+      citationFlow: Number,
+      monthlyTraffic: Number,
+      year: Number,
+      language: String,
+      age: Number,
+    },
+    tags: { type: [String], default: [] },
+    featured: { type: Boolean, default: false },
+  },
+  { timestamps: true }
+);
 
-export interface Domain {
-  _id?: ObjectId
-  id?: string
-  name: string
-  price: number
-  isAvailable: boolean
-  isSold: boolean
-  tld: string
-  metrics: DomainMetrics
-  category?: string
-  tags?: string[]
-  featured?: boolean
-  createdAt: Date
-  updatedAt: Date
-}
-
-export interface Order {
-  _id?: ObjectId
-  id?: string
-  userId: string
-  customerEmail: string
-  customerName: string
-  domains: {
-    domainId: string
-    domainName: string
-    price: number
-  }[]
-  totalAmount: number
-  status: "pending" | "processing" | "completed" | "failed" | "refunded"
-  paymentMethod: "stripe" | "paypal"
-  paymentId?: string
-  billingAddress: {
-    firstName: string
-    lastName: string
-    email: string
-    company?: string
-    address: string
-    city: string
-    zipCode: string
-    country: string
-  }
-  createdAt: Date
-  updatedAt: Date
-}
-
-export interface User {
-  _id?: ObjectId
-  id?: string
-  name: string
-  email: string
-  role: "admin" | "customer"
-  createdAt: Date
-  lastLogin?: Date
-}
+export default models.Domain || model("Domain", DomainSchema);

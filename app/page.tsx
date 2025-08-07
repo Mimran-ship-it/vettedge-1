@@ -1,6 +1,6 @@
 import { HeroSection } from "@/components/sections/hero-section"
 import { StatsSection } from "@/components/sections/stats-section"
-import { FeaturedDomains } from "@/components/sections/featured-domains"
+import { IsHot } from "@/components/sections/isHot"
 import { TrustSection } from "@/components/sections/trust-section"
 import { TestimonialsSection } from "@/components/sections/testimonials-section"
 import { BlogPreview } from "@/components/sections/blog-preview"
@@ -15,7 +15,7 @@ export default function HomePage() {
       <main>
         <HeroSection />
         <StatsSection />
-        <FeaturedDomains />
+        <IsHot />
         <TrustSection />
         <TestimonialsSection />
         <BlogPreview />

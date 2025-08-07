@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { DomainCard } from "@/components/domains/domain-card"
 import type { Domain } from "@/types/domain"
 
-export function FeaturedDomains() {
+export function IsHot() {
   const [domains, setDomains] = useState<Domain[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -38,7 +38,7 @@ export function FeaturedDomains() {
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Featured Domains</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Hot deals</h2> 
           <p className="text-lg text-gray-600">Discover premium expired domains with proven authority</p>
         </div>
 
@@ -79,7 +79,7 @@ export function FeaturedDomains() {
           <>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
               {domains.map((domain) => (
-                <DomainCard key={domain.id} domain={domain} />
+                <DomainCard key={domain?._id} domain={domain} />
               ))}
             </div>
 
