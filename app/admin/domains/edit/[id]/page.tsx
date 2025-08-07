@@ -112,8 +112,12 @@ const EditDomainPage = () => {
             price: parseFloat(formData.price),
             tags: formData.tags.split(",").map((tag: string) => tag.trim()).filter(Boolean),
             metrics: Object.fromEntries(
-              Object.entries(formData.metrics).map(([key, val]) => [key, isNaN(Number(val)) ? val : parseInt(val)])
-            ),
+                Object.entries(formData.metrics).map(([key, val]) => [
+                  key,
+                  isNaN(Number(val as string)) ? val : parseInt(val as string)
+                ])
+              ),
+              
           }
 
       const response = await fetch(`/api/domains/${id}`, {

@@ -11,7 +11,7 @@ import type { CartItem } from "@/types/domain"
 
 interface CartContextType {
   items: CartItem[]
-  addItem: (item: Omit<CartItem, "quantity">) => void
+  addItem: (item: Omit<CartItem, "quantity">) => CartItem | null
   removeItem: (id: string) => void
   updateQuantity: (id: string, quantity: number) => void
   clearCart: () => void
@@ -51,18 +51,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [items, mounted])
 
-  const addItem = (newItem: Omit<CartItem, "quantity">) => {
+  /**
+   * addItem: if item with same id already exists, DO NOTHING (return null).
+   * Otherwise add the item with quantity = 1 and return the added CartItem.
+   */
+  const addItem = (newItem: Omit<CartItem, "quantity">): CartItem | null => {
+    let addedItem: CartItem | null = null
     setItems((currentItems) => {
       const existingItem = currentItems.find((item) => item.id === newItem.id)
       if (existingItem) {
-        return currentItems.map((item) =>
-          item.id === newItem.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
+        // Item already in cart — do not increase count or price
+        return currentItems
       }
-      return [...currentItems, { ...newItem, quantity: 1 }]
+      addedItem = { ...newItem, quantity: 1 }
+      return [...currentItems, addedItem]
     })
+    return addedItem
   }
 
   const removeItem = (id: string) => {

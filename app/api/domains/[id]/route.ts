@@ -5,7 +5,7 @@ import Domain from "@/lib/models/domain" // Make sure this is your Mongoose mode
 export async function GET(request: NextRequest, context: { params: { id: string } }) {
   try {
     await connectDB()
-    const { id } = context.params
+    const { id } =await context.params
 
     const domain = await Domain.findById(id)
 
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, context: { params: { id: string 
 export async function PUT(request: NextRequest, context: { params: { id: string } }) {
   try {
     await connectDB();
-    const { id } = context.params;
+    const { id } =await context.params;
     const updates = await request.json();
 
     const updatedDomain = await Domain.findByIdAndUpdate(id, updates, {
@@ -45,7 +45,7 @@ export async function PUT(request: NextRequest, context: { params: { id: string 
 export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
   try {
     await connectDB()
-    const { id } = context.params
+    const { id } =await context.params
 
     const deletedDomain = await Domain.findByIdAndDelete(id)
 
