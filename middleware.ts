@@ -8,7 +8,7 @@ export function middleware(request: NextRequest) {
   // ✅ Redirect unauthenticated users away from /admin
   if (pathname.startsWith("/admin")) {
     if (!token) {
-      return NextResponse.redirect(new URL("/auth/login", request.url))
+      return NextResponse.redirect(new URL("/auth/signin", request.url))
     }
 
     try {
@@ -17,7 +17,7 @@ export function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL("/", request.url))
       }
     } catch (error) {
-      return NextResponse.redirect(new URL("/auth/login", request.url))
+      return NextResponse.redirect(new URL("/auth/signin", request.url))
     }
   }
 

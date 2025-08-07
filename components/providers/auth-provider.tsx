@@ -3,12 +3,13 @@
 
 import React, { useEffect, useState } from "react"
 import { AuthContext, type User } from "@/hooks/use-auth"
-
+import { useRouter } from "next/navigation"
 interface AuthProviderProps {
   children: React.ReactNode
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const router=useRouter()
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -50,6 +51,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const signOut = () => {
     // Add this route too — it will clear the token cookie
     fetch("/api/auth/signout", { method: "POST" })
+    router.push('/')
     setUser(null)
   }
 
