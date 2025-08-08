@@ -146,7 +146,7 @@ export default function VettingProcessPage() {
               Our Vetting Process
             </Badge>
             <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
-              How We Ensure
+              How We Ensures
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#08b1bd] to-[#1fbe61] font-bold">
   Premium Quality
 </span>
