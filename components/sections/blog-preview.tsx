@@ -17,7 +17,9 @@ export function BlogPreview() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Latest Insights & Expert Tips</h2>
+          <h2 className="text-3xl font-bold mb-4" style={{ color: "#33BDC7" }}>
+            Latest Insights & Expert Tips
+          </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Stay ahead of the curve with our expert analysis on domain investing, SEO strategies, and digital marketing
             trends.
@@ -27,14 +29,19 @@ export function BlogPreview() {
         {/* Blog Posts Grid */}
         <div className="grid md:grid-cols-3 gap-8 mb-12">
           {featuredPosts.map((post) => (
-            <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow group">
+            <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow group border border-gray-200">
               <div className="aspect-video bg-gray-200 relative overflow-hidden">
                 <img
                   src={post.image || "/domaininvesting.png"}
                   alt={post.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <Badge className="absolute top-4 left-4 bg-cyan-500">{post.category}</Badge>
+                <Badge
+                  className="absolute top-4 left-4 text-white"
+                  style={{ backgroundColor: "#33BDC7" }}
+                >
+                  {post.category}
+                </Badge>
               </div>
               <CardContent className="p-6">
                 <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
@@ -48,7 +55,10 @@ export function BlogPreview() {
                   </div>
                 </div>
 
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 group-hover:text-cyan-600 transition-colors">
+                <h3
+                  className="text-lg font-semibold mb-3 group-hover:opacity-80 transition-colors"
+                  style={{ color: "#33BDC7" }}
+                >
                   <Link href={`/blog/${post.slug}`}>{post.title}</Link>
                 </h3>
 
@@ -59,7 +69,11 @@ export function BlogPreview() {
                     <Calendar className="h-4 w-4" />
                     {new Date(post.publishedAt).toLocaleDateString()}
                   </div>
-                  <Link href={`/blog/${post.slug}`} className="text-cyan-600 hover:text-cyan-700 text-sm font-medium">
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    style={{ color: "#33BDC7" }}
+                    className="hover:opacity-80 text-sm font-medium"
+                  >
                     Read More →
                   </Link>
                 </div>
@@ -70,7 +84,12 @@ export function BlogPreview() {
 
         {/* View All Button */}
         <div className="text-center">
-          <Button asChild size="lg" className="bg-cyan-500 hover:bg-cyan-600">
+          <Button
+            asChild
+            size="lg"
+            style={{ backgroundColor: "#38C172", color: "white" }}
+            className="hover:opacity-90"
+          >
             <Link href="/blog">
               View All Articles
               <ArrowRight className="ml-2 h-5 w-5" />

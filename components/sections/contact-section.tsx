@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -25,7 +24,6 @@ export function ContactSection() {
     e.preventDefault()
     setLoading(true)
 
-    // Simulate form submission
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
     toast({
@@ -42,32 +40,29 @@ export function ContactSection() {
       icon: Mail,
       title: "Email Support",
       description: "support@vettedge.domains",
-      color: "blue",
     },
     {
       icon: Phone,
       title: "Phone Support",
       description: "+1 (555) 123-4567",
-      color: "green",
     },
     {
       icon: MessageSquare,
       title: "Live Chat",
       description: "Available 24/7",
-      color: "purple",
     },
   ]
 
   return (
-    <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+    <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <Badge variant="outline" className="mb-4 px-4 py-2">
+          <Badge variant="outline" className="mb-4 px-4 py-2" style={{ borderColor: "#33BDC7", color: "#33BDC7" }}>
             Get In Touch
           </Badge>
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+          <h2 className="text-4xl lg:text-5xl font-bold mb-6" style={{ color: "#33BDC7" }}>
             Ready to Find Your
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+            <span className="block" style={{ color: "#33BDC7" }}>
               Perfect Domain?
             </span>
           </h2>
@@ -79,10 +74,10 @@ export function ContactSection() {
 
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           {/* Contact Form */}
-          <Card className="shadow-2xl border-0 bg-white/80 backdrop-blur-sm">
+          <Card className="shadow-2xl border border-gray-200 bg-white">
             <CardHeader>
-              <CardTitle className="text-2xl font-bold text-gray-900 flex items-center">
-                <Send className="h-6 w-6 mr-3 text-blue-600" />
+              <CardTitle className="text-2xl font-bold flex items-center" style={{ color: "#33BDC7" }}>
+                <Send className="h-6 w-6 mr-3" style={{ color: "#33BDC7" }} />
                 Send us a Message
               </CardTitle>
               <p className="text-gray-600">Get expert advice on domain selection and SEO potential</p>
@@ -129,7 +124,8 @@ export function ContactSection() {
 
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 h-12 text-lg font-semibold"
+                  className="w-full h-12 text-lg font-semibold text-white"
+                  style={{ backgroundColor: "#38C172" }}
                   disabled={loading}
                 >
                   {loading ? (
@@ -151,7 +147,9 @@ export function ContactSection() {
           {/* Contact Information */}
           <div className="space-y-8">
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Multiple Ways to Connect</h3>
+              <h3 className="text-2xl font-bold mb-4" style={{ color: "#33BDC7" }}>
+                Multiple Ways to Connect
+              </h3>
               <p className="text-lg text-gray-600 mb-8">
                 Choose the contact method that works best for you. Our team is available 24/7 to assist with your domain
                 investment needs.
@@ -160,16 +158,23 @@ export function ContactSection() {
 
             <div className="space-y-6">
               {contactMethods.map((method, index) => (
-                <Card key={index} className="border-l-4 border-l-blue-500 hover:shadow-lg transition-shadow">
+                <Card
+                  key={index}
+                  className="border-l-4 hover:shadow-lg transition-shadow"
+                  style={{ borderLeftColor: "#33BDC7" }}
+                >
                   <CardContent className="pt-6">
                     <div className="flex items-center space-x-4">
                       <div
-                        className={`w-12 h-12 bg-gradient-to-br from-${method.color}-500 to-${method.color}-600 rounded-xl flex items-center justify-center`}
+                        className="w-12 h-12 rounded-xl flex items-center justify-center"
+                        style={{ backgroundColor: "#33BDC7" }}
                       >
                         <method.icon className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h4 className="text-lg font-semibold text-gray-900">{method.title}</h4>
+                        <h4 className="text-lg font-semibold" style={{ color: "#33BDC7" }}>
+                          {method.title}
+                        </h4>
                         <p className="text-gray-600">{method.description}</p>
                       </div>
                     </div>
@@ -179,29 +184,24 @@ export function ContactSection() {
             </div>
 
             {/* Why Choose Us */}
-            <Card className="bg-gradient-to-br from-blue-500 to-purple-600 text-white border-0">
+            <Card style={{ backgroundColor: "#33BDC7", color: "white", border: "none" }}>
               <CardContent className="pt-6">
                 <h4 className="text-xl font-semibold mb-4 flex items-center">
                   <Headphones className="h-6 w-6 mr-2" />
                   Why Choose Our Support?
                 </h4>
                 <div className="space-y-3">
-                  <div className="flex items-center space-x-3">
-                    <CheckCircle className="h-5 w-5 text-green-300" />
-                    <span>Expert domain consultants available 24/7</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <CheckCircle className="h-5 w-5 text-green-300" />
-                    <span>Personalized domain recommendations</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <CheckCircle className="h-5 w-5 text-green-300" />
-                    <span>Free SEO analysis and potential assessment</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <CheckCircle className="h-5 w-5 text-green-300" />
-                    <span>Secure transfer assistance and guidance</span>
-                  </div>
+                  {[
+                    "Expert domain consultants available 24/7",
+                    "Personalized domain recommendations",
+                    "Free SEO analysis and potential assessment",
+                    "Secure transfer assistance and guidance",
+                  ].map((text, idx) => (
+                    <div className="flex items-center space-x-3" key={idx}>
+                      <CheckCircle className="h-5 w-5" style={{ color: "#38C172" }} />
+                      <span>{text}</span>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -210,16 +210,23 @@ export function ContactSection() {
             <Card>
               <CardContent className="pt-6">
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center"
+                    style={{ backgroundColor: "#38C172" }}
+                  >
                     <Clock className="h-6 w-6 text-white" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-semibold text-gray-900 mb-2">Business Hours</h4>
+                    <h4 className="text-lg font-semibold mb-2" style={{ color: "#33BDC7" }}>
+                      Business Hours
+                    </h4>
                     <div className="space-y-1 text-gray-600">
                       <p>Monday - Friday: 9:00 AM - 6:00 PM PST</p>
                       <p>Saturday: 10:00 AM - 4:00 PM PST</p>
                       <p>Sunday: Emergency support only</p>
-                      <p className="text-blue-600 font-medium mt-2">Live chat available 24/7</p>
+                      <p className="font-medium mt-2" style={{ color: "#33BDC7" }}>
+                        Live chat available 24/7
+                      </p>
                     </div>
                   </div>
                 </div>

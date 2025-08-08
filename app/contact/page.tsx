@@ -60,7 +60,7 @@ export default function ContactPage() {
       description: "Get help via email",
       contact: "support@vettedge.domains",
       action: "Send Email",
-      color: "blue",
+      color: "teal", // replaced original blue with teal to match #33BDC7-ish
     },
     {
       icon: Phone,
@@ -103,7 +103,7 @@ export default function ContactPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 text-white py-20">
+      <section className="bg-gradient-to-br from-[#33BDC7] via-[#6bd195] to-[#33BDC7] text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-8">
             <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
@@ -111,11 +111,11 @@ export default function ContactPage() {
             </Badge>
             <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
               Get in Touch
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-300">
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#33BDC7] to-[#38C172]">
                 We're Here to Help
               </span>
             </h1>
-            <p className="text-xl lg:text-2xl text-blue-100 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl lg:text-2xl text-[#C9F3EA] max-w-3xl mx-auto leading-relaxed">
               Have questions about domains? Need help with your purchase? Our expert team is ready to assist you.
             </p>
           </div>
@@ -126,7 +126,7 @@ export default function ContactPage() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Choose Your Preferred Contact Method</h2>
+            <h2 className="text-3xl font-bold text-[#33BDC7] mb-4">Choose Your Preferred Contact Method</h2>
             <p className="text-lg text-gray-600">We offer multiple ways to get in touch with our support team</p>
           </div>
 
@@ -134,19 +134,19 @@ export default function ContactPage() {
             {contactMethods.map((method, index) => (
               <Card
                 key={index}
-                className="text-center hover:shadow-lg transition-all duration-300 border-2 hover:border-blue-200"
+                className="text-center hover:shadow-lg transition-all duration-300 border-2 hover:border-[#33BDC7]"
               >
                 <CardContent className="pt-8 pb-6">
                   <div
-                    className={`w-16 h-16 bg-gradient-to-br from-${method.color}-500 to-${method.color}-600 rounded-2xl flex items-center justify-center mx-auto mb-4`}
+                    className={`w-16 h-16 bg-gradient-to-br from-[#33BDC7] to-[#38C172] rounded-2xl flex items-center justify-center mx-auto mb-4`}
                   >
                     <method.icon className="h-8 w-8 text-white" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{method.title}</h3>
+                  <h3 className="text-xl font-semibold text-[#33BDC7] mb-2">{method.title}</h3>
                   <p className="text-gray-600 mb-3">{method.description}</p>
                   <p className="font-medium text-gray-900 mb-4">{method.contact}</p>
                   <Button
-                    className={`bg-gradient-to-r from-${method.color}-500 to-${method.color}-600 hover:from-${method.color}-600 hover:to-${method.color}-700`}
+                    className="bg-gradient-to-r from-[#38C172] to-[#33BDC7] hover:from-[#33BDC7] hover:to-[#38C172]"
                   >
                     {method.action}
                   </Button>
@@ -165,8 +165,8 @@ export default function ContactPage() {
             <div>
               <Card className="shadow-xl border-0">
                 <CardHeader>
-                  <CardTitle className="text-2xl font-bold text-gray-900 flex items-center">
-                    <Send className="h-6 w-6 mr-2 text-blue-600" />
+                  <CardTitle className="text-2xl font-bold flex items-center text-[#33BDC7]">
+                    <Send className="h-6 w-6 mr-2 text-[#33BDC7]" />
                     Send us a Message
                   </CardTitle>
                   <p className="text-gray-600">Fill out the form below and we'll get back to you within 24 hours.</p>
@@ -175,17 +175,22 @@ export default function ContactPage() {
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="name">Full Name *</Label>
+                        <Label htmlFor="name" className="text-[#33BDC7] font-semibold">
+                          Full Name *
+                        </Label>
                         <Input
                           id="name"
                           value={formData.name}
                           onChange={(e) => handleInputChange("name", e.target.value)}
                           placeholder="Your full name"
                           required
+                          className="border-[#33BDC7] focus:border-[#38C172]"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="email">Email Address *</Label>
+                        <Label htmlFor="email" className="text-[#33BDC7] font-semibold">
+                          Email Address *
+                        </Label>
                         <Input
                           id="email"
                           type="email"
@@ -193,16 +198,20 @@ export default function ContactPage() {
                           onChange={(e) => handleInputChange("email", e.target.value)}
                           placeholder="your@email.com"
                           required
+                          className="border-[#33BDC7] focus:border-[#38C172]"
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="category">Category</Label>
-                      <Select value={formData.category} onValueChange={(value) => handleInputChange("category", value)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a category" />
-                        </SelectTrigger>
+                      <Label htmlFor="category" className="text-[#33BDC7] font-semibold">
+                        Category
+                      </Label>
+                      <Select
+                        value={formData.category}
+                        onValueChange={(value) => handleInputChange("category", value)}
+                      >
+                        <SelectTrigger className="border-[#33BDC7] focus:border-[#38C172]" />
                         <SelectContent>
                           <SelectItem value="general">General Inquiry</SelectItem>
                           <SelectItem value="domain">Domain Question</SelectItem>
@@ -215,18 +224,23 @@ export default function ContactPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="subject">Subject *</Label>
+                      <Label htmlFor="subject" className="text-[#33BDC7] font-semibold">
+                        Subject *
+                      </Label>
                       <Input
                         id="subject"
                         value={formData.subject}
                         onChange={(e) => handleInputChange("subject", e.target.value)}
                         placeholder="Brief description of your inquiry"
                         required
+                        className="border-[#33BDC7] focus:border-[#38C172]"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="message">Message *</Label>
+                      <Label htmlFor="message" className="text-[#33BDC7] font-semibold">
+                        Message *
+                      </Label>
                       <Textarea
                         id="message"
                         value={formData.message}
@@ -234,12 +248,13 @@ export default function ContactPage() {
                         placeholder="Please provide details about your inquiry..."
                         rows={6}
                         required
+                        className="border-[#33BDC7] focus:border-[#38C172]"
                       />
                     </div>
 
                     <Button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                      className="w-full bg-gradient-to-r from-[#38C172] to-[#33BDC7] hover:from-[#33BDC7] hover:to-[#38C172]"
                       disabled={loading}
                     >
                       {loading ? (
@@ -262,7 +277,7 @@ export default function ContactPage() {
             {/* Office Information */}
             <div className="space-y-8">
               <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">Get to Know Us Better</h2>
+                <h2 className="text-3xl font-bold text-[#33BDC7] mb-6">Get to Know Us Better</h2>
                 <p className="text-lg text-gray-600 mb-8">
                   We're a team of domain experts passionate about helping businesses and investors find the perfect
                   domains to grow their online presence.
@@ -271,14 +286,14 @@ export default function ContactPage() {
 
               <div className="space-y-6">
                 {officeInfo.map((info, index) => (
-                  <Card key={index} className="border-l-4 border-l-blue-500">
+                  <Card key={index} className="border-l-4 border-l-[#33BDC7]">
                     <CardContent className="pt-6">
                       <div className="flex items-start space-x-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <div className="w-12 h-12 bg-gradient-to-br from-[#33BDC7] to-[#38C172] rounded-xl flex items-center justify-center flex-shrink-0">
                           <info.icon className="h-6 w-6 text-white" />
                         </div>
                         <div>
-                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{info.title}</h3>
+                          <h3 className="text-lg font-semibold text-[#33BDC7] mb-2">{info.title}</h3>
                           <div className="space-y-1">
                             {info.details.map((detail, idx) => (
                               <p key={idx} className="text-gray-600">
@@ -294,25 +309,25 @@ export default function ContactPage() {
               </div>
 
               {/* Quick Stats */}
-              <Card className="bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+              <Card className="bg-gradient-to-br from-[#33BDC7] to-[#38C172] text-white">
                 <CardContent className="pt-6">
                   <h3 className="text-xl font-semibold mb-4">Why Choose Vettedge?</h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="text-center">
                       <div className="text-2xl font-bold mb-1">24/7</div>
-                      <div className="text-blue-100 text-sm">Support Available</div>
+                      <div className="text-[#C9F3EA] text-sm">Support Available</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-bold mb-1">Less than 2 hours</div>
-                      <div className="text-blue-100 text-sm">Response Time</div>
+                      <div className="text-[#C9F3EA] text-sm">Response Time</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-bold mb-1">98%</div>
-                      <div className="text-blue-100 text-sm">Satisfaction Rate</div>
+                      <div className="text-[#C9F3EA] text-sm">Satisfaction Rate</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-bold mb-1">5000+</div>
-                      <div className="text-blue-100 text-sm">Happy Customers</div>
+                      <div className="text-[#C9F3EA] text-sm">Happy Customers</div>
                     </div>
                   </div>
                 </CardContent>
@@ -326,14 +341,14 @@ export default function ContactPage() {
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+            <h2 className="text-3xl font-bold text-[#33BDC7] mb-4">Frequently Asked Questions</h2>
             <p className="text-lg text-gray-600">Quick answers to common questions</p>
           </div>
 
           <div className="space-y-6">
             <Card>
               <CardContent className="pt-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg font-semibold text-[#33BDC7] mb-2">
                   How quickly can I get my domain after purchase?
                 </h3>
                 <p className="text-gray-600">
@@ -345,7 +360,7 @@ export default function ContactPage() {
 
             <Card>
               <CardContent className="pt-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Do you offer refunds if I'm not satisfied?</h3>
+                <h3 className="text-lg font-semibold text-[#33BDC7] mb-2">Do you offer refunds if I'm not satisfied?</h3>
                 <p className="text-gray-600">
                   Yes, we offer a 7-day money-back guarantee if the domain doesn't meet the specifications we've
                   provided.
@@ -355,7 +370,7 @@ export default function ContactPage() {
 
             <Card>
               <CardContent className="pt-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg font-semibold text-[#33BDC7] mb-2">
                   Can you help me evaluate a domain's potential?
                 </h3>
                 <p className="text-gray-600">

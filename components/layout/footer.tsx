@@ -8,10 +8,12 @@ export function Footer() {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-[#33BDC7] rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">V</span>
               </div>
-              <span className="text-xl font-semibold">Vettedge.domains</span>
+              <span className="text-xl font-semibold text-[#33BDC7]">
+                Vettedge.domains
+              </span>
             </div>
             <p className="text-gray-400 text-sm">
               Your trusted partner for premium expired domains with real authority and proven SEO value.
@@ -20,25 +22,37 @@ export function Footer() {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Quick Links</h3>
+            <h3 className="text-lg font-semibold text-[#33BDC7]">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/domains" className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  href="/domains"
+                  className="text-gray-400 hover:text-[#38C172] transition-colors"
+                >
                   Buy Domains
                 </Link>
               </li>
               <li>
-                <Link href="/vetting-process" className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  href="/vetting-process"
+                  className="text-gray-400 hover:text-[#38C172] transition-colors"
+                >
                   Vetting Process
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  href="/about"
+                  className="text-gray-400 hover:text-[#38C172] transition-colors"
+                >
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  href="/contact"
+                  className="text-gray-400 hover:text-[#38C172] transition-colors"
+                >
                   Contact
                 </Link>
               </li>
@@ -47,25 +61,37 @@ export function Footer() {
 
           {/* Support */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Support</h3>
+            <h3 className="text-lg font-semibold text-[#33BDC7]">Support</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/help" className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  href="/help"
+                  className="text-gray-400 hover:text-[#38C172] transition-colors"
+                >
                   Help Center
                 </Link>
               </li>
               <li>
-                <Link href="/faq" className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  href="/faq"
+                  className="text-gray-400 hover:text-[#38C172] transition-colors"
+                >
                   FAQ
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  href="/terms"
+                  className="text-gray-400 hover:text-[#38C172] transition-colors"
+                >
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  href="/privacy"
+                  className="text-gray-400 hover:text-[#38C172] transition-colors"
+                >
                   Privacy Policy
                 </Link>
               </li>
@@ -74,7 +100,7 @@ export function Footer() {
 
           {/* Contact Info */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Contact</h3>
+            <h3 className="text-lg font-semibold text-[#33BDC7]">Contact</h3>
             <div className="space-y-2 text-sm text-gray-400">
               <p>Email: support@vettedge.domains</p>
               <p>Phone: +1 (555) 123-4567</p>

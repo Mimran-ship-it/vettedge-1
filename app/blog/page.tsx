@@ -24,7 +24,9 @@ export default function BlogPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Domain Investment Blog</h1>
+          <h1 className="text-4xl font-bold mb-4" style={{ color: "#33BDC7" }}>
+            Domain Investment Blog
+          </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Expert insights on domain investing, SEO strategies, and digital marketing trends to help you make informed
             decisions in the domain marketplace.
@@ -34,7 +36,9 @@ export default function BlogPage() {
         {/* Featured Posts */}
         {featuredPosts.length > 0 && (
           <section className="mb-16">
-            <h2 className="text-2xl font-bold text-gray-900 mb-8">Featured Articles</h2>
+            <h2 className="text-2xl font-bold mb-8" style={{ color: "#33BDC7" }}>
+              Featured Articles
+            </h2>
             <div className="grid md:grid-cols-2 gap-8">
               {featuredPosts.map((post) => (
                 <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow">
@@ -44,7 +48,12 @@ export default function BlogPage() {
                       alt={post.title}
                       className="w-full h-full object-cover"
                     />
-                    <Badge className="absolute top-4 left-4 bg-cyan-500">Featured</Badge>
+                    <Badge
+                      className="absolute top-4 left-4"
+                      style={{ backgroundColor: "#33BDC7", color: "white" }}
+                    >
+                      Featured
+                    </Badge>
                   </div>
                   <CardHeader>
                     <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
@@ -61,16 +70,27 @@ export default function BlogPage() {
                         {post.readingTime} min read
                       </div>
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                      <Link href={`/blog/${post.slug}`} className="hover:text-cyan-600 transition-colors">
+                    <h3 className="text-xl font-semibold mb-2">
+                      <Link
+                        href={`/blog/${post.slug}`}
+                        className="hover:text-[#38C172] transition-colors"
+                        style={{ color: "#33BDC7" }}
+                      >
                         {post.title}
                       </Link>
                     </h3>
                     <p className="text-gray-600 mb-4">{post.excerpt}</p>
                     <div className="flex flex-wrap gap-2">
-                      <Badge variant="secondary">{post.category}</Badge>
+                      <Badge variant="secondary" style={{ backgroundColor: "#38C172", color: "white" }}>
+                        {post.category}
+                      </Badge>
                       {post.tags.slice(0, 2).map((tag) => (
-                        <Badge key={tag} variant="outline" className="text-xs">
+                        <Badge
+                          key={tag}
+                          variant="outline"
+                          className="text-xs"
+                          style={{ borderColor: "#33BDC7", color: "#33BDC7" }}
+                        >
                           {tag}
                         </Badge>
                       ))}
@@ -84,7 +104,9 @@ export default function BlogPage() {
 
         {/* All Posts */}
         <section>
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">All Articles</h2>
+          <h2 className="text-2xl font-bold mb-8" style={{ color: "#33BDC7" }}>
+            All Articles
+          </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {regularPosts.map((post) => (
               <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow">
@@ -102,18 +124,31 @@ export default function BlogPage() {
                       {post.readingTime} min
                     </div>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    <Link href={`/blog/${post.slug}`} className="hover:text-cyan-600 transition-colors">
+                  <h3 className="text-lg font-semibold mb-2" style={{ color: "#33BDC7" }}>
+                    <Link
+                      href={`/blog/${post.slug}`}
+                      className="hover:text-[#38C172] transition-colors"
+                      style={{ color: "#33BDC7" }}
+                    >
                       {post.title}
                     </Link>
                   </h3>
                   <p className="text-gray-600 text-sm mb-4 line-clamp-3">{post.excerpt}</p>
                   <div className="flex flex-wrap gap-2 mb-4">
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge
+                      variant="secondary"
+                      className="text-xs"
+                      style={{ backgroundColor: "#38C172", color: "white" }}
+                    >
                       {post.category}
                     </Badge>
                     {post.tags.slice(0, 1).map((tag) => (
-                      <Badge key={tag} variant="outline" className="text-xs">
+                      <Badge
+                        key={tag}
+                        variant="outline"
+                        className="text-xs"
+                        style={{ borderColor: "#33BDC7", color: "#33BDC7" }}
+                      >
                         {tag}
                       </Badge>
                     ))}
