@@ -279,7 +279,7 @@ export default function AdminDomainsPage() {
                                     <Eye className="h-4 w-4 mr-1" /> View
                                   </Button>
                                 </Link>
-                                <Link href={`/admin/domains/${domain._id}/edit`}>
+                                <Link href={`/admin/domains/edit/${domain._id}`}>
                                   <Button size="sm" variant="secondary">
                                     <Edit className="h-4 w-4 mr-1" /> Edit
                                   </Button>
