@@ -74,8 +74,8 @@ export default function DomainsPage() {
       )
     }
 
-    if (filters.tlds?.length > 0) {
-      filtered = filtered.filter((d) => filters.tlds.includes(d.tld))
+    if (filters.registrars?.length > 0) {
+      filtered = filtered.filter((d) => filters.registrars.includes(d.registrar))
     }
 
     if (filters.availability === "available") {

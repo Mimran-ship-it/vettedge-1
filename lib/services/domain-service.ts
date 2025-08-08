@@ -5,7 +5,7 @@ import { Types } from "mongoose"
 export class DomainService {
   async getAllDomains(filters?: {
     search?: string
-    tlds?: string[]
+    registrar?: string[]
     priceRange?: [number, number]
     availability?: string
     category?: string
@@ -21,8 +21,8 @@ export class DomainService {
       ]
     }
 
-    if (filters?.tlds?.length) {
-      query.tld = { $in: filters.tlds }
+    if (filters?.registrar?.length) {
+      query.registrar = { $in: filters.registrar }
     }
 
     if (filters?.priceRange) {
