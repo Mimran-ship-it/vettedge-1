@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -9,14 +8,21 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { CreditCard, Wallet, Building } from "lucide-react"
+import type { Dispatch, SetStateAction } from "react"
 
 interface PaymentMethodsProps {
+  selectedMethod: "stripe" | "paypal"
+  onMethodChange: Dispatch<SetStateAction<"stripe" | "paypal">>
   onPaymentSubmit: (paymentData: any) => void
   loading: boolean
 }
 
-export function PaymentMethods({ onPaymentSubmit, loading }: PaymentMethodsProps) {
-  const [paymentMethod, setPaymentMethod] = useState("card")
+export function PaymentMethods({
+  selectedMethod,
+  onMethodChange,
+  onPaymentSubmit,
+  loading,
+}: PaymentMethodsProps) {
   const [cardData, setCardData] = useState({
     number: "",
     expiry: "",
@@ -28,8 +34,8 @@ export function PaymentMethods({ onPaymentSubmit, loading }: PaymentMethodsProps
     e.preventDefault()
 
     const paymentData = {
-      method: paymentMethod,
-      ...(paymentMethod === "card" && { card: cardData }),
+      method: selectedMethod,
+      ...(selectedMethod === "stripe" && { card: cardData }), // using "stripe" for card payments
     }
 
     onPaymentSubmit(paymentData)
@@ -51,9 +57,9 @@ export function PaymentMethods({ onPaymentSubmit, loading }: PaymentMethodsProps
             </p>
           </div>
 
-          <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
+          <RadioGroup value={selectedMethod} onValueChange={(val) => onMethodChange(val as "stripe" | "paypal")}>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="card" id="card" />
+              <RadioGroupItem value="stripe" id="card" />
               <Label htmlFor="card" className="flex items-center gap-2">
                 <CreditCard className="h-4 w-4" />
                 Credit/Debit Card
@@ -66,16 +72,9 @@ export function PaymentMethods({ onPaymentSubmit, loading }: PaymentMethodsProps
                 PayPal
               </Label>
             </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="bank" id="bank" />
-              <Label htmlFor="bank" className="flex items-center gap-2">
-                <Building className="h-4 w-4" />
-                Bank Transfer
-              </Label>
-            </div>
           </RadioGroup>
 
-          {paymentMethod === "card" && (
+          {selectedMethod === "stripe" && (
             <div className="space-y-4">
               <div>
                 <Label htmlFor="cardName">Cardholder Name</Label>
@@ -122,17 +121,10 @@ export function PaymentMethods({ onPaymentSubmit, loading }: PaymentMethodsProps
             </div>
           )}
 
-          {paymentMethod === "paypal" && (
+          {selectedMethod === "paypal" && (
             <div className="text-center py-8">
               <Wallet className="h-12 w-12 mx-auto text-blue-600 mb-4" />
               <p className="text-gray-600">You will be redirected to PayPal to complete your payment.</p>
-            </div>
-          )}
-
-          {paymentMethod === "bank" && (
-            <div className="text-center py-8">
-              <Building className="h-12 w-12 mx-auto text-green-600 mb-4" />
-              <p className="text-gray-600">Bank transfer instructions will be provided after order confirmation.</p>
             </div>
           )}
 

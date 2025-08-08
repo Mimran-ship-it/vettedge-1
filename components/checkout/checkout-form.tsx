@@ -6,10 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { PaymentMethods } from "./payment-methods"
-import { useCart } from "@/components/providers/cart-provider"
-import { useAuth } from "@/components/providers/auth-provider"
+import { useCart } from "@/components/providers/cart-provider" 
+import { useAuth } from "@/hooks/use-auth"
 
 export function CheckoutForm() {
+  const [paymentMethod, setPaymentMethod] = useState<"stripe" | "paypal">("stripe")
+
   const router = useRouter()
   const { items, total, clearCart } = useCart()
   const { user } = useAuth()
@@ -179,34 +181,56 @@ export function CheckoutForm() {
           </CardContent>
         </Card>
 
-        <PaymentMethods onPaymentSubmit={handlePaymentSubmit} loading={loading} />
+        <PaymentMethods
+  selectedMethod={paymentMethod}
+  onMethodChange={setPaymentMethod}
+  onPaymentSubmit={handlePaymentSubmit}
+  loading={loading}
+/>
       </div>
 
       <div>
-        <Card>
-          <CardHeader>
-            <CardTitle>Order Summary</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {items.map((item) => (
-                <div key={item.domain.id} className="flex justify-between items-center">
-                  <div>
-                    <p className="font-medium">{item.domain.name}</p>
-                    <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
-                  </div>
-                  <p className="font-medium">${item.domain.price * item.quantity}</p>
-                </div>
-              ))}
-              <div className="border-t pt-4">
-                <div className="flex justify-between items-center text-lg font-bold">
-                  <span>Total</span>
-                  <span>${total}</span>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      <Card>
+  <CardHeader>
+    <CardTitle>Order Summary</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <div className="space-y-4">
+      {items.map((item) => (
+        <div key={item.id} className="flex justify-between items-center">
+          <div>
+            <p className="font-medium">{item.name}</p>
+            <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
+          </div>
+          <p className="font-medium">
+            ${(item.price * item.quantity).toFixed(2)}
+          </p>
+        </div>
+      ))}
+
+      {/* Subtotal */}
+      <div className="border-t pt-4">
+        <div className="flex justify-between items-center text-base">
+          <span>Subtotal</span>
+          <span>${total.toFixed(2)}</span>
+        </div>
+
+        {/* Tax */}
+        <div className="flex justify-between items-center text-base">
+          <span>Tax (8%)</span>
+          <span>${(total * 0.08).toFixed(2)}</span>
+        </div>
+
+        {/* Grand Total */}
+        <div className="flex justify-between items-center text-lg font-bold mt-2">
+          <span>Total</span>
+          <span>${(total * 1.08).toFixed(2)}</span>
+        </div>
+      </div>
+    </div>
+  </CardContent>
+</Card>
+
       </div>
     </div>
   )

@@ -203,7 +203,7 @@ export default function AdminDomainsPage() {
                                 <TableCell>
                                   <div className="text-sm">
                                     <div>DR: {domain.metrics.avgAuthorityDR}</div>
-                         {domain.type=='traffic'&& <div>Traffic: {domain.metrics?.monthlyTraffic.toLocaleString()}</div>}
+                         {domain.metrics?.monthlyTraffic&& <div>Traffic: {domain.metrics?.monthlyTraffic.toLocaleString()}</div>}
                                   </div>
                                 </TableCell>
                                 <TableCell>
@@ -268,7 +268,7 @@ export default function AdminDomainsPage() {
                               </div>
                               <div className="text-sm">
                                 <div>DR: {domain.metrics.avgAuthorityDR}</div>
-                           { domain.type=='traffic'&&    <div>Traffic: {domain.metrics?.monthlyTraffic.toLocaleString()}</div>}
+                           { domain.metrics?.monthlyTraffic&&    <div>Traffic: {domain.metrics?.monthlyTraffic.toLocaleString()}</div>}
                               </div>
                               <div className="text-sm text-muted-foreground">
                                 Created: {new Date(domain.createdAt).toLocaleDateString()}

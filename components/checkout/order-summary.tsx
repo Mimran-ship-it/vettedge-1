@@ -131,9 +131,7 @@ export function OrderSummary({ paymentMethod }: OrderSummaryProps) {
             <div key={item.id} className="flex justify-between items-start">
               <div className="flex-1">
                 <div className="font-medium">{item.name}</div>
-                <Badge variant="secondary" className="text-xs mt-1">
-                  {item.domain?.tld}
-                </Badge>
+                
               </div>
               <div className="text-right">
                 <div className="font-medium">${item.price.toLocaleString()}</div>

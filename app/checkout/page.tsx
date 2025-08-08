@@ -19,10 +19,7 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<"stripe" | "paypal">("stripe")
 
   useEffect(() => {
-    if (!user) {
-      router.push("/auth/signin?redirect=/checkout")
-      return
-    }
+    
 
     if (items.length === 0) {
       router.push("/cart")
@@ -33,7 +30,7 @@ export default function CheckoutPage() {
   if (!user || items.length === 0) {
     return null
   }
-
+ 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -44,14 +41,17 @@ export default function CheckoutPage() {
           <p className="text-lg text-gray-600">Complete your purchase securely</p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-1 gap-6">
           <div className="space-y-8">
             <CheckoutForm />
-            <PaymentMethods selectedMethod={paymentMethod} onMethodChange={setPaymentMethod} />
+            <PaymentMethods
+  selectedMethod={paymentMethod}
+  onMethodChange={setPaymentMethod}
+  onPaymentSubmit={(data) => console.log(data)}
+  loading={false}
+/>
           </div>
-          <div>
-            <OrderSummary paymentMethod={paymentMethod} />
-          </div>
+         
         </div>
       </main>
 

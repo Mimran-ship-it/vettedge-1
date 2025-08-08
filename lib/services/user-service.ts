@@ -1,10 +1,10 @@
-import { getDatabase } from "@/lib/mongodb"
+import  connectDB  from "@/lib/mongodb"
 import type { User } from "@/lib/models/domain"
 import { ObjectId } from "mongodb"
 
 export class UserService {
   private async getCollection() {
-    const db = await getDatabase()
+    const db = await connectDB()
     return db.collection<User>("users")
   }
 

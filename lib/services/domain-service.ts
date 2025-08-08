@@ -1,13 +1,8 @@
-import { getDatabase } from "@/lib/mongodb"
-import type { Domain } from "@/lib/models/domain"
-import { ObjectId } from "mongodb"
+import connectDB from "@/lib/mongodb"
+import Domain from "@/lib/models/domain"
+import { Types } from "mongoose"
 
 export class DomainService {
-  private async getCollection() {
-    const db = await getDatabase()
-    return db.collection<Domain>("domains")
-  }
-
   async getAllDomains(filters?: {
     search?: string
     tlds?: string[]
@@ -15,7 +10,7 @@ export class DomainService {
     availability?: string
     category?: string
   }) {
-    const collection = await this.getCollection()
+    await connectDB()
     const query: any = {}
 
     if (filters?.search) {
@@ -26,7 +21,7 @@ export class DomainService {
       ]
     }
 
-    if (filters?.tlds && filters.tlds.length > 0) {
+    if (filters?.tlds?.length) {
       query.tld = { $in: filters.tlds }
     }
 
@@ -45,54 +40,51 @@ export class DomainService {
       query.category = filters.category
     }
 
-    const domains = await collection.find(query).sort({ createdAt: -1 }).toArray()
-    return domains.map((domain) => ({ ...domain, id: domain._id?.toString() }))
+    const domains = await Domain.find(query).sort({ createdAt: -1 })
+    return domains.map((d) => d.toObject({ versionKey: false }))
   }
 
   async getDomainById(id: string) {
-    const collection = await this.getCollection()
-    const domain = await collection.findOne({ _id: new ObjectId(id) })
-    return domain ? { ...domain, id: domain._id?.toString() } : null
+    await connectDB()
+    const domain = await Domain.findById(id)
+    return domain ? domain.toObject({ versionKey: false }) : null
   }
 
   async createDomain(domainData: Omit<Domain, "_id" | "id" | "createdAt" | "updatedAt">) {
-    const collection = await this.getCollection()
-    const now = new Date()
-
-    const result = await collection.insertOne({
-      ...domainData,
-      createdAt: now,
-      updatedAt: now,
-    })
-
-    return { ...domainData, id: result.insertedId.toString(), createdAt: now, updatedAt: now }
+    await connectDB()
+    const domain = await Domain.create(domainData)
+    return domain.toObject({ versionKey: false })
   }
 
   async updateDomain(id: string, updates: Partial<Domain>) {
-    const collection = await this.getCollection()
-    const result = await collection.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { ...updates, updatedAt: new Date() } },
+    await connectDB()
+    const result = await Domain.updateOne(
+      { _id: new Types.ObjectId(id) },
+      { $set: { ...updates, updatedAt: new Date() } }
     )
     return result.modifiedCount > 0
   }
 
   async deleteDomain(id: string) {
-    const collection = await this.getCollection()
-    const result = await collection.deleteOne({ _id: new ObjectId(id) })
+    await connectDB()
+    const result = await Domain.deleteOne({ _id: new Types.ObjectId(id) })
     return result.deletedCount > 0
   }
 
   async getFeaturedDomains(limit = 6) {
-    const collection = await this.getCollection()
-    const domains = await collection.find({ featured: true, isAvailable: true, isSold: false }).limit(limit).toArray()
-    return domains.map((domain) => ({ ...domain, id: domain._id?.toString() }))
+    await connectDB()
+    const domains = await Domain.find({
+      featured: true,
+      isAvailable: true,
+      isSold: false,
+    }).limit(limit)
+    return domains.map((d) => d.toObject({ versionKey: false }))
   }
 
   async markAsSold(id: string, orderId: string) {
-    const collection = await this.getCollection()
-    const result = await collection.updateOne(
-      { _id: new ObjectId(id) },
+    await connectDB()
+    const result = await Domain.updateOne(
+      { _id: new Types.ObjectId(id) },
       {
         $set: {
           isSold: true,
@@ -101,7 +93,7 @@ export class DomainService {
           orderId,
           updatedAt: new Date(),
         },
-      },
+      }
     )
     return result.modifiedCount > 0
   }
