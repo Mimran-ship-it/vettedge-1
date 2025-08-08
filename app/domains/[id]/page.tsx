@@ -14,7 +14,6 @@ import {
   Heart,
   TrendingUp,
   LinkIcon,
-  Globe,
   Calendar,
   BarChart3,
   Users,
@@ -44,12 +43,7 @@ export default function DomainDetailsPage() {
         const res = await fetch("/api/domains")
         const data: Domain[] = await res.json()
         const matchedDomain = data.find((d) => d._id === params.id)
-
-        if (matchedDomain) {
-          setDomain(matchedDomain)
-        } else {
-          setDomain(null)
-        }
+        setDomain(matchedDomain || null)
       } catch (error) {
         console.error("Failed to fetch domain data:", error)
         setDomain(null)
@@ -57,7 +51,6 @@ export default function DomainDetailsPage() {
         setLoading(false)
       }
     }
-
     fetchDomain()
   }, [params.id])
 
@@ -70,14 +63,7 @@ export default function DomainDetailsPage() {
       })
       return
     }
-
-    addItem({
-      id: domain._id,
-      name: domain.name,
-      price: domain.price,
-      domain: domain,
-    })
-
+    addItem({ id: domain._id, name: domain.name, price: domain.price, domain })
     toast({
       title: "Added to Cart",
       description: `${domain.name} has been added to your cart.`,
@@ -86,19 +72,12 @@ export default function DomainDetailsPage() {
 
   const handleWishlistToggle = () => {
     if (!domain) return
-
     if (isInWishlist(domain._id)) {
       removeFromWishlist(domain._id)
-      toast({
-        title: "Removed from Wishlist",
-        description: `${domain.name} has been removed from your wishlist.`,
-      })
+      toast({ title: "Removed from Wishlist", description: `${domain.name} removed from wishlist.` })
     } else {
       addToWishlist(domain)
-      toast({
-        title: "Added to Wishlist",
-        description: `${domain.name} has been added to your wishlist.`,
-      })
+      toast({ title: "Added to Wishlist", description: `${domain.name} added to wishlist.` })
     }
   }
 
@@ -106,18 +85,14 @@ export default function DomainDetailsPage() {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="animate-pulse space-y-8">
-            <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-            <div className="grid lg:grid-cols-2 gap-8">
-              <div className="space-y-4">
-                <div className="h-64 bg-gray-200 rounded"></div>
-              </div>
-              <div className="space-y-4">
-                <div className="h-8 bg-gray-200 rounded w-3/4"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                <div className="h-32 bg-gray-200 rounded"></div>
-              </div>
+        <main className="max-w-7xl mx-auto px-4 py-8 animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
+          <div className="grid lg:grid-cols-2 gap-8">
+            <div className="h-64 bg-gray-200 rounded"></div>
+            <div className="space-y-4">
+              <div className="h-8 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              <div className="h-32 bg-gray-200 rounded"></div>
             </div>
           </div>
         </main>
@@ -130,14 +105,10 @@ export default function DomainDetailsPage() {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center py-16">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Domain Not Found</h1>
-            <p className="text-gray-600 mb-8">The domain you're looking for doesn't exist or has been removed.</p>
-            <Button asChild>
-              <a href="/domains">Browse All Domains</a>
-            </Button>
-          </div>
+        <main className="max-w-7xl mx-auto px-4 py-8 text-center">
+          <h1 className="text-2xl font-bold mb-4">Domain Not Found</h1>
+          <p className="text-gray-600 mb-6">The domain you're looking for doesn't exist or has been removed.</p>
+          <Button asChild><a href="/domains">Browse All Domains</a></Button>
         </main>
         <Footer />
       </div>
@@ -145,10 +116,10 @@ export default function DomainDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       <Header />
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        
         {/* Breadcrumb */}
         <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-8">
           <a href="/" className="hover:text-gray-700">Home</a>
@@ -159,134 +130,104 @@ export default function DomainDetailsPage() {
         </nav>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          {/* Left Column */}
+          {/* Left */}
           <div className="space-y-8">
-            <div className={cn("relative p-8 rounded-2xl border-2 bg-white", domain.isSold && "opacity-60")}>
+            <div className={cn("relative p-8 rounded-2xl border bg-white shadow-xl", domain.isSold && "opacity-60")}>
               {domain.isSold && (
-                <div className="absolute inset-0 bg-black/20 z-10 flex items-center justify-center rounded-2xl">
-                  <Badge variant="destructive" className="text-xl px-6 py-3">SOLD</Badge>
+                <div className="absolute inset-0 bg-black/30 flex items-center justify-center rounded-2xl z-10">
+                  <Badge variant="destructive" className="text-lg px-6 py-3">SOLD</Badge>
                 </div>
               )}
-
-              <div className="text-center space-y-4">
-                <Image
-                  src={domain.image?.[0] || "/placeholder.png"}
-                  alt={domain.name}
-                  width={600}
-                  height={350}
-                  className="rounded-xl mx-auto object-cover"
-                />
-                <h1 className="text-3xl font-bold text-gray-900">{domain.name}</h1>
-                <Badge variant="secondary" className="text-sm px-3 py-1">{domain.tld} Domain</Badge>
-                <p className="text-gray-600 leading-relaxed">{domain.description}</p>
+              <Image src={domain.image?.[0] || "/placeholder.png"} alt={domain.name} width={700} height={400} className="rounded-xl mx-auto object-cover shadow-md" />
+              <div className="text-center mt-4">
+                <h1 className="text-3xl font-bold">{domain.name}</h1>
+                <p className="text-sm text-gray-500">Registrar: {domain.registrar}</p>
+                <p className="mt-2 text-gray-600">{domain.description}</p>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2 justify-center">
+                {domain.tags?.map((tag) => (
+                  <Badge key={tag} className="bg-blue-100 text-blue-700 hover:bg-blue-200">{tag}</Badge>
+                ))}
               </div>
             </div>
 
-            {/* SEO Metrics */}
+            {/* Metrics */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <BarChart3 className="h-5 w-5" />
-                  <span>SEO Metrics & Analytics</span>
-                </CardTitle>
+                <CardTitle className="flex items-center gap-2"><BarChart3 /> SEO Metrics</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid sm:grid-cols-2 gap-6">
                   <Metric label="Domain Rank" value={domain.metrics.domainRank} icon={<TrendingUp />} />
                   <Metric label="Referring Domains" value={domain.metrics.referringDomains} icon={<LinkIcon />} />
-                  <Metric label="Monthly Visitors" value={domain.metrics.monthlyTraffic.toLocaleString()} icon={<Users />} />
+                  {domain.type === "traffic" && (
+                    <Metric label="Monthly Traffic" value={domain.metrics.monthlyTraffic?.toLocaleString() || "N/A"} icon={<Users />} />
+                  )}
                   <Metric label="Authority Score" value={domain.metrics.avgAuthorityDR} icon={<Star />} />
+                  <Metric label="Trust Flow" value={domain.metrics.trustFlow} icon={<Shield />} />
+                  <Metric label="Citation Flow" value={domain.metrics.citationFlow} icon={<Search />} />
                 </div>
               </CardContent>
             </Card>
 
-            {/* Tabs for Additional Info */}
-            <Tabs defaultValue="details" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="details">Details</TabsTrigger>
-                <TabsTrigger value="history">History</TabsTrigger>
-                <TabsTrigger value="analysis">Analysis</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="details" className="space-y-4">
-                <Card>
-                  <CardContent className="pt-6 space-y-4">
-                    <InfoRow label="Domain Age" value={`${domain.metrics.age} years`} />
-                    <InfoRow label="Authority Links" value={domain.metrics.authorityLinks ?? "N/A"} />
-                    <InfoRow label="Language" value={domain.metrics.language} />
-                    <InfoRow label="Registration Year" value={domain.metrics.year} />
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="history" className="space-y-4">
-                <Card>
-                  <CardContent className="pt-6 space-y-4">
-                    <HistoryItem label="Domain Registered" value={domain.metrics.year} color="green" />
-                    <HistoryItem label="Peak Traffic Period" value="2020-2023" color="blue" />
-                    <HistoryItem label="Domain Expired" value="Recently Available" color="purple" />
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="analysis" className="space-y-4">
-                <Card>
-                  <CardContent className="pt-6 space-y-4">
-                    <AnalysisRow label="SEO Potential" value="Excellent" percent={80} color="green" />
-                    <AnalysisRow label="Brand Value" value="High" percent={75} color="blue" />
-                    <AnalysisRow label="Investment Score" value="Premium" percent={85} color="purple" />
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
+            {/* Authority Links */}
+            {domain.metrics.authorityLinks?.length > 0 && (
+            <Card>
+            <CardHeader>
+              <CardTitle>Authority Links</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-2">
+              {domain.metrics.authorityLinks?.map((link, idx) => {
+                try {
+                  const url = new URL(link.trim()) // trim extra spaces
+                  return (
+                    <a
+                      key={idx}
+                      href={url.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1 rounded-full bg-gray-100 text-blue-600 hover:bg-blue-200 transition"
+                    >
+                      {url.hostname}
+                    </a>
+                  )
+                } catch {
+                  // If invalid URL, skip rendering it
+                  return null
+                }
+              })}
+            </CardContent>
+          </Card>
+          
+            )}
           </div>
 
-          {/* Right Column */}
+          {/* Right */}
           <div className="space-y-6">
-            <Card className="sticky top-12">
-              <CardHeader>
-                <CardTitle className="text-center">
-                  <div className="text-4xl font-bold text-gray-900 mb-2">${domain.price.toLocaleString()}</div>
-                  <Badge variant={domain.isAvailable ? "default" : "secondary"}>
-                    {domain.isAvailable ? "Available Now" : "Unavailable"}
-                  </Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <Button className="w-full" onClick={handleAddToCart} disabled={domain.isSold || !domain.isAvailable}>
-                    <ShoppingCart className="h-4 w-4 mr-2" />
-                    Add to Cart
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={handleWishlistToggle}
-                    className={cn(isInWishlist(domain._id) && "text-red-500 border-red-200")}
-                  >
-                    <Heart className={cn("h-4 w-4 mr-2", isInWishlist(domain._id) && "fill-current")} />
-                    {isInWishlist(domain._id) ? "Saved" : "Save"}
-                  </Button>
-                </div>
-
-                <Separator />
-
-                <div className="space-y-3 text-sm">
-                  <TrustItem icon={<Shield />} text="Secure transfer guaranteed" color="green" />
-                  <TrustItem icon={<Calendar />} text="Transfer within 24-48 hours" color="blue" />
-                  <TrustItem icon={<Search />} text="Full SEO history included" color="purple" />
-                </div>
-
-                <Separator />
-
-                <div className="text-center text-xs text-gray-500">
-                  Price includes domain transfer, SSL certificate, and 1-year registration renewal.
-                </div>
-              </CardContent>
-            </Card>
+            <div className="sticky top-12 bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6">
+              <div className="text-center">
+                <div className="text-4xl font-bold text-gray-900 mb-2">${domain.price.toLocaleString()}</div>
+                <Badge variant={domain.isAvailable ? "default" : "secondary"}>
+                  {domain.isAvailable ? "Available" : "Unavailable"}
+                </Badge>
+              </div>
+              <div className="mt-6 grid grid-cols-2 gap-3">
+                <Button className="w-full" onClick={handleAddToCart} disabled={!domain.isAvailable}><ShoppingCart className="h-4 w-4 mr-2" />Add to Cart</Button>
+                <Button variant="outline" onClick={handleWishlistToggle} className={cn(isInWishlist(domain._id) && "text-red-500 border-red-300")}>
+                  <Heart className={cn("h-4 w-4 mr-2", isInWishlist(domain._id) && "fill-current")} />
+                  {isInWishlist(domain._id) ? "Saved" : "Save"}
+                </Button>
+              </div>
+              <Separator className="my-4" />
+              <div className="space-y-2 text-sm">
+                <TrustItem icon={<Shield />} text="Secure transfer guaranteed" color="green" />
+                <TrustItem icon={<Calendar />} text="Transfer within 24-48 hours" color="blue" />
+                <TrustItem icon={<Search />} text="Full SEO history included" color="purple" />
+              </div>
+            </div>
           </div>
         </div>
       </main>
-
       <Footer />
       <LiveChat />
     </div>
@@ -294,44 +235,15 @@ export default function DomainDetailsPage() {
 }
 
 const Metric = ({ label, value, icon }: { label: string; value: string | number; icon: React.ReactNode }) => (
-  <div className="text-center p-4 bg-gray-100 rounded-lg">
-    <div className="h-8 w-8 mx-auto text-gray-700 mb-2">{icon}</div>
-    <div className="text-2xl font-bold text-gray-900">{value}</div>
-    <div className="text-sm text-gray-600">{label}</div>
-  </div>
-)
-
-const InfoRow = ({ label, value }: { label: string; value: string | number }) => (
-  <div className="flex justify-between">
-    <span className="text-gray-600">{label}</span>
-    <span className="font-medium">{value}</span>
-  </div>
-)
-
-const HistoryItem = ({ label, value, color }: { label: string; value: string | number; color: string }) => (
-  <div className="flex items-center space-x-3">
-    <div className={`w-2 h-2 rounded-full bg-${color}-500`}></div>
-    <div>
-      <div className="font-medium">{label}</div>
-      <div className="text-sm text-gray-600">{value}</div>
-    </div>
-  </div>
-)
-
-const AnalysisRow = ({ label, value, percent, color }: { label: string; value: string; percent: number; color: string }) => (
-  <div className="flex items-center justify-between">
-    <span className="text-gray-600">{label}</span>
-    <div className="flex items-center space-x-2">
-      <div className="w-24 h-2 bg-gray-200 rounded-full">
-        <div className={`h-2 rounded-full bg-${color}-500`} style={{ width: `${percent}%` }}></div>
-      </div>
-      <span className="text-sm font-medium">{value}</span>
-    </div>
+  <div className="text-center p-4 bg-gray-50 rounded-lg shadow hover:shadow-md transition">
+    <div className="h-6 w-6 mx-auto mb-2 text-gray-700">{icon}</div>
+    <div className="text-xl font-bold">{value}</div>
+    <div className="text-xs text-gray-500">{label}</div>
   </div>
 )
 
 const TrustItem = ({ icon, text, color }: { icon: React.ReactNode; text: string; color: string }) => (
-  <div className={`flex items-center space-x-2 text-${color}-600`}>
+  <div className={`flex items-center gap-2 text-${color}-600`}>
     {icon}
     <span>{text}</span>
   </div>

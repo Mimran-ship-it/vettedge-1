@@ -6,15 +6,15 @@ const DomainSchema = new Schema(
     description: { type: String },
     image: { type: [String], default: [] }, // Image array
     price: { type: Number, required: true },
+    Actualprice: { type: Number, required: true },
     isAvailable: { type: Boolean, default: true },
     isHot: { type: Boolean, default: false },
     isSold: { type: Boolean, default: false },
-    tld: { type: String, required: true },
     type: { type: String, enum: ["traffic", "aged"], required: true },
     metrics: {
       domainRank: Number,
       referringDomains: Number,
-      authorityLinks: Number,
+      authorityLinks: [String], // now array of links
       avgAuthorityDR: Number,
       domainAuthority: Number,
       trustFlow: Number,
@@ -24,6 +24,8 @@ const DomainSchema = new Schema(
       language: String,
       age: Number,
     },
+    registrar: { type: String, required: true },
+    
     tags: { type: [String], default: [] },
     featured: { type: Boolean, default: false },
   },

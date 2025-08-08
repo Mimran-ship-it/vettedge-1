@@ -4,6 +4,8 @@ import React, { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import axios from "axios"
+import { X } from "lucide-react"
+
 
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
@@ -20,7 +22,6 @@ import { ArrowLeft, Save } from "lucide-react"
 type MetricKey =
   | "domainRank"
   | "referringDomains"
-  | "authorityLinks"
   | "avgAuthorityDR"
   | "domainAuthority"
   | "trustFlow"
@@ -41,10 +42,11 @@ export default function NewDomainPage() {
     name: "",
     description: "",
     price: "",
-    tld: ".com",
+    Actualprice:"",
+    registrar: "",
     type: "aged",
     tags: "",
-    image:images,
+    image: images,
     isAvailable: true,
     isHot: false,
     metrics: {
@@ -78,7 +80,7 @@ export default function NewDomainPage() {
       try {
         const res = await axios.post("https://api.cloudinary.com/v1_1/dcday5wio/upload", data)
         uploaded.push(res.data.secure_url)
-      } catch (err) {
+      } catch {
         toast({
           title: "Upload failed",
           description: "Could not upload image to Cloudinary",
@@ -92,7 +94,6 @@ export default function NewDomainPage() {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log('images are',images)
     e.preventDefault()
     setLoading(true)
 
@@ -101,17 +102,24 @@ export default function NewDomainPage() {
         ...formData,
         images,
         price: parseFloat(formData.price),
+        Actualprice: parseFloat(formData.Actualprice),
         tags: formData.tags.split(",").map((tag) => tag.trim()).filter(Boolean),
         isSold: false,
         metrics: {
           domainRank: parseInt(formData.metrics.domainRank),
           referringDomains: parseInt(formData.metrics.referringDomains),
-          authorityLinks: parseInt(formData.metrics.authorityLinks),
+          authorityLinks: formData.metrics.authorityLinks
+            .split(",")
+            .map((link) => link.trim())
+            .filter(Boolean),
           avgAuthorityDR: parseInt(formData.metrics.avgAuthorityDR),
           domainAuthority: parseInt(formData.metrics.domainAuthority),
           trustFlow: parseInt(formData.metrics.trustFlow),
           citationFlow: parseInt(formData.metrics.citationFlow),
-          monthlyTraffic: parseInt(formData.metrics.monthlyTraffic),
+          monthlyTraffic:
+            formData.type === "aged"
+              ? null
+              : parseInt(formData.metrics.monthlyTraffic),
           year: parseInt(formData.metrics.year),
           age: parseInt(formData.metrics.age),
           language: formData.metrics.language,
@@ -126,13 +134,12 @@ export default function NewDomainPage() {
 
       if (response.ok) {
         toast({ title: "Success", description: "Domain created successfully" })
-        router.push("/admin")
+        router.push("/admin/domains")
       } else throw new Error()
     } catch {
       toast({
         title: "Error",
         description: "Failed to create domain",
-        variant: "destructive",
       })
     } finally {
       setLoading(false)
@@ -169,17 +176,8 @@ export default function NewDomainPage() {
 
                     <div className="grid grid-cols-2 gap-4">
                       <InputGroup label="Price ($) *" id="price" type="number" value={formData.price} onChange={(v) => setFormData({ ...formData, price: v })} required />
-                      <div className="space-y-2">
-                        <Label htmlFor="tld">TLD *</Label>
-                        <Select value={formData.tld} onValueChange={(val) => setFormData({ ...formData, tld: val })}>
-                          <SelectTrigger><SelectValue placeholder="Select TLD" /></SelectTrigger>
-                          <SelectContent>
-                            {[".com", ".net", ".org", ".io", ".co", ".ai"].map((tld) => (
-                              <SelectItem key={tld} value={tld}>{tld}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                      <InputGroup label="Actual Price ($) *" id="Actualprice" type="number" value={formData.Actualprice} onChange={(v) => setFormData({ ...formData, Actualprice: v })} required />
+                      <InputGroup label="Registrar *" id="registrar" value={formData.registrar} onChange={(v) => setFormData({ ...formData, registrar: v })} required />
                     </div>
 
                     <div className="space-y-2">
@@ -193,7 +191,6 @@ export default function NewDomainPage() {
                       </Select>
                     </div>
 
-                    
                     <InputGroup label="Tags (comma separated)" id="tags" value={formData.tags} onChange={(v) => setFormData({ ...formData, tags: v })} />
 
                     <div className="flex items-center space-x-2">
@@ -202,7 +199,7 @@ export default function NewDomainPage() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Switch checked={formData.isHot} onCheckedChange={(val) => setFormData({ ...formData, isHot: val })} />
-                      <Label> is Hot deal</Label>
+                      <Label>Is Hot deal</Label>
                     </div>
 
                     <div className="space-y-2">
@@ -210,10 +207,25 @@ export default function NewDomainPage() {
                       <Input multiple type="file" accept="image/*" onChange={handleImageUpload} />
                       {imageUploading && <p className="text-sm text-muted-foreground">Uploading...</p>}
                       <div className="flex flex-wrap gap-2">
-                        {images.map((img, i) => (
-                          <img key={i} src={img} alt={`Uploaded ${i}`} className="w-20 h-20 object-cover border rounded-md" />
-                        ))}
-                      </div>
+  {images.map((img, i) => (
+    <div key={i} className="relative group">
+      <img
+        src={img}
+        alt={`Uploaded ${i}`}
+        className="w-20 h-20 object-cover border rounded-md"
+      />
+      <button
+        type="button"
+        onClick={() => setImages((prev) => prev.filter((_, idx) => idx !== i))}
+        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition"
+        title="Remove Image"
+      >
+        <X className="h-3 w-3" />
+      </button>
+    </div>
+  ))}
+</div>
+
                     </div>
                   </CardContent>
                 </Card>
@@ -227,7 +239,6 @@ export default function NewDomainPage() {
                         ["Domain Rank", "domainRank"],
                         ["Authority DR", "avgAuthorityDR"],
                         ["Referring Domains", "referringDomains"],
-                        ["Authority Links", "authorityLinks"],
                         ["Domain Authority", "domainAuthority"],
                         ["Trust Flow", "trustFlow"],
                         ["Citation Flow", "citationFlow"],
@@ -236,7 +247,7 @@ export default function NewDomainPage() {
                         ["Age", "age"],
                       ].map(([label, key]) => (
                         <InputGroup
-                        required
+                          required
                           key={key}
                           label={label}
                           id={key}
@@ -246,9 +257,22 @@ export default function NewDomainPage() {
                             ...formData,
                             metrics: { ...formData.metrics, [key as MetricKey]: v },
                           })}
+                          disabled={formData.type === "aged" && key === "monthlyTraffic"}
                         />
                       ))}
                     </div>
+
+                    <TextareaGroup
+                      label="Authority Links (comma separated)"
+                      id="authorityLinks"
+                      value={formData.metrics.authorityLinks}
+                      onChange={(v) =>
+                        setFormData({
+                          ...formData,
+                          metrics: { ...formData.metrics, authorityLinks: v },
+                        })
+                      }
+                    />
 
                     <div className="space-y-2">
                       <Label>Language</Label>
@@ -304,6 +328,7 @@ const InputGroup = ({
   onChange,
   type = "text",
   required = false,
+  disabled = false,
 }: {
   label: string
   id: string
@@ -311,6 +336,7 @@ const InputGroup = ({
   onChange: (val: string) => void
   type?: string
   required?: boolean
+  disabled?: boolean
 }) => (
   <div className="space-y-2">
     <Label htmlFor={id}>{label}</Label>
@@ -320,6 +346,7 @@ const InputGroup = ({
       onChange={(e) => onChange(e.target.value)}
       type={type}
       required={required}
+      disabled={disabled}
     />
   </div>
 )
@@ -343,7 +370,7 @@ const TextareaGroup = ({
       id={id}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      rows={4}
+      rows={3}
       required={required}
     />
   </div>

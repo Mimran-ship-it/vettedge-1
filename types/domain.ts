@@ -1,31 +1,33 @@
-export interface Domain{
+export interface Domain {
   _id: string
   name: string
   description: string
   price: number
-  tld: string
+  Actualprice: number
   type: string
   tags: string[]
-  image: string // URL as a string
+  image: string[] // Array of image URLs
   isAvailable: boolean
   isSold: boolean
   isHot: boolean
+  registrar: string
   metrics: {
     domainRank: number
     referringDomains: number
-    authorityLinks: number
+    authorityLinks: string[] // Array of URLs
     avgAuthorityDR: number
     domainAuthority: number
     trustFlow: number
     citationFlow: number
-    monthlyTraffic: number
+    monthlyTraffic: number | null
     year: number
-    language: string
     age: number
+    language: string
   }
   createdAt: string
   updatedAt: string
 }
+
 
 export interface CartItem {
   id: string
