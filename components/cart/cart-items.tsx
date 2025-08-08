@@ -30,7 +30,7 @@ export function CartItems() {
               <div className="flex-1">
                 <h3 className="text-lg font-semibold text-gray-900 mb-1">{item.name}</h3>
                 <Badge variant="secondary" className="text-xs mb-2">
-                  {item.domain?.tld}
+                  {item.domain?.registrar}
                 </Badge>
                 <p className="text-sm text-gray-600 mb-3">{item.domain?.description}</p>
               </div>
@@ -68,7 +68,7 @@ export function CartItems() {
                   <Globe className="h-4 w-4 text-purple-500" />
                   <div>
                     <div className="font-medium">Monthly Traffic</div>
-                    <div className="text-gray-600">{item.domain.metrics.monthlyTraffic.toLocaleString()}</div>
+                    {item.domain.metrics.monthlyTraffic&&<div className="text-gray-600">{item.domain.metrics.monthlyTraffic.toLocaleString()}</div>}
                   </div>
                 </div>
                 <div className="flex items-center space-x-2 text-sm">
