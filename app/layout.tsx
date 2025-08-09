@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { AuthProvider } from "@/components/providers/auth-provider"
 import { CartProvider } from "@/components/providers/cart-provider"
 import { ChatProvider } from "@/components/providers/chat-provider"
-
+import Script from "next/script"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
@@ -27,6 +27,10 @@ export default function RootLayout({
           <CartProvider>
             <ChatProvider>
               {children}
+              <Script
+          src="https://accounts.google.com/gsi/client"
+          strategy="afterInteractive"
+        />
               <Toaster />
             </ChatProvider>
           </CartProvider>

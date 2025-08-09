@@ -1,21 +1,21 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { PaymentMethods } from "./payment-methods"
-import { useCart } from "@/components/providers/cart-provider" 
+import { useCart } from "@/components/providers/cart-provider"
 import { useAuth } from "@/hooks/use-auth"
 
 export function CheckoutForm() {
   const [paymentMethod, setPaymentMethod] = useState<"stripe" | "paypal">("stripe")
-
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
   const { items, total, clearCart } = useCart()
   const { user } = useAuth()
-  const [loading, setLoading] = useState(false)
+
   const [billingInfo, setBillingInfo] = useState({
     firstName: "",
     lastName: "",
@@ -27,6 +27,37 @@ export function CheckoutForm() {
     zipCode: "",
     country: "",
   })
+
+  // ✅ Price verification on page load
+  useEffect(() => {
+    const verifyPrices = async () => {
+      if (items.length === 0) return
+
+      try {
+        const res = await fetch("/api/domains")
+        const domains = await res.json()
+
+        let priceMismatch = false
+
+        items.forEach((cartItem) => {
+          const domainData = domains.find((d: any) => d._id === cartItem.id)
+          if (!domainData || cartItem.price !== domainData.price) {
+            priceMismatch = true
+          }
+        })
+
+        if (priceMismatch) {
+          alert("Some product prices have changed. Please review your cart.")
+          clearCart()
+          localStorage.removeItem("cart")
+        }
+      } catch (err) {
+        console.error("Price verification failed:", err)
+      }
+    }
+
+    verifyPrices()
+  }, [items, clearCart])
 
   const handleBillingChange = (field: string, value: string) => {
     setBillingInfo((prev) => ({ ...prev, [field]: value }))
@@ -182,55 +213,51 @@ export function CheckoutForm() {
         </Card>
 
         <PaymentMethods
-  selectedMethod={paymentMethod}
-  onMethodChange={setPaymentMethod}
-  onPaymentSubmit={handlePaymentSubmit}
-  loading={loading}
-/>
+          selectedMethod={paymentMethod}
+          onMethodChange={setPaymentMethod}
+          onPaymentSubmit={handlePaymentSubmit}
+          loading={loading}
+        />
       </div>
 
       <div>
-      <Card>
-  <CardHeader>
-    <CardTitle>Order Summary</CardTitle>
-  </CardHeader>
-  <CardContent>
-    <div className="space-y-4">
-      {items.map((item) => (
-        <div key={item.id} className="flex justify-between items-center">
-          <div>
-            <p className="font-medium">{item.name}</p>
-            <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
-          </div>
-          <p className="font-medium">
-            ${(item.price * item.quantity).toFixed(2)}
-          </p>
-        </div>
-      ))}
+        <Card>
+          <CardHeader>
+            <CardTitle>Order Summary</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {items.map((item) => (
+                <div key={item.id} className="flex justify-between items-center">
+                  <div>
+                    <p className="font-medium">{item.name}</p>
+                    <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
+                  </div>
+                  <p className="font-medium">
+                    ${(item.price * item.quantity).toFixed(2)}
+                  </p>
+                </div>
+              ))}
 
-      {/* Subtotal */}
-      <div className="border-t pt-4">
-        <div className="flex justify-between items-center text-base">
-          <span>Subtotal</span>
-          <span>${total.toFixed(2)}</span>
-        </div>
+              <div className="border-t pt-4">
+                <div className="flex justify-between items-center text-base">
+                  <span>Subtotal</span>
+                  <span>${total.toFixed(2)}</span>
+                </div>
 
-        {/* Tax */}
-        <div className="flex justify-between items-center text-base">
-          <span>Tax (8%)</span>
-          <span>${(total * 0.08).toFixed(2)}</span>
-        </div>
+                <div className="flex justify-between items-center text-base">
+                  <span>Tax (8%)</span>
+                  <span>${(total * 0.08).toFixed(2)}</span>
+                </div>
 
-        {/* Grand Total */}
-        <div className="flex justify-between items-center text-lg font-bold mt-2">
-          <span>Total</span>
-          <span>${(total * 1.08).toFixed(2)}</span>
-        </div>
-      </div>
-    </div>
-  </CardContent>
-</Card>
-
+                <div className="flex justify-between items-center text-lg font-bold mt-2">
+                  <span>Total</span>
+                  <span>${(total * 1.08).toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

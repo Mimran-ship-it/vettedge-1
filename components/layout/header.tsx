@@ -17,10 +17,42 @@ import {
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { user, signOut } = useAuth()
+  const { user, loading, signOut } = useAuth() // make sure useAuth returns loading
   const { items } = useCart()
 
   const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0)
+console.log('user is',user) 
+  const renderUserMenu = () => (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="sm">
+          <User className="h-5 w-5" />
+          <span className="ml-2 hidden sm:inline">{user?.name}</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuItem asChild>
+          <Link href="/dashboard">Dashboard</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/orders">My Orders</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/wishlist">Wishlist</Link>
+        </DropdownMenuItem>
+        {user?.role === "admin" && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/admin">Admin Panel</Link>
+            </DropdownMenuItem>
+          </>
+        )}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
 
   return (
     <header className="bg-white shadow-sm border-b sticky top-0 w-full z-50">
@@ -31,7 +63,9 @@ export function Header() {
             <div className="w-8 h-8 bg-[#33BDC7] rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">V</span>
             </div>
-            <span className="text-xl font-semibold text-gray-900">Vettedge.domains</span>
+            <span className="text-xl font-semibold text-gray-900">
+              Vettedge.domains
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -67,38 +101,12 @@ export function Header() {
               </Button>
             </Link>
 
-            {/* Desktop Profile Dropdown */}
+            {/* Desktop Profile or Auth Buttons */}
             <div className="hidden md:flex items-center space-x-2">
-              {user ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm">
-                      <User className="h-5 w-5" />
-                      <span className="ml-2 hidden sm:inline">{user.name}</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuItem asChild>
-                      <Link href="/dashboard">Dashboard</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/orders">My Orders</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/wishlist">Wishlist</Link>
-                    </DropdownMenuItem>
-                    {user.role === "admin" && (
-                      <>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <Link href="/admin">Admin Panel</Link>
-                        </DropdownMenuItem>
-                      </>
-                    )}
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+              {loading ? (
+                <span className="text-gray-500 text-sm">Loading...</span>
+              ) : user ? (
+                renderUserMenu()
               ) : (
                 <>
                   <Button variant="ghost" size="sm" asChild>
@@ -112,42 +120,18 @@ export function Header() {
             </div>
 
             {/* Mobile Menu Toggle */}
-            <Button variant="ghost" size="sm" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="md:hidden"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
 
             {/* Mobile Profile Icon */}
             {user && (
-              <div className="md:hidden">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm">
-                      <User className="h-5 w-5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
-                    <DropdownMenuItem asChild>
-                      <Link href="/dashboard">Dashboard</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/orders">My Orders</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/wishlist">Wishlist</Link>
-                    </DropdownMenuItem>
-                    {user.role === "admin" && (
-                      <>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <Link href="/admin">Admin Panel</Link>
-                        </DropdownMenuItem>
-                      </>
-                    )}
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
+              <div className="md:hidden">{renderUserMenu()}</div>
             )}
           </div>
         </div>
@@ -172,7 +156,7 @@ export function Header() {
                 Contact Us
               </Link>
 
-              {!user && (
+              {!loading && !user && (
                 <div className="pt-4 flex flex-col border-t">
                   <Link href="/auth/signin" className="text-gray-700 pb-2 hover:text-cyan-600">
                     Sign In
