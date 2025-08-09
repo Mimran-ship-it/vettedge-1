@@ -2,8 +2,6 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { SessionProvider, useSession } from "next-auth/react"
-import { signIn as nextAuthSignIn, signOut as nextAuthSignOut } from "next-auth/react"
 import { AuthContext, type User } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
 interface AuthProviderProps {
@@ -11,38 +9,27 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  return (
-    <SessionProvider>
-      <AuthProviderContent>
-        {children}
-      </AuthProviderContent>
-    </SessionProvider>
-  )
-}
-
-function AuthProviderContent({ children }: AuthProviderProps) {
-  const router = useRouter()
-  const { data: session, status } = useSession()
+  const router=useRouter()
   const [user, setUser] = useState<User | null>(null)
-  const loading = status === "loading"
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (session?.user) {
-      // Map NextAuth session user to our User type
-      const mappedUser: User = {
-        id: session.user.id,
-        name: session.user.name || "",
-        email: session.user.email || "",
-        role: session.user.role || "customer"
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/auth/me")
+        const data = await res.json()
+        setUser(data.user || null)
+      } catch {
+        setUser(null)
+      } finally {
+        setLoading(false)
       }
-      setUser(mappedUser)
-    } else {
-      setUser(null)
     }
-  }, [session])
+
+    fetchUser()
+  }, [])
 
   const signIn = async (email: string, password: string): Promise<User> => {
-    // For credentials login, we'll use our existing API
     const res = await fetch("/api/auth/signin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -61,17 +48,15 @@ function AuthProviderContent({ children }: AuthProviderProps) {
     return meData.user
   }
 
-  const signInWithGoogle = async () => {
-    await nextAuthSignIn("google");
-  };
-
- const signOut = async () => {
-  await nextAuthSignOut({ callbackUrl: "/" }); // Redirect to home after sign out
-  setUser(null);
-};
+  const signOut = () => {
+    // Add this route too — it will clear the token cookie
+    fetch("/api/auth/signout", { method: "POST" })
+    router.push('/')
+    setUser(null)
+  }
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut, signInWithGoogle }}>
+    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   )
