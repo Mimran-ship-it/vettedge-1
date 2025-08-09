@@ -63,7 +63,7 @@ export function ContactSection() {
           <h2 className="text-4xl lg:text-5xl font-bold mb-6" style={{ color: "#33BDC7" }}>
             Ready to Find Your
             <span className="block" style={{ color: "#33BDC7" }}>
-              Perfect Domain?
+              Perfect Domain ?
             </span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
