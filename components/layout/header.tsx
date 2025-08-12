@@ -20,6 +20,9 @@ import {
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [showHeader, setShowHeader] = useState(true)
+  const [lastScrollY, setLastScrollY] = useState(0)
+
   const { user, loading, signOut } = useAuth()
   const { items } = useCart()
   const { wishlist } = useWishlist()
@@ -38,6 +41,24 @@ export function Header() {
       document.body.style.overflow = 'unset'
     }
   }, [isMenuOpen])
+
+  // Detect scroll direction to show/hide header
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      if (currentScrollY < lastScrollY) {
+        // Scrolling up
+        setShowHeader(true)
+      } else if (currentScrollY > lastScrollY && currentScrollY > 80) {
+        // Scrolling down past header height
+        setShowHeader(false)
+      }
+      setLastScrollY(currentScrollY)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [lastScrollY])
 
   const linkClass = (href: string) =>
     pathname === href
@@ -87,9 +108,17 @@ export function Header() {
     </DropdownMenu>
   )
 
-  return (
+  return ( 
     <>
-      <header className="bg-white shadow-sm border-b sticky top-0 w-full z-50">
+      {/* Animated Header */}
+      <motion.header
+  initial={{ y: 0 }}
+  animate={{ y: showHeader ? 0 : -100 }}
+  transition={{ duration: 0.3 }}
+  className="bg-white shadow-sm border-b w-full z-50 fixed top-0 left-0 will-change-transform [backface-visibility:hidden] [transform:translateZ(0)]"
+>
+
+      
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
@@ -133,7 +162,6 @@ export function Header() {
               <Link href="/wishlist" className="relative">
                 <Button variant="ghost" size="sm">
                   <Heart className="h-5 w-5" />
-                 
                 </Button>
               </Link>
               
@@ -190,9 +218,9 @@ export function Header() {
             </div>
           </div>
         </div>
-      </header>
+      </motion.header>
 
-      {/* Mobile Navigation - Full Screen Overlay */}
+      {/* Mobile Navigation */}
       <AnimatePresence>
         {isMenuOpen && (
           <>
@@ -213,7 +241,7 @@ export function Header() {
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               className="fixed top-0 right-0 w-full max-w-sm h-full bg-white z-50 shadow-lg md:hidden"
             >
-              <div className="p-6">
+           <div className="p-6">
                 <div className="flex justify-between items-center mb-8">
                   <Link href="/" className="flex items-center space-x-1">
                     <div className="w-20 h-20 rounded-lg overflow-hidden flex items-center justify-center">
