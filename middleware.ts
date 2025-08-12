@@ -10,6 +10,8 @@ export function middleware(request: NextRequest) {
     if (!token) {
       return NextResponse.redirect(new URL("/auth/signin", request.url))
     }
+ 
+    
 
     try {
       const payload = JSON.parse(atob(token.split(".")[1]))
@@ -32,10 +34,16 @@ export function middleware(request: NextRequest) {
       // invalid token, allow them to visit signin/signup
     }
   }
+  //will implement later
+  if (pathname.startsWith("/domains")) {
+    if (!token) {
+      return NextResponse.redirect(new URL("/auth/signin", request.url))
+    }
+  }
 
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/auth/signup"],
+  matcher: ["/admin/:path*", "/auth/signup","/auth/signin"],
 }

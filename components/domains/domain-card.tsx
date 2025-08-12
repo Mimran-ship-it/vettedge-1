@@ -16,15 +16,14 @@ import {
   Languages,
   Hourglass,
   Building,
-  ExternalLink,
   Tag,
-  DollarSign,
 } from "lucide-react"
 import type { Domain } from "@/types/domain"
 import { useCart } from "@/components/providers/cart-provider"
-import { useWishlist } from "@/hooks/use-wishlist"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
+import Cookies from "js-cookie"
+import { useEffect, useState } from "react"
 
 interface DomainCardProps {
   domain: {
@@ -65,8 +64,15 @@ export function DomainCard({ domain }: DomainCardProps) {
     updatedAt: new Date(domain.updatedAt).toISOString(),
   }
   const { addItem } = useCart()
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
   const { toast } = useToast()
+
+  const [isWishlisted, setIsWishlisted] = useState(false)
+
+  // Load wishlist state from cookie on mount
+  useEffect(() => {
+    const wishlist = JSON.parse(Cookies.get("wishlist") || "[]")
+    setIsWishlisted(wishlist.some((item: Domain) => item._id === domain._id))
+  }, [domain._id])
 
   const handleAddToCart = () => {
     if (domain.isSold || !domain.isAvailable) {
@@ -91,19 +97,27 @@ export function DomainCard({ domain }: DomainCardProps) {
   }
 
   const handleWishlistToggle = () => {
-    if (isInWishlist(domain._id)) {
-      removeFromWishlist(domain._id)
+    let wishlist: Domain[] = JSON.parse(Cookies.get("wishlist") || "[]")
+
+    if (isWishlisted) {
+      // Remove from wishlist
+      wishlist = wishlist.filter((item) => item._id !== domain._id)
+      setIsWishlisted(false)
       toast({
         title: "Removed",
         description: `${domain.name} removed from wishlist.`,
       })
     } else {
-      addToWishlist(parsedDomain)
+      // Add to wishlist
+      wishlist.push(parsedDomain)
+      setIsWishlisted(true)
       toast({
         title: "Wishlisted",
         description: `${domain.name} added to wishlist.`,
       })
     }
+
+    Cookies.set("wishlist", JSON.stringify(wishlist), { expires: 30 })
   }
 
   return (
@@ -118,7 +132,10 @@ export function DomainCard({ domain }: DomainCardProps) {
         <img
           src={domain.image[0]}
           alt={domain.name}
-          className="w-full h-36 object-cover"
+          className={cn(
+            "w-full h-36 object-cover transition duration-300",
+            !domain.isAvailable && "blur-sm"
+          )}
         />
       )}
 
@@ -135,7 +152,12 @@ export function DomainCard({ domain }: DomainCardProps) {
       <CardHeader className="relative z-20 px-3 pt-3 pb-2">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <CardTitle className="text-base font-semibold text-gray-900">
+            <CardTitle
+              className={cn(
+                "text-base font-semibold text-gray-900 transition duration-300",
+                !domain.isAvailable && "blur-[1.5px]"
+              )}
+            >
               {domain.name}
             </CardTitle>
             <div className="flex flex-wrap gap-1 mt-1">
@@ -151,16 +173,12 @@ export function DomainCard({ domain }: DomainCardProps) {
             variant="ghost"
             size="icon"
             onClick={handleWishlistToggle}
-            className={cn("p-1", isInWishlist(domain._id) && "text-red-500")}
+            className={cn("p-1", isWishlisted && "text-red-500")}
+            disabled={domain.isSold || !domain.isAvailable}
           >
-            <Heart
-              className={cn("h-4 w-4", isInWishlist(domain._id) && "fill-current")}
-            />
+            <Heart className={cn("h-4 w-4", isWishlisted && "fill-current")} />
           </Button>
         </div>
-        <p className="text-xs text-gray-600 line-clamp-2 mt-1">
-          {domain.description}
-        </p>
       </CardHeader>
 
       <CardContent className="relative z-20 px-3 pb-3 space-y-3">
@@ -203,29 +221,6 @@ export function DomainCard({ domain }: DomainCardProps) {
           <Metric icon={Hourglass} label={`Age: ${domain.metrics.age} yrs`} />
           <Metric icon={Languages} label={domain.metrics.language} />
         </div>
-
-        {/* Authority Links */}
-        {domain.metrics.authorityLinks?.length > 0 && (
-          <div className="pt-1">
-            <p className="text-xs font-medium text-gray-700 mb-1 flex items-center gap-1">
-              <ExternalLink className="h-3 w-3" /> Authority Links:
-            </p>
-            <div className="flex flex-wrap gap-1">
-              {domain.metrics.authorityLinks.map((link, idx) => (
-                <a
-                  key={idx}
-                  href={link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[10px] text-blue-600 hover:underline truncate max-w-[120px]"
-                  title={link}
-                >
-                  {link.replace(/^https?:\/\//, "")}
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Tags */}
         {domain.tags?.length > 0 && (

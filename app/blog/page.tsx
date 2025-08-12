@@ -1,11 +1,8 @@
 import type { Metadata } from "next"
-import Link from "next/link"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Calendar, Clock, User } from "lucide-react"
-import { blogPosts } from "@/lib/blog-data"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
+import BlogList from "@/components/sections/blog-list"
+import type { BlogPost } from "@/types/blog"
 
 export const metadata: Metadata = {
   title: "Blog - Vettedge.domains",
@@ -13,16 +10,18 @@ export const metadata: Metadata = {
     "Expert insights on domain investing, SEO strategies, and digital marketing trends from the Vettedge.domains team.",
 }
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXTAUTH_URL || "http://localhost:3000"
+  const res = await fetch(`${baseUrl}/api/blogs`, { cache: "no-store" })
+  const blogPosts: BlogPost[] = res.ok ? await res.json() : []
+
   const featuredPosts = blogPosts.filter((post) => post.featured)
-  const regularPosts = blogPosts.filter((post) => !post.featured)
+  const regularPosts = blogPosts.filter((post) => post)
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4" style={{ color: "#33BDC7" }}>
             Domain Investment Blog
@@ -33,134 +32,22 @@ export default function BlogPage() {
           </p>
         </div>
 
-        {/* Featured Posts */}
         {featuredPosts.length > 0 && (
           <section className="mb-16">
             <h2 className="text-2xl font-bold mb-8" style={{ color: "#33BDC7" }}>
               Featured Articles
             </h2>
-            <div className="grid md:grid-cols-2 gap-8">
-              {featuredPosts.map((post) => (
-                <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                  <div className="aspect-video bg-gray-200 relative">
-                    <img
-                      src={post.image || "/placeholder.svg"}
-                      alt={post.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <Badge
-                      className="absolute top-4 left-4"
-                      style={{ backgroundColor: "#33BDC7", color: "white" }}
-                    >
-                      Featured
-                    </Badge>
-                  </div>
-                  <CardHeader>
-                    <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
-                      <div className="flex items-center gap-1">
-                        <User className="h-4 w-4" />
-                        {post.author.name}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
-                        {new Date(post.publishedAt).toLocaleDateString()}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
-                        {post.readingTime} min read
-                      </div>
-                    </div>
-                    <h3 className="text-xl font-semibold mb-2">
-                      <Link
-                        href={`/blog/${post.slug}`}
-                        className="hover:text-[#38C172] transition-colors"
-                        style={{ color: "#33BDC7" }}
-                      >
-                        {post.title}
-                      </Link>
-                    </h3>
-                    <p className="text-gray-600 mb-4">{post.excerpt}</p>
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="secondary" style={{ backgroundColor: "#38C172", color: "white" }}>
-                        {post.category}
-                      </Badge>
-                      {post.tags.slice(0, 2).map((tag) => (
-                        <Badge
-                          key={tag}
-                          variant="outline"
-                          className="text-xs"
-                          style={{ borderColor: "#33BDC7", color: "#33BDC7" }}
-                        >
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardHeader>
-                </Card>
-              ))}
-            </div>
+            <BlogList posts={featuredPosts} />
           </section>
         )}
 
-        {/* All Posts */}
         <section>
           <h2 className="text-2xl font-bold mb-8" style={{ color: "#33BDC7" }}>
             All Articles
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {regularPosts.map((post) => (
-              <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="aspect-video bg-gray-200">
-                  <img src={post.image || "/placeholder.svg"} alt={post.title} className="w-full h-full object-cover" />
-                </div>
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                    <div className="flex items-center gap-1">
-                      <User className="h-4 w-4" />
-                      {post.author.name}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
-                      {post.readingTime} min
-                    </div>
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2" style={{ color: "#33BDC7" }}>
-                    <Link
-                      href={`/blog/${post.slug}`}
-                      className="hover:text-[#38C172] transition-colors"
-                      style={{ color: "#33BDC7" }}
-                    >
-                      {post.title}
-                    </Link>
-                  </h3>
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">{post.excerpt}</p>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <Badge
-                      variant="secondary"
-                      className="text-xs"
-                      style={{ backgroundColor: "#38C172", color: "white" }}
-                    >
-                      {post.category}
-                    </Badge>
-                    {post.tags.slice(0, 1).map((tag) => (
-                      <Badge
-                        key={tag}
-                        variant="outline"
-                        className="text-xs"
-                        style={{ borderColor: "#33BDC7", color: "#33BDC7" }}
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                  <div className="text-sm text-gray-500">{new Date(post.publishedAt).toLocaleDateString()}</div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <BlogList posts={regularPosts} />
         </section>
       </main>
-
       <Footer />
     </div>
   )

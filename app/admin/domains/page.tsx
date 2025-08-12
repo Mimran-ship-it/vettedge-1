@@ -181,7 +181,7 @@ export default function AdminDomainsPage() {
                                   <div>
                                     <div className="font-medium">{domain.name}</div>
                                     <div className="text-sm text-muted-foreground">
-                                      {domain.description.substring(0, 50)}...
+                                      {domain.description.substring(0, 30)}...
                                     </div>
                                   </div>
                                 </TableCell>

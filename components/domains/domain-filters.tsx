@@ -12,19 +12,16 @@ interface DomainFiltersProps {
 }
 
 export function DomainFilters({ onFilterChange }: DomainFiltersProps) {
-  const [priceRange, setPriceRange] = useState([0, 10000])
+  const [priceRange, setPriceRange] = useState([0, 1000])
   const [selectedTlds, setSelectedTlds] = useState<string[]>([])
   const [availability, setAvailability] = useState<string>("all")
 
   const tlds = [".com", ".net", ".org", ".io", ".co", ".ai"]
 
   const handleTldChange = (tld: string, checked: boolean) => {
-    let newTlds = [...selectedTlds]
-    if (checked) {
-      newTlds.push(tld)
-    } else {
-      newTlds = newTlds.filter((t) => t !== tld)
-    }
+    const newTlds = checked
+      ? [...selectedTlds, tld]
+      : selectedTlds.filter((t) => t !== tld)
     setSelectedTlds(newTlds)
     applyFilters({ tlds: newTlds })
   }
@@ -34,40 +31,42 @@ export function DomainFilters({ onFilterChange }: DomainFiltersProps) {
       priceRange,
       tlds: selectedTlds,
       availability,
-      ...overrides,
+      ...overrides
     }
     onFilterChange(filters)
   }
 
   const clearFilters = () => {
-    setPriceRange([0, 10000])
+    setPriceRange([0, 1000])
     setSelectedTlds([])
     setAvailability("all")
-    onFilterChange({})
+    onFilterChange({
+      priceRange: [0, 1000],
+      tlds: [],
+      availability: "all"
+    })
   }
 
   return (
     <div className="space-y-6">
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6">
+        
         {/* Price Range */}
         <div className="space-y-3">
           <Label className="text-sm font-medium">Price Range</Label>
-          <div className="px-3">
-            <Slider
-              value={priceRange}
-              onValueChange={(value) => {
-                setPriceRange(value)
-                applyFilters({ priceRange: value })
-              }}
-              max={10000}
-              min={0}
-              step={100}
-              className="w-full"
-            />
-            <div className="flex justify-between text-sm text-gray-500 mt-2">
-              <span>${priceRange[0]}</span>
-              <span>${priceRange[1]}</span>
-            </div>
+          <Slider
+            value={priceRange}
+            onValueChange={(value) => {
+              setPriceRange(value)
+              applyFilters({ priceRange: value })
+            }}
+            max={1000}
+            min={0}
+            step={10}
+          />
+          <div className="flex justify-between text-sm text-gray-500">
+            <span>${priceRange[0]}</span>
+            <span>${priceRange[1]}</span>
           </div>
         </div>
 
@@ -82,9 +81,7 @@ export function DomainFilters({ onFilterChange }: DomainFiltersProps) {
                   checked={selectedTlds.includes(tld)}
                   onCheckedChange={(checked) => handleTldChange(tld, checked as boolean)}
                 />
-                <Label htmlFor={tld} className="text-sm">
-                  {tld}
-                </Label>
+                <Label htmlFor={tld} className="text-sm">{tld}</Label>
               </div>
             ))}
           </div>

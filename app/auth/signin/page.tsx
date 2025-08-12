@@ -4,6 +4,7 @@ import type React from "react"
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -26,30 +27,26 @@ export default function SignInPage() {
   const searchParams = useSearchParams()
   const redirect = searchParams.get("redirect") || "/"
 
-  // 🔒 Redirect logged-in user
   useEffect(() => {
     if (user) {
       router.push("/")
     }
   }, [user, router])
 
-  // 🧠 Form handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      const user = await signIn(email, password) // backend handles secure cookie
+      const user = await signIn(email, password)
 
       toast({
         title: "Welcome back!",
         description: "You have been signed in successfully.",
       })
 
-      // 🔐 Role-based redirect
       if (user.role === "admin") {
         window.location.href = "/admin"
-
       } else {
         router.push(redirect)
       }
@@ -65,17 +62,22 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#e0f7f9] via-white to-[#c8f3f6] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md shadow-xl border-0">
-        <CardHeader className="space-y-1 text-center">
-          <div className="flex items-center justify-center mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-xl">V</span>
-            </div>
-          </div>
-          <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
-          <p className="text-sm text-gray-600">Sign in to your Vettedge account</p>
-        </CardHeader>
+      <CardHeader className="space-y-1 text-center">
+  <div className="flex items-center justify-center mb-4">
+    <Image
+      src="/logo.jpg" // Change to your logo path
+      alt="Vettedge Logo"
+      width={55} // similar to w-12
+      height={55} // similar to h-12
+      className="rounded-xl"
+      priority
+    />
+  </div>
+  <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
+  <p className="text-sm text-gray-600">Sign in to your Vettedge account</p>
+</CardHeader>
 
         <CardContent className="space-y-4">
           <Button
@@ -160,7 +162,7 @@ export default function SignInPage() {
 
             <div className="flex items-center justify-between">
               <div className="text-sm">
-                <Link href="/auth/forgot-password" className="text-blue-600 hover:underline">
+                <Link href="/auth/forgot-password" className="text-[#33BDC7] hover:underline">
                   Forgot your password?
                 </Link>
               </div>
@@ -168,7 +170,7 @@ export default function SignInPage() {
 
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+              className="w-full bg-[#33BDC7] hover:bg-[#28a3ac] text-white"
               disabled={loading}
             >
               {loading ? (
@@ -184,7 +186,7 @@ export default function SignInPage() {
 
           <div className="text-center text-sm">
             <span className="text-gray-600">Don't have an account? </span>
-            <Link href="/auth/signup" className="text-blue-600 hover:underline font-medium">
+            <Link href="/auth/signup" className="text-[#33BDC7] hover:underline font-medium">
               Sign up
             </Link>
           </div>

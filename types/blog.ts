@@ -1,5 +1,5 @@
 export interface BlogPost {
-  id: string
+  _id?: string
   slug: string
   title: string
   excerpt: string
@@ -14,4 +14,6 @@ export interface BlogPost {
   tags: string[]
   featured: boolean
   image: string
+  createdAt?: string
+  updatedAt?: string
 }

@@ -2,10 +2,13 @@
 
 import type React from "react"
 import { useState } from "react"
+import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { Variants } from "framer-motion"
+import Image from "next/image"
 import {
   Search,
   TrendingUp,
@@ -29,14 +32,30 @@ export function HeroSection() {
     }
   }
 
+  // Animation variants
+  const fadeUp: Variants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: (custom: number = 0) => ({
+      opacity: 1,
+      y: 0,
+      transition: { delay: custom, duration: 0.6, ease: "easeOut" }
+    })
+  }
+
   return (
     <section className="relative bg-white min-h-screen flex flex-col overflow-hidden text-gray-800">
       <div className="relative flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
         <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-y-16 gap-x-10 items-center">
           
           {/* Left Content */}
-          <div className="space-y-10 text-center lg:text-left">
-            <div className="space-y-6">
+          <motion.div
+            className="space-y-10 text-center lg:text-left"
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={0}
+          >
+            <motion.div className="space-y-6" variants={fadeUp} custom={0.2}>
               <Badge
                 variant="secondary"
                 className="bg-[#33BDC7]/10 text-[#33BDC7] border-[#33BDC7]/30 px-4 py-2 mx-auto lg:mx-0"
@@ -53,10 +72,14 @@ export function HeroSection() {
                 Get the edge with VettEdge — where expired domains mean business.
                 Supercharge your brand with SEO-rich domains.
               </p>
-            </div>
+            </motion.div>
 
             {/* Search Bar */}
-            <div className="bg-gray-100 rounded-2xl p-6 border border-gray-200 max-w-2xl mx-auto lg:mx-0">
+            <motion.div
+              className="bg-gray-100 rounded-2xl p-6 border border-gray-200 max-w-2xl mx-auto lg:mx-0"
+              variants={fadeUp}
+              custom={0.4}
+            >
               <form onSubmit={handleSearch} className="space-y-4">
                 <div className="relative">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-6 w-6" />
@@ -89,42 +112,76 @@ export function HeroSection() {
                   </Button>
                 </div>
               </form>
-            </div>
+            </motion.div>
 
             {/* Trust Indicators */}
-            <div className="flex flex-wrap justify-center lg:justify-start items-center gap-6 text-gray-600 text-sm sm:text-base">
-              <div className="flex items-center space-x-2">
-                <Star className="h-5 w-5 text-yellow-500" />
-                <span className="font-medium">15,000+ Domains Sold</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Zap className="h-5 w-5 text-[#33BDC7]" />
-                <span className="font-medium">98% Success Rate</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Globe className="h-5 w-5 text-green-500" />
-                <span className="font-medium">24/7 Support</span>
-              </div>
-            </div>
-          </div>
+            <motion.div
+              className="flex flex-wrap justify-center lg:justify-start items-center gap-6 text-gray-600 text-sm sm:text-base"
+              variants={fadeUp}
+              custom={0.6}
+            >
+              {[
+                { icon: Star, text: "15,000+ Domains Sold", color: "text-yellow-500" },
+                { icon: Zap, text: "98% Success Rate", color: "text-[#33BDC7]" },
+                { icon: Globe, text: "24/7 Support", color: "text-green-500" },
+              ].map(({ icon: Icon, text, color }, i) => (
+                <motion.div
+                  key={i}
+                  className="flex items-center space-x-2"
+                  variants={fadeUp}
+                  custom={0.7 + i * 0.1}
+                >
+                  <Icon className={`h-5 w-5 ${color}`} />
+                  <span className="font-medium">{text}</span>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
 
           {/* Right Content */}
-          <div className="lg:pl-8 px-4 sm:px-0">
+          <motion.div
+            className="lg:pl-8 px-4 sm:px-0"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
+          >
             <Card className="bg-white text-gray-800 border border-gray-200 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
               <CardContent className="p-6 sm:p-8 space-y-8">
                 
                 {/* Features */}
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-[#33BDC7] rounded-xl flex items-center justify-center">
-                    <span className="text-white font-bold text-xl">V</span>
-                  </div>
+                <motion.div
+                  className="flex items-center space-x-3"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6, duration: 0.5 }}
+                >
+                      <div className="flex items-center justify-center mb-4">
+    <Image
+      src="/logo.jpg" // Change to your logo path
+      alt="Vettedge Logo"
+      width={55} // similar to w-12
+      height={55} // similar to h-12
+      priority
+      className="bg-[#FAFAFA]"
+    />
+  </div>
                   <div>
                     <h3 className="text-xl sm:text-2xl font-bold">Discover & Buy</h3>
                     <p className="text-gray-500 text-sm sm:text-base">Premium Expired Domains</p>
                   </div>
-                </div>
+                </motion.div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
+                <motion.div
+                  className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6"
+                  initial="hidden"
+                  animate="visible"
+                  variants={{
+                    hidden: {},
+                    visible: {
+                      transition: { staggerChildren: 0.15 },
+                    },
+                  }}
+                >
                   {[{
                     Icon: Search,
                     color: "text-[#33BDC7]",
@@ -144,18 +201,27 @@ export function HeroSection() {
                     title: "Buy Instantly",
                     desc: "Secure the perfect domain for your brand"
                   }].map(({ Icon, color, bg, title, desc }, i) => (
-                    <div className="text-center space-y-3 group" key={i}>
+                    <motion.div
+                      key={i}
+                      className="text-center space-y-3 group"
+                      variants={fadeUp}
+                      custom={i * 0.2}
+                    >
                       <div className={`w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br ${bg} rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-200`}>
                         <Icon className={`h-6 w-6 sm:h-8 sm:w-8 ${color}`} />
                       </div>
                       <h4 className="font-semibold text-sm">{title}</h4>
                       <p className="text-xs text-gray-500">{desc}</p>
-                    </div>
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
 
                 {/* Live Metrics */}
-                <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 text-xs sm:text-sm">
+                <motion.div
+                  className="bg-gray-50 rounded-xl p-4 border border-gray-200 text-xs sm:text-sm"
+                  variants={fadeUp}
+                  custom={0.8}
+                >
                   <h4 className="font-medium text-gray-600 mb-3">Live Domain Metrics Preview</h4>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="flex justify-between">
@@ -175,22 +241,24 @@ export function HeroSection() {
                       <span className="text-orange-500 font-medium">5+ years</span>
                     </div>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* CTA Button */}
-                <Button
-                  className="w-full bg-[#38C172] hover:bg-[#30c97c] text-white font-semibold h-12 text-lg shadow hover:shadow-md transform hover:scale-105 transition-all duration-200"
-                  size="lg"
-                  asChild
-                >
-                  <Link href="/domains">
-                    Start Your Search Now
-                    <ArrowRight className="h-5 w-5 ml-2" />
-                  </Link>
-                </Button>
+                <motion.div variants={fadeUp} custom={1}>
+                  <Button
+                    className="w-full bg-[#38C172] hover:bg-[#30c97c] text-white font-semibold h-12 text-lg shadow hover:shadow-md transform hover:scale-105 transition-all duration-200"
+                    size="lg"
+                    asChild
+                  >
+                    <Link href="/domains">
+                      Start Your Search Now
+                      <ArrowRight className="h-5 w-5 ml-2" />
+                    </Link>
+                  </Button>
+                </motion.div>
               </CardContent>
             </Card>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

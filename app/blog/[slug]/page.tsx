@@ -4,7 +4,8 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Calendar, Clock, ArrowLeft, Share2 } from "lucide-react"
-import { blogPosts } from "@/lib/blog-data"
+import type { BlogPost } from "@/types/blog"
+import { headers } from "next/headers"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 
@@ -15,35 +16,29 @@ interface BlogPostPageProps {
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
-  const post = blogPosts.find((post) => post.slug === params.slug)
-
-  if (!post) {
-    return {
-      title: "Post Not Found - Vettedge.domains",
-    }
-  }
-
-  return {
-    title: `${post.title} - Vettedge.domains Blog`,
-    description: post.excerpt,
-  }
+  const h = await headers()
+  const host = h.get("host") || "localhost:3000"
+  const protocol = process.env.NODE_ENV === "development" ? "http" : "https"
+  const baseUrl = `${protocol}://${host}`
+  const res = await fetch(`${baseUrl}/api/blogs?slug=${params.slug}`, { cache: "no-store" })
+  if (!res.ok) return { title: "Post Not Found - Vettedge.domains" }
+  const post: BlogPost = await res.json()
+  return { title: `${post.title} - Vettedge.domains Blog`, description: post.excerpt }
 }
 
-export async function generateStaticParams() {
-  return blogPosts.map((post) => ({
-    slug: post.slug,
-  }))
-}
+// Using dynamic fetch; no static params
 
-export default function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = blogPosts.find((post) => post.slug === params.slug)
-
-  if (!post) {
-    notFound()
-  }
-
-  // Get related posts (same category, excluding current post)
-  const relatedPosts = blogPosts.filter((p) => p.category === post.category && p.id !== post.id).slice(0, 3)
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const h = await headers()
+  const host = h.get("host") || "localhost:3000"
+  const protocol = process.env.NODE_ENV === "development" ? "http" : "https"
+  const baseUrl = `${protocol}://${host}`
+  const res = await fetch(`${baseUrl}/api/blogs?slug=${params.slug}`, { cache: "no-store" })
+  if (!res.ok) notFound()
+  const post: BlogPost = await res.json()
+  const allRes = await fetch(`${baseUrl}/api/blogs`, { cache: "no-store" })
+  const all: BlogPost[] = allRes.ok ? await allRes.json() : []
+  const relatedPosts = all.filter((p) => p.category === post.category && p.slug !== post.slug).slice(0, 3)
 
   return (
     <div className="min-h-screen bg-white">
@@ -102,10 +97,9 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="prose prose-lg max-w-none">
             <div className="text-xl text-gray-600 mb-8 font-medium leading-relaxed">{post.excerpt}</div>
 
-            <div
-              className="prose-headings:text-gray-900 prose-headings:font-semibold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-cyan-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700 prose-li:text-gray-700"
-              dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, "<br />") }}
-            />
+            <div className="blog-content space-y-6">
+              {parseBlogContent(post.content)}
+            </div>
           </div>
 
           {/* Tags */}
@@ -140,7 +134,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
             <h2 className="text-2xl font-bold text-gray-900 mb-8">Related Articles</h2>
             <div className="grid md:grid-cols-3 gap-8">
               {relatedPosts.map((relatedPost) => (
-                <div key={relatedPost.id} className="group">
+                <div key={relatedPost._id} className="group">
                   <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden mb-4">
                     <img
                       src={relatedPost.image || "/placeholder.svg"}
@@ -168,3 +162,112 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
     </div>
   )
 }
+
+// Helper function to parse blog content and render properly
+const parseBlogContent = (content: string) => {
+  if (!content) return null;
+
+  const lines = content.split("\n");
+  const elements: React.JSX.Element[] = [];
+
+  lines.forEach((line, index) => {
+    const trimmedLine = line.trim();
+
+    // Spacer for empty lines
+    if (!trimmedLine) {
+      elements.push(<div key={`spacer-${index}`} className="h-3" />);
+      return;
+    }
+
+    // Headings
+    if (trimmedLine.startsWith("# ")) {
+      elements.push(
+        <h1
+          key={index}
+          className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2"
+        >
+          {trimmedLine.substring(2)}
+        </h1>
+      );
+      return;
+    }
+
+    if (trimmedLine.startsWith("## ")) {
+      elements.push(
+        <h2
+          key={index}
+          className="text-2xl font-bold text-gray-800 tracking-tight mt-6 mb-2"
+        >
+          {trimmedLine.substring(3)}
+        </h2>
+      );
+      return;
+    }
+
+    if (trimmedLine.startsWith("### ")) {
+      elements.push(
+        <h3
+          key={index}
+          className="text-xl font-semibold text-gray-700 mt-4 mb-2"
+        >
+          {trimmedLine.substring(4)}
+        </h3>
+      );
+      return;
+    }
+
+    // Lists
+    if (trimmedLine.startsWith("- ") || trimmedLine.startsWith("* ")) {
+      elements.push(
+        <li
+          key={index}
+          className="text-base text-gray-600 ml-6 list-disc marker:text-gray-500"
+        >
+          {trimmedLine.substring(2)}
+        </li>
+      );
+      return;
+    }
+
+    // Blockquotes
+    if (trimmedLine.startsWith("> ")) {
+      elements.push(
+        <blockquote
+          key={index}
+          className="text-base text-gray-600 italic border-l-4 border-gray-300 pl-4 bg-gray-50 rounded-md"
+        >
+          {trimmedLine.substring(2)}
+        </blockquote>
+      );
+      return;
+    }
+
+    // Inline formatting (bold/italic)
+    if (trimmedLine.includes("**") || trimmedLine.includes("*")) {
+      const formattedText = trimmedLine
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*(.*?)\*/g, "<em>$1</em>");
+
+      elements.push(
+        <p
+          key={index}
+          className="text-base leading-relaxed text-gray-700"
+          dangerouslySetInnerHTML={{ __html: formattedText }}
+        />
+      );
+      return;
+    }
+
+    // Default paragraph
+    elements.push(
+      <p
+        key={index}
+        className="text-base leading-relaxed text-gray-700"
+      >
+        {trimmedLine}
+      </p>
+    );
+  });
+
+  return <div className="space-y-3">{elements}</div>;
+};

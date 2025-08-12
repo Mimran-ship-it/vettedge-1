@@ -1,5 +1,6 @@
 "use client"
-
+import Image from "next/image"
+import Link from "next/link"; 
 import {
   Sidebar,
   SidebarContent,
@@ -13,9 +14,9 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { LayoutDashboard, Globe, Users, CreditCard, MessageSquare, Settings, BarChart3, LogOut } from "lucide-react"
+import { LayoutDashboard, Globe, Users, CreditCard, MessageSquare, Settings, BarChart3, LogOut, Newspaper } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
-import Link from "next/link"
+
 
 const menuItems = [
   {
@@ -27,6 +28,11 @@ const menuItems = [
     title: "Domains",
     url: "/admin/domains",
     icon: Globe,
+  },
+  {
+    title: "Blogs",
+    url: "/admin/blogs",
+    icon: Newspaper,
   },
   {
     title: "Customers",
@@ -62,13 +68,18 @@ export function AdminSidebar() {
     <Sidebar variant="inset">
       <SidebarHeader>
         <div className="flex items-center space-x-2 px-4 py-2">
-          <div className="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">V</span>
-          </div>
-          <div>
-            <div className="font-semibold">Vettedge Admin</div>
-            <div className="text-sm text-gray-500">Domain Management</div>
-          </div>
+        <Link href="/">
+  <Image
+    src="/logo.jpg"
+    alt="Vettedge Logo"
+    width={55}
+    height={55}
+    priority
+    className="bg-[#FAFAFA]"
+  />
+</Link>
+
+         
         </div>
       </SidebarHeader>
 

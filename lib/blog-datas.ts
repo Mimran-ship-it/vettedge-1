@@ -2,7 +2,7 @@ import type { BlogPost } from "@/types/blog"
 
 export const blogPosts: BlogPost[] = [
   {
-    id: "1",
+    _id: "1", 
     slug: "ultimate-guide-expired-domains",
     title: "The Ultimate Guide to Buying Expired Domains in 2024",
     excerpt:
@@ -146,7 +146,7 @@ Remember that buying expired domains is just the first step - the real value com
     image: "/domainexpired.png?height=400&width=800&text=Expired+Domains+Guide",
   },
   {
-    id: "2",
+    _id: "2",
     slug: "domain-authority-metrics-explained",
     title: "Domain Authority Metrics: What Really Matters in 2024",
     excerpt:
@@ -236,7 +236,7 @@ Properly evaluating domain authority metrics is essential for making informed in
 
   
   {
-    id: "3",
+    _id: "3",
     slug: "top-10-expired-domain-strategies",
     title: "Top 10 Strategies to Profit from Expired Domains in 2024",
     excerpt:
@@ -291,7 +291,7 @@ Leverage existing traffic to collect emails and build audiences for future campa
   },
 
   {
-    id: "4",
+    _id: "4",
     slug: "common-mistakes-expired-domains",
     title: "Avoid These 7 Common Mistakes When Buying Expired Domains",
     excerpt:
@@ -299,7 +299,7 @@ Leverage existing traffic to collect emails and build audiences for future campa
     content: `
 # Avoid These 7 Common Mistakes When Buying Expired Domains
 
-Many new investors jump into the expired domain market without proper knowledge. Here are the top mistakes to avoid:
+Many new investors jump into the expired domain market without proper knowledge. Here are the top mistakes to avo_id:
 
 1. **Ignoring Spam History**
    - Always check past use and backlinks to avoid penalties.
@@ -337,7 +337,7 @@ Many new investors jump into the expired domain market without proper knowledge.
   },
 
   {
-    id: "5",
+    _id: "5",
     slug: "seo-benefits-expired-domains",
     title: "How Expired Domains Supercharge Your SEO in 2024",
     excerpt:

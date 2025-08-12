@@ -14,12 +14,25 @@ import { useSearchParams } from "next/navigation"
 
 
 
+// Define filters type
+type ActiveFilters = {
+  priceRange: [number, number]
+  tlds: string[]
+  availability: "all" | "available" | "sold"
+}
+
 export default function DomainsPage() {
   const [domains, setDomains] = useState<Domain[]>([])
   const [filteredDomains, setFilteredDomains] = useState<Domain[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [showFilters, setShowFilters] = useState(false)
+  const [activeFilters, setActiveFilters] = useState<ActiveFilters>({
+    priceRange: [0, 1000],
+    tlds: [],
+    availability: "all",
+  })
+
   const searchParams = useSearchParams()
 
   useEffect(() => {
@@ -31,11 +44,10 @@ export default function DomainsPage() {
   const fetchDomains = async () => {
     try {
       const res = await fetch("/api/domains")
-      if (res.ok) {
-        const data = await res.json()
-        setDomains(data)
-        setFilteredDomains(data)
-      }
+      if (!res.ok) throw new Error(`HTTP error: ${res.status}`)
+      const data: Domain[] = await res.json()
+      setDomains(data)
+      setFilteredDomains(data)
     } catch (err) {
       console.error("Failed to fetch domains:", err)
       setDomains([])
@@ -45,44 +57,42 @@ export default function DomainsPage() {
     }
   }
 
-  useEffect(() => {
-    let filtered = domains
-    if (searchQuery) {
+  const applyFilters = (filters: ActiveFilters) => {
+    setActiveFilters(filters)
+    let filtered = [...domains]
+
+    // Search query filter
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase()
       filtered = filtered.filter(
         (d) =>
-          d.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          d.description.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    }
-    setFilteredDomains(filtered)
-  }, [searchQuery, domains])
-
-  const handleFilterChange = (filters: any) => {
-    let filtered = domains
-
-    if (searchQuery) {
-      filtered = filtered.filter(
-        (d) =>
-          d.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          d.description.toLowerCase().includes(searchQuery.toLowerCase())
+          d.name.toLowerCase().includes(q) ||
+          d.description.toLowerCase().includes(q)
       )
     }
 
+    // Price range filter
     if (filters.priceRange) {
       filtered = filtered.filter(
         (d) => d.price >= filters.priceRange[0] && d.price <= filters.priceRange[1]
       )
     }
 
-    if (filters.registrars?.length > 0) {
-      filtered = filtered.filter((d) => filters.registrars.includes(d.registrar))
+    // TLD filter
+    if (filters.tlds?.length > 0) {
+      filtered = filtered.filter((d) =>
+        filters.tlds.some((tld) => d.name.toLowerCase().endsWith(tld))
+      )
     }
 
+    // Availability filter
     if (filters.availability === "available") {
       filtered = filtered.filter((d) => d.isAvailable && !d.isSold)
     } else if (filters.availability === "sold") {
       filtered = filtered.filter((d) => d.isSold)
     }
+
+    
 
     setFilteredDomains(filtered)
   }
@@ -92,7 +102,9 @@ export default function DomainsPage() {
       <Header />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Premium Expired Domains</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            Premium Expired Domains
+          </h1>
           <p className="text-lg text-gray-600">
             Discover high-authority domains with proven SEO value and traffic history
           </p>
@@ -105,7 +117,10 @@ export default function DomainsPage() {
               <Input
                 placeholder="Search domains by name or keyword..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value)
+                  applyFilters({ ...activeFilters }) // keep existing filters
+                }}
                 className="pl-10"
               />
             </div>
@@ -116,7 +131,7 @@ export default function DomainsPage() {
           </div>
           {showFilters && (
             <div className="mt-6 pt-6 border-t">
-              <DomainFilters onFilterChange={handleFilterChange} />
+              <DomainFilters onFilterChange={applyFilters} />
             </div>
           )}
         </div>
@@ -141,7 +156,7 @@ export default function DomainsPage() {
         ) : filteredDomains.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredDomains.map((domain) => (
-              <DomainCard key={domain._id} domain={{ ...domain, _id: domain._id }} />
+              <DomainCard key={domain._id} domain={domain} />
             ))}
           </div>
         ) : (
@@ -152,6 +167,12 @@ export default function DomainsPage() {
               onClick={() => {
                 setSearchQuery("")
                 setShowFilters(false)
+                setFilteredDomains(domains)
+                setActiveFilters({
+                  priceRange: [0, 1000],
+                  tlds: [],
+                  availability: "all",
+                })
               }}
               className="mt-4"
             >

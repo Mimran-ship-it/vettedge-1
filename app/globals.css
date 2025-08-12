@@ -116,15 +116,50 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    box-sizing: border-box; /* Add this to help sizing */
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100%;
+    overflow-x: hidden; /* prevent horizontal scrolling */
   }
   body {
     @apply bg-background text-foreground;
+    overscroll-behavior-x: contain; /* prevent scroll chaining horizontally */
+  }
+  /* Prevent horizontal overflow on all direct children of body */
+  body > * {
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 }
 
+/* Utility class for truncating text after 2 lines */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* Make images, videos, iframes, etc. responsive to fit width */
+ iframe, canvas, svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Prevent tables or wide content from breaking layout */
+table {
+  width: 100%;
+  table-layout: fixed;
+  word-break: break-word;
+}
+
+/* For all container elements, restrict max width */
+.container, .content, main, section, article {
+  max-width: 100vw;
+  overflow-x: hidden;
 }

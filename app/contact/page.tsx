@@ -1,8 +1,9 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
+import { motion } from "framer-motion"
+import { HelpCircle, CheckCircle } from "lucide-react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,7 +13,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { Mail, Phone, MapPin, Clock, MessageSquare, Send, Globe } from "lucide-react"
+import { Mail, Phone, Clock, MessageSquare, Send } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { LiveChat } from "@/components/chat/live-chat"
 
@@ -27,25 +28,20 @@ export default function ContactPage() {
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
 
+  const fadeUp = {
+    hidden: { opacity: 0, y: 40 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-
-    // Simulate form submission
     await new Promise((resolve) => setTimeout(resolve, 2000))
-
     toast({
       title: "Message sent successfully!",
       description: "We'll get back to you within 24 hours.",
     })
-
-    setFormData({
-      name: "",
-      email: "",
-      subject: "",
-      category: "",
-      message: "",
-    })
+    setFormData({ name: "", email: "", subject: "", category: "", message: "" })
     setLoading(false)
   }
 
@@ -54,48 +50,15 @@ export default function ContactPage() {
   }
 
   const contactMethods = [
-    {
-      icon: Mail,
-      title: "Email Support",
-      description: "Get help via email",
-      contact: "support@vettedge.domains",
-      action: "Send Email",
-      color: "teal", // replaced original blue with teal to match #33BDC7-ish
-    },
-    {
-      icon: Phone,
-      title: "Phone Support",
-      description: "Speak with our experts",
-      contact: "+1 (555) 123-4567",
-      action: "Call Now",
-      color: "green",
-    },
-    {
-      icon: MessageSquare,
-      title: "Live Chat",
-      description: "Instant support available",
-      contact: "Available 24/7",
-      action: "Start Chat",
-      color: "purple",
-    },
+    { icon: Mail, title: "Email Support", description: "Get help via email", contact: "support@vettedge.domains", action: "Send Email" },
+    { icon: Phone, title: "Phone Support", description: "Speak with our experts", contact: "+1 (555) 123-4567", action: "Call Now" },
+    { icon: MessageSquare, title: "Live Chat", description: "Instant support available", contact: "Available 24/7", action: "Start Chat" },
   ]
 
   const officeInfo = [
-    {
-      icon: MapPin,
-      title: "Headquarters",
-      details: ["123 Domain Street", "San Francisco, CA 94105", "United States"],
-    },
-    {
-      icon: Clock,
-      title: "Business Hours",
-      details: ["Monday - Friday: 9:00 AM - 6:00 PM PST", "Saturday: 10:00 AM - 4:00 PM PST", "Sunday: Closed"],
-    },
-    {
-      icon: Globe,
-      title: "Global Reach",
-      details: ["Serving customers worldwide", "Multi-language support", "Local payment methods"],
-    },
+    { icon: HelpCircle, title: "Pre-Sales Assistance", details: ["Need help choosing the right domain?", "Looking for niche-specific names or bulk deals?"] },
+    { icon: CheckCircle, title: "Post-Purchase Help", details: ["Get help with domain access", "Transfer guidance", "Account-related questions"] },
+    { icon: Clock, title: "Response Time", details: ["We aim to respond to all support and sales inquiries", "Within 1 business day"] },
   ]
 
   return (
@@ -103,55 +66,64 @@ export default function ContactPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#33BDC7] via-[#6bd195] to-[#33BDC7] text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-8">
-            <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-              Contact Us
-            </Badge>
-            <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
-              Get in Touch
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#33BDC7] to-[#38C172]">
-                We're Here to Help
-              </span>
-            </h1>
-            <p className="text-xl lg:text-2xl text-[#C9F3EA] max-w-3xl mx-auto leading-relaxed">
-              Have questions about domains? Need help with your purchase? Our expert team is ready to assist you.
-            </p>
-          </div>
+      <motion.section
+        className="text-[#33BDC7] py-20"
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true }}
+        variants={fadeUp}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+          <Badge variant="secondary" className="bg-white text-[#33BDC7] border-[#4DD184]">
+            Contact Us
+          </Badge>
+          <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
+            Get in Touch
+            <span className="block text-[#3BD17A]">We're Here to Help</span>
+          </h1>
+          <p className="text-xl lg:text-2xl text-[#33BDC7] max-w-3xl mx-auto leading-relaxed">
+            Have questions about domains? Need help with your purchase? Our expert team is ready to assist you.
+          </p>
         </div>
-      </section>
+      </motion.section>
 
       {/* Contact Methods */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <motion.div
+            className="text-center mb-12"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            variants={fadeUp}
+          >
             <h2 className="text-3xl font-bold text-[#33BDC7] mb-4">Choose Your Preferred Contact Method</h2>
             <p className="text-lg text-gray-600">We offer multiple ways to get in touch with our support team</p>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {contactMethods.map((method, index) => (
-              <Card
+              <motion.div
                 key={index}
-                className="text-center hover:shadow-lg transition-all duration-300 border-2 hover:border-[#33BDC7]"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.2, duration: 0.5 }}
               >
-                <CardContent className="pt-8 pb-6">
-                  <div
-                    className={`w-16 h-16 bg-gradient-to-br from-[#33BDC7] to-[#38C172] rounded-2xl flex items-center justify-center mx-auto mb-4`}
-                  >
-                    <method.icon className="h-8 w-8 text-white" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-[#33BDC7] mb-2">{method.title}</h3>
-                  <p className="text-gray-600 mb-3">{method.description}</p>
-                  <p className="font-medium text-gray-900 mb-4">{method.contact}</p>
-                  <Button
-                    className="bg-gradient-to-r from-[#38C172] to-[#33BDC7] hover:from-[#33BDC7] hover:to-[#38C172]"
-                  >
-                    {method.action}
-                  </Button>
-                </CardContent>
-              </Card>
+                <Card className="text-center hover:shadow-lg transition-all duration-300 border-2 hover:border-[#33BDC7]">
+                  <CardContent className="pt-8 pb-6">
+                    <div className="w-16 h-16 border border-[#4DD184] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <method.icon className="h-8 w-8 text-[#4DD184]" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-[#33BDC7] mb-2">{method.title}</h3>
+                    <p className="text-gray-600 mb-3">{method.description}</p>
+                    <p className="font-medium text-gray-900 mb-4">{method.contact}</p>
+                    <Button className="bg-[#33BDC7] hover:from-[#33BDC7]">
+                      {method.action}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -162,7 +134,12 @@ export default function ContactPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16">
             {/* Contact Form */}
-            <div>
+            <motion.div
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              variants={fadeUp}
+            >
               <Card className="shadow-xl border-0">
                 <CardHeader>
                   <CardTitle className="text-2xl font-bold flex items-center text-[#33BDC7]">
@@ -172,7 +149,7 @@ export default function ContactPage() {
                   <p className="text-gray-600">Fill out the form below and we'll get back to you within 24 hours.</p>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="name" className="text-[#33BDC7] font-semibold">
@@ -272,116 +249,111 @@ export default function ContactPage() {
                   </form>
                 </CardContent>
               </Card>
-            </div>
+            </motion.div>
 
             {/* Office Information */}
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-3xl font-bold text-[#33BDC7] mb-6">Get to Know Us Better</h2>
-                <p className="text-lg text-gray-600 mb-8">
-                  We're a team of domain experts passionate about helping businesses and investors find the perfect
-                  domains to grow their online presence.
-                </p>
-              </div>
+            <motion.div
+              className="space-y-8"
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              variants={fadeUp}
+            >
+              <h2 className="text-3xl font-bold text-[#33BDC7] mb-6">Can’t find what you’re looking for?</h2>
 
               <div className="space-y-6">
                 {officeInfo.map((info, index) => (
-                  <Card key={index} className="border-l-4 border-l-[#33BDC7]">
-                    <CardContent className="pt-6">
-                      <div className="flex items-start space-x-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-[#33BDC7] to-[#38C172] rounded-xl flex items-center justify-center flex-shrink-0">
-                          <info.icon className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold text-[#33BDC7] mb-2">{info.title}</h3>
-                          <div className="space-y-1">
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.15 }}
+                  >
+                    <Card className="border-l-4 border-l-[#33BDC7]">
+                      <CardContent className="pt-6">
+                        <div className="flex items-start space-x-4">
+                          <div className="w-12 h-12 border-[#38C172] border rounded-xl flex items-center justify-center flex-shrink-0">
+                            <info.icon className="h-6 w-6 text-[#38C172]" />
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-[#33BDC7] mb-2">{info.title}</h3>
                             {info.details.map((detail, idx) => (
-                              <p key={idx} className="text-gray-600">
-                                {detail}
-                              </p>
+                              <p key={idx} className="text-gray-600">{detail}</p>
                             ))}
                           </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
                 ))}
               </div>
-
-              {/* Quick Stats */}
-              <Card className="bg-gradient-to-br from-[#33BDC7] to-[#38C172] text-white">
-                <CardContent className="pt-6">
-                  <h3 className="text-xl font-semibold mb-4">Why Choose Vettedge?</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold mb-1">24/7</div>
-                      <div className="text-[#C9F3EA] text-sm">Support Available</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold mb-1">Less than 2 hours</div>
-                      <div className="text-[#C9F3EA] text-sm">Response Time</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold mb-1">98%</div>
-                      <div className="text-[#C9F3EA] text-sm">Satisfaction Rate</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold mb-1">5000+</div>
-                      <div className="text-[#C9F3EA] text-sm">Happy Customers</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[#33BDC7] mb-4">Frequently Asked Questions</h2>
-            <p className="text-lg text-gray-600">Quick answers to common questions</p>
-          </div>
+ {/* FAQ Section */}
+<section className="py-16 bg-white">
+  <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <motion.div
+      className="text-center mb-12"
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true }}
+      variants={fadeUp}
+    >
+      <h2 className="text-3xl font-bold text-[#33BDC7] mb-4">Frequently Asked Questions</h2>
+      <p className="text-lg text-gray-600">Quick answers to common questions</p>
+    </motion.div>
 
-          <div className="space-y-6">
-            <Card>
-              <CardContent className="pt-6">
-                <h3 className="text-lg font-semibold text-[#33BDC7] mb-2">
-                  How quickly can I get my domain after purchase?
-                </h3>
-                <p className="text-gray-600">
-                  Most domain transfers are completed within 24-48 hours. We'll keep you updated throughout the entire
-                  process.
-                </p>
-              </CardContent>
-            </Card>
+    <div className="space-y-6">
+      {[
+        {
+          question: "Can I request a specific niche or category of domain?",
+          answer: "Absolutely. Contact us with your preferred niche or keywords and we’ll suggest available options or source domains for you."
+        },
+        {
+          question: "Do you offer refunds?",
+          answer: "Yes — we offer a 14-day refund policy. A 5% handling fee applies, and payment gateway fees (like PayPal’s) are non-refundable. Domains must be unused and returned to us."
+        },
+        {
+          question: "Are expired domains safe to use for SEO?",
+          answer: "If properly vetted — yes. We only sell aged/expired domains with clean histories and strong SEO potential, making them ideal for authority sites, PBNs, niche blogs, or brand foundations."
+        },
+        {
+          question: "How long does the transfer take?",
+          answer: "Registrar push transfers are usually completed within a few hours. Traditional transfers (via EPP code) may take up to 5–7 days depending on the registrar."
+        },
+        {
+          question: "Are the domains clean and free of penalties?",
+          answer: "Yes. Every domain we list is manually vetted to ensure it’s free from spam, Google penalties, or blacklists."
+        },
+        {
+          question: "Can I request backlink or SEO metrics for a domain?",
+          answer: "Definitely. Contact us and we’ll provide a snapshot of the domain’s metrics — such as referring domains, domain authority, and other relevant data."
+        }
+      ].map(({ question, answer }, index) => (
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: index * 0.15 }}
+        >
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="text-lg font-semibold text-[#33BDC7] mb-2">{question}</h3>
+              <p className="text-gray-600">{answer}</p>
+            </CardContent>
+          </Card>
+        </motion.div>
+      ))}
+    </div>
+  </div>
+</section>
 
-            <Card>
-              <CardContent className="pt-6">
-                <h3 className="text-lg font-semibold text-[#33BDC7] mb-2">Do you offer refunds if I'm not satisfied?</h3>
-                <p className="text-gray-600">
-                  Yes, we offer a 7-day money-back guarantee if the domain doesn't meet the specifications we've
-                  provided.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="pt-6">
-                <h3 className="text-lg font-semibold text-[#33BDC7] mb-2">
-                  Can you help me evaluate a domain's potential?
-                </h3>
-                <p className="text-gray-600">
-                  Our domain experts can provide detailed analysis and recommendations based on your specific needs and
-                  goals.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
 
       <Footer />
       <LiveChat />
