@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     "Expert insights on domain investing, SEO strategies, and digital marketing trends from the Vettedge.domains team.",
 }
  
-export default async function BlogPage() {
+export default async function BlogPage() { 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXTAUTH_URL || "http://localhost:3000"
   const res = await fetch(`${baseUrl}/api/blogs`, { cache: "no-store" })
   const blogPosts: BlogPost[] = res.ok ? await res.json() : []
