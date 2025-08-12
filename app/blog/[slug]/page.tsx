@@ -17,7 +17,7 @@ interface BlogPostPageProps {
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const h = await headers()
-  const host = h.get("host") || "localhost:3000"
+  const host = h.get("host") || "localhost:3000" ||  process.env.NEXT_PUBLIC_BASE_URL
   const protocol = process.env.NODE_ENV === "development" ? "http" : "https"
   const baseUrl = `${protocol}://${host}`
   const res = await fetch(`${baseUrl}/api/blogs?slug=${params.slug}`, { cache: "no-store" })
