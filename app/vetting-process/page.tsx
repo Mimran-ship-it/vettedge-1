@@ -153,7 +153,7 @@ export default function VettingProcessPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br text-[#33BDC7] py-20">
+      <section className="bg-gradient-to-br text-[#33BDC7] pt-36 pb-20">
         <motion.div
           initial="hidden"
           whileInView="visible"

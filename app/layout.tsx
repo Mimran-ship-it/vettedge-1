@@ -26,9 +26,8 @@ export default function RootLayout({
         <AuthProvider>
           <CartProvider>
             <ChatProvider>
-             <div className="pt-16"> 
+             
               {children}
-              </div>
               <Script
           src="https://accounts.google.com/gsi/client"
           strategy="afterInteractive"

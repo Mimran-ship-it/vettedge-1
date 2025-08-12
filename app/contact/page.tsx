@@ -67,7 +67,7 @@ export default function ContactPage() {
 
       {/* Hero Section */}
       <motion.section
-        className="text-[#33BDC7] py-20"
+        className="text-[#33BDC7] pt-36 pb-20"
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}

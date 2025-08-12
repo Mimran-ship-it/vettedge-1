@@ -35,7 +35,7 @@ export default function AboutPage() {
 
       {/* Hero Section */}
       <motion.section
-        className="text-[#44c3cd] py-20"
+        className="text-[#44c3cd] pt-36 pb-20"
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}

@@ -85,7 +85,7 @@ export default function DomainDetailsPage() {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
-        <main className="max-w-7xl mx-auto px-4 py-8 animate-pulse">
+        <main className="max-w-7xl mx-auto px-4 pb-8 pt-24 animate-pulse">
           <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
           <div className="grid lg:grid-cols-2 gap-8">
             <div className="h-64 bg-gray-200 rounded"></div>
@@ -105,7 +105,7 @@ export default function DomainDetailsPage() {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
-        <main className="max-w-7xl mx-auto px-4 py-8 text-center">
+        <main className="max-w-7xl mx-auto px-4 pb-8 pt-24 text-center">
           <h1 className="text-2xl font-bold mb-4">Domain Not Found</h1>
           <p className="text-gray-600 mb-6">The domain you're looking for doesn't exist or has been removed.</p>
           <Button asChild><a href="/domains">Browse All Domains</a></Button>
@@ -118,7 +118,7 @@ export default function DomainDetailsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       <Header />
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      <main className="max-w-7xl mx-auto px-4 pb-8 pt-24">
         
         {/* Breadcrumb */}
         <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-8">
