@@ -34,7 +34,7 @@ export function TestimonialsSection() {
       avatar: "ER",
     },
     {
-      name: "David Kim",
+      name: "David Kim John",
       role: "E-commerce Owner",
       company: "RetailPro",
       content:
