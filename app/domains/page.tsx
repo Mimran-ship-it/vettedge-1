@@ -27,7 +27,7 @@ type ActiveFilters = {
 }
 
 const defaultFilters: ActiveFilters = {
-  priceRange: [0, 1000],
+  priceRange: [0, 100000],
   tlds: [],
   availability: "all",
   domainRankRange: [0, 100],

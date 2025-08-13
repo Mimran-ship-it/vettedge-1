@@ -20,7 +20,7 @@ interface DomainFiltersProps {
 
 export function DomainFilters({ onFilterChange }: DomainFiltersProps) {
   // Basic filters
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000])
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000])
   const [selectedTlds, setSelectedTlds] = useState<string[]>([])
   const [availability, setAvailability] = useState<"all" | "available" | "sold">("all")
 
@@ -63,7 +63,7 @@ export function DomainFilters({ onFilterChange }: DomainFiltersProps) {
   }
 
   const clearFilters = () => {
-    setPriceRange([0, 1000])
+    setPriceRange([0, 100000])
     setSelectedTlds([])
     setAvailability("all")
     setDomainRankRange([0, 100])
@@ -76,7 +76,7 @@ export function DomainFilters({ onFilterChange }: DomainFiltersProps) {
     setAuthorityLinksMin(0)
 
     onFilterChange({
-      priceRange: [0, 1000],
+      priceRange: [0, 100000],
       tlds: [],
       availability: "all",
       domainRankRange: [0, 100],
@@ -103,7 +103,7 @@ export function DomainFilters({ onFilterChange }: DomainFiltersProps) {
               setPriceRange(value as [number, number])
               applyFilters({ priceRange: value })
             }}
-            max={1000}
+            max={100000}
             min={0}
             step={10}
           />
