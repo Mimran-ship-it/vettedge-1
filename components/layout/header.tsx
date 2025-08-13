@@ -132,7 +132,7 @@ export function Header() {
                   className="object-contain"
                 />
               </div>
-              <span className="text-xl hidden sm:flex font-semibold text-gray-900">
+              <span className="text-xl hidden lg:flex font-semibold text-gray-900">
                 Vettedge.domains
               </span>
             </Link>
