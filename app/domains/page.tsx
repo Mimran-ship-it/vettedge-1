@@ -12,13 +12,32 @@ import type { Domain } from "@/types/domain"
 import { LiveChat } from "@/components/chat/live-chat"
 import { useSearchParams } from "next/navigation"
 
-
-
-// Define filters type
 type ActiveFilters = {
   priceRange: [number, number]
   tlds: string[]
   availability: "all" | "available" | "sold"
+  domainRankRange: [number, number]
+  domainAuthorityRange: [number, number]
+  trustFlowRange: [number, number]
+  citationFlowRange: [number, number]
+  ageMin: number
+  referringDomainsMin: number
+  authorityLinksMin: number
+  monthlyTrafficMin: number
+}
+
+const defaultFilters: ActiveFilters = {
+  priceRange: [0, 1000],
+  tlds: [],
+  availability: "all",
+  domainRankRange: [0, 100],
+  domainAuthorityRange: [0, 100],
+  trustFlowRange: [0, 100],
+  citationFlowRange: [0, 100],
+  ageMin: 0,
+  referringDomainsMin: 0,
+  authorityLinksMin: 0,
+  monthlyTrafficMin: 0,
 }
 
 export default function DomainsPage() {
@@ -27,11 +46,7 @@ export default function DomainsPage() {
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [showFilters, setShowFilters] = useState(false)
-  const [activeFilters, setActiveFilters] = useState<ActiveFilters>({
-    priceRange: [0, 1000],
-    tlds: [],
-    availability: "all",
-  })
+  const [activeFilters, setActiveFilters] = useState<ActiveFilters>(defaultFilters)
 
   const searchParams = useSearchParams()
 
@@ -71,28 +86,82 @@ export default function DomainsPage() {
       )
     }
 
-    // Price range filter
-    if (filters.priceRange) {
-      filtered = filtered.filter(
-        (d) => d.price >= filters.priceRange[0] && d.price <= filters.priceRange[1]
-      )
-    }
+    // Price range
+    filtered = filtered.filter(
+      (d) => d.price >= filters.priceRange[0] && d.price <= filters.priceRange[1]
+    )
 
-    // TLD filter
-    if (filters.tlds?.length > 0) {
+    // TLDs
+    if (filters.tlds.length > 0) {
       filtered = filtered.filter((d) =>
         filters.tlds.some((tld) => d.name.toLowerCase().endsWith(tld))
       )
     }
 
-    // Availability filter
+    // Availability
     if (filters.availability === "available") {
       filtered = filtered.filter((d) => d.isAvailable && !d.isSold)
     } else if (filters.availability === "sold") {
       filtered = filtered.filter((d) => d.isSold)
     }
 
-    
+    // Domain Rank
+    filtered = filtered.filter(
+      (d) =>
+        d.metrics?.domainRank !== undefined &&
+        d.metrics.domainRank >= filters.domainRankRange[0] &&
+        d.metrics.domainRank <= filters.domainRankRange[1]
+    )
+
+    // Domain Authority
+    filtered = filtered.filter(
+      (d) =>
+        d.metrics?.domainAuthority !== undefined &&
+        d.metrics.domainAuthority >= filters.domainAuthorityRange[0] &&
+        d.metrics.domainAuthority <= filters.domainAuthorityRange[1]
+    )
+
+    // Trust Flow
+    filtered = filtered.filter(
+      (d) =>
+        d.metrics?.trustFlow !== undefined &&
+        d.metrics.trustFlow >= filters.trustFlowRange[0] &&
+        d.metrics.trustFlow <= filters.trustFlowRange[1]
+    )
+
+    // Citation Flow
+    filtered = filtered.filter(
+      (d) =>
+        d.metrics?.citationFlow !== undefined &&
+        d.metrics.citationFlow >= filters.citationFlowRange[0] &&
+        d.metrics.citationFlow <= filters.citationFlowRange[1]
+    )
+
+    // Age
+    filtered = filtered.filter(
+      (d) =>
+        d.metrics?.age !== undefined && d.metrics.age >= filters.ageMin
+    )
+
+    // Referring Domains
+    filtered = filtered.filter(
+      (d) =>
+        d.metrics?.referringDomains !== undefined &&
+        d.metrics.referringDomains >= filters.referringDomainsMin
+    )
+
+    // Authority Links
+    filtered = filtered.filter(
+      (d) =>
+        (d.metrics?.authorityLinks?.length || 0) >= filters.authorityLinksMin
+    )
+
+    // Monthly Traffic
+    filtered = filtered.filter(
+      (d) =>
+        d.metrics?.monthlyTraffic !== undefined &&
+        d.metrics.monthlyTraffic >= filters.monthlyTrafficMin
+    )
 
     setFilteredDomains(filtered)
   }
@@ -119,7 +188,7 @@ export default function DomainsPage() {
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value)
-                  applyFilters({ ...activeFilters }) // keep existing filters
+                  applyFilters({ ...activeFilters })
                 }}
                 className="pl-10"
               />
@@ -161,18 +230,16 @@ export default function DomainsPage() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No domains found matching your criteria.</p>
+            <p className="text-gray-500 text-lg">
+              No domains found matching your criteria.
+            </p>
             <Button
               variant="outline"
               onClick={() => {
                 setSearchQuery("")
                 setShowFilters(false)
                 setFilteredDomains(domains)
-                setActiveFilters({
-                  priceRange: [0, 1000],
-                  tlds: [],
-                  availability: "all",
-                })
+                setActiveFilters(defaultFilters)
               }}
               className="mt-4"
             >

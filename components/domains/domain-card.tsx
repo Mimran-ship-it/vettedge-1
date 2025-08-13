@@ -134,7 +134,7 @@ export function DomainCard({ domain }: DomainCardProps) {
           alt={domain.name}
           className={cn(
             "w-full h-36 object-cover transition duration-300",
-            !domain.isAvailable && "blur-sm"
+            !domain.isAvailable&&!domain.isSold && "blur-sm"
           )}
         />
       )}
@@ -155,14 +155,14 @@ export function DomainCard({ domain }: DomainCardProps) {
             <CardTitle
               className={cn(
                 "text-base font-semibold text-gray-900 transition duration-300",
-                !domain.isAvailable && "blur-[1.5px]"
+                !domain.isAvailable&&!domain.isSold && "blur-[3px]"
               )}
             >
               {domain.name}
             </CardTitle>
             <div className="flex flex-wrap gap-1 mt-1">
               <Badge variant="secondary" className="text-[10px]">
-                {domain.type}
+                {domain.type.charAt(0).toUpperCase()+ domain.type.slice(1)}
               </Badge>
               <Badge variant="outline" className="text-[10px] flex items-center gap-1">
                 <Building className="h-3 w-3" /> {domain.registrar}
@@ -248,10 +248,11 @@ export function DomainCard({ domain }: DomainCardProps) {
             Add
           </Button>
           <Button
+           disabled={domain.isSold || !domain.isAvailable}
             variant="outline"
             size="sm"
             className="h-8 text-xs px-2"
-            asChild
+            
           >
             <a href={`/domains/${domain._id}`}>Details</a>
           </Button>
