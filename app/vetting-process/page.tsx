@@ -229,64 +229,75 @@ export default function VettingProcessPage() {
 
       {/* Vetting Process Steps */}
       <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            custom={0}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl lg:text-4xl font-bold text-[#33BDC7] mb-6">Our 6-Step Vetting Process</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Each domain goes through comprehensive analysis to ensure quality, value, and clean history
-            </p>
-          </motion.div>
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <motion.div
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      className="text-center mb-16"
+    >
+      <h2 className="text-3xl lg:text-4xl font-bold text-[#33BDC7] mb-6">
+        Our 6-Step Vetting Process
+      </h2>
+      <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+        Each domain goes through comprehensive analysis to ensure quality, value, and clean history
+      </p>
+    </motion.div>
 
-          <div className="space-y-12 relative">
-            {vettingSteps.map((step, index) => (
-              <motion.div
-                key={index}
-                variants={fadeUp}
-                initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.2, duration: 0.5 }}
-              >
-                <Card className="hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
-                  <CardContent className="pt-6">
-                    <div className="flex items-start space-x-6">
-                      <div className="flex-shrink-0">
-                        <div className="w-16 h-16 border border-[#38C172] rounded-2xl flex items-center justify-center">
-                          <step.icon className="h-8 w-8 text-[#38C172]" />
-                        </div>
+    <div className="space-y-12">
+      {vettingSteps.map((step, index) => (
+        <motion.div
+          key={index}
+          variants={fadeUp}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: index * 0.2, duration: 0.5 }}
+        >
+          <Card className="hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+            <CardContent className="pt-6">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-6 space-y-4 sm:space-y-0">
+                
+                {/* Icon - Hidden on mobile */}
+                <div className="flex-shrink-0 hidden sm:flex">
+                  <div className="w-16 h-16 border border-[#38C172] rounded-2xl flex items-center justify-center">
+                    <step.icon className="h-8 w-8 text-[#38C172]" />
+                  </div>
+                </div>
+
+                {/* Text content */}
+                <div className="flex-1">
+                  <div className="flex flex-wrap items-center gap-3 mb-3">
+                    <Badge variant="outline" className="text-[#38C172] border-[#38C172]">
+                      Step {step.step}
+                    </Badge>
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
+                      {step.title}
+                    </h3>
+                  </div>
+
+                  <p className="text-base sm:text-lg text-gray-600 mb-6">
+                    {step.description}
+                  </p>
+
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    {step.details.map((detail, idx) => (
+                      <div key={idx} className="flex items-start space-x-2">
+                        <CheckCircle className="h-4 w-4 text-[#38C172] flex-shrink-0 mt-[2px]" />
+                        <span className="text-gray-700 text-sm sm:text-base">{detail}</span>
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-3">
-                          <Badge variant="outline" className="text-[#38C172] border-[#38C172]">
-                            Step {step.step}
-                          </Badge>
-                          <h3 className="text-2xl font-bold text-gray-900">{step.title}</h3>
-                        </div>
-                        <p className="text-lg text-gray-600 mb-6">{step.description}</p>
-                        <div className="grid md:grid-cols-2 gap-3">
-                          {step.details.map((detail, idx) => (
-                            <div key={idx} className="flex items-center space-x-2">
-                              <CheckCircle className="h-4 w-4 text-[#38C172] flex-shrink-0" />
-                              <span className="text-gray-700">{detail}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      ))}
+    </div>
+  </div>
+</section>
 
       {/* Rejection Criteria */}
       <section className="py-16 bg-white">

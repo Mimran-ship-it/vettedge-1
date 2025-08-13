@@ -138,7 +138,7 @@ export function Header() {
             </Link>
             
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className="hidden md:flex items-center space-x-5 xl:space-x-7">
               <Link href="/domains" className={linkClass("/domains")}>
                 Buy Domains
               </Link>
