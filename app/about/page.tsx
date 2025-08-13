@@ -66,27 +66,7 @@ export default function AboutPage() {
         </div>
       </motion.section>
 
-      {/* Stats Section */}
-      {/* <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 lg:grid-cols-3 gap-8">
-          {stats.map((stat, index) => (
-            <motion.div
-              key={index}
-              className="text-center"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.2, duration: 0.5 }}
-            >
-              <div className="w-16 h-16 bg-[#33BDC7] rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <stat.icon className="h-8 w-8 text-white" />
-              </div>
-              <div className="text-3xl font-bold text-[#33BDC7] mb-2">{stat.value}</div>
-              <div className="text-gray-600">{stat.label}</div>
-            </motion.div>
-          ))}
-        </div>
-      </section> */}
+   
 
       {/* Why Choose Section */}
       <motion.section
@@ -129,6 +109,28 @@ export default function AboutPage() {
           </div>
         </div>
       </motion.section>
+         {/* Stats Section */}
+       <section className="py-16 bg-gray-50
+">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 lg:grid-cols-3 gap-8">
+          {stats.map((stat, index) => (
+            <motion.div
+              key={index}
+              className="text-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.2, duration: 0.5 }}
+            >
+              <div className="w-16 h-16 bg-[#33BDC7] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <stat.icon className="h-8 w-8 text-white" />
+              </div>
+              <div className="text-3xl font-bold text-[#33BDC7] mb-2">{stat.value}</div>
+              <div className="text-gray-600">{stat.label}</div>
+            </motion.div>
+          ))}
+        </div>
+      </section> 
 
       {/* Who We Serve */}
       <motion.section
