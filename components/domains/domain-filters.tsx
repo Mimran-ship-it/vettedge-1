@@ -16,15 +16,16 @@ import {
 
 interface DomainFiltersProps {
   onFilterChange: (filters: any) => void
+  availableTags: string[] // ✅ Added
 }
 
-export function DomainFilters({ onFilterChange }: DomainFiltersProps) {
-  // Basic filters
+export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersProps) {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000])
   const [selectedTlds, setSelectedTlds] = useState<string[]>([])
   const [availability, setAvailability] = useState<"all" | "available" | "sold">("all")
+  const [type, setType] = useState<"all" | "aged" | "traffic">("all")
+  const [selectedTags, setSelectedTags] = useState<string[]>([]) // ✅ Added
 
-  // New metric filters
   const [domainRankRange, setDomainRankRange] = useState<[number, number]>([0, 100])
   const [domainAuthorityRange, setDomainAuthorityRange] = useState<[number, number]>([0, 100])
   const [trustFlowRange, setTrustFlowRange] = useState<[number, number]>([0, 100])
@@ -44,11 +45,21 @@ export function DomainFilters({ onFilterChange }: DomainFiltersProps) {
     applyFilters({ tlds: newTlds })
   }
 
+  const handleTagChange = (tag: string, checked: boolean) => {
+    const newTags = checked
+      ? [...selectedTags, tag]
+      : selectedTags.filter((t) => t !== tag)
+    setSelectedTags(newTags)
+    applyFilters({ tags: newTags })
+  }
+
   const applyFilters = (overrides = {}) => {
     const filters = {
       priceRange,
       tlds: selectedTlds,
       availability,
+      type,
+      tags: selectedTags, // ✅ Added
       domainRankRange,
       domainAuthorityRange,
       trustFlowRange,
@@ -66,6 +77,8 @@ export function DomainFilters({ onFilterChange }: DomainFiltersProps) {
     setPriceRange([0, 100000])
     setSelectedTlds([])
     setAvailability("all")
+    setType("all")
+    setSelectedTags([]) // ✅ Added
     setDomainRankRange([0, 100])
     setDomainAuthorityRange([0, 100])
     setTrustFlowRange([0, 100])
@@ -79,6 +92,8 @@ export function DomainFilters({ onFilterChange }: DomainFiltersProps) {
       priceRange: [0, 100000],
       tlds: [],
       availability: "all",
+      type: "all",
+      tags: [], // ✅ Added
       domainRankRange: [0, 100],
       domainAuthorityRange: [0, 100],
       trustFlowRange: [0, 100],
@@ -93,7 +108,7 @@ export function DomainFilters({ onFilterChange }: DomainFiltersProps) {
   return (
     <div className="space-y-6">
       <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6">
-        
+
         {/* Price Range */}
         <div className="space-y-3">
           <Label>Price Range</Label>
@@ -151,6 +166,44 @@ export function DomainFilters({ onFilterChange }: DomainFiltersProps) {
           </Select>
         </div>
 
+        {/* Type */}
+        <div className="space-y-3">
+          <Label>Type</Label>
+          <Select
+            value={type}
+            onValueChange={(value: "all" | "aged" | "traffic") => {
+              setType(value)
+              applyFilters({ type: value })
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="All types" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All types</SelectItem>
+              <SelectItem value="aged">Aged Domain</SelectItem>
+              <SelectItem value="traffic">Traffic Domain</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Tags Filter ✅ */}
+        <div className="space-y-3">
+          <Label>Industry</Label>
+          <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto border rounded p-2">
+            {availableTags.map((tag) => (
+              <div key={tag} className="flex items-center space-x-2">
+                <Checkbox
+                  id={tag}
+                  checked={selectedTags.includes(tag)}
+                  onCheckedChange={(checked) => handleTagChange(tag, checked as boolean)}
+                />
+                <Label htmlFor={tag} className="text-sm capitalize">{tag}</Label>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Domain Rank */}
         <div className="space-y-3">
           <Label>Domain Rank</Label>
@@ -170,8 +223,8 @@ export function DomainFilters({ onFilterChange }: DomainFiltersProps) {
           </div>
         </div>
 
-        {/* Domain Authority */}
-        <div className="space-y-3">
+         {/* Domain Authority */}
+         <div className="space-y-3">
           <Label>Domain Authority</Label>
           <Slider
             value={domainAuthorityRange}
@@ -229,74 +282,72 @@ export function DomainFilters({ onFilterChange }: DomainFiltersProps) {
 
         {/* Monthly Traffic */}
         <div className="space-y-3">
-          <Label>Monthly Traffic</Label>
-          <Slider
-            value={[monthlyTrafficMin]}
-            onValueChange={(value) => {
-              setMonthlyTrafficMin(value[0])
-              applyFilters({ monthlyTrafficMin: value[0] })
-            }}
-            max={500000}
-            min={0}
-            step={1000}
-          />
-          <div className="flex justify-between text-sm text-gray-500">
-            <span>{monthlyTrafficMin.toLocaleString()} visits/month</span>
-            <span>{(500000).toLocaleString()}+</span>
-          </div>
-        </div>
-
-        {/* Age Min */}
-        <div className="space-y-3">
-          <Label>Minimum Age (years)</Label>
+          <Label>Monthly Traffic (min)</Label>
           <Input
             type="number"
+            value={monthlyTrafficMin}
+            onChange={(e) => {
+              const value = Number(e.target.value)
+              setMonthlyTrafficMin(value)
+              applyFilters({ monthlyTrafficMin: value })
+            }}
             min={0}
+          />
+        </div>
+
+        {/* Age */}
+        <div className="space-y-3">
+          <Label>Age (min, years)</Label>
+          <Input
+            type="number"
             value={ageMin}
             onChange={(e) => {
-              const value = e.target.value 
+              const value = Number(e.target.value)
               setAgeMin(value)
               applyFilters({ ageMin: value })
             }}
+            min={0}
           />
         </div>
 
-        {/* Referring Domains Min */}
+        {/* Referring Domains */}
         <div className="space-y-3">
-          <Label>Minimum Referring Domains</Label>
+          <Label>Referring Domains (min)</Label>
           <Input
             type="number"
-            min={0}
             value={referringDomainsMin}
             onChange={(e) => {
-              const value = e.target.value 
+              const value = Number(e.target.value)
               setReferringDomainsMin(value)
               applyFilters({ referringDomainsMin: value })
             }}
+            min={0}
           />
         </div>
 
-        {/* Authority Links Min */}
+        {/* Authority Links */}
         <div className="space-y-3">
-          <Label>Minimum Authority Links</Label>
+          <Label>Authority Links (min)</Label>
           <Input
             type="number"
-            min={0}
             value={authorityLinksMin}
             onChange={(e) => {
-              const value = e.target.value 
+              const value = Number(e.target.value)
               setAuthorityLinksMin(value)
               applyFilters({ authorityLinksMin: value })
             }}
+            min={0}
           />
         </div>
       </div>
 
+      {/* Clear Filters Button */}
       <div className="flex justify-end">
         <Button variant="outline" onClick={clearFilters}>
-          Clear All Filters
+          Clear Filters
         </Button>
       </div>
     </div>
   )
 }
+
