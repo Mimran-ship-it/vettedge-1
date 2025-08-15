@@ -16,6 +16,7 @@ type ActiveFilters = {
   priceRange: [number, number]
   tlds: string[]
   availability: "all" | "available" | "sold"
+  type: "all" | "aged" | "traffic"
   domainRankRange: [number, number]
   domainAuthorityRange: [number, number]
   trustFlowRange: [number, number]
@@ -24,12 +25,14 @@ type ActiveFilters = {
   referringDomainsMin: number
   authorityLinksMin: number
   monthlyTrafficMin: number
+  tags: string[] // ✅ Added
 }
 
 const defaultFilters: ActiveFilters = {
   priceRange: [0, 100000],
   tlds: [],
   availability: "all",
+  type: "all",
   domainRankRange: [0, 100],
   domainAuthorityRange: [0, 100],
   trustFlowRange: [0, 100],
@@ -38,6 +41,7 @@ const defaultFilters: ActiveFilters = {
   referringDomainsMin: 0,
   authorityLinksMin: 0,
   monthlyTrafficMin: 0,
+  tags: [], // ✅ Added
 }
 
 export default function DomainsPage() {
@@ -47,6 +51,7 @@ export default function DomainsPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [showFilters, setShowFilters] = useState(false)
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>(defaultFilters)
+  const [availableTags, setAvailableTags] = useState<string[]>([]) // ✅ Added
 
   const searchParams = useSearchParams()
 
@@ -63,6 +68,13 @@ export default function DomainsPage() {
       const data: Domain[] = await res.json()
       setDomains(data)
       setFilteredDomains(data)
+
+      // ✅ Extract unique tags dynamically
+      const tagsSet = new Set<string>()
+      data.forEach((d) => {
+        d.tags?.forEach((tag) => tagsSet.add(tag))
+      })
+      setAvailableTags(Array.from(tagsSet))
     } catch (err) {
       console.error("Failed to fetch domains:", err)
       setDomains([])
@@ -103,6 +115,18 @@ export default function DomainsPage() {
       filtered = filtered.filter((d) => d.isAvailable && !d.isSold)
     } else if (filters.availability === "sold") {
       filtered = filtered.filter((d) => d.isSold)
+    }
+
+    // Type
+    if (filters.type !== "all") {
+      filtered = filtered.filter((d) => d.type?.toLowerCase() === filters.type)
+    }
+
+    // Tags filter ✅
+    if (filters.tags.length > 0) {
+      filtered = filtered.filter((d) =>
+        d.tags?.some((tag) => filters.tags.includes(tag))
+      )
     }
 
     // Domain Rank
@@ -200,7 +224,7 @@ export default function DomainsPage() {
           </div>
           {showFilters && (
             <div className="mt-6 pt-6 border-t">
-              <DomainFilters onFilterChange={applyFilters} />
+              <DomainFilters onFilterChange={applyFilters} availableTags={availableTags} />
             </div>
           )}
         </div>

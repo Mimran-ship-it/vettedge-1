@@ -206,7 +206,7 @@ export function DomainCard({ domain }: DomainCardProps) {
 
         {/* Metrics */}
         <div className="grid grid-cols-3 gap-2 text-[11px]">
-          <Metric icon={TrendingUp} label={`DR: ${domain.metrics.avgAuthorityDR}`} />
+          <Metric icon={TrendingUp} label={`DR: ${domain.metrics.domainRank}`} />
           <Metric icon={LinkIcon} label={`${domain.metrics.referringDomains} RDs`} />
           <Metric icon={ShieldCheck} label={`DA: ${domain.metrics.domainAuthority}`} />
           <Metric icon={Activity} label={`TF: ${domain.metrics.trustFlow}`} />
