@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,13 +10,23 @@ import { Badge } from "@/components/ui/badge"
 import { MessageSquare, X, Send, Minimize2 } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { useChat } from "@/hooks/use-chat"
+import { formatDistanceToNow } from "date-fns"
 
 export function LiveChat() {
   const [isOpen, setIsOpen] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
   const [message, setMessage] = useState("")
   const { user } = useAuth()
-  const { messages, sendMessage, unreadCount } = useChat()
+  const { messages, sendMessage, unreadCount, currentSession, isConnected } = useChat()
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
 
   const handleSendMessage = () => {
     if (message.trim()) {
@@ -56,8 +66,8 @@ export function LiveChat() {
           <CardTitle className="text-sm font-medium flex items-center space-x-2">
             <MessageSquare className="h-4 w-4" />
             <span>Live Support</span>
-            <Badge variant="secondary" className="text-xs">
-              Online
+            <Badge variant={isConnected ? "secondary" : "destructive"} className="text-xs">
+              {isConnected ? "Online" : "Offline"}
             </Badge>
           </CardTitle>
           <div className="flex items-center space-x-1">
@@ -95,20 +105,21 @@ export function LiveChat() {
                 </div>
               ) : (
                 messages.map((msg) => (
-                  <div key={msg.id} className={`flex ${msg.isUser ? "justify-end" : "justify-start"}`}>
+                  <div key={msg._id} className={`flex ${msg.senderRole === "customer" ? "justify-end" : "justify-start"}`}>
                     <div
                       className={`max-w-xs px-3 py-2 rounded-lg text-sm ${
-                        msg.isUser ? "bg-cyan-500 text-white" : "bg-gray-100 text-gray-900"
+                        msg.senderRole === "customer" ? "bg-cyan-500 text-white" : "bg-gray-100 text-gray-900"
                       }`}
                     >
                       <p>{msg.content}</p>
-                      <p className={`text-xs mt-1 ${msg.isUser ? "text-cyan-100" : "text-gray-500"}`}>
-                        {msg.timestamp.toLocaleTimeString()}
+                      <p className={`text-xs mt-1 ${msg.senderRole === "customer" ? "text-cyan-100" : "text-gray-500"}`}>
+                        {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
                       </p>
                     </div>
                   </div>
                 ))
               )}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Input */}
@@ -121,7 +132,7 @@ export function LiveChat() {
                 disabled={!user}
                 className="flex-1"
               />
-              <Button onClick={handleSendMessage} disabled={!user || !message.trim()} size="sm">
+              <Button onClick={handleSendMessage} disabled={!user || !message.trim() || !isConnected} size="sm">
                 <Send className="h-4 w-4" />
               </Button>
             </div>

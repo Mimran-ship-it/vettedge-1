@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 
-const JWT_SECRET = process.env.JWT_SECRET || "default_secret"
+const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret"
 
 export function signJwt(payload: object, options?: jwt.SignOptions) {
   return jwt.sign(payload, JWT_SECRET, { ...(options || {}), expiresIn: "7d" })

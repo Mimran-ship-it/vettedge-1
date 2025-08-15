@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import connectDB from "@/lib/mongodb"
+import { connectDB } from "@/lib/db"
 import User from "@/lib/models/User"
 import { signJwt } from "@/lib/jwt"
 
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
 
     // Sign JWT (omit sensitive info)
     const token = signJwt({
-      id: user._id,
+      userId: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
         success: true,
         message: "Signed in successfully.",
         user: {
-          id: user._id,
+          userId: user._id,
           name: user.name,
           email: user.email,
           role: user.role,

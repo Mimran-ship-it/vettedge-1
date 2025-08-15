@@ -8,6 +8,7 @@ export interface IUser extends Document {
   role: "admin" | "customer"
   createdAt: Date
   lastLogin?: Date
+  pushSubscription?: any
   comparePassword(candidatePassword: string): Promise<boolean>
 }
 
@@ -42,6 +43,9 @@ const UserSchema = new Schema<IUser>({
   },
   lastLogin: {
     type: Date,
+  },
+  pushSubscription: {
+    type: Schema.Types.Mixed,
   },
 })
 

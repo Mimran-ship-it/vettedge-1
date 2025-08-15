@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
-import connectDB from "@/lib/mongodb"
+import { connectDB } from "@/lib/db"
 import User from "@/lib/models/User" // Make sure path matches
 
 export async function POST(request: NextRequest) {
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
         success: true,
         message: "User registered successfully.",
         user: {
-          id: newUser._id,
+          userId: newUser._id,
           name: newUser.name,
           email: newUser.email,
           role: newUser.role,

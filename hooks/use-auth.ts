@@ -4,7 +4,7 @@
 import { createContext, useContext } from "react"
 
 export interface User {
-  id: string
+  userId: string
   name: string
   email: string
   role: "admin" | "customer" | string
