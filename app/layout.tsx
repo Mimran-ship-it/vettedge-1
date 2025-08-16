@@ -35,7 +35,6 @@ export default function RootLayout({
               />
               <Toaster />
 
-              <Footer />
             </ChatProvider>
           </CartProvider>
         </AuthProvider>
