@@ -7,12 +7,13 @@ import { AuthProvider } from "@/components/providers/auth-provider"
 import { CartProvider } from "@/components/providers/cart-provider"
 import { ChatProvider } from "@/components/providers/chat-provider"
 import Script from "next/script"
+import { Footer } from "@/components/layout/footer"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Vettedge.domains - Premium Expired Domains",
   description: "Discover & Buy Premium Expired Domains With Real Authority",
-    generator: 'v0.dev'
+  generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -26,13 +27,15 @@ export default function RootLayout({
         <AuthProvider>
           <CartProvider>
             <ChatProvider>
-             
+
               {children}
               <Script
-          src="https://accounts.google.com/gsi/client"
-          strategy="afterInteractive"
-        />
+                src="https://accounts.google.com/gsi/client"
+                strategy="afterInteractive"
+              />
               <Toaster />
+
+              <Footer />
             </ChatProvider>
           </CartProvider>
         </AuthProvider>

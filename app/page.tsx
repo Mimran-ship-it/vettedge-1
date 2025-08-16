@@ -22,7 +22,6 @@ export default function HomePage() {
         <BlogPreview />
         <ContactSection />
       </main>
-      <Footer />
       <LiveChat />
     </div>
   )

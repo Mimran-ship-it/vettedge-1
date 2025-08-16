@@ -280,9 +280,16 @@ export function ContactSection() {
         </div>
 
         {/* Can't find what you're looking for? */}
-        
+        <motion.div
+          className="mt-16"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.2 }} // triggers reliably
+          transition={{ duration: 0.6 }}
+          variants={fadeInUp}
+        >
 
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-4xl my-6 mx-auto">
             <Card style={{ backgroundColor: "#f8f9fa", border: "1px solid #e9ecef" }}>
               <CardContent className="pt-8 pb-8">
                 <h3 className="text-2xl md:text-3xl font-bold mb-6 text-center" style={{ color: "#33BDC7" }}>
@@ -305,7 +312,7 @@ export function ContactSection() {
               </CardContent>
             </Card>
           </div>
-        {/* </motion.div> */}
+        </motion.div>
       </div>
     </section>
   )
