@@ -22,7 +22,6 @@ export default function ContactPage() {
     name: "",
     email: "",
     subject: "",
-    category: "",
     message: "",
   })
   const [loading, setLoading] = useState(false)
@@ -41,7 +40,7 @@ export default function ContactPage() {
       title: "Message sent successfully!",
       description: "We'll get back to you within 24 hours.",
     })
-    setFormData({ name: "", email: "", subject: "", category: "", message: "" })
+    setFormData({ name: "", email: "", subject: "", message: "" })
     setLoading(false)
   }
 
@@ -77,11 +76,11 @@ export default function ContactPage() {
           <Badge variant="secondary" className="bg-white text-[#33BDC7] border-[#4DD184]">
             Contact Us
           </Badge>
-          <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
+          <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold leading-tight">
             Get in Touch
             <span className="block text-[#3BD17A]">We're Here to Help</span>
           </h1>
-          <p className="text-xl lg:text-2xl text-[#33BDC7] max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl lg:text-2xl text-[#33BDC7] max-w-3xl mx-auto leading-relaxed">
             Have questions about domains? Need help with your purchase? Our expert team is ready to assist you.
           </p>
         </div>
@@ -97,11 +96,11 @@ export default function ContactPage() {
             viewport={{ once: true }}
             variants={fadeUp}
           >
-            <h2 className="text-3xl font-bold text-[#33BDC7] mb-4">Choose Your Preferred Contact Method</h2>
-            <p className="text-lg text-gray-600">We offer multiple ways to get in touch with our support team</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-[#33BDC7] mb-4">Choose Your Preferred Contact Method</h2>
+            <p className="text-base md:text-lg text-gray-600">We offer multiple ways to get in touch with our support team</p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {contactMethods.map((method, index) => (
               <motion.div
                 key={index}
@@ -115,7 +114,7 @@ export default function ContactPage() {
                     <div className="w-16 h-16 border border-[#4DD184] rounded-2xl flex items-center justify-center mx-auto mb-4">
                       <method.icon className="h-8 w-8 text-[#4DD184]" />
                     </div>
-                    <h3 className="text-xl font-semibold text-[#33BDC7] mb-2">{method.title}</h3>
+                    <h3 className="text-lg md:text-xl font-semibold text-[#33BDC7] mb-2">{method.title}</h3>
                     <p className="text-gray-600 mb-3">{method.description}</p>
                     <p className="font-medium text-gray-900 mb-4">{method.contact}</p>
                     <Button className="bg-[#33BDC7] hover:from-[#33BDC7]">
@@ -129,12 +128,86 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Contact Form & Info */}
+      {/* Contact Form & Can't Find Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16">
-            {/* Contact Form */}
+          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-16">
+            
+            {/* Can't find what you're looking for? - appears first on mobile, second on desktop */}
             <motion.div
+              className="order-1 lg:order-2"
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              variants={fadeUp}
+            >
+              <Card
+  style={{
+    backgroundColor: "#ffffff",
+    border: "1px solid #e9ecef",
+  }}
+>
+  <CardContent className="pt-10 pb-10 px-6 md:px-12">
+    {/* Section Title */}
+    <h3
+      className="text-2xl md:text-3xl font-bold mb-10 text-center"
+      style={{ color: "#33BDC7" }}
+    >
+      Can't find what you're looking for?
+    </h3>
+
+    {/* Grid Items */}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Item 1 */}
+      <div className="text-center space-y-2">
+        <h4
+          className="font-semibold text-lg"
+          style={{ color: "#33BDC7" }}
+        >
+          Pre-Sales Assistance
+        </h4>
+        <p className="text-gray-600 text-sm leading-relaxed">
+          Need help choosing the right domain? Looking for niche-specific
+          names or bulk deals?
+        </p>
+      </div>
+
+      {/* Item 2 */}
+      <div className="text-center space-y-2">
+        <h4
+          className="font-semibold text-lg"
+          style={{ color: "#33BDC7" }}
+        >
+          Post-Purchase Help
+        </h4>
+        <p className="text-gray-600 text-sm leading-relaxed">
+          Get help with domain access, transfer guidance, and account-related
+          questions.
+        </p>
+      </div>
+
+      {/* Item 3 */}
+      <div className="text-center space-y-2">
+        <h4
+          className="font-semibold text-lg"
+          style={{ color: "#33BDC7" }}
+        >
+          Response Time
+        </h4>
+        <p className="text-gray-600 text-sm leading-relaxed">
+          We aim to respond to all support and sales inquiries within 1
+          business day.
+        </p>
+      </div>
+    </div>
+  </CardContent>
+</Card>
+
+            </motion.div>
+
+            {/* Contact Form - appears second on mobile, first on desktop */}
+            <motion.div
+              className="order-2 lg:order-1"
               initial="hidden"
               whileInView="show"
               viewport={{ once: true }}
@@ -142,7 +215,7 @@ export default function ContactPage() {
             >
               <Card className="shadow-xl border-0">
                 <CardHeader>
-                  <CardTitle className="text-2xl font-bold flex items-center text-[#33BDC7]">
+                  <CardTitle className="text-xl md:text-2xl font-bold flex items-center text-[#33BDC7]">
                     <Send className="h-6 w-6 mr-2 text-[#33BDC7]" />
                     Send us a Message
                   </CardTitle>
@@ -150,7 +223,7 @@ export default function ContactPage() {
                 </CardHeader>
                 <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="name" className="text-[#33BDC7] font-semibold">
                           Full Name *
@@ -180,25 +253,6 @@ export default function ContactPage() {
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="category" className="text-[#33BDC7] font-semibold">
-                        Category
-                      </Label>
-                      <Select
-                        value={formData.category}
-                        onValueChange={(value) => handleInputChange("category", value)}
-                      >
-                        <SelectTrigger className="border-[#33BDC7] focus:border-[#38C172]" />
-                        <SelectContent>
-                          <SelectItem value="general">General Inquiry</SelectItem>
-                          <SelectItem value="domain">Domain Question</SelectItem>
-                          <SelectItem value="purchase">Purchase Support</SelectItem>
-                          <SelectItem value="technical">Technical Issue</SelectItem>
-                          <SelectItem value="billing">Billing Question</SelectItem>
-                          <SelectItem value="partnership">Partnership</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="subject" className="text-[#33BDC7] font-semibold">
@@ -250,110 +304,68 @@ export default function ContactPage() {
                 </CardContent>
               </Card>
             </motion.div>
-
-            {/* Office Information */}
-            <motion.div
-              className="space-y-8"
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              variants={fadeUp}
-            >
-              <h2 className="text-3xl font-bold text-[#33BDC7] mb-6">Can’t find what you’re looking for?</h2>
-
-              <div className="space-y-6">
-                {officeInfo.map((info, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.15 }}
-                  >
-                    <Card className="border-l-4 border-l-[#33BDC7]">
-                      <CardContent className="pt-6">
-                        <div className="flex items-start space-x-4">
-                          <div className="w-12 h-12 border-[#38C172] border rounded-xl flex items-center justify-center flex-shrink-0">
-                            <info.icon className="h-6 w-6 text-[#38C172]" />
-                          </div>
-                          <div>
-                            <h3 className="text-lg font-semibold text-[#33BDC7] mb-2">{info.title}</h3>
-                            {info.details.map((detail, idx) => (
-                              <p key={idx} className="text-gray-600">{detail}</p>
-                            ))}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
           </div>
         </div>
       </section>
-
       {/* FAQ Section */}
- {/* FAQ Section */}
-<section className="py-16 bg-white">
-  <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-    <motion.div
-      className="text-center mb-12"
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true }}
-      variants={fadeUp}
-    >
-      <h2 className="text-3xl font-bold text-[#33BDC7] mb-4">Frequently Asked Questions</h2>
-      <p className="text-lg text-gray-600">Quick answers to common questions</p>
-    </motion.div>
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            className="text-center mb-12"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            variants={fadeUp}
+          >
+            <h2 className="text-2xl md:text-3xl font-bold text-[#33BDC7] mb-4">Frequently Asked Questions</h2>
+            <p className="text-base md:text-lg text-gray-600">Quick answers to common questions</p>
+          </motion.div>
 
-    <div className="space-y-6">
-      {[
-        {
-          question: "Can I request a specific niche or category of domain?",
-          answer: "Absolutely. Contact us with your preferred niche or keywords and we’ll suggest available options or source domains for you."
-        },
-        {
-          question: "Do you offer refunds?",
-          answer: "Yes — we offer a 14-day refund policy. A 5% handling fee applies, and payment gateway fees (like PayPal’s) are non-refundable. Domains must be unused and returned to us."
-        },
-        {
-          question: "Are expired domains safe to use for SEO?",
-          answer: "If properly vetted — yes. We only sell aged/expired domains with clean histories and strong SEO potential, making them ideal for authority sites, PBNs, niche blogs, or brand foundations."
-        },
-        {
-          question: "How long does the transfer take?",
-          answer: "Registrar push transfers are usually completed within a few hours. Traditional transfers (via EPP code) may take up to 5–7 days depending on the registrar."
-        },
-        {
-          question: "Are the domains clean and free of penalties?",
-          answer: "Yes. Every domain we list is manually vetted to ensure it’s free from spam, Google penalties, or blacklists."
-        },
-        {
-          question: "Can I request backlink or SEO metrics for a domain?",
-          answer: "Definitely. Contact us and we’ll provide a snapshot of the domain’s metrics — such as referring domains, domain authority, and other relevant data."
-        }
-      ].map(({ question, answer }, index) => (
-        <motion.div
-          key={index}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: index * 0.15 }}
-        >
-          <Card>
-            <CardContent className="pt-6">
-              <h3 className="text-lg font-semibold text-[#33BDC7] mb-2">{question}</h3>
-              <p className="text-gray-600">{answer}</p>
-            </CardContent>
-          </Card>
-        </motion.div>
-      ))}
-    </div>
-  </div>
-</section>
-
+          <div className="space-y-6">
+            {[
+              {
+                question: "Can I request a specific niche or category of domain?",
+                answer: "Absolutely. Contact us with your preferred niche or keywords and we'll suggest available options or source domains for you."
+              },
+              {
+                question: "Do you offer refunds?",
+                answer: "Yes — we offer a 14-day refund policy. A 5% handling fee applies, and payment gateway fees (like PayPal's) are non-refundable. Domains must be unused and returned to us."
+              },
+              {
+                question: "Are expired domains safe to use for SEO?",
+                answer: "If properly vetted — yes. We only sell aged/expired domains with clean histories and strong SEO potential, making them ideal for authority sites, PBNs, niche blogs, or brand foundations."
+              },
+              {
+                question: "How long does the transfer take?",
+                answer: "Registrar push transfers are usually completed within a few hours. Traditional transfers (via EPP code) may take up to 5–7 days depending on the registrar."
+              },
+              {
+                question: "Are the domains clean and free of penalties?",
+                answer: "Yes. Every domain we list is manually vetted to ensure it's free from spam, Google penalties, or blacklists."
+              },
+              {
+                question: "Can I request backlink or SEO metrics for a domain?",
+                answer: "Definitely. Contact us and we'll provide a snapshot of the domain's metrics — such as referring domains, domain authority, and other relevant data."
+              }
+            ].map(({ question, answer }, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.15 }}
+              >
+                <Card>
+                  <CardContent className="pt-6">
+                    <h3 className="text-base md:text-lg font-semibold text-[#33BDC7] mb-2">{question}</h3>
+                    <p className="text-gray-600">{answer}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <Footer />
       <LiveChat />

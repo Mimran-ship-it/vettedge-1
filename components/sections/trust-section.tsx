@@ -54,7 +54,7 @@ export function TrustSection() {
   const trustIndicators = [
     { icon: Globe, label: "50+ Domains Sold", value: "50+" },
     { icon: ListChecks, label: "100+ Listing", value: "100+" },
-    { icon: Store, label: "5 Years on Market", value: "5" },
+    { icon: Store, label: "5+ Years on Market", value: "5+" },
   ]
 
   return (

@@ -63,7 +63,7 @@ export function ContactSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Heading */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-12 md:mb-16"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
@@ -73,19 +73,19 @@ export function ContactSection() {
           <Badge variant="outline" className="mb-4 px-4 py-2" style={{ borderColor: "#33BDC7", color: "#33BDC7" }}>
             Get In Touch
           </Badge>
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6" style={{ color: "#33BDC7" }}>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6" style={{ color: "#33BDC7" }}>
             Ready to Find Your
             <span className="block" style={{ color: "#33BDC7" }}>
               Perfect Domain ?
             </span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Our domain experts are here to help you find the perfect expired domain for your business. Get personalized
             recommendations and expert guidance.
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
           {/* Contact Form */}
           <motion.div
             initial="hidden"
@@ -96,7 +96,7 @@ export function ContactSection() {
           >
             <Card className="shadow-2xl border border-gray-200 bg-white">
               <CardHeader>
-                <CardTitle className="text-2xl font-bold flex items-center" style={{ color: "#33BDC7" }}>
+                <CardTitle className="text-xl md:text-2xl font-bold flex items-center" style={{ color: "#33BDC7" }}>
                   <Send className="h-6 w-6 mr-3" style={{ color: "#33BDC7" }} />
                   Send us a Message
                 </CardTitle>
@@ -104,7 +104,7 @@ export function ContactSection() {
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="name">Full Name</Label>
                       <Input
@@ -173,18 +173,18 @@ export function ContactSection() {
             transition={{ duration: 0.6 }}
             variants={fadeInRight}
           >
-            <div className="space-y-8">
+            <div className="space-y-6 md:space-y-8">
               <div>
-                <h3 className="text-2xl font-bold mb-4" style={{ color: "#33BDC7" }}>
+                <h3 className="text-xl md:text-2xl font-bold mb-4" style={{ color: "#33BDC7" }}>
                   Multiple Ways to Connect
                 </h3>
-                <p className="text-lg text-gray-600 mb-8">
+                <p className="text-base md:text-lg text-gray-600 mb-6 md:mb-8">
                   Choose the contact method that works best for you. Our team is available 24/7 to assist with your
                   domain investment needs.
                 </p>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-4 md:space-y-6">
                 {contactMethods.map((method, index) => (
                   <motion.div
                     key={index}
@@ -278,6 +278,34 @@ export function ContactSection() {
             </div>
           </motion.div>
         </div>
+
+        {/* Can't find what you're looking for? */}
+        
+
+          <div className="max-w-4xl mx-auto">
+            <Card style={{ backgroundColor: "#f8f9fa", border: "1px solid #e9ecef" }}>
+              <CardContent className="pt-8 pb-8">
+                <h3 className="text-2xl md:text-3xl font-bold mb-6 text-center" style={{ color: "#33BDC7" }}>
+                  Can't find what you're looking for?
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="text-center">
+                    <h4 className="font-semibold mb-2" style={{ color: "#33BDC7" }}>Pre-Sales Assistance</h4>
+                    <p className="text-gray-600 text-sm">Need help choosing the right domain? Looking for niche-specific names or bulk deals?</p>
+                  </div>
+                  <div className="text-center">
+                    <h4 className="font-semibold mb-2" style={{ color: "#33BDC7" }}>Post-Purchase Help</h4>
+                    <p className="text-gray-600 text-sm">Get help with domain access, transfer guidance, and account-related questions.</p>
+                  </div>
+                  <div className="text-center">
+                    <h4 className="font-semibold mb-2" style={{ color: "#33BDC7" }}>Response Time</h4>
+                    <p className="text-gray-600 text-sm">We aim to respond to all support and sales inquiries within 1 business day.</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        {/* </motion.div> */}
       </div>
     </section>
   )

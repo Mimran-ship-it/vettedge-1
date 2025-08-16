@@ -12,7 +12,7 @@ export function StatsSection() {
     { value: "15,000+", label: "Domains Sold" },
     { value: "98%", label: "Customer Satisfaction" },
     { value: "24/7", label: "Support Available" },
-    { value: "5 Years", label: "Industry Experience" },
+    { value: "5+ Years", label: "Industry Experience" },
   ]
 
   return (

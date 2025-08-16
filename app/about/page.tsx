@@ -30,7 +30,7 @@ export default function AboutPage() {
   const stats = [
     { icon: Globe, label: "50+ Domains Sold", value: "50+" },
     { icon: ListChecks, label: "100+ Listings", value: "100+" },
-    { icon: Store, label: "5 Years on Market", value: "5" },
+    { icon: Store, label: "5+ Years on Market", value: "5+" },
   ]
 
   const values = [
@@ -86,7 +86,7 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => (
               <motion.div
                 key={index}
@@ -94,14 +94,15 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.2 }}
+                className="h-full"
               >
-                <Card className="text-center p-6 hover:shadow-lg transition-shadow border border-[#33BDC7]">
-                  <CardContent className="pt-6">
+                <Card className="text-center p-6 hover:shadow-lg transition-shadow border border-[#33BDC7] h-full flex flex-col">
+                  <CardContent className="pt-6 flex-1 flex flex-col">
                     <div className="w-16 h-16 border border-[#4dd184] rounded-2xl flex items-center justify-center mx-auto mb-4">
                       <value.icon className="h-8 w-8 text-[#4dd184]" />
                     </div>
                     <h3 className="text-xl font-semibold text-[#33BDC7] mb-3">{value.title}</h3>
-                    <p className="text-gray-700">{value.description}</p>
+                    <p className="text-gray-700 flex-1">{value.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -110,25 +111,26 @@ export default function AboutPage() {
         </div>
       </motion.section>
          {/* Stats Section */}
-       <section className="py-16 bg-gray-50
-">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-1 gap-8">
-          {stats.map((stat, index) => (
-            <motion.div
-              key={index}
-              className="text-center"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.2, duration: 0.5 }}
-            >
-              <div className="w-16 h-16 bg-[#33BDC7] rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <stat.icon className="h-8 w-8 text-white" />
-              </div>
-              <div className="text-3xl font-bold text-[#33BDC7] mb-2">{stat.value}</div>
-              <div className="text-gray-600">{stat.label}</div>
-            </motion.div>
-          ))}
+       <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+            {stats.map((stat, index) => (
+              <motion.div
+                key={index}
+                className="text-center"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.2, duration: 0.5 }}
+              >
+                <div className="w-16 h-16 bg-[#33BDC7] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <stat.icon className="h-8 w-8 text-white" />
+                </div>
+                <div className="text-3xl font-bold text-[#33BDC7] mb-2">{stat.value}</div>
+                <div className="text-gray-600">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section> 
 
