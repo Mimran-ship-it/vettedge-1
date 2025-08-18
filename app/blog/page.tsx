@@ -32,23 +32,10 @@ export default async function BlogPage() {
           </p>
         </div>
 
-        {/* {featuredPosts.length > 0 && (
-          <section className="mb-16">
-            <h2 className="text-2xl font-bold mb-8" style={{ color: "#33BDC7" }}>
-              Featured Articles
-            </h2>
-            <BlogList posts={featuredPosts} />
-          </section>
-        )} */}
-
-        <section>
-          <h2 className="text-2xl font-bold mb-8" style={{ color: "#33BDC7" }}>
-            All Articles
-          </h2>
+        <section> 
           <BlogList posts={regularPosts} />
         </section>
-      </main>
-      <Footer />
+      </main> 
     </div>
   )
 }

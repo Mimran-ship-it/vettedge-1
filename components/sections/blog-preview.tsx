@@ -3,9 +3,8 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Calendar, Clock, User, ArrowRight } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { motion } from "framer-motion"
 
 interface Blog {
@@ -53,7 +52,7 @@ export function BlogPreview() {
     .slice(0, 3)
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Animation */}
         <motion.div
@@ -108,63 +107,44 @@ export function BlogPreview() {
             {featuredPosts.map((post) => (
               <motion.div
                 key={post._id}
+                className="flex"
                 variants={{
                   hidden: { opacity: 0, y: 40 },
                   visible: { opacity: 1, y: 0 },
                 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
               >
-                <Card className="overflow-hidden hover:shadow-lg transition-shadow group border border-gray-200">
-                  <div className="aspect-video bg-gray-200 relative overflow-hidden">
+               <Card className="overflow-hidden bg-white rounded-lg shadow-none border-none flex flex-col h-full">
+                  {/* Blog Image */}
+                  <div className="w-full h-48 flex items-center justify-center overflow-hidden">
                     <motion.img
                       src={post.image || "/domaininvesting.png"}
                       alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
                       whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.3 }}
                     />
-                    <Badge
-                      className="absolute top-4 left-4 text-white"
-                      style={{ backgroundColor: "#33BDC7" }}
-                    >
-                      {post.category}
-                    </Badge>
                   </div>
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                      <div className="flex items-center gap-1">
-                        <User className="h-4 w-4" />
-                        {post.author.name}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
-                        {post.readingTime} min
-                      </div>
-                    </div>
 
-                    <h3
-                      className="text-lg font-semibold mb-3 group-hover:opacity-80 transition-colors"
-                      style={{ color: "#33BDC7" }}
-                    >
+                  {/* Blog Content */}
+                  <CardContent className="p-5 flex flex-col flex-1">
+                    <h3 className="text-lg font-semibold mb-2 hover:text-[#33BDC7] transition-colors">
                       <Link href={`/blog/${post.slug}`}>{post.title}</Link>
                     </h3>
 
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-3">
                       {post.excerpt}
                     </p>
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1 text-sm text-gray-500">
-                        <Calendar className="h-4 w-4" />
-                        {new Date(post.publishedAt).toLocaleDateString()}
-                      </div>
+                    <div className="flex items-center justify-between mt-auto">
                       <Link
                         href={`/blog/${post.slug}`}
-                        style={{ color: "#33BDC7" }}
-                        className="hover:opacity-80 text-sm font-medium"
+                        className="text-[#33BDC7] font-medium text-sm hover:underline"
                       >
-                        Read More →
+                        Read More
                       </Link>
+                      <div className="text-xs text-gray-500">
+                        {post.category}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

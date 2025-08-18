@@ -27,53 +27,40 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
           }}
           transition={{ duration: 0.4, ease: "easeOut" }}
         >
-          <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-            <div className="aspect-video bg-gray-200">
-              <img src={post.image || "/placeholder.svg"} alt={post.title} className="w-full h-full object-cover" />
-            </div>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                <div className="flex items-center gap-1">
-                  <User className="h-4 w-4" />
-                  {post.author.name}
-                </div>
-                <div className="flex items-center gap-1">
-                  <Clock className="h-4 w-4" />
-                  {post.readingTime} min
-                </div>
-              </div>
-              <h3 className="text-lg font-semibold mb-2" style={{ color: "#33BDC7" }}>
-                <Link
-                  href={`/blog/${post.slug}`}
-                  className="hover:text-[#38C172] transition-colors"
-                  style={{ color: "#33BDC7" }}
-                >
-                  {post.title}
-                </Link>
-              </h3>
-              <p className="text-gray-600 text-sm mb-4 line-clamp-3">{post.excerpt}</p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                <Badge
-                  variant="secondary"
-                  className="text-xs"
-                  style={{ backgroundColor: "#38C172", color: "white" }}
-                >
-                  {post.category}
-                </Badge>
-                {post.tags.slice(0, 1).map((tag) => (
-                  <Badge
-                    key={tag}
-                    variant="outline"
-                    className="text-xs"
-                    style={{ borderColor: "#33BDC7", color: "#33BDC7" }}
-                  >
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-              <div className="text-sm text-gray-500">{new Date(post.publishedAt).toLocaleDateString()}</div>
-            </CardContent>
-          </Card>
+          <Card className="overflow-hidden bg-gray-50 rounded-lg shadow-none border-none flex flex-col h-full">
+                  {/* Blog Image */}
+                  <div className="w-full h-48 flex items-center justify-center overflow-hidden">
+                    <motion.img
+                      src={post.image || "/domaininvesting.png"}
+                      alt={post.title}
+                      className="w-full h-full object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
+                      whileHover={{ scale: 1.05 }}
+                    />
+                  </div>
+
+                  {/* Blog Content */}
+                  <CardContent className="p-5 flex flex-col flex-1">
+                    <h3 className="text-lg font-semibold mb-2 hover:text-[#33BDC7] transition-colors">
+                      <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+                    </h3>
+
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-3">
+                      {post.excerpt}
+                    </p>
+
+                    <div className="flex items-center justify-between mt-auto">
+                      <Link
+                        href={`/blog/${post.slug}`}
+                        className="text-[#33BDC7] font-medium text-sm hover:underline"
+                      >
+                        Read More
+                      </Link>
+                      <div className="text-xs text-gray-500">
+                        {post.category}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
         </motion.div>
       ))}
     </motion.div>
