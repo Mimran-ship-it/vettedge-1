@@ -49,7 +49,7 @@ export function Footer() {
               </h2>
             </Link>
             <p className="text-sm text-[#33BDC7] dark:text-[#33BDC7]/80">
-              Premium aged domains with proven SEO value.
+              Vetting Process domains with proven SEO value.
             </p>
             <div className="border-l-4 border-[#38C172] pl-4 mt-2 text-sm italic text-gray-700 dark:text-gray-400">
               <p>
@@ -133,23 +133,13 @@ export function Footer() {
         </div>
  
         {/* Footer Bottom */}
-        <div className="text-center my-6  text-xs text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-2">
+        <div className="text-center mt-6  text-xs text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-2">
           <div className="flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-3">
             <div className="flex items-center gap-1">
               <Code2 className="w-3 h-3" />
               <span>© 2025 Vettedge.domains. All rights reserved.</span>
             </div>
-            <span className="hidden sm:inline-block">|</span>
-            <span>
-              Developed by{" "}
-              <Link
-                href="https://www.techcognify.com/"
-                target="_blank"
-                className="hover:underline underline-offset-2 text-[#33BDC7] font-medium transition-colors"
-              >
-                TECHCOGNIFY
-              </Link>
-            </span>
+             
           </div>
         </div>
       </div>
