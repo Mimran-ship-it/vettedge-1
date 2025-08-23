@@ -28,10 +28,30 @@ export function LiveChat() {
     scrollToBottom()
   }, [messages])
 
-  const handleSendMessage = () => {
-    if (message.trim()) {
+  useEffect(() => {
+    console.log("LiveChat - Current session:", currentSession)
+    console.log("LiveChat - Is connected:", isConnected)
+    console.log("LiveChat - Messages count:", messages.length)
+  }, [currentSession, isConnected, messages])
+
+  const handleSendMessage = (e?: React.MouseEvent) => {
+    e?.preventDefault()
+    e?.stopPropagation()
+    
+    console.log("Send button clicked", { user, message, currentSession, isConnected })
+    
+    // Temporarily remove currentSession requirement to test if that's the issue
+    if (message.trim() && user) {
+      console.log("Sending message:", message, "Session:", currentSession?._id || "No session")
       sendMessage(message)
       setMessage("")
+    } else {
+      console.log("Cannot send message - missing requirements", { 
+        hasMessage: !!message.trim(), 
+        hasSession: !!currentSession, 
+        hasUser: !!user,
+        isConnected 
+      })
     }
   }
 
@@ -66,9 +86,6 @@ export function LiveChat() {
           <CardTitle className="text-sm font-medium flex items-center space-x-2">
             <MessageSquare className="h-4 w-4" />
             <span>Live Support</span>
-            <Badge variant={isConnected ? "secondary" : "destructive"} className="text-xs">
-              {isConnected ? "Online" : "Offline"}
-            </Badge>
           </CardTitle>
           <div className="flex items-center space-x-1">
             <Button
@@ -132,7 +149,13 @@ export function LiveChat() {
                 disabled={!user}
                 className="flex-1"
               />
-              <Button onClick={handleSendMessage} disabled={!user || !message.trim() || !isConnected} size="sm">
+              <Button 
+                type="button"
+                onClick={handleSendMessage} 
+                disabled={!user || !message.trim()} 
+                size="sm"
+                className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 min-w-[40px] flex items-center justify-center border-0"
+              >
                 <Send className="h-4 w-4" />
               </Button>
             </div>

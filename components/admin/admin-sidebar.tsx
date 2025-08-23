@@ -14,7 +14,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { LayoutDashboard, Globe, Users, CreditCard, MessageSquare, Settings, BarChart3, LogOut, Newspaper } from "lucide-react"
+import { Home, Users, Package, ShoppingCart, BarChart3, Settings, Mail, MessageSquare, LayoutDashboard, Globe, Newspaper, CreditCard, LogOut } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 
 
@@ -50,15 +50,20 @@ const menuItems = [
     icon: MessageSquare,
   },
   {
-    title: "Analytics",
-    url: "/admin/analytics",
-    icon: BarChart3,
+    title: "Contacts",
+    url: "/admin/contacts",
+    icon: Mail,
   },
-  {
-    title: "Settings",
-    url: "/admin/settings",
-    icon: Settings,
-  },
+  // {
+  //   title: "Analytics",
+  //   url: "/admin/analytics",
+  //   icon: BarChart3,
+  // },
+  // {
+  //   title: "Settings",
+  //   url: "/admin/settings",
+  //   icon: Settings,
+  // },
 ]
 
 export function AdminSidebar() {

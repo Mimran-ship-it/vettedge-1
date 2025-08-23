@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Mail, Phone, MessageSquare, Send, Clock, Headphones, CheckCircle } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import ContactForm from "@/components/contact-form"
 
 // Animation variants
 const fadeInUp = {
@@ -29,28 +30,6 @@ const fadeInRight = {
 }
 
 export function ContactSection() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  })
-  const [loading, setLoading] = useState(false)
-  const { toast } = useToast()
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    toast({
-      title: "Message sent successfully!",
-      description: "We'll get back to you within 24 hours.",
-    })
-
-    setFormData({ name: "", email: "", message: "" })
-    setLoading(false)
-  }
 
   const contactMethods = [
     { icon: Mail, title: "Email Support", description: "support@vettedge.domains" },
@@ -94,75 +73,11 @@ export function ContactSection() {
             transition={{ duration: 0.6 }}
             variants={fadeInLeft}
           >
-            <Card className="shadow-2xl border border-gray-200 bg-white">
-              <CardHeader>
-                <CardTitle className="text-xl md:text-2xl font-bold flex items-center" style={{ color: "#33BDC7" }}>
-                  <Send className="h-6 w-6 mr-3" style={{ color: "#33BDC7" }} />
-                  Send us a Message
-                </CardTitle>
-                <p className="text-gray-600">Get expert advice on domain selection and SEO potential</p>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Full Name</Label>
-                      <Input
-                        id="name"
-                        value={formData.name}
-                        onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-                        placeholder="Your full name"
-                        required
-                        className="h-12"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email Address</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-                        placeholder="your@email.com"
-                        required
-                        className="h-12"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="message">How can we help you?</Label>
-                    <Textarea
-                      id="message"
-                      value={formData.message}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
-                      placeholder="Tell us about your domain needs, target niche, or any specific requirements..."
-                      rows={5}
-                      required
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="w-full h-12 text-lg font-semibold text-white"
-                    style={{ backgroundColor: "#38C172" }}
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                        Sending Message...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-5 w-5 mr-2" />
-                        Get Expert Advice
-                      </>
-                    )}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+            <ContactForm 
+              variant="home"
+              headerTitle="Send us a Message"
+              headerDescription="Get expert advice on domain selection and SEO potential"
+            />
           </motion.div>
 
           {/* Contact Information */}

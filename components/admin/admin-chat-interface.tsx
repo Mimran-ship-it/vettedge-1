@@ -6,21 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
-import { SidebarTrigger } from "@/components/ui/sidebar"
-import { 
-  MessageSquare, 
-  Send, 
-  Clock, 
-  User, 
-  CheckCircle, 
-  XCircle,
-  AlertCircle,
-  Search,
-  Filter
-} from "lucide-react"
-import { useAuth } from "@/hooks/use-auth"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { MessageSquare, Send, Users, Clock, Bell } from "lucide-react"
 import { useSocket } from "@/hooks/use-socket"
+import { useAuth } from "@/hooks/use-auth"
+import { AdminNotificationBell } from "@/components/admin/admin-notification-bell"
 import { formatDistanceToNow } from "date-fns"
 
 interface ChatSession {
@@ -29,10 +19,10 @@ interface ChatSession {
   userName: string
   userEmail: string
   status: "active" | "closed" | "waiting"
-  unreadCount: number
-  lastMessageAt: string
   createdAt: string
   updatedAt: string
+  lastMessageAt: string
+  unreadCount: number
 }
 
 interface ChatMessage {
@@ -54,10 +44,7 @@ export function AdminChatInterface() {
   const [selectedSession, setSelectedSession] = useState<ChatSession | null>(null)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [newMessage, setNewMessage] = useState("")
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState<string>("all")
-  const [isTyping, setIsTyping] = useState(false)
-  const [typingUsers, setTypingUsers] = useState<string[]>([])
+  const [loading, setLoading] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -85,272 +72,236 @@ export function AdminChatInterface() {
       }) => {
         // Update sessions list
         setSessions(prev => prev.map(s => 
-          s._id === sessionId ? { ...s, ...session } : s
+          s._id === sessionId ? { ...s, lastMessageAt: message.createdAt, unreadCount: s.unreadCount + 1 } : s
         ))
-
-        // Show browser notification if permission granted
-        if (Notification.permission === "granted") {
-          new Notification(`New message from ${message.senderName}`, {
-            body: message.content,
-            icon: "/logo.jpg"
-          })
-        }
-      })
-
-      // Listen for session updates
-      socket.on("session-updated", (session: ChatSession) => {
-        setSessions(prev => prev.map(s => 
-          s._id === session._id ? session : s
-        ))
-      })
-
-      // Listen for typing indicators
-      socket.on("user-typing", ({ userId, userName, isTyping }: {
-        userId: string
-        userName: string
-        isTyping: boolean
-      }) => {
-        if (isTyping) {
-          setTypingUsers(prev => [...prev.filter(u => u !== userName), userName])
-        } else {
-          setTypingUsers(prev => prev.filter(u => u !== userName))
-        }
       })
 
       return () => {
         socket.off("new-message")
         socket.off("new-customer-message")
-        socket.off("session-updated")
-        socket.off("user-typing")
       }
     }
   }, [socket, isConnected, selectedSession])
 
-  useEffect(() => {
-    fetchSessions()
-    requestNotificationPermission()
-  }, [])
-
-  const requestNotificationPermission = async () => {
-    if ("Notification" in window && Notification.permission === "default") {
-      await Notification.requestPermission()
-    }
-  }
-
+  // Fetch chat sessions
   const fetchSessions = async () => {
     try {
-      const token = localStorage.getItem("token")
       const response = await fetch("/api/chat/sessions", {
         headers: {
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${localStorage.getItem("token")}`
         }
       })
-      
       if (response.ok) {
         const data = await response.json()
-        setSessions(data.sessions)
+        setSessions(data.sessions || [])
       }
     } catch (error) {
-      console.error("Error fetching sessions:", error)
+      console.error("Failed to fetch sessions:", error)
+    } finally {
+      setLoading(false)
     }
   }
 
+  // Fetch messages for selected session
   const fetchMessages = async (sessionId: string) => {
     try {
-      const token = localStorage.getItem("token")
       const response = await fetch(`/api/chat/messages?sessionId=${sessionId}`, {
         headers: {
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${localStorage.getItem("token")}`
         }
       })
-      
       if (response.ok) {
         const data = await response.json()
-        setMessages(data.messages)
+        setMessages(data.messages || [])
       }
     } catch (error) {
-      console.error("Error fetching messages:", error)
+      console.error("Failed to fetch messages:", error)
     }
   }
 
-  const handleSessionSelect = (session: ChatSession) => {
-    setSelectedSession(session)
-    setMessages([])
-    fetchMessages(session._id)
-    
-    if (socket && isConnected) {
-      socket.emit("join-session", session._id)
-    }
-  }
-
-  const handleSendMessage = () => {
+  // Send message
+  const sendMessage = () => {
     if (!newMessage.trim() || !selectedSession || !socket) return
 
-    socket.emit("send-message", {
+    socket.emit("send_message", {
       sessionId: selectedSession._id,
-      content: newMessage,
-      messageType: "text"
+      content: newMessage.trim()
     })
 
     setNewMessage("")
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSendMessage()
-    }
-  }
-
-  const handleStatusChange = (sessionId: string, status: string) => {
+  // Socket event listeners
+  useEffect(() => {
     if (socket && isConnected) {
-      socket.emit("update-session-status", { sessionId, status })
-    }
-  }
+      socket.on("new_message", (message: ChatMessage) => {
+        if (selectedSession && message.sessionId === selectedSession._id) {
+          setMessages(prev => [...prev, message])
+        }
+        
+        // Update session unread count
+        setSessions(prev => 
+          prev.map(session => 
+            session._id === message.sessionId
+              ? { ...session, lastMessageAt: message.createdAt, unreadCount: session.unreadCount + (message.senderRole === "customer" ? 1 : 0) }
+              : session
+          )
+        )
+      })
 
-  const handleTyping = (isTyping: boolean) => {
-    if (socket && selectedSession && isTyping !== isTyping) {
-      setIsTyping(isTyping)
-      socket.emit("typing", { sessionId: selectedSession._id, isTyping })
-    }
-  }
+      socket.on("session_joined", () => {
+        if (selectedSession) {
+          fetchMessages(selectedSession._id)
+        }
+      })
 
-  const filteredSessions = sessions.filter(session => {
-    const matchesSearch = session.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         session.userEmail.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === "all" || session.status === statusFilter
-    return matchesSearch && matchesStatus
-  })
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "active": return <CheckCircle className="h-4 w-4 text-green-500" />
-      case "waiting": return <AlertCircle className="h-4 w-4 text-yellow-500" />
-      case "closed": return <XCircle className="h-4 w-4 text-gray-500" />
-      default: return <Clock className="h-4 w-4" />
+      return () => {
+        socket.off("new_message")
+        socket.off("session_joined")
+      }
     }
+  }, [socket, isConnected, selectedSession])
+
+  // Join session when selected
+  useEffect(() => {
+    if (socket && selectedSession) {
+      socket.emit("join_session", selectedSession._id)
+    }
+  }, [socket, selectedSession])
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages])
+
+  // Initial data fetch
+  useEffect(() => {
+    if (user?.role === "admin") {
+      fetchSessions()
+    }
+  }, [user])
+
+  const handleSessionSelect = (session: ChatSession) => {
+    setSelectedSession(session)
+    setMessages([])
+    
+    // Mark session as read
+    setSessions(prev => 
+      prev.map(s => 
+        s._id === session._id ? { ...s, unreadCount: 0 } : s
+      )
+    )
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active": return "bg-green-100 text-green-800"
-      case "waiting": return "bg-yellow-100 text-yellow-800"
-      case "closed": return "bg-gray-100 text-gray-800"
-      default: return "bg-blue-100 text-blue-800"
+      case "active": return "bg-green-500"
+      case "waiting": return "bg-yellow-500"
+      case "closed": return "bg-gray-500"
+      default: return "bg-gray-500"
     }
   }
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+          <p className="text-gray-600">Loading chat sessions...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="flex-1 h-screen flex">
-      {/* Sessions List */}
-      <div className="w-80 border-r bg-gray-50/50 flex flex-col">
-        <div className="p-4 border-b bg-white">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-2">
-              <SidebarTrigger />
-              <h2 className="text-lg font-semibold">Live Chat Support</h2>
-            </div>
-            <Badge variant={isConnected ? "default" : "destructive"}>
-              {isConnected ? "Connected" : "Disconnected"}
-            </Badge>
-          </div>
-          
-          <div className="space-y-2">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search sessions..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full p-2 border rounded-md text-sm"
-            >
-              <option value="all">All Sessions</option>
-              <option value="waiting">Waiting</option>
-              <option value="active">Active</option>
-              <option value="closed">Closed</option>
-            </select>
+    <div className="flex h-screen bg-gray-50">
+      {/* Sessions Sidebar */}
+      <div className="w-80 bg-white border-r border-gray-200">
+        <div className="p-4 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Chat Sessions
+            </h2>
+            <AdminNotificationBell />
           </div>
         </div>
-
-        <ScrollArea className="flex-1">
-          <div className="p-2 space-y-2">
-            {filteredSessions.map((session) => (
-              <Card
-                key={session._id}
-                className={`cursor-pointer transition-colors hover:bg-gray-50 ${
-                  selectedSession?._id === session._id ? "ring-2 ring-blue-500" : ""
-                }`}
-                onClick={() => handleSessionSelect(session)}
-              >
-                <CardContent className="p-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-2">
-                        <User className="h-4 w-4 text-gray-500" />
-                        <span className="font-medium text-sm truncate">
-                          {session.userName}
-                        </span>
+        
+        <ScrollArea className="h-[calc(100vh-80px)]">
+          <div className="p-2">
+            {sessions.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                <p>No chat sessions yet</p>
+              </div>
+            ) : (
+              sessions.map((session) => (
+                <Card
+                  key={session._id}
+                  className={`mb-2 cursor-pointer transition-colors hover:bg-gray-50 ${
+                    selectedSession?._id === session._id ? "ring-2 ring-blue-500" : ""
+                  }`}
+                  onClick={() => handleSessionSelect(session)}
+                >
+                  <CardContent className="p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Avatar className="h-8 w-8">
+                          <AvatarFallback className="text-xs">
+                            {session.userName.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium text-sm">{session.userName}</p>
+                          <p className="text-xs text-gray-500">{session.userEmail}</p>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end gap-1">
+                        <Badge className={`text-xs ${getStatusColor(session.status)}`}>
+                          {session.status}
+                        </Badge>
                         {session.unreadCount > 0 && (
                           <Badge variant="destructive" className="text-xs">
                             {session.unreadCount}
                           </Badge>
                         )}
                       </div>
-                      <p className="text-xs text-gray-500 truncate mt-1">
-                        {session.userEmail}
-                      </p>
-                      <div className="flex items-center justify-between mt-2">
-                        <Badge className={`text-xs ${getStatusColor(session.status)}`}>
-                          {getStatusIcon(session.status)}
-                          <span className="ml-1">{session.status}</span>
-                        </Badge>
-                        <span className="text-xs text-gray-400">
-                          {formatDistanceToNow(new Date(session.lastMessageAt), { addSuffix: true })}
-                        </span>
-                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                    <div className="flex items-center gap-1 text-xs text-gray-500">
+                      <Clock className="h-3 w-3" />
+                      <span>
+                        {formatDistanceToNow(new Date(session.lastMessageAt), { addSuffix: true })}
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
         </ScrollArea>
       </div>
 
-      {/* Chat Interface */}
+      {/* Chat Area */}
       <div className="flex-1 flex flex-col">
         {selectedSession ? (
           <>
             {/* Chat Header */}
-            <div className="p-4 border-b bg-white">
+            <div className="p-4 bg-white border-b border-gray-200">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                    <User className="h-5 w-5 text-white" />
-                  </div>
+                <div className="flex items-center gap-3">
+                  <Avatar>
+                    <AvatarFallback>
+                      {selectedSession.userName.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
                   <div>
                     <h3 className="font-semibold">{selectedSession.userName}</h3>
                     <p className="text-sm text-gray-500">{selectedSession.userEmail}</p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <select
-                    value={selectedSession.status}
-                    onChange={(e) => handleStatusChange(selectedSession._id, e.target.value)}
-                    className="px-3 py-1 border rounded-md text-sm"
-                  >
-                    <option value="waiting">Waiting</option>
-                    <option value="active">Active</option>
-                    <option value="closed">Closed</option>
-                  </select>
-                </div>
+                <Badge className={getStatusColor(selectedSession.status)}>
+                  {selectedSession.status}
+                </Badge>
               </div>
             </div>
 
@@ -360,74 +311,55 @@ export function AdminChatInterface() {
                 {messages.map((message) => (
                   <div
                     key={message._id}
-                    className={`flex ${message.senderRole === "admin" ? "justify-end" : "justify-start"}`}
+                    className={`flex ${
+                      message.senderRole === "admin" ? "justify-end" : "justify-start"
+                    }`}
                   >
                     <div
                       className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
                         message.senderRole === "admin"
-                          ? "bg-blue-500 text-white"
-                          : "bg-gray-100 text-gray-900"
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-200 text-gray-900"
                       }`}
                     >
                       <p className="text-sm">{message.content}</p>
-                      <p
-                        className={`text-xs mt-1 ${
-                          message.senderRole === "admin" ? "text-blue-100" : "text-gray-500"
-                        }`}
-                      >
+                      <p className={`text-xs mt-1 ${
+                        message.senderRole === "admin" ? "text-blue-100" : "text-gray-500"
+                      }`}>
                         {formatDistanceToNow(new Date(message.createdAt), { addSuffix: true })}
                       </p>
                     </div>
                   </div>
                 ))}
-                
-                {typingUsers.length > 0 && (
-                  <div className="flex justify-start">
-                    <div className="bg-gray-100 px-4 py-2 rounded-lg">
-                      <p className="text-sm text-gray-600">
-                        {typingUsers.join(", ")} {typingUsers.length === 1 ? "is" : "are"} typing...
-                      </p>
-                    </div>
-                  </div>
-                )}
-                
                 <div ref={messagesEndRef} />
               </div>
             </ScrollArea>
 
             {/* Message Input */}
-            <div className="p-4 border-t bg-white">
-              <div className="flex space-x-2">
+            <div className="p-4 bg-white border-t border-gray-200">
+              <div className="flex gap-2">
                 <Input
-                  placeholder="Type your message..."
                   value={newMessage}
-                  onChange={(e) => {
-                    setNewMessage(e.target.value)
-                    handleTyping(e.target.value.length > 0)
-                  }}
-                  onKeyPress={handleKeyPress}
-                  onBlur={() => handleTyping(false)}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  placeholder="Type your message..."
+                  onKeyPress={(e) => e.key === "Enter" && sendMessage()}
                   className="flex-1"
                 />
-                <Button 
-                  onClick={handleSendMessage} 
-                  disabled={!newMessage.trim() || !isConnected}
-                >
+                <Button onClick={sendMessage} disabled={!newMessage.trim() || !isConnected}>
                   <Send className="h-4 w-4" />
                 </Button>
               </div>
+              {!isConnected && (
+                <p className="text-xs text-red-500 mt-1">Disconnected from chat server</p>
+              )}
             </div>
           </>
         ) : (
-          <div className="flex-1 flex items-center justify-center bg-gray-50">
+          <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Select a chat session
-              </h3>
-              <p className="text-gray-500">
-                Choose a session from the list to start chatting with customers
-              </p>
+              <MessageSquare className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Select a chat session</h3>
+              <p className="text-gray-500">Choose a session from the sidebar to start chatting</p>
             </div>
           </div>
         )}

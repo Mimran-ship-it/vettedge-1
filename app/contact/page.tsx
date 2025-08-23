@@ -16,11 +16,13 @@ import { Badge } from "@/components/ui/badge"
 import { Mail, Phone, Clock, MessageSquare, Send } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { LiveChat } from "@/components/chat/live-chat"
+import ContactForm from "@/components/contact-form"
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     subject: "",
     message: "",
   })
@@ -34,14 +36,62 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Basic validation
+    if (!formData.name.trim() || !formData.email.trim() || !formData.subject.trim() || !formData.message.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Please fill in all required fields.",
+        variant: "destructive"
+      })
+      return
+    }
+
+    if (formData.message.trim().length < 10) {
+      toast({
+        title: "Validation Error",
+        description: "Message must be at least 10 characters long.",
+        variant: "destructive"
+      })
+      return
+    }
+
     setLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    toast({
-      title: "Message sent successfully!",
-      description: "We'll get back to you within 24 hours.",
-    })
-    setFormData({ name: "", email: "", subject: "", message: "" })
-    setLoading(false)
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        toast({
+          title: "Message sent successfully!",
+          description: "We'll get back to you within 24 hours.",
+        })
+        setFormData({ name: "", email: "", phone: "", subject: "", message: "" })
+      } else {
+        toast({
+          title: "Error",
+          description: data.error || "Failed to send message. Please try again.",
+          variant: "destructive"
+        })
+      }
+    } catch (error) {
+      toast({
+        title: "Network Error",
+        description: "Please check your connection and try again.",
+        variant: "destructive"
+      })
+      console.error("Contact form error:", error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleInputChange = (field: string, value: string) => {
@@ -222,85 +272,10 @@ export default function ContactPage() {
                   <p className="text-gray-600">Fill out the form below and we'll get back to you within 24 hours.</p>
                 </CardHeader>
                 <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="name" className="text-[#33BDC7] font-semibold">
-                          Full Name *
-                        </Label>
-                        <Input
-                          id="name"
-                          value={formData.name}
-                          onChange={(e) => handleInputChange("name", e.target.value)}
-                          placeholder="Your full name"
-                          required
-                          className="border-[#33BDC7] focus:border-[#38C172]"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email" className="text-[#33BDC7] font-semibold">
-                          Email Address *
-                        </Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          value={formData.email}
-                          onChange={(e) => handleInputChange("email", e.target.value)}
-                          placeholder="your@email.com"
-                          required
-                          className="border-[#33BDC7] focus:border-[#38C172]"
-                        />
-                      </div>
-                    </div>
-
-
-                    <div className="space-y-2">
-                      <Label htmlFor="subject" className="text-[#33BDC7] font-semibold">
-                        Subject *
-                      </Label>
-                      <Input
-                        id="subject"
-                        value={formData.subject}
-                        onChange={(e) => handleInputChange("subject", e.target.value)}
-                        placeholder="Brief description of your inquiry"
-                        required
-                        className="border-[#33BDC7] focus:border-[#38C172]"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="message" className="text-[#33BDC7] font-semibold">
-                        Message *
-                      </Label>
-                      <Textarea
-                        id="message"
-                        value={formData.message}
-                        onChange={(e) => handleInputChange("message", e.target.value)}
-                        placeholder="Please provide details about your inquiry..."
-                        rows={6}
-                        required
-                        className="border-[#33BDC7] focus:border-[#38C172]"
-                      />
-                    </div>
-
-                    <Button
-                      type="submit"
-                      className="w-full bg-gradient-to-r from-[#38C172] to-[#33BDC7] hover:from-[#33BDC7] hover:to-[#38C172]"
-                      disabled={loading}
-                    >
-                      {loading ? (
-                        <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          Sending Message...
-                        </>
-                      ) : (
-                        <>
-                          <Send className="h-4 w-4 mr-2" />
-                          Send Message
-                        </>
-                      )}
-                    </Button>
-                  </form>
+                <ContactForm 
+                  variant="contact"
+                  showHeader={false}
+                />
                 </CardContent>
               </Card>
             </motion.div>

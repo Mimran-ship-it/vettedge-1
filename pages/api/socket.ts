@@ -25,6 +25,8 @@ export type NextApiResponseServerIO = NextApiResponse & {
 const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
   if (res.socket.server.io) {
     console.log("Socket is already running")
+    res.end()
+    return
   } else {
     console.log("Socket is initializing")
     const io = new SocketIOServer(res.socket.server, {
@@ -102,25 +104,49 @@ const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) 
       })
 
       // Send message
-      socket.on("send_message", async (data: { sessionId: string; content: string }) => {
+      socket.on("send_message", async (data: { sessionId?: string; content: string }) => {
         try {
+          console.log("Received send_message event:", data, "from user:", socket.userName)
           await connectDB()
           
-          const session = await ChatSession.findById(data.sessionId)
+          let session
+          if (data.sessionId) {
+            session = await ChatSession.findById(data.sessionId)
+          } else {
+            // Find or create session for this user
+            session = await ChatSession.findOne({ 
+              userId: socket.userId, 
+              status: { $in: ["active", "waiting"] }
+            })
+            
+            if (!session) {
+              console.log("Creating new session for user:", socket.userName)
+              session = new ChatSession({
+                userId: socket.userId,
+                userName: socket.userName,
+                userEmail: "unknown@example.com",
+                status: "waiting"
+              })
+              await session.save()
+            }
+          }
+          
           if (!session) {
+            console.error("No session found or created")
             socket.emit("error", { message: "Session not found" })
             return
           }
 
           // Check access
           if (socket.userRole !== "admin" && session.userId.toString() !== socket.userId) {
+            console.error("Access denied for user:", socket.userName)
             socket.emit("error", { message: "Access denied" })
             return
           }
 
           // Create message
           const message = new ChatMessage({
-            sessionId: data.sessionId,
+            sessionId: session._id,
             senderId: socket.userId,
             senderName: socket.userName,
             senderRole: socket.userRole,
@@ -131,16 +157,33 @@ const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) 
 
           await message.save()
 
+          console.log("Message saved:", message._id)
+
           // Update session
-          await ChatSession.findByIdAndUpdate(data.sessionId, {
+          await ChatSession.findByIdAndUpdate(session._id, {
             lastMessageAt: new Date(),
             $inc: { unreadCount: socket.userRole === "admin" ? 0 : 1 }
           })
 
+          console.log("Emitting new_message to session room:", `session:${session._id}`)
+
           // Emit to session room
-          io.to(`session:${data.sessionId}`).emit("new_message", {
+          io.to(`session:${session._id}`).emit("new_message", {
             _id: message._id,
-            sessionId: data.sessionId,
+            sessionId: session._id,
+            senderId: socket.userId,
+            senderName: socket.userName,
+            senderRole: socket.userRole,
+            content: data.content,
+            messageType: "text",
+            isRead: false,
+            createdAt: message.createdAt
+          })
+
+          // Also emit to the sender to confirm message was sent
+          socket.emit("new_message", {
+            _id: message._id,
+            sessionId: session._id,
             senderId: socket.userId,
             senderName: socket.userName,
             senderRole: socket.userRole,
