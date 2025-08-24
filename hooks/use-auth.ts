@@ -4,17 +4,17 @@
 import { createContext, useContext } from "react"
 
 export interface User {
-  userId: string
+  id: string
   name: string
   email: string
-  role: "admin" | "customer" | string
+  role: "admin" | "customer"
 }
 
 interface AuthContextType {
   user: User | null
   loading: boolean
   signIn: (email: string, password: string) => Promise<User>
-  signUp?: (...args: any[]) => void
+  signUp: (name: string, email: string, password: string) => Promise<User>
   signOut: () => void
   signInWithGoogle: () => Promise<void>
 }

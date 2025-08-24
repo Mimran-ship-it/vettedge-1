@@ -1,5 +1,5 @@
 import  connectDB  from "@/lib/mongodb"
-import type { User } from "@/lib/models/domain"
+import type { IUser as User } from "@/lib/models/User"
 import { ObjectId } from "mongodb"
 
 export class UserService {

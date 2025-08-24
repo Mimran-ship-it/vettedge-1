@@ -164,8 +164,7 @@ export function BlogPreview() {
           <Button
             asChild
             size="lg"
-            style={{ backgroundColor: "#3BD17A", color: "white" }}
-            className="hover:opacity-90"
+            className="hover:opacity-90 bg-[#3BD17A] text-white"
           >
             <Link href="/blog">
               View All Articles

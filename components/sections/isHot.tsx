@@ -103,7 +103,7 @@ export function IsHot() {
                   Show More
                 </Button>
               )}
-              <Button size="lg" asChild>
+              <Button size="lg" className="bg-[#3BD17A] text-white hover:bg-[rgb(59,209,122)]" asChild>
                 <a href="/domains">View All </a>
               </Button>
             </div>

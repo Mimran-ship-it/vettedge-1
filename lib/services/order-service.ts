@@ -1,72 +1,57 @@
-import  connectDB  from "@/lib/mongodb"
-import type { Order } from "@/lib/models/domain"
-import { ObjectId } from "mongodb"
+import Order, { IOrder } from "@/lib/models/order"
 
 export class OrderService {
-  private async getCollection() {
-    const db = await connectDB()
-    return db.collection<Order>("orders")
-  }
-
-  async createOrder(orderData: Omit<Order, "_id" | "id" | "createdAt" | "updatedAt">) {
-    const collection = await this.getCollection()
+  async createOrder(orderData: Omit<IOrder, "_id" | "createdAt" | "updatedAt">) {
     const now = new Date()
-
-    const result = await collection.insertOne({
+    const newOrder = new Order({
       ...orderData,
       createdAt: now,
       updatedAt: now,
     })
-
-    return { ...orderData, id: result.insertedId.toString(), createdAt: now, updatedAt: now }
+    
+    const savedOrder = await newOrder.save()
+    return { ...savedOrder.toObject(), id: savedOrder._id.toString() }
   }
 
   async getOrderById(id: string) {
-    const collection = await this.getCollection()
-    const order = await collection.findOne({ _id: new ObjectId(id) })
-    return order ? { ...order, id: order._id?.toString() } : null
+    const order = await Order.findById(id)
+    return order ? { ...order.toObject(), id: order._id.toString() } : null
   }
 
   async getOrdersByUserId(userId: string) {
-    const collection = await this.getCollection()
-    const orders = await collection.find({ userId }).sort({ createdAt: -1 }).toArray()
-    return orders.map((order) => ({ ...order, id: order._id?.toString() }))
+    const orders = await Order.find({ userId }).sort({ createdAt: -1 })
+    return orders.map((order) => ({ ...order.toObject(), id: order._id.toString() }))
   }
 
   async getAllOrders() {
-    const collection = await this.getCollection()
-    const orders = await collection.find({}).sort({ createdAt: -1 }).toArray()
-    return orders.map((order) => ({ ...order, id: order._id?.toString() }))
+    const orders = await Order.find({}).sort({ createdAt: -1 })
+    return orders.map((order) => ({ ...order.toObject(), id: order._id.toString() }))
   }
 
-  async updateOrderStatus(id: string, status: Order["status"], paymentId?: string) {
-    const collection = await this.getCollection()
+  async updateOrderStatus(id: string, status: IOrder["status"], paymentId?: string) {
     const updateData: any = { status, updatedAt: new Date() }
     if (paymentId) updateData.paymentId = paymentId
 
-    const result = await collection.updateOne({ _id: new ObjectId(id) }, { $set: updateData })
-    return result.modifiedCount > 0
+    const result = await Order.findByIdAndUpdate(id, updateData, { new: true })
+    return result !== null
   }
 
   async getOrderStats() {
-    const collection = await this.getCollection()
-    const stats = await collection
-      .aggregate([
-        {
-          $group: {
-            _id: null,
-            totalOrders: { $sum: 1 },
-            totalRevenue: { $sum: "$totalAmount" },
-            completedOrders: {
-              $sum: { $cond: [{ $eq: ["$status", "completed"] }, 1, 0] },
-            },
-            pendingOrders: {
-              $sum: { $cond: [{ $eq: ["$status", "pending"] }, 1, 0] },
-            },
+    const stats = await Order.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalOrders: { $sum: 1 },
+          totalRevenue: { $sum: "$totalAmount" },
+          completedOrders: {
+            $sum: { $cond: [{ $eq: ["$status", "completed"] }, 1, 0] },
+          },
+          pendingOrders: {
+            $sum: { $cond: [{ $eq: ["$status", "pending"] }, 1, 0] },
           },
         },
-      ])
-      .toArray()
+      },
+    ])
 
     return (
       stats[0] || {

@@ -16,7 +16,7 @@ import {
 
 interface DomainFiltersProps {
   onFilterChange: (filters: any) => void
-  availableTags: string[] // ✅ Added
+  availableTags: string[]
 }
 
 export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersProps) {
@@ -24,7 +24,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
   const [selectedTlds, setSelectedTlds] = useState<string[]>([])
   const [availability, setAvailability] = useState<"all" | "available" | "sold">("all")
   const [type, setType] = useState<"all" | "aged" | "traffic">("all")
-  const [selectedTags, setSelectedTags] = useState<string[]>([]) // ✅ Added
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
 
   const [domainRankRange, setDomainRankRange] = useState<[number, number]>([0, 100])
   const [domainAuthorityRange, setDomainAuthorityRange] = useState<[number, number]>([0, 100])
@@ -59,7 +59,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
       tlds: selectedTlds,
       availability,
       type,
-      tags: selectedTags, // ✅ Added
+      tags: selectedTags,
       domainRankRange,
       domainAuthorityRange,
       trustFlowRange,
@@ -78,7 +78,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
     setSelectedTlds([])
     setAvailability("all")
     setType("all")
-    setSelectedTags([]) // ✅ Added
+    setSelectedTags([])
     setDomainRankRange([0, 100])
     setDomainAuthorityRange([0, 100])
     setTrustFlowRange([0, 100])
@@ -93,7 +93,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
       tlds: [],
       availability: "all",
       type: "all",
-      tags: [], // ✅ Added
+      tags: [],
       domainRankRange: [0, 100],
       domainAuthorityRange: [0, 100],
       trustFlowRange: [0, 100],
@@ -108,10 +108,9 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
   return (
     <div className="space-y-6">
       <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6">
-
         {/* Price Range */}
         <div className="space-y-3">
-          <Label>Price Range</Label>
+          <Label className="font-medium text-gray-700">Price Range</Label>
           <Slider
             value={priceRange}
             onValueChange={(value) => {
@@ -121,16 +120,17 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
             max={100000}
             min={0}
             step={10}
+            className="w-full"
           />
           <div className="flex justify-between text-sm text-gray-500">
-            <span>${priceRange[0]}</span>
-            <span>${priceRange[1]}</span>
+            <span>${priceRange[0].toLocaleString()}</span>
+            <span>${priceRange[1].toLocaleString()}</span>
           </div>
         </div>
 
         {/* TLD Filter */}
         <div className="space-y-3">
-          <Label>Domain Extension</Label>
+          <Label className="font-medium text-gray-700">Domain Extension</Label>
           <div className="grid grid-cols-2 gap-2">
             {tlds.map((tld) => (
               <div key={tld} className="flex items-center space-x-2">
@@ -139,7 +139,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
                   checked={selectedTlds.includes(tld)}
                   onCheckedChange={(checked) => handleTldChange(tld, checked as boolean)}
                 />
-                <Label htmlFor={tld} className="text-sm">{tld}</Label>
+                <Label htmlFor={tld} className="text-sm text-gray-600">{tld}</Label>
               </div>
             ))}
           </div>
@@ -147,7 +147,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
 
         {/* Availability */}
         <div className="space-y-3">
-          <Label>Availability</Label>
+          <Label className="font-medium text-gray-700">Availability</Label>
           <Select
             value={availability}
             onValueChange={(value: "all" | "available" | "sold") => {
@@ -168,7 +168,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
 
         {/* Type */}
         <div className="space-y-3">
-          <Label>Type</Label>
+          <Label className="font-medium text-gray-700">Type</Label>
           <Select
             value={type}
             onValueChange={(value: "all" | "aged" | "traffic") => {
@@ -187,9 +187,9 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
           </Select>
         </div>
 
-        {/* Tags Filter ✅ */}
+        {/* Tags Filter */}
         <div className="space-y-3">
-          <Label>Industry</Label>
+          <Label className="font-medium text-gray-700">Industry</Label>
           <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto border rounded p-2">
             {availableTags.map((tag) => (
               <div key={tag} className="flex items-center space-x-2">
@@ -198,7 +198,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
                   checked={selectedTags.includes(tag)}
                   onCheckedChange={(checked) => handleTagChange(tag, checked as boolean)}
                 />
-                <Label htmlFor={tag} className="text-sm capitalize">{tag}</Label>
+                <Label htmlFor={tag} className="text-sm text-gray-600 capitalize">{tag}</Label>
               </div>
             ))}
           </div>
@@ -206,7 +206,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
 
         {/* Domain Rank */}
         <div className="space-y-3">
-          <Label>Domain Rank</Label>
+          <Label className="font-medium text-gray-700">Domain Rank (0-100)</Label>
           <Slider
             value={domainRankRange}
             onValueChange={(value) => {
@@ -216,6 +216,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
             max={100}
             min={0}
             step={1}
+            className="w-full"
           />
           <div className="flex justify-between text-sm text-gray-500">
             <span>{domainRankRange[0]}</span>
@@ -223,9 +224,9 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
           </div>
         </div>
 
-         {/* Domain Authority */}
-         <div className="space-y-3">
-          <Label>Domain Authority</Label>
+        {/* Domain Authority */}
+        <div className="space-y-3">
+          <Label className="font-medium text-gray-700">Domain Authority (0-100)</Label>
           <Slider
             value={domainAuthorityRange}
             onValueChange={(value) => {
@@ -235,6 +236,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
             max={100}
             min={0}
             step={1}
+            className="w-full"
           />
           <div className="flex justify-between text-sm text-gray-500">
             <span>{domainAuthorityRange[0]}</span>
@@ -244,7 +246,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
 
         {/* Trust Flow */}
         <div className="space-y-3">
-          <Label>Trust Flow</Label>
+          <Label className="font-medium text-gray-700">Trust Flow (0-100)</Label>
           <Slider
             value={trustFlowRange}
             onValueChange={(value) => {
@@ -254,6 +256,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
             max={100}
             min={0}
             step={1}
+            className="w-full"
           />
           <div className="flex justify-between text-sm text-gray-500">
             <span>{trustFlowRange[0]}</span>
@@ -263,7 +266,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
 
         {/* Citation Flow */}
         <div className="space-y-3">
-          <Label>Citation Flow</Label>
+          <Label className="font-medium text-gray-700">Citation Flow (0-100)</Label>
           <Slider
             value={citationFlowRange}
             onValueChange={(value) => {
@@ -273,6 +276,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
             max={100}
             min={0}
             step={1}
+            className="w-full"
           />
           <div className="flex justify-between text-sm text-gray-500">
             <span>{citationFlowRange[0]}</span>
@@ -282,7 +286,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
 
         {/* Monthly Traffic */}
         <div className="space-y-3">
-          <Label>Monthly Traffic (min)</Label>
+          <Label className="font-medium text-gray-700">Monthly Traffic (min)</Label>
           <Input
             type="number"
             value={monthlyTrafficMin}
@@ -292,12 +296,14 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
               applyFilters({ monthlyTrafficMin: value })
             }}
             min={0}
+            placeholder="0"
+            className="w-full"
           />
         </div>
 
         {/* Age */}
         <div className="space-y-3">
-          <Label>Age (min, years)</Label>
+          <Label className="font-medium text-gray-700">Age (min, years)</Label>
           <Input
             type="number"
             value={ageMin}
@@ -307,12 +313,14 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
               applyFilters({ ageMin: value })
             }}
             min={0}
+            placeholder="0"
+            className="w-full"
           />
         </div>
 
         {/* Referring Domains */}
         <div className="space-y-3">
-          <Label>Referring Domains (min)</Label>
+          <Label className="font-medium text-gray-700">Referring Domains (min)</Label>
           <Input
             type="number"
             value={referringDomainsMin}
@@ -322,12 +330,14 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
               applyFilters({ referringDomainsMin: value })
             }}
             min={0}
+            placeholder="0"
+            className="w-full"
           />
         </div>
 
         {/* Authority Links */}
         <div className="space-y-3">
-          <Label>Authority Links (min)</Label>
+          <Label className="font-medium text-gray-700">Authority Links (min)</Label>
           <Input
             type="number"
             value={authorityLinksMin}
@@ -337,14 +347,16 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
               applyFilters({ authorityLinksMin: value })
             }}
             min={0}
+            placeholder="0"
+            className="w-full"
           />
         </div>
       </div>
 
       {/* Clear Filters Button */}
       <div className="flex justify-end">
-        <Button variant="outline" onClick={clearFilters}>
-          Clear Filters
+        <Button variant="outline" onClick={clearFilters} className="px-6">
+          Clear All Filters
         </Button>
       </div>
     </div>

@@ -88,8 +88,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(null)
   }
 
+  const signUp = async (name: string, email: string, password: string): Promise<User> => {
+    const res = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password }),
+    })
+
+    if (!res.ok) {
+      const data = await res.json()
+      throw new Error(data?.error || "Sign up failed")
+    }
+
+    // After signup, fetch user again
+    const meRes = await fetch("/api/auth/me")
+    const meData = await meRes.json()
+    setUser(meData.user)
+    return meData.user
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut,signInWithGoogle }}>
+    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut, signInWithGoogle }}>
       {children}
     </AuthContext.Provider>
   )
