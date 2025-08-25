@@ -23,9 +23,18 @@ export function useSocket() {
       return
     }
 
-    const token = localStorage.getItem("token")
+    // Get token from socket_token cookie (non-HttpOnly)
+    console.log("All cookies:", document.cookie)
+    const token = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('socket_token='))
+      ?.split('=')[1];
+    
+    console.log("Extracted socket_token:", token ? "Token found" : "No token found")
+    
     if (!token) {
-      console.error("No auth token found")
+      console.error("No socket_token found in cookies")
+      console.log("Available cookies:", document.cookie.split('; '))
       return
     }
 

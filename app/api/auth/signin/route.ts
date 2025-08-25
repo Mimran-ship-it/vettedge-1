@@ -44,9 +44,18 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     )
 
-    // Set HttpOnly cookie
+    // Set HttpOnly cookie for API requests
     response.cookies.set("token", token, {
       httpOnly: true, // ❗ allow middleware to read it
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 12 * 60 * 60,
+      sameSite: "lax",
+      path: "/",
+    })
+
+    // Set a separate non-HttpOnly cookie for socket authentication
+    response.cookies.set("socket_token", token, {
+      httpOnly: false, // Allow JavaScript to read this
       secure: process.env.NODE_ENV === "production",
       maxAge: 12 * 60 * 60,
       sameSite: "lax",

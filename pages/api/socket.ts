@@ -167,21 +167,8 @@ const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) 
 
           console.log("Emitting new_message to session room:", `session:${session._id}`)
 
-          // Emit to session room
+          // Emit to session room (this will reach all participants including sender)
           io.to(`session:${session._id}`).emit("new_message", {
-            _id: message._id,
-            sessionId: session._id,
-            senderId: socket.userId,
-            senderName: socket.userName,
-            senderRole: socket.userRole,
-            content: data.content,
-            messageType: "text",
-            isRead: false,
-            createdAt: message.createdAt
-          })
-
-          // Also emit to the sender to confirm message was sent
-          socket.emit("new_message", {
             _id: message._id,
             sessionId: session._id,
             senderId: socket.userId,

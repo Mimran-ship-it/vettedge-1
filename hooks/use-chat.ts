@@ -1,5 +1,4 @@
 "use client"
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react"
 import { useAuth } from "@/hooks/use-auth"
 import { useSocket } from "@/hooks/use-socket"
@@ -46,64 +45,85 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [currentSession, setCurrentSession] = useState<ChatSession | null>(null)
   const [unreadCount, setUnreadCount] = useState(0)
+  const [isCreatingSession, setIsCreatingSession] = useState(false)
 
   useEffect(() => {
-    if (socket && isConnected) {
-      console.log("Setting up socket listeners")
+    if (!socket || !isConnected) return
+
+    console.log("Setting up socket listeners")
+    
+    const handleNewMessage = (message: ChatMessage) => {
+      console.log("Received new_message:", message)
       
-      socket.on("new_message", (message: ChatMessage) => {
-        console.log("Received new_message:", message)
-        if (currentSession && message.sessionId === currentSession._id) {
-          setMessages(prev => [...prev, message])
-        } else {
-          console.log("Message not added - session mismatch:", { currentSession: currentSession?._id, messageSession: message.sessionId })
-        }
-        
-        if (message.senderRole === "admin" && user?.role === "customer") {
+      // Add message if it belongs to current session
+      if (currentSession && message.sessionId === currentSession._id) {
+        setMessages(prev => [...prev, message])
+      } else {
+        console.log("Message not added - session mismatch:", { 
+          currentSession: currentSession?._id, 
+          messageSession: message.sessionId 
+        })
+      }
+      
+      // Update unread count for admin messages to customers not in current session
+      if (message.senderRole === "admin" && user?.role === "customer") {
+        if (!currentSession || message.sessionId !== currentSession._id) {
           setUnreadCount(prev => prev + 1)
         }
-      })
-
-      socket.on("session_status_updated", ({ sessionId, status }: { 
-        sessionId: string
-        status: "active" | "closed" | "waiting" 
-      }) => {
-        console.log("Session status updated:", { sessionId, status })
-        if (currentSession && currentSession._id === sessionId) {
-          setCurrentSession(prev => prev ? { ...prev, status } : null)
-        }
-      })
-
-      socket.on("session_joined", ({ sessionId }: { sessionId: string }) => {
-        console.log("Session joined:", sessionId)
-      })
-
-      socket.on("error", (error: any) => {
-        console.error("Socket error:", error)
-      })
-
-      return () => {
-        socket.off("new_message")
-        socket.off("session_status_updated")
-        socket.off("session_joined")
-        socket.off("error")
       }
+    }
+
+    const handleSessionStatusUpdated = ({ sessionId, status }: { 
+      sessionId: string
+      status: "active" | "closed" | "waiting" 
+    }) => {
+      console.log("Session status updated:", { sessionId, status })
+      if (currentSession && currentSession._id === sessionId) {
+        setCurrentSession(prev => prev ? { ...prev, status } : null)
+      }
+    }
+
+    const handleSessionJoined = ({ sessionId }: { sessionId: string }) => {
+      console.log("Session joined:", sessionId)
+    }
+
+    const handleError = (error: any) => {
+      console.error("Socket error:", error)
+    }
+
+    socket.on("new_message", handleNewMessage)
+    socket.on("session_status_updated", handleSessionStatusUpdated)
+    socket.on("session_joined", handleSessionJoined)
+    socket.on("error", handleError)
+
+    return () => {
+      socket.off("new_message", handleNewMessage)
+      socket.off("session_status_updated", handleSessionStatusUpdated)
+      socket.off("session_joined", handleSessionJoined)
+      socket.off("error", handleError)
     }
   }, [socket, isConnected, currentSession, user])
 
+  // Combined effect for session creation
+  useEffect(() => {
+    if (user && user.role === "customer" && !currentSession && socket && isConnected && !isCreatingSession) {
+      console.log("Auto-creating session for customer:", user.name)
+      createSession()
+    }
+  }, [user, currentSession, socket, isConnected, isCreatingSession])
+
   const fetchMessages = async (sessionId: string) => {
     try {
-      const token = localStorage.getItem("token")
       const response = await fetch(`/api/chat/messages?sessionId=${sessionId}`, {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
+        credentials: 'include' // Include cookies in the request
       })
       
       if (response.ok) {
         const data = await response.json()
         setMessages(data.messages)
         setUnreadCount(0)
+      } else {
+        console.error("Failed to fetch messages:", response.status, await response.text())
       }
     } catch (error) {
       console.error("Error fetching messages:", error)
@@ -111,28 +131,28 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   }
 
   const createSession = async () => {
-    // Check if user is authenticated before creating session
     if (!user) {
       console.warn("User must be signed in to start chat")
       return
     }
 
-    try {
-      const token = localStorage.getItem("token")
-      if (!token) {
-        console.warn("No authentication token found")
-        return
-      }
+    if (isCreatingSession) {
+      console.log("Session creation already in progress")
+      return
+    }
 
+    setIsCreatingSession(true)
+    
+    try {
       console.log("Creating chat session for user:", user.name)
       const response = await fetch("/api/chat/sessions", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
-        }
+        },
+        credentials: 'include' // Include cookies in the request
       })
-
+      
       if (response.ok) {
         const data = await response.json()
         console.log("Session created:", data.session)
@@ -151,6 +171,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       }
     } catch (error) {
       console.error("Error creating session:", error)
+    } finally {
+      setIsCreatingSession(false)
     }
   }
 
@@ -163,64 +185,28 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const sendMessage = (content: string) => {
     console.log("sendMessage called with:", content)
     
-    // Check authentication before sending message
     if (!user) {
       console.warn("User must be signed in to send messages")
       return
     }
-
-    console.log("sendMessage - user check passed:", user.name)
-
+    
     if (!socket) {
       console.warn("No socket available")
       return
     }
-
+    
     if (!socket.connected) {
       console.warn("Socket not connected, current state:", socket.connected)
       return
     }
-
-    console.log("sendMessage - socket check passed, socket connected:", socket.connected)
-
-    // Always send without session first - let server handle session creation
+    
+    // Send message via socket - don't add optimistic message to avoid duplicates
     console.log("Emitting send_message event:", { content })
     socket.emit("send_message", {
-      content
-    })
-
-    // Optimistically add message to UI
-    const optimisticMessage = {
-      _id: `temp-${Date.now()}`,
-      sessionId: currentSession?._id || "temp-session",
-      senderId: (user as any)._id || "unknown",
-      senderName: user.name,
-      senderRole: user.role as "admin" | "customer",
       content,
-      messageType: "text" as const,
-      isRead: false,
-      createdAt: new Date().toISOString()
-    }
-    
-    console.log("Adding optimistic message:", optimisticMessage)
-    setMessages(prev => [...prev, optimisticMessage])
+      sessionId: currentSession?._id // Include sessionId if available
+    })
   }
-
-  useEffect(() => {
-    // Only auto-create session for authenticated customers
-    if (user && user.role === "customer" && !currentSession) {
-      console.log("Auto-creating session for customer:", user.name)
-      createSession()
-    }
-  }, [user, currentSession])
-
-  // Force session creation when chat is opened if no session exists
-  useEffect(() => {
-    if (user && user.role === "customer" && socket && isConnected && !currentSession) {
-      console.log("Socket connected, creating session for customer")
-      createSession()
-    }
-  }, [socket, isConnected, user, currentSession])
 
   const contextValue: ChatContextType = {
     messages,

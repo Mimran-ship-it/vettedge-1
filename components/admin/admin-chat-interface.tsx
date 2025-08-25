@@ -57,28 +57,32 @@ export function AdminChatInterface() {
 
   useEffect(() => {
     if (socket && isConnected) {
+      console.log("Admin: Setting up socket listeners")
+      
       // Listen for new messages
-      socket.on("new-message", (message: ChatMessage) => {
+      socket.on("new_message", (message: ChatMessage) => {
+        console.log("Admin: Received new_message:", message)
         if (selectedSession && message.sessionId === selectedSession._id) {
           setMessages(prev => [...prev, message])
         }
       })
 
       // Listen for new customer messages (notifications)
-      socket.on("new-customer-message", ({ sessionId, message, session }: {
+      socket.on("new_customer_message", ({ sessionId, customerName, content }: {
         sessionId: string
-        message: ChatMessage
-        session: ChatSession
+        customerName: string
+        content: string
       }) => {
+        console.log("Admin: Received new_customer_message:", { sessionId, customerName, content })
         // Update sessions list
         setSessions(prev => prev.map(s => 
-          s._id === sessionId ? { ...s, lastMessageAt: message.createdAt, unreadCount: s.unreadCount + 1 } : s
+          s._id === sessionId ? { ...s, lastMessageAt: new Date().toISOString(), unreadCount: s.unreadCount + 1 } : s
         ))
       })
 
       return () => {
-        socket.off("new-message")
-        socket.off("new-customer-message")
+        socket.off("new_message")
+        socket.off("new_customer_message")
       }
     }
   }, [socket, isConnected, selectedSession])
@@ -87,9 +91,7 @@ export function AdminChatInterface() {
   const fetchSessions = async () => {
     try {
       const response = await fetch("/api/chat/sessions", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
+        credentials: 'include' // Use cookies instead of localStorage
       })
       if (response.ok) {
         const data = await response.json()
@@ -105,14 +107,16 @@ export function AdminChatInterface() {
   // Fetch messages for selected session
   const fetchMessages = async (sessionId: string) => {
     try {
+      console.log("Admin: Fetching messages for session:", sessionId)
       const response = await fetch(`/api/chat/messages?sessionId=${sessionId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
+        credentials: 'include' // Use cookies instead of localStorage
       })
       if (response.ok) {
         const data = await response.json()
+        console.log("Admin: Fetched messages:", data.messages)
         setMessages(data.messages || [])
+      } else {
+        console.error("Admin: Failed to fetch messages, status:", response.status)
       }
     } catch (error) {
       console.error("Failed to fetch messages:", error)
@@ -184,6 +188,9 @@ export function AdminChatInterface() {
   const handleSessionSelect = (session: ChatSession) => {
     setSelectedSession(session)
     setMessages([])
+    
+    // Fetch messages for the selected session
+    fetchMessages(session._id)
     
     // Mark session as read
     setSessions(prev => 

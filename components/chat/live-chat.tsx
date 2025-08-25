@@ -77,8 +77,8 @@ export function LiveChat() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
-      <Card className={`w-80 shadow-xl transition-all duration-300 ${isMinimized ? "h-14" : "h-96"}`}>
+    <div className="fixed bottom-4 right-4 z-50 max-w-[calc(100vw-2rem)]">
+      <Card className={`w-80 max-w-full shadow-xl transition-all duration-300 ${isMinimized ? "h-14" : "h-96"} sm:w-80`}>
         <CardHeader
           className="flex flex-row items-center justify-between space-y-0 pb-2 cursor-pointer"
           onClick={() => setIsMinimized(!isMinimized)}
@@ -112,9 +112,9 @@ export function LiveChat() {
         </CardHeader>
 
         {!isMinimized && (
-          <CardContent className="flex flex-col h-80">
+          <CardContent className="flex flex-col h-80 p-3 sm:p-6">
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto space-y-3 mb-4">
+            <div className="flex-1 overflow-y-auto space-y-3 mb-3">
               {messages.length === 0 ? (
                 <div className="text-center text-gray-500 text-sm py-8">
                   <MessageSquare className="h-8 w-8 mx-auto mb-2 text-gray-300" />
@@ -124,11 +124,11 @@ export function LiveChat() {
                 messages.map((msg) => (
                   <div key={msg._id} className={`flex ${msg.senderRole === "customer" ? "justify-end" : "justify-start"}`}>
                     <div
-                      className={`max-w-xs px-3 py-2 rounded-lg text-sm ${
+                      className={`max-w-[75%] sm:max-w-xs px-3 py-2 rounded-lg text-sm ${
                         msg.senderRole === "customer" ? "bg-cyan-500 text-white" : "bg-gray-100 text-gray-900"
                       }`}
                     >
-                      <p>{msg.content}</p>
+                      <p className="break-words">{msg.content}</p>
                       <p className={`text-xs mt-1 ${msg.senderRole === "customer" ? "text-cyan-100" : "text-gray-500"}`}>
                         {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
                       </p>
@@ -140,21 +140,21 @@ export function LiveChat() {
             </div>
 
             {/* Input */}
-            <div className="flex space-x-2">
+            <div className="flex space-x-2 mt-auto">
               <Input
                 placeholder={user ? "Type your message..." : "Sign in to chat"}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
                 disabled={!user}
-                className="flex-1"
+                className="flex-1 text-sm"
               />
               <Button 
                 type="button"
                 onClick={handleSendMessage} 
                 disabled={!user || !message.trim()} 
                 size="sm"
-                className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 min-w-[40px] flex items-center justify-center border-0"
+                className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 min-w-[40px] flex items-center justify-center border-0 shrink-0"
               >
                 <Send className="h-4 w-4" />
               </Button>

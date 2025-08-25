@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   try {
     await connectDB()
     
-    const token = request.headers.get("authorization")?.replace("Bearer ", "")
+    const token = request.cookies.get("token")?.value
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB()
     
-    const token = request.headers.get("authorization")?.replace("Bearer ", "")
+    const token = request.cookies.get("token")?.value
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
