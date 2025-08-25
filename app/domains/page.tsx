@@ -7,10 +7,17 @@ import { DomainCard } from "@/components/domains/domain-card"
 import { DomainFilters } from "@/components/domains/domain-filters"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, Filter } from "lucide-react"
+import { Search, Filter, ArrowUpDown } from "lucide-react"
 import type { Domain } from "@/types/domain"
 import { LiveChat } from "@/components/chat/live-chat"
 import { useSearchParams } from "next/navigation"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 type ActiveFilters = {
   priceRange: [number, number]
@@ -25,8 +32,10 @@ type ActiveFilters = {
   referringDomainsMin: number
   authorityLinksMin: number
   monthlyTrafficMin: number
-  tags: string[] // ✅ Added
+  tags: string[]
 }
+
+type SortOption = "price-asc" | "price-desc" | "domainRank-desc" | "domainAuthority-desc" | "age-desc" | "referringDomains-desc" | "monthlyTraffic-desc"
 
 const defaultFilters: ActiveFilters = {
   priceRange: [0, 100000],
@@ -41,7 +50,7 @@ const defaultFilters: ActiveFilters = {
   referringDomainsMin: 0,
   authorityLinksMin: 0,
   monthlyTrafficMin: 0,
-  tags: [], // ✅ Added
+  tags: [],
 }
 
 export default function DomainsPage() {
@@ -51,15 +60,24 @@ export default function DomainsPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [showFilters, setShowFilters] = useState(false)
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>(defaultFilters)
-  const [availableTags, setAvailableTags] = useState<string[]>([]) // ✅ Added
+  const [availableTags, setAvailableTags] = useState<string[]>([])
+  const [sortBy, setSortBy] = useState<SortOption>("price-desc")
 
   const searchParams = useSearchParams()
 
   useEffect(() => {
-    const urlSearch = searchParams.get("search")
+    const urlSearch = searchParams?.get("search")
     if (urlSearch) setSearchQuery(urlSearch)
     fetchDomains()
   }, [searchParams])
+
+  // Re-apply sorting when sortBy changes
+  useEffect(() => {
+    if (domains.length > 0) {
+      const sorted = sortDomains(filteredDomains, sortBy)
+      setFilteredDomains(sorted)
+    }
+  }, [sortBy, domains.length])
 
   const fetchDomains = async () => {
     try {
@@ -67,14 +85,17 @@ export default function DomainsPage() {
       if (!res.ok) throw new Error(`HTTP error: ${res.status}`)
       const data: Domain[] = await res.json()
       setDomains(data)
-      setFilteredDomains(data)
-
-      // ✅ Extract unique tags dynamically
+      
+      // Extract unique tags dynamically
       const tagsSet = new Set<string>()
       data.forEach((d) => {
         d.tags?.forEach((tag) => tagsSet.add(tag))
       })
       setAvailableTags(Array.from(tagsSet))
+      
+      // Apply initial sorting to all domains
+      const sorted = sortDomains(data, sortBy)
+      setFilteredDomains(sorted)
     } catch (err) {
       console.error("Failed to fetch domains:", err)
       setDomains([])
@@ -82,6 +103,49 @@ export default function DomainsPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const sortDomains = (domainsToSort: Domain[], sortOption: SortOption) => {
+    const sorted = [...domainsToSort]
+    
+    console.log(`Sorting by: ${sortOption}, Total domains: ${sorted.length}`)
+    
+    let result
+    switch (sortOption) {
+      case "price-asc":
+        result = sorted.sort((a, b) => Number(a.price) - Number(b.price))
+        break
+      case "price-desc":
+        result = sorted.sort((a, b) => Number(b.price) - Number(a.price))
+        break
+      case "domainRank-desc":
+        result = sorted.sort((a, b) => (b.metrics?.domainRank || 0) - (a.metrics?.domainRank || 0))
+        break
+      case "domainAuthority-desc":
+        result = sorted.sort((a, b) => (b.metrics?.domainAuthority || 0) - (a.metrics?.domainAuthority || 0))
+        break
+      case "age-desc":
+        result = sorted.sort((a, b) => (b.metrics?.age || 0) - (a.metrics?.age || 0))
+        break
+      case "referringDomains-desc":
+        result = sorted.sort((a, b) => (b.metrics?.referringDomains || 0) - (a.metrics?.referringDomains || 0))
+        break
+      case "monthlyTraffic-desc":
+        result = sorted.sort((a, b) => (b.metrics?.monthlyTraffic ?? 0) - (a.metrics?.monthlyTraffic ?? 0))
+        break
+      default:
+        result = sorted
+    }
+    
+    console.log(`After sorting: ${result.length} domains`)
+    console.log('First 3 domains after sorting:', result.slice(0, 3).map(d => ({
+      name: d.name,
+      price: d.price,
+      domainRank: d.metrics?.domainRank,
+      domainAuthority: d.metrics?.domainAuthority
+    })))
+    
+    return result
   }
 
   const applyFilters = (filters: ActiveFilters) => {
@@ -122,7 +186,7 @@ export default function DomainsPage() {
       filtered = filtered.filter((d) => d.type?.toLowerCase() === filters.type)
     }
 
-    // Tags filter ✅
+    // Tags filter
     if (filters.tags.length > 0) {
       filtered = filtered.filter((d) =>
         d.tags?.some((tag) => filters.tags.includes(tag))
@@ -184,10 +248,25 @@ export default function DomainsPage() {
     filtered = filtered.filter(
       (d) =>
         d.metrics?.monthlyTraffic !== undefined &&
+        d.metrics?.monthlyTraffic !== null &&
         d.metrics.monthlyTraffic >= filters.monthlyTrafficMin
     )
 
-    setFilteredDomains(filtered)
+    console.log(`After filtering: ${filtered.length} domains`)
+    
+    // Apply sorting to filtered results
+    const sorted = sortDomains(filtered, sortBy)
+    setFilteredDomains(sorted)
+  }
+
+  const handleSortChange = (newSortBy: SortOption) => {
+    console.log('Sort changed from', sortBy, 'to', newSortBy)
+    setSortBy(newSortBy)
+    
+    // Get current filtered domains and apply new sorting
+    const currentFiltered = filteredDomains
+    const sorted = sortDomains(currentFiltered, newSortBy)
+    setFilteredDomains(sorted)
   }
 
   return (
@@ -217,11 +296,35 @@ export default function DomainsPage() {
                 className="pl-10"
               />
             </div>
+            
+            {/* Sort By Option */}
+            <Select value={sortBy} onValueChange={handleSortChange}>
+              <SelectTrigger className="w-40">
+                <ArrowUpDown className="h-4 w-4 mr-2" />
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                <SelectItem value="domainRank-desc">Domain Rank: High to Low</SelectItem>
+                <SelectItem value="domainAuthority-desc">Domain Authority: High to Low</SelectItem>
+                <SelectItem value="age-desc">Age: Oldest First</SelectItem>
+                <SelectItem value="referringDomains-desc">Referring Domains: High to Low</SelectItem>
+                <SelectItem value="monthlyTraffic-desc">Monthly Traffic: High to Low</SelectItem>
+              </SelectContent>
+            </Select>
+
             <Button variant="outline" onClick={() => setShowFilters(!showFilters)}>
               <Filter className="h-4 w-4 mr-2" />
               Filters
             </Button>
           </div>
+          
+          {/* Debug Info */}
+          <div className="mt-4 text-xs text-gray-500">
+            Current sort: {sortBy} | Showing {filteredDomains.length} domains
+          </div>
+          
           {showFilters && (
             <div className="mt-6 pt-6 border-t">
               <DomainFilters onFilterChange={applyFilters} availableTags={availableTags} />
@@ -231,6 +334,11 @@ export default function DomainsPage() {
 
         <div className="mb-6 text-gray-600">
           Showing {filteredDomains.length} of {domains.length} domains
+          {filteredDomains.length !== domains.length && (
+            <span className="ml-2 text-sm text-blue-600">
+              (Filtered from {domains.length} total)
+            </span>
+          )}
         </div>
 
         {loading ? (
@@ -262,8 +370,11 @@ export default function DomainsPage() {
               onClick={() => {
                 setSearchQuery("")
                 setShowFilters(false)
-                setFilteredDomains(domains)
                 setActiveFilters(defaultFilters)
+                setSortBy("price-desc")
+                // Reset to show all domains with current sorting
+                const sorted = sortDomains(domains, "price-desc")
+                setFilteredDomains(sorted)
               }}
               className="mt-4"
             >

@@ -1,23 +1,22 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import io from "socket.io-client"
-import type { Socket } from "socket.io-client"
+import { useEffect, useRef, useState } from "react"
+import io, { type Socket } from "socket.io-client"
 import { useAuth } from "@/hooks/use-auth"
 
 export function useSocket() {
-  const [socket, setSocket] = useState<any>(null)
   const [isConnected, setIsConnected] = useState(false)
   const { user } = useAuth()
+  const socketRef = useRef<Socket | null>(null)
 
   useEffect(() => {
-    console.log("useSocket effect triggered, user:", user?.name)
-    
+    console.log("🔄 useSocket effect triggered, user:", user?.name)
+
     if (!user) {
       console.log("No user, cleaning up socket")
-      if (socket) {
-        socket.disconnect()
-        setSocket(null)
+      if (socketRef.current) {
+        socketRef.current.disconnect()
+        socketRef.current = null
       }
       setIsConnected(false)
       return
@@ -38,33 +37,28 @@ export function useSocket() {
       return
     }
 
-    console.log("Creating new socket connection...")
-    console.log("Socket URL:", process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000")
-    console.log("Token available:", !!token)
-    
+    if (socketRef.current) {
+      console.log("♻️ Socket already connected, skipping new connection")
+      return
+    }
+
+    console.log("🌐 Creating new socket connection...")
     const newSocket = io(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000", {
       path: "/api/socket",
-      auth: {
-        token: token
-      },
-      transports: ["polling", "websocket"],
+      auth: { token },
+      transports: ["websocket", "polling"],
       timeout: 20000,
-      forceNew: true
+      forceNew: true,
     })
 
     newSocket.on("connect", () => {
-      console.log("✅ Socket connected successfully:", newSocket.id)
-      console.log("Socket connected state:", newSocket.connected)
+      console.log("✅ Socket connected:", newSocket.id)
       setIsConnected(true)
     })
 
     newSocket.on("connect_error", (error: any) => {
-      console.error("❌ Socket connection error:", error)
+      console.error("❌ Socket connection error:", error.message || error)
       setIsConnected(false)
-    })
-
-    newSocket.on("error", (error: any) => {
-      console.error("❌ Socket error:", error)
     })
 
     newSocket.on("disconnect", (reason: string) => {
@@ -72,13 +66,16 @@ export function useSocket() {
       setIsConnected(false)
     })
 
-    setSocket(newSocket)
+    socketRef.current = newSocket
 
     return () => {
-      console.log("Cleaning up socket connection")
-      newSocket.disconnect()
+      console.log("🧹 Cleaning up socket connection")
+      if (socketRef.current) {
+        socketRef.current.disconnect()
+        socketRef.current = null
+      }
     }
   }, [user])
 
-  return { socket, isConnected }
+  return { socket: socketRef.current, isConnected }
 }

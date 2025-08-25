@@ -18,14 +18,7 @@ export default function CheckoutPage() {
   const router = useRouter()
   const [paymentMethod, setPaymentMethod] = useState<"stripe" | "paypal">("stripe")
 
-  useEffect(() => {
-    
 
-    if (items.length === 0) {
-      router.push("/cart")
-      return
-    }
-  }, [user, items, router])
 
   if (!user || items.length === 0) {
     return null

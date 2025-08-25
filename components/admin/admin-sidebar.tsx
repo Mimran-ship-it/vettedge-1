@@ -40,8 +40,8 @@ const menuItems = [
     icon: Users,
   },
   {
-    title: "Transactions",
-    url: "/admin/transactions",
+    title: "Orders",
+    url: "/admin/orders",
     icon: CreditCard,
   },
   {
