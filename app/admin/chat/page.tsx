@@ -11,13 +11,7 @@ export default function AdminChatPage() {
   const { user } = useAuth()
   const router = useRouter()
 
-  useEffect(() => {
-    if (!user) {
-      router.push("/auth/signin")
-    } else if (user.role !== "admin") {
-      router.push("/")
-    }
-  }, [user, router])
+
 
   if (!user || user.role !== "admin") {
     return null

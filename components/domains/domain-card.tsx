@@ -1,5 +1,4 @@
 "use client"
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -68,10 +67,8 @@ export function DomainCard({ domain }: DomainCardProps) {
   }
   const { addItem } = useCart()
   const { toast } = useToast()
-
   const [isWishlisted, setIsWishlisted] = useState(false)
 
-  // Load wishlist state from cookie on mount
   useEffect(() => {
     const wishlist = JSON.parse(Cookies.get("wishlist") || "[]")
     setIsWishlisted(wishlist.some((item: Domain) => item._id === domain._id))
@@ -86,7 +83,6 @@ export function DomainCard({ domain }: DomainCardProps) {
       })
       return
     }
-
     addItem({
       id: parsedDomain._id,
       name: parsedDomain.name,
@@ -108,24 +104,18 @@ export function DomainCard({ domain }: DomainCardProps) {
       })
       return
     }
-
-    // Add to cart and redirect to checkout
     addItem({
       id: parsedDomain._id,
       name: parsedDomain.name,
       price: parsedDomain.price,
       domain: parsedDomain,
     })
-    
-    // Redirect to checkout
     window.location.href = "/checkout"
   }
 
   const handleWishlistToggle = () => {
     let wishlist: Domain[] = JSON.parse(Cookies.get("wishlist") || "[]")
-
     if (isWishlisted) {
-      // Remove from wishlist
       wishlist = wishlist.filter((item) => item._id !== domain._id)
       setIsWishlisted(false)
       toast({
@@ -133,7 +123,6 @@ export function DomainCard({ domain }: DomainCardProps) {
         description: `${domain.name} removed from wishlist.`,
       })
     } else {
-      // Add to wishlist
       wishlist.push(parsedDomain)
       setIsWishlisted(true)
       toast({
@@ -141,195 +130,187 @@ export function DomainCard({ domain }: DomainCardProps) {
         description: `${domain.name} added to wishlist.`,
       })
     }
-
     Cookies.set("wishlist", JSON.stringify(wishlist), { expires: 30 })
   }
 
   return (
     <Card className={cn(
-      "relative group hover:shadow-sm hover:rounded-3xl transition-all duration-300 overflow-hidden  ",
+      "relative group hover:shadow-sm hover:rounded-xl transition-all duration-300 overflow-hidden flex flex-col w-full max-w-xs",
       domain.isSold && "opacity-60"
     )}>
-      {/* Top Image */}
+      {/* Top Image - Square */}
       {domain.image?.length > 0 && (
-        <div className="relative">
+        <div className="relative aspect-square w-full">
           <img
             src={domain.image[0]}
             alt={domain.name}
             className={cn(
-              "w-full rounded-3xl h-44 object-cover shadow-sm transition duration-300",
+              "w-full rounded-3xl h-full object-cover transition duration-300",
               !domain.isAvailable && !domain.isSold && "blur-sm"
             )}
           />
-          {/* Sold Overlay */}
           {domain.isSold && (
             <div className="absolute inset-0 bg-black/50 z-10 flex items-center justify-center">
-              <Badge variant="destructive" className="text-sm px-4 py-1.5">
+              <Badge variant="destructive" className="text-xs px-2 py-1">
                 SOLD
               </Badge>
             </div>
           )}
         </div>
       )}
-
-      {/* Domain Name */}
-      <CardHeader className="px-3 pt-2 pb-0">
-        <div className="flex items-start justify-between">
-          <CardTitle className="text-lg font-bold text-gray-900">
-            {domain.name}
-          </CardTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleWishlistToggle}
-            className={cn("p-1", isWishlisted && "text-red-500")}
-            disabled={domain.isSold || !domain.isAvailable}
-          >
-            <Heart className={cn("h-4 w-4", isWishlisted && "fill-current")} />
-          </Button>
-        </div>
-      </CardHeader>
-
-      <CardContent className="px-3 pb-0 space-y-2.5">
-        {/* Provider/Status Row */}
-        <div className="flex items-center justify-between text-sm text-gray-600">
-          <div className="flex items-center gap-2">
-            {domain.type === "traffic" && domain.metrics.monthlyTraffic ? (
-              <>
-                <BarChart3 className="h-4 w-4" />
-                <span>Traffic</span>
-              </>
-            ) : (
-              <>
-                <Calendar className="h-4 w-4" />
-                <span>Aged</span>
-              </>
-            )}
+      <div className="flex flex-col flex-1 p-2">
+        {/* Domain Name */}
+        <CardHeader className="p-0 pb-1">
+          <div className="flex items-start justify-between">
+            <CardTitle className="text-base font-bold text-gray-900 truncate">
+              {domain.name}
+            </CardTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleWishlistToggle}
+              className={cn("p-1 h-6 w-6", isWishlisted && "text-red-500")}
+              disabled={domain.isSold || !domain.isAvailable}
+            >
+              <Heart className={cn("h-3 w-3", isWishlisted && "fill-current")} />
+            </Button>
           </div>
-          <div className="flex items-center gap-1">
-            <ShoppingBag className="h-3 w-3" />
-            <span>{domain.registrar}</span>
+        </CardHeader>
+        <CardContent className="p-0 space-y-1.5 flex-1 flex flex-col">
+          {/* Provider/Status Row */}
+          <div className="flex items-center justify-between text-xs text-gray-600">
+            <div className="flex items-center gap-1">
+              {domain.type === "traffic" && domain.metrics.monthlyTraffic ? (
+                <>
+                  <BarChart3 className="h-3 w-3" />
+                  <span>Traffic</span>
+                </>
+              ) : (
+                <>
+                  <Calendar className="h-3 w-3" />
+                  <span>Aged</span>
+                </>
+              )}
+            </div>
+            <div className="flex items-center gap-1">
+              <ShoppingBag className="h-3 w-3" />
+              <span className="truncate max-w-[70px]">{domain.registrar}</span>
+            </div>
           </div>
-        </div>
-
-        {/* Price & Availability */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold text-gray-900">
-              ${domain.price.toLocaleString()}
-            </span>
-            {domain.Actualprice > domain.price && (
-              <span className="text-sm text-gray-500 line-through">
-                ${domain.Actualprice.toLocaleString()}
+          {/* Price & Availability */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <span className="text-lg font-bold text-gray-900">
+                ${domain.price.toLocaleString()}
               </span>
-            )}
+              {domain.Actualprice > domain.price && (
+                <span className="text-xs text-gray-500 line-through">
+                  ${domain.Actualprice.toLocaleString()}
+                </span>
+              )}
+            </div>
+            <Badge className={cn(
+              "text-xs px-1.5 py-0.5",
+              domain.isAvailable ? "bg-green-600 text-white" : "bg-gray-400 text-white"
+            )}>
+              {domain.isAvailable ? "Available" : "Unavailable"}
+            </Badge>
           </div>
-          <Badge className={cn(
-            "text-xs px-2 py-1",
-            domain.isAvailable ? "bg-green-600 text-white" : "bg-gray-400 text-white"
-          )}>
-            {domain.isAvailable ? "Available" : "Unavailable"}
-          </Badge>
-        </div>
-
-        {/* SEO & Domain Metrics - 3 Columns */}
-        <div className="grid grid-cols-3 gap-3 text-xs">
-          {/* Column 1 */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-1 text-gray-600">
-              <TrendingUp className="h-3 w-3" />
-              <span>DR: {domain.metrics.domainRank}</span>
-            </div>
-            <div className="flex items-center gap-1 text-gray-600">
-              <Activity className="h-3 w-3" />
-              <span>TF: {domain.metrics.trustFlow}</span>
-            </div>
-            <div className="flex items-center gap-1 text-gray-600">
-              <Calendar className="h-3 w-3" />
-              <span>Since {domain.metrics.year}</span>
-            </div>
-          </div>
-
-          {/* Column 2 */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-1 text-gray-600">
-              <LinkIcon className="h-3 w-3" />
-              <span>{domain.metrics.referringDomains} RDs</span>
-            </div>
-            <div className="flex items-center gap-1 text-gray-600">
-              <Flag className="h-3 w-3" />
-              <span>CF: {domain.metrics.citationFlow}</span>
-            </div>
-            <div className="flex items-center gap-1 text-gray-600">
-              <Hourglass className="h-3 w-3" />
-              <span>Age: {domain.metrics.age} yrs</span>
-            </div>
-          </div>
-
-          {/* Column 3 */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-1 text-gray-600">
-              <ShieldCheck className="h-3 w-3" />
-              <span>DA: {domain.metrics.domainAuthority}</span>
-            </div>
-            {domain.type === "traffic" && domain.metrics.monthlyTraffic && (
+          {/* SEO & Domain Metrics - 3 Columns */}
+          <div className="grid grid-cols-3 gap-1.5 text-[10px]">
+            {/* Column 1 */}
+            <div className="space-y-1">
               <div className="flex items-center gap-1 text-gray-600">
-                <Globe className="h-3 w-3" />
-                <span>{domain.metrics.monthlyTraffic.toLocaleString()} visits</span>
+                <TrendingUp className="h-2.5 w-2.5" />
+                <span>DR: {domain.metrics.domainRank}</span>
               </div>
-            )}
-            <div className="flex items-center gap-1 text-gray-600">
-              <Languages className="h-3 w-3" />
-              <span>{domain.metrics.language}</span>
+              <div className="flex items-center gap-1 text-gray-600">
+                <Activity className="h-2.5 w-2.5" />
+                <span>TF: {domain.metrics.trustFlow}</span>
+              </div>
+              <div className="flex items-center gap-1 text-gray-600">
+                <Calendar className="h-2.5 w-2.5" />
+                <span>{domain.metrics.year}</span>
+              </div>
+            </div>
+            {/* Column 2 */}
+            <div className="space-y-1">
+              <div className="flex items-center gap-1 text-gray-600">
+                <LinkIcon className="h-2.5 w-2.5" />
+                <span>{domain.metrics.referringDomains} RDs</span>
+              </div>
+              <div className="flex items-center gap-1 text-gray-600">
+                <Flag className="h-2.5 w-2.5" />
+                <span>CF: {domain.metrics.citationFlow}</span>
+              </div>
+              <div className="flex items-center gap-1 text-gray-600">
+                <Hourglass className="h-2.5 w-2.5" />
+                <span>{domain.metrics.age} yrs</span>
+              </div>
+            </div>
+            {/* Column 3 */}
+            <div className="space-y-1">
+              <div className="flex items-center gap-1 text-gray-600">
+                <ShieldCheck className="h-2.5 w-2.5" />
+                <span>DA: {domain.metrics.domainAuthority}</span>
+              </div>
+              {domain.type === "traffic" && domain.metrics.monthlyTraffic && (
+                <div className="flex items-center gap-1 text-gray-600">
+                  <Globe className="h-2.5 w-2.5" />
+                  <span>{domain.metrics.monthlyTraffic.toLocaleString()}</span>
+                </div>
+              )}
+              <div className="flex items-center gap-1 text-gray-600">
+                <Languages className="h-2.5 w-2.5" />
+                <span>{domain.metrics.language}</span>
+              </div>
             </div>
           </div>
-        </div>
-
-        {/* Tags */}
-        {domain.tags?.length > 0 && (
-          <div className="flex flex-wrap gap-1 pt-1">
-            {domain.tags.slice(0, 4).map((tag, idx) => (
-              <Badge
-                key={idx}
-                variant="outline"
-                className="text-xs px-2 py-1 text-gray-600 border-gray-300"
-              >
-                {tag}
-              </Badge>
-            ))}
+          {/* Tags */}
+          {domain.tags?.length > 0 && (
+            <div className="flex flex-wrap gap-0.5 pt-0.5">
+              {domain.tags.slice(0, 3).map((tag, idx) => (
+                <Badge
+                  key={idx}
+                  variant="outline"
+                  className="text-[10px] px-1.5 py-0.5 text-gray-600 border-gray-300"
+                >
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          )}
+          {/* Action Buttons */}
+          <div className="flex space-x-1 pt-1 mt-auto">
+            <Button
+              className="flex-1 h-7 text-xs bg-[#33BDC7] hover:bg-[#2caab4] text-white"
+              onClick={handleAddToCart}
+              disabled={domain.isSold || !domain.isAvailable}
+            >
+              <ShoppingCart className="h-3 w-3 mr-1" />
+              Add
+            </Button>
+            <Button
+              className="h-7 px-2 text-xs bg-red-600 hover:bg-red-700 text-white"
+              onClick={handleBuyNow}
+              disabled={domain.isSold || !domain.isAvailable}
+            >
+              Buy Now
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-7 px-2 text-xs"
+              disabled={domain.isSold || !domain.isAvailable}
+            >
+              <a href={`/domains/${domain._id}`} className="flex items-center gap-1">
+                <Eye className="h-3 w-3" />
+                Details
+              </a>
+            </Button>
           </div>
-        )}
-
-        {/* Action Buttons */}
-        <div className="flex space-x-2 pt-2">
-          <Button
-            className="flex-1 h-9 text-sm bg-[#33BDC7] hover:bg-[#2caab4] text-white"
-            onClick={handleAddToCart}
-            disabled={domain.isSold || !domain.isAvailable}
-          >
-            <ShoppingCart className="h-4 w-4 mr-1" />
-            Add
-          </Button>
-          <Button
-            className="h-9 px-3 text-sm bg-red-600 hover:bg-red-700 text-white"
-            onClick={handleBuyNow}
-            disabled={domain.isSold || !domain.isAvailable}
-          >
-            Buy Now
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-9 px-3 text-sm"
-            disabled={domain.isSold || !domain.isAvailable}
-          >
-            <a href={`/domains/${domain._id}`} className="flex items-center gap-1">
-              <Eye className="h-4 w-4" />
-              Details
-            </a>
-          </Button>
-        </div>
-      </CardContent>
+        </CardContent>
+      </div>
     </Card>
   )
 }
