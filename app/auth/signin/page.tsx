@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
-
+import { signIn as nextAuthSignIn } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -20,7 +20,7 @@ export default function SignInPage() {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-
+  const { signInWithGoogle } = useAuth()
   const { toast } = useToast()
   const { user, signIn } = useAuth()
   const router = useRouter()
@@ -61,33 +61,54 @@ export default function SignInPage() {
     }
   }
 
+  //   const signInWithGoogle = async () => {
+  //   try {
+  //     await nextAuthSignIn("google", { callbackUrl: redirect }); // redirect after login
+  //   } catch (err) {
+  //     console.error("Google sign in error:", err);
+  //   }
+  // };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#e0f7f9] via-white to-[#c8f3f6] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md shadow-xl border-0">
-      <CardHeader className="space-y-1 text-center">
-  <div className="flex items-center justify-center mb-4">
-    <Image
-      src="/logo.jpg" // Change to your logo path
-      alt="Vettedge Logo"
-      width={55} // similar to w-12
-      height={55} // similar to h-12
-      className="rounded-xl"
-      priority
-    />
-  </div>
-  <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
-  <p className="text-sm text-gray-600">Sign in to your Vettedge account</p>
-</CardHeader>
+        <CardHeader className="space-y-1 text-center">
+          <div className="flex items-center justify-center mb-4">
+            <Image
+              src="/logo.jpg" // Change to your logo path
+              alt="Vettedge Logo"
+              width={55} // similar to w-12
+              height={55} // similar to h-12
+              className="rounded-xl"
+              priority
+            />
+          </div>
+          <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
+          <p className="text-sm text-gray-600">Sign in to your Vettedge account</p>
+        </CardHeader>
 
         <CardContent className="space-y-4">
           <Button
             variant="outline"
             className="w-full bg-white hover:bg-gray-50 border-gray-200"
-            onClick={() => {
-              toast({
-                title: "Not implemented",
-                description: "Google sign-in is not configured yet.",
-              })
+            onClick={async () => {
+              setLoading(true)
+              try {
+                await signInWithGoogle()
+                toast({
+                  title: "Welcome!",
+                  description: "Signed in with Google successfully.",
+                })
+                router.push(redirect)
+              } catch (err: any) {
+                toast({
+                  title: "Google sign in failed",
+                  description: err.message || "Something went wrong.",
+                  variant: "destructive",
+                })
+              } finally {
+                setLoading(false)
+              }
             }}
           >
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
@@ -110,6 +131,7 @@ export default function SignInPage() {
             </svg>
             Continue with Google
           </Button>
+
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">

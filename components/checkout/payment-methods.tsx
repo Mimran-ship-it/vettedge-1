@@ -1,20 +1,21 @@
 "use client"
 
-import type React from "react"
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { CreditCard, Wallet, Building } from "lucide-react"
+import { CreditCard, Wallet } from "lucide-react"
 import type { Dispatch, SetStateAction } from "react"
+
+import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js"
 
 interface PaymentMethodsProps {
   selectedMethod: "stripe" | "paypal"
   onMethodChange: Dispatch<SetStateAction<"stripe" | "paypal">>
-  onPaymentSubmit: (paymentData: any) => void
+  onPaymentSubmit: (paymentData: any) => void // ✅ Calls CheckoutForm method
   loading: boolean
+  amount: number
 }
 
 export function PaymentMethods({
@@ -22,23 +23,42 @@ export function PaymentMethods({
   onMethodChange,
   onPaymentSubmit,
   loading,
+  amount,
 }: PaymentMethodsProps) {
-  const [cardData, setCardData] = useState({
-    number: "",
-    expiry: "",
-    cvc: "",
-    name: "",
-  })
+  const stripe = useStripe()
+  const elements = useElements()
+  const [cardholderName, setCardholderName] = useState("")
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setErrorMessage(null)
 
-    const paymentData = {
-      method: selectedMethod,
-      ...(selectedMethod === "stripe" && { card: cardData }), // using "stripe" for card payments
+    if (selectedMethod === "stripe") {
+      if (!stripe || !elements) {
+        setErrorMessage("Stripe not loaded yet")
+        return
+      }
+
+      const cardElement = elements.getElement(CardElement)
+      if (!cardElement) {
+        setErrorMessage("Card details not entered")
+        return
+      }
+
+      // ✅ Call the CheckoutForm handler with all needed info
+      onPaymentSubmit({
+        method: "stripe",
+        stripe,
+        cardElement,
+        billingDetails: { name: cardholderName },
+        amount,
+      })
     }
 
-    onPaymentSubmit(paymentData)
+    if (selectedMethod === "paypal") {
+      onPaymentSubmit({ method: "paypal", amount })
+    }
   }
 
   return (
@@ -51,18 +71,16 @@ export function PaymentMethods({
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-            <p className="text-sm text-yellow-800">
-              <strong>Demo Mode:</strong> This is a demonstration. No real payments will be processed.
-            </p>
-          </div>
-
-          <RadioGroup value={selectedMethod} onValueChange={(val) => onMethodChange(val as "stripe" | "paypal")}>
+          {/* Method selection */}
+          <RadioGroup
+            value={selectedMethod}
+            onValueChange={(val) => onMethodChange(val as "stripe" | "paypal")}
+          >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="stripe" id="card" />
               <Label htmlFor="card" className="flex items-center gap-2">
                 <CreditCard className="h-4 w-4" />
-                Credit/Debit Card
+                Stripe
               </Label>
             </div>
             <div className="flex items-center space-x-2">
@@ -74,61 +92,56 @@ export function PaymentMethods({
             </div>
           </RadioGroup>
 
+          {/* Stripe fields */}
           {selectedMethod === "stripe" && (
             <div className="space-y-4">
               <div>
                 <Label htmlFor="cardName">Cardholder Name</Label>
-                <Input
+                <input
                   id="cardName"
+                  className="border rounded-md w-full p-2 bg-white"
                   placeholder="John Doe"
-                  value={cardData.name}
-                  onChange={(e) => setCardData((prev) => ({ ...prev, name: e.target.value }))}
-                  required
+                  value={cardholderName}
+                  onChange={(e) => setCardholderName(e.target.value)}
+                  
                 />
               </div>
+
               <div>
-                <Label htmlFor="cardNumber">Card Number</Label>
-                <Input
-                  id="cardNumber"
-                  placeholder="1234 5678 9012 3456"
-                  value={cardData.number}
-                  onChange={(e) => setCardData((prev) => ({ ...prev, number: e.target.value }))}
-                  required
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="expiry">Expiry Date</Label>
-                  <Input
-                    id="expiry"
-                    placeholder="MM/YY"
-                    value={cardData.expiry}
-                    onChange={(e) => setCardData((prev) => ({ ...prev, expiry: e.target.value }))}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="cvc">CVC</Label>
-                  <Input
-                    id="cvc"
-                    placeholder="123"
-                    value={cardData.cvc}
-                    onChange={(e) => setCardData((prev) => ({ ...prev, cvc: e.target.value }))}
-                    required
+                <Label>Card Details</Label>
+                <div className="border rounded-md p-3 bg-white">
+                  <CardElement
+                    options={{
+                      hidePostalCode: true,
+                      style: {
+                        base: { fontSize: "16px", color: "#32325d", fontFamily: "inherit", "::placeholder": { color: "#a0aec0" } },
+                        invalid: { color: "#e53e3e" },
+                      },
+                    }}
                   />
                 </div>
               </div>
             </div>
           )}
 
+          {/* PayPal placeholder */}
           {selectedMethod === "paypal" && (
             <div className="text-center py-8">
               <Wallet className="h-12 w-12 mx-auto text-blue-600 mb-4" />
-              <p className="text-gray-600">You will be redirected to PayPal to complete your payment.</p>
+              <p className="text-gray-600">
+                You will be redirected to PayPal to complete your payment.
+              </p>
             </div>
           )}
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          {/* Error messages */}
+          {errorMessage && <p className="text-sm text-red-600">{errorMessage}</p>}
+
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={loading || (selectedMethod === "stripe" && !stripe)}
+          >
             {loading ? "Processing..." : "Complete Payment"}
           </Button>
         </form>
