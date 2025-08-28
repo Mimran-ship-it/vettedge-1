@@ -121,3 +121,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+.StripeElement {
+  position: relative;
+  z-index: 0;
+}
+
+.StripeElement iframe {
+  z-index: 0 !important;
+}

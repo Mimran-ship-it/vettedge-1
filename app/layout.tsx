@@ -6,9 +6,15 @@ import { Toaster } from "@/components/ui/toaster"
 import { AuthProvider } from "@/components/providers/auth-provider"
 import { CartProvider } from "@/components/providers/cart-provider"
 import { ChatProvider } from "@/components/providers/chat-provider"
+import { StripeProvider } from "@/components/providers/stripe-provider"
 import Script from "next/script"
 import { Footer } from "@/components/layout/footer"
 const inter = Inter({ subsets: ["latin"] })
+
+import { Elements } from "@stripe/react-stripe-js"
+import { loadStripe } from "@stripe/stripe-js"
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 export const metadata: Metadata = {
   title: "Vettedge.domains - Premium Expired Domains",
@@ -28,7 +34,9 @@ export default function RootLayout({
           <CartProvider>
             <ChatProvider>
 
-              {children}
+              <StripeProvider>
+                {children}
+              </StripeProvider>
               <Script
                 src="https://accounts.google.com/gsi/client"
                 strategy="afterInteractive"

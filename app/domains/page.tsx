@@ -270,9 +270,9 @@ export default function DomainsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen   bg-gray-50">
       <Header />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-14 pt-24 pb-8">
+      <main className="max-w-8xl mx-auto ps-3 pe-6 sm:px-6 lg:px-16 pt-24 pb-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
             Premium Expired Domains
@@ -282,7 +282,7 @@ export default function DomainsPage() {
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
+        <div className="bg-white  rounded-lg shadow-sm border p-6 mb-8">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
@@ -355,7 +355,7 @@ export default function DomainsPage() {
             ))}
           </div>
         ) : filteredDomains.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="ms-8 grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
             {filteredDomains.map((domain) => (
               <DomainCard key={domain._id} domain={domain} />
             ))}

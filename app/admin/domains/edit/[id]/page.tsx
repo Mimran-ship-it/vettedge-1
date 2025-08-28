@@ -1,11 +1,9 @@
 "use client"
-
 import React, { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import axios from "axios"
-import { X } from "lucide-react"
-
+import { X, Upload, Replace, Trash2 } from "lucide-react"
 
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
@@ -34,11 +32,11 @@ export default function EditDomainPage() {
   const router = useRouter()
   const params = useParams()
   const { toast } = useToast()
-
   const [loading, setLoading] = useState(false)
   const [imageUploading, setImageUploading] = useState(false)
   const [images, setImages] = useState<string[]>([])
-
+  const [uploadMode, setUploadMode] = useState<"add" | "replace">("add")
+  
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -67,10 +65,9 @@ export default function EditDomainPage() {
   useEffect(() => {
     const fetchDomain = async () => {
       try {
-        const res = await fetch(`/api/domains/${params.id}`)
+        const res = await fetch(`/api/domains/${params?.id}`)
         if (!res.ok) throw new Error()
         const data = await res.json()
-
         setFormData({
           name: data.name || "",
           description: data.description || "",
@@ -95,27 +92,28 @@ export default function EditDomainPage() {
             language: data.metrics?.language || "English",
           },
         })
+        // Initialize images state with the domain's images
         setImages(data.image || [])
       } catch {
         toast({ title: "Error", description: "Failed to fetch domain", variant: "destructive" })
       }
     }
     fetchDomain()
-  }, [params.id, toast])
+  }, [params?.id, toast])
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files?.length) return
-
+    
     setImageUploading(true)
     const uploaded: string[] = []
-
+    
     for (const file of Array.from(files)) {
       const data = new FormData()
       data.append("file", file)
       data.append("upload_preset", "domain")
       data.append("folder", "domains")
-
+      
       try {
         const res = await axios.post("https://api.cloudinary.com/v1_1/dcday5wio/upload", data)
         uploaded.push(res.data.secure_url)
@@ -127,19 +125,51 @@ export default function EditDomainPage() {
         })
       }
     }
-
-    setImages((prev) => [...prev, ...uploaded])
+    
+    if (uploadMode === "replace") {
+      setImages(uploaded)
+      toast({
+        title: "Images Replaced",
+        description: "All images have been replaced with new uploads",
+      })
+    } else {
+      setImages((prev) => [...prev, ...uploaded])
+      toast({
+        title: "Images Added",
+        description: "New images have been added to existing ones",
+      })
+    }
+    
     setImageUploading(false)
+    // Reset the file input
+    e.target.value = ""
+  }
+
+  const handleRemoveImage = (index: number) => {
+    setImages((prev) => prev.filter((_, idx) => idx !== index))
+    toast({
+      title: "Image Removed",
+      description: "Image has been removed from the domain",
+    })
+  }
+
+  const handleClearAllImages = () => {
+    setImages([])
+    toast({
+      title: "All Images Removed",
+      description: "All images have been removed from the domain",
+    })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-
     try {
+      // Create a copy of form data to include images
       const updatedData = {
         ...formData,
-        images,
+        // Include the images array in the payload
+        image: images, // Changed from 'images' to 'image' to match backend field name
         price: parseFloat(formData.price),
         Actualprice: parseFloat(formData.Actualprice),
         tags: formData.tags.split(",").map((tag) => tag.trim()).filter(Boolean),
@@ -163,19 +193,28 @@ export default function EditDomainPage() {
           language: formData.metrics.language,
         },
       }
-
-      const res = await fetch(`/api/domains/${params.id}`, {
+      
+      console.log("Submitting data:", updatedData) // For debugging
+      
+      const res = await fetch(`/api/domains/${params?.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedData),
       })
-
+      
       if (res.ok) {
         toast({ title: "Success", description: "Domain updated successfully" })
         router.push("/admin/domains")
-      } else throw new Error()
-    } catch {
-      toast({ title: "Error", description: "Failed to update domain" })
+      } else {
+        const errorData = await res.json()
+        throw new Error(errorData.message || "Failed to update domain")
+      }
+    } catch (error: any) {
+      toast({ 
+        title: "Error", 
+        description: error.message || "Failed to update domain",
+        variant: "destructive" 
+      })
     } finally {
       setLoading(false)
     }
@@ -199,7 +238,6 @@ export default function EditDomainPage() {
                 <h2 className="text-3xl font-bold tracking-tight">Edit Domain</h2>
               </div>
             </div>
-
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid gap-6 md:grid-cols-2">
                 {/* === Basic Info === */}
@@ -208,13 +246,11 @@ export default function EditDomainPage() {
                   <CardContent className="space-y-4">
                     <InputGroup label="Domain Name *" id="name" value={formData.name} onChange={(v) => setFormData({ ...formData, name: v })} required />
                     <TextareaGroup label="Description *" id="description" value={formData.description} onChange={(v) => setFormData({ ...formData, description: v })} required />
-
                     <div className="grid grid-cols-2 gap-4">
                       <InputGroup label="Price ($) *" id="price" type="number" value={formData.price} onChange={(v) => setFormData({ ...formData, price: v })} required />
-                      <InputGroup label="Actual Price ($) *" id="price" type="number" value={formData.Actualprice} onChange={(v) => setFormData({ ...formData, Actualprice: v })} required />
+                      <InputGroup label="Actual Price ($) *" id="Actualprice" type="number" value={formData.Actualprice} onChange={(v) => setFormData({ ...formData, Actualprice: v })} required />
                       <InputGroup label="Registrar *" id="registrar" value={formData.registrar} onChange={(v) => setFormData({ ...formData, registrar: v })} required />
                     </div>
-
                     <div className="space-y-2">
                       <Label>Domain Type *</Label>
                       <Select value={formData.type} onValueChange={(val) => setFormData({ ...formData, type: val })}>
@@ -225,9 +261,7 @@ export default function EditDomainPage() {
                         </SelectContent>
                       </Select>
                     </div>
-
                     <InputGroup label="Tags (comma separated)" id="tags" value={formData.tags} onChange={(v) => setFormData({ ...formData, tags: v })} />
-
                     <div className="flex items-center space-x-2">
                       <Switch checked={formData.isAvailable} onCheckedChange={(val) => setFormData({ ...formData, isAvailable: val })} />
                       <Label>Available for purchase</Label>
@@ -236,35 +270,96 @@ export default function EditDomainPage() {
                       <Switch checked={formData.isHot} onCheckedChange={(val) => setFormData({ ...formData, isHot: val })} />
                       <Label>Is Hot deal</Label>
                     </div>
-
-                    <div className="space-y-2">
-                      <Label>Upload Images</Label>
-                      <Input multiple type="file" accept="image/*" onChange={handleImageUpload} />
-                      {imageUploading && <p className="text-sm text-muted-foreground">Uploading...</p>}
-                      <div className="flex flex-wrap gap-2">
-  {images.map((img, i) => (
-    <div key={i} className="relative group">
-      <img
-        src={img}
-        alt={`Uploaded ${i}`}
-        className="w-20 h-20 object-cover border rounded-md"
-      />
-      <button
-        type="button"
-        onClick={() => setImages((prev) => prev.filter((_, idx) => idx !== i))}
-        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition"
-        title="Remove Image"
-      >
-        <X className="h-3 w-3" />
-      </button>
-    </div>
-  ))}
-</div>
-
+                    
+                    {/* === Image Upload Section === */}
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Domain Images</Label>
+                        
+                        {/* Upload Mode Selector */}
+                        <div className="flex space-x-2 mb-2">
+                          <Button
+                            type="button"
+                            variant={uploadMode === "add" ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setUploadMode("add")}
+                            className="flex items-center"
+                          >
+                            <Upload className="h-4 w-4 mr-1" />
+                            Add Images
+                          </Button>
+                          <Button
+                            type="button"
+                            variant={uploadMode === "replace" ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setUploadMode("replace")}
+                            className="flex items-center"
+                          >
+                            <Replace className="h-4 w-4 mr-1" />
+                            Replace All
+                          </Button>
+                        </div>
+                        
+                        {/* File Input */}
+                        <Input
+                          multiple
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          disabled={imageUploading}
+                        />
+                        
+                        {imageUploading && (
+                          <p className="text-sm text-muted-foreground">Uploading images...</p>
+                        )}
+                        
+                        {/* Image Previews */}
+                        {images.length > 0 && (
+                          <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-medium">Current Images ({images.length})</span>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={handleClearAllImages}
+                                className="text-red-500 hover:text-red-700"
+                              >
+                                <Trash2 className="h-4 w-4 mr-1" />
+                                Clear All
+                              </Button>
+                            </div>
+                            
+                            <div className="flex flex-wrap gap-2">
+                              {images.map((img, i) => (
+                                <div key={i} className="relative group">
+                                  <img
+                                    src={img}
+                                    alt={`Domain image ${i + 1}`}
+                                    className="w-20 h-20 object-cover border rounded-md"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveImage(i)}
+                                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition"
+                                    title="Remove Image"
+                                  >
+                                    <X className="h-3 w-3" />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {images.length === 0 && (
+                          <p className="text-sm text-muted-foreground">No images uploaded yet</p>
+                        )}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
-
+                
                 {/* === SEO Metrics === */}
                 <Card>
                   <CardHeader><CardTitle>SEO Metrics</CardTitle></CardHeader>
@@ -296,7 +391,6 @@ export default function EditDomainPage() {
                         />
                       ))}
                     </div>
-
                     <TextareaGroup
                       label="Authority Links (comma separated)"
                       id="authorityLinks"
@@ -308,7 +402,6 @@ export default function EditDomainPage() {
                         })
                       }
                     />
-
                     <div className="space-y-2">
                       <Label>Language</Label>
                       <Select value={formData.metrics.language} onValueChange={(val) =>
@@ -328,7 +421,6 @@ export default function EditDomainPage() {
                   </CardContent>
                 </Card>
               </div>
-
               <div className="flex justify-end space-x-2">
                 <Button type="button" variant="outline" asChild>
                   <Link href="/admin/domains">Cancel</Link>

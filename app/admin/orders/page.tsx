@@ -1,5 +1,4 @@
 "use client"
-
 import { useState, useEffect } from "react"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
@@ -10,21 +9,22 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Search, MoreHorizontal, Eye, DollarSign, Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
 interface Order {
   _id: string
-  userId: string
-  customerName: string
+  sessionId: string
   customerEmail: string
-  domainName: string
-  domainId: string
+  items: {
+    name: string
+    price: number
+    quantity: number
+    _id: string
+  }[]
   totalAmount: number
-  status: "pending" | "completed" | "cancelled" | "failed"
-  paymentId?: string
-  paymentMethod: string
+  paymentStatus: "complete" | "pending" | "cancelled" | "failed"
   createdAt: string
   updatedAt: string
 }
@@ -38,6 +38,7 @@ export default function AdminOrdersPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([])
   const [statusFilter, setStatusFilter] = useState<string>("all")
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
 
   useEffect(() => {
     fetchOrders()
@@ -48,8 +49,8 @@ export default function AdminOrdersPage() {
       const response = await fetch("/api/orders")
       if (response.ok) {
         const data = await response.json()
-        setOrders(data)
-        setFilteredOrders(data)
+        setOrders(data.orders)
+        setFilteredOrders(data.orders)
       } else {
         throw new Error("Failed to fetch orders")
       }
@@ -67,22 +68,18 @@ export default function AdminOrdersPage() {
 
   useEffect(() => {
     let filtered = orders
-
     // Apply search filter
     if (searchQuery) {
       filtered = filtered.filter(
         (order) =>
-          order.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
           order.customerEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          order.domainName.toLowerCase().includes(searchQuery.toLowerCase())
+          order.items.some(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
       )
     }
-
     // Apply status filter
     if (statusFilter !== "all") {
-      filtered = filtered.filter((order) => order.status === statusFilter)
+      filtered = filtered.filter((order) => order.paymentStatus === statusFilter)
     }
-
     setFilteredOrders(filtered)
   }, [searchQuery, statusFilter, orders])
 
@@ -91,12 +88,11 @@ export default function AdminOrdersPage() {
       const response = await fetch(`/api/orders/${orderId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
+        body: JSON.stringify({ paymentStatus: newStatus }),
       })
-
       if (response.ok) {
         setOrders(orders.map(order => 
-          order._id === orderId ? { ...order, status: newStatus as any } : order
+          order._id === orderId ? { ...order, paymentStatus: newStatus as any } : order
         ))
         toast({
           title: "Success",
@@ -116,7 +112,7 @@ export default function AdminOrdersPage() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "completed":
+      case "complete":
         return <CheckCircle className="h-4 w-4 text-green-600" />
       case "pending":
         return <Clock className="h-4 w-4 text-yellow-600" />
@@ -131,17 +127,21 @@ export default function AdminOrdersPage() {
 
   const getStatusBadge = (status: string) => {
     const variants = {
-      completed: "default",
+      complete: "default",
       pending: "secondary",
       cancelled: "destructive",
       failed: "destructive",
     } as const
-
     return (
       <Badge variant={variants[status as keyof typeof variants] || "secondary"}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </Badge>
     )
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString() + " at " + date.toLocaleTimeString()
   }
 
   if (!user || user.role !== "admin") return null
@@ -158,7 +158,6 @@ export default function AdminOrdersPage() {
                 <h2 className="text-3xl font-bold tracking-tight">Order Management</h2>
               </div>
             </div>
-
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               {/* Stat Cards */}
               {[
@@ -170,20 +169,20 @@ export default function AdminOrdersPage() {
                 },
                 { 
                   title: "Completed", 
-                  count: orders.filter((o) => o.status === "completed").length, 
+                  count: orders.filter((o) => o.paymentStatus === "complete").length, 
                   icon: CheckCircle,
                   color: "text-green-600" 
                 },
                 { 
                   title: "Pending", 
-                  count: orders.filter((o) => o.status === "pending").length, 
+                  count: orders.filter((o) => o.paymentStatus === "pending").length, 
                   icon: Clock,
                   color: "text-yellow-600" 
                 },
                 { 
                   title: "Total Revenue", 
                   count: orders
-                    .filter((o) => o.status === "completed")
+                    .filter((o) => o.paymentStatus === "complete")
                     .reduce((sum, o) => sum + o.totalAmount, 0), 
                   icon: DollarSign,
                   color: "text-blue-600",
@@ -203,14 +202,13 @@ export default function AdminOrdersPage() {
                 </Card>
               ))}
             </div>
-
             <Card>
               <CardContent className="pt-6">
                 <div className="flex flex-col sm:flex-row gap-2">
                   <div className="relative flex-1">
                     <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
-                      placeholder="Search orders by customer name, email, or domain..."
+                      placeholder="Search orders by customer email or domain..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="pl-8"
@@ -223,14 +221,13 @@ export default function AdminOrdersPage() {
                   >
                     <option value="all">All Statuses</option>
                     <option value="pending">Pending</option>
-                    <option value="completed">Completed</option>
+                    <option value="complete">Complete</option>
                     <option value="cancelled">Cancelled</option>
                     <option value="failed">Failed</option>
                   </select>
                 </div>
               </CardContent>
             </Card>
-
             <Card>
               <CardHeader>
                 <CardTitle>Orders ({filteredOrders.length})</CardTitle>
@@ -254,43 +251,44 @@ export default function AdminOrdersPage() {
                         <Table>
                           <TableHeader>
                             <TableRow>
-                              <TableHead className="w-[20%]">Customer</TableHead>
-                              <TableHead className="w-[20%]">Domain</TableHead>
-                              <TableHead className="w-[15%]">Amount</TableHead>
-                              <TableHead className="w-[15%]">Status</TableHead>
-                              <TableHead className="w-[15%]">Payment</TableHead>
+                              <TableHead className="w-[20%] max-w-xs truncate">Customer</TableHead>
+                              <TableHead className="w-[20%] max-w-xs truncate">Domains</TableHead>
+                              <TableHead className="w-[10%]">Amount</TableHead>
+                              <TableHead className="w-[10%]">Status</TableHead>
+                              <TableHead className="w-[15%]">Session ID</TableHead>
                               <TableHead className="w-[15%]">Date</TableHead>
+                              <TableHead className="w-[10%]">Actions</TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
                             {filteredOrders.map((order) => (
                               <TableRow key={order._id}>
-                                <TableCell>
-                                  <div>
-                                    <div className="font-medium">{order.customerName}</div>
-                                    <div className="text-sm text-muted-foreground">{order.customerEmail}</div>
-                                  </div>
+                                <TableCell className="max-w-xs truncate">
+                                  <div className="font-medium truncate">{order.customerEmail}</div>
                                 </TableCell>
-                                <TableCell>
-                                  <div className="font-medium">{order.domainName}</div>
+                                <TableCell className="max-w-xs truncate">
+                                  <div>
+                                    {order.items.map((item, index) => (
+                                      <div key={item._id} className="font-medium truncate">
+                                        {item.name} {index < order.items.length - 1 ? ',' : ''}
+                                      </div>
+                                    ))}
+                                  </div>
                                 </TableCell>
                                 <TableCell>
                                   <div className="font-medium">${order.totalAmount.toLocaleString()}</div>
                                 </TableCell>
                                 <TableCell>
                                   <div className="flex items-center space-x-2">
-                                    {getStatusIcon(order.status)}
-                                    {getStatusBadge(order.status)}
+                                    {getStatusIcon(order.paymentStatus)}
+                                    {getStatusBadge(order.paymentStatus)}
                                   </div>
                                 </TableCell>
                                 <TableCell>
                                   <div className="text-sm">
-                                    <div className="capitalize">{order.paymentMethod}</div>
-                                    {order.paymentId && (
-                                      <div className="text-xs text-muted-foreground">
-                                        ID: {order.paymentId.slice(-8)}
-                                      </div>
-                                    )}
+                                    <div className="text-xs text-muted-foreground truncate">
+                                      {order.sessionId.slice(-8)}
+                                    </div>
                                   </div>
                                 </TableCell>
                                 <TableCell>
@@ -301,22 +299,94 @@ export default function AdminOrdersPage() {
                                     </div>
                                   </div>
                                 </TableCell>
+                                <TableCell>
+                                  <Dialog>
+                                    <DialogTrigger asChild>
+                                      <Button 
+                                        variant="ghost" 
+                                        size="sm"
+                                        onClick={() => setSelectedOrder(order)}
+                                      >
+                                        <Eye className="h-4 w-4" />
+                                      </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="max-w-3xl">
+                                      <DialogHeader>
+                                        <DialogTitle className="text-xl">Order Details</DialogTitle>
+                                      </DialogHeader>
+                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-4">
+                                          <div>
+                                            <h3 className="text-sm font-medium text-muted-foreground">Order ID</h3>
+                                            <p className="text-sm">{order._id}</p>
+                                          </div>
+                                          <div>
+                                            <h3 className="text-sm font-medium text-muted-foreground">Session ID</h3>
+                                            <p className="text-sm">{order.sessionId.slice(-8)}</p>
+                                          </div>
+                                          <div>
+                                            <h3 className="text-sm font-medium text-muted-foreground">Customer Email</h3>
+                                            <p className="text-sm">{order.customerEmail}</p>
+                                          </div>
+                                          <div>
+                                            <h3 className="text-sm font-medium text-muted-foreground">Payment Status</h3>
+                                            <div className="flex items-center space-x-2 mt-1">
+                                              {getStatusIcon(order.paymentStatus)}
+                                              {getStatusBadge(order.paymentStatus)}
+                                            </div>
+                                          </div>
+                                          <div>
+                                            <h3 className="text-sm font-medium text-muted-foreground">Order Date</h3>
+                                            <p className="text-sm">{formatDate(order.createdAt)}</p>
+                                          </div>
+                                          <div>
+                                            <h3 className="text-sm font-medium text-muted-foreground">Last Updated</h3>
+                                            <p className="text-sm">{formatDate(order.updatedAt)}</p>
+                                          </div>
+                                        </div>
+                                        <div className="space-y-4">
+                                          <div>
+                                            <h3 className="text-sm font-medium text-muted-foreground mb-2">Order Items</h3>
+                                            <div className="space-y-3">
+                                              {order.items.map((item) => (
+                                                <div key={item._id} className="flex justify-between items-center p-3 border rounded-md">
+                                                  <div>
+                                                    <p className="font-medium">{item.name}</p>
+                                                    <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
+                                                  </div>
+                                                  <p className="font-medium">${item.price.toLocaleString()}</p>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          </div>
+                                          <div className="flex justify-between items-center pt-4 border-t">
+                                            <h3 className="text-sm font-medium">Total Amount</h3>
+                                            <p className="text-lg font-bold">${order.totalAmount.toLocaleString()}</p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </DialogContent>
+                                  </Dialog>
+                                </TableCell>
                               </TableRow>
                             ))}
                           </TableBody>
                         </Table>
                       </div>
-
                       {/* Mobile Cards */}
                       <div className="block md:hidden p-4 space-y-4">
                         {filteredOrders.map((order) => (
                           <Card key={order._id}>
                             <CardHeader>
                               <div className="flex items-center justify-between">
-                                <CardTitle className="text-lg">{order.domainName}</CardTitle>
-                                {getStatusBadge(order.status)}
+                                <CardTitle className="text-lg truncate">
+                                  {order.items.length > 1 
+                                    ? `${order.items[0].name} +${order.items.length - 1} more` 
+                                    : order.items[0].name}
+                                </CardTitle>
+                                {getStatusBadge(order.paymentStatus)}
                               </div>
-                              <p className="text-sm text-muted-foreground">{order.customerName}</p>
+                              <p className="text-sm text-muted-foreground truncate">{order.customerEmail}</p>
                             </CardHeader>
                             <CardContent className="space-y-3">
                               <div className="flex items-center justify-between">
@@ -324,8 +394,10 @@ export default function AdminOrdersPage() {
                                 <span className="text-sm font-medium">${order.totalAmount.toLocaleString()}</span>
                               </div>
                               <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium">Payment:</span>
-                                <span className="text-sm text-muted-foreground capitalize">{order.paymentMethod}</span>
+                                <span className="text-sm font-medium">Session ID:</span>
+                                <span className="text-sm text-muted-foreground truncate">
+                                  {order.sessionId.slice(-8)}
+                                </span>
                               </div>
                               <div className="flex items-center justify-between">
                                 <span className="text-sm font-medium">Date:</span>
@@ -333,9 +405,85 @@ export default function AdminOrdersPage() {
                                   {new Date(order.createdAt).toLocaleDateString()}
                                 </span>
                               </div>
-                              <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium">Email:</span>
-                                <span className="text-sm text-muted-foreground">{order.customerEmail}</span>
+                              <div className="mt-2">
+                                <span className="text-sm font-medium">Domains:</span>
+                                <div className="mt-1 space-y-1">
+                                  {order.items.map((item) => (
+                                    <div key={item._id} className="text-sm text-muted-foreground truncate">
+                                      {item.name} - ${item.price.toLocaleString()}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                              <div className="flex justify-end pt-2">
+                                <Dialog>
+                                  <DialogTrigger asChild>
+                                    <Button 
+                                      variant="outline" 
+                                      size="sm"
+                                      onClick={() => setSelectedOrder(order)}
+                                    >
+                                      <Eye className="h-4 w-4 mr-1" />
+                                      View Details
+                                    </Button>
+                                  </DialogTrigger>
+                                  <DialogContent className="max-w-3xl">
+                                    <DialogHeader>
+                                      <DialogTitle className="text-xl">Order Details</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                      <div className="space-y-4">
+                                        <div>
+                                          <h3 className="text-sm font-medium text-muted-foreground">Order ID</h3>
+                                          <p className="text-sm">{order._id}</p>
+                                        </div>
+                                        <div>
+                                          <h3 className="text-sm font-medium text-muted-foreground">Session ID</h3>
+                                          <p className="text-sm">{order.sessionId}</p>
+                                        </div>
+                                        <div>
+                                          <h3 className="text-sm font-medium text-muted-foreground">Customer Email</h3>
+                                          <p className="text-sm">{order.customerEmail}</p>
+                                        </div>
+                                        <div>
+                                          <h3 className="text-sm font-medium text-muted-foreground">Payment Status</h3>
+                                          <div className="flex items-center space-x-2 mt-1">
+                                            {getStatusIcon(order.paymentStatus)}
+                                            {getStatusBadge(order.paymentStatus)}
+                                          </div>
+                                        </div>
+                                        <div>
+                                          <h3 className="text-sm font-medium text-muted-foreground">Order Date</h3>
+                                          <p className="text-sm">{formatDate(order.createdAt)}</p>
+                                        </div>
+                                        <div>
+                                          <h3 className="text-sm font-medium text-muted-foreground">Last Updated</h3>
+                                          <p className="text-sm">{formatDate(order.updatedAt)}</p>
+                                        </div>
+                                      </div>
+                                      <div className="space-y-4">
+                                        <div>
+                                          <h3 className="text-sm font-medium text-muted-foreground mb-2">Order Items</h3>
+                                          <div className="space-y-3">
+                                            {order.items.map((item) => (
+                                              <div key={item._id} className="flex justify-between items-center p-3 border rounded-md">
+                                                <div>
+                                                  <p className="font-medium">{item.name}</p>
+                                                  <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
+                                                </div>
+                                                <p className="font-medium">${item.price.toLocaleString()}</p>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        </div>
+                                        <div className="flex justify-between items-center pt-4 border-t">
+                                          <h3 className="text-sm font-medium">Total Amount</h3>
+                                          <p className="text-lg font-bold">${order.totalAmount.toLocaleString()}</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </DialogContent>
+                                </Dialog>
                               </div>
                             </CardContent>
                           </Card>

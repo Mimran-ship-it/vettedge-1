@@ -37,7 +37,7 @@ interface ChatContextType {
   createSession: () => Promise<void>
   joinSession: (sessionId: string) => void
 }
-
+ 
 const ChatContext = createContext<ChatContextType | undefined>(undefined)
 
 export function ChatProvider({ children }: { children: ReactNode }) {
