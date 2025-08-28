@@ -37,12 +37,7 @@ export default function CheckoutPage() {
         <div className="grid lg:grid-cols-1 gap-6">
           <div className="space-y-8">
             <CheckoutForm />
-            <PaymentMethods
-  selectedMethod={paymentMethod}
-  onMethodChange={setPaymentMethod}
-  onPaymentSubmit={(data) => console.log(data)}
-  loading={false}
-/>
+  
           </div>
          
         </div>

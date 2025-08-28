@@ -1,24 +1,48 @@
 "use client"
-
-import { useState, useEffect } from "react"
+import { useState, useEffect, ChangeEvent } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { PaymentMethods } from "./payment-methods"
 import { useCart } from "@/components/providers/cart-provider"
 import { useAuth } from "@/hooks/use-auth"
 
+// Cart Item Type
+interface CartItem {
+  id: string
+  name: string
+  price: number
+  quantity: number
+}
+
+// Billing Info Type
+interface BillingInfo {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  address: string
+  city: string
+  state: string
+  zipCode: string
+  country: string
+}
+
 export function CheckoutForm() {
-  const [paymentMethod, setPaymentMethod] = useState<"stripe" | "paypal">("stripe")
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const { items, total, clearCart } = useCart()
-  const { user } = useAuth()
-
-  const [billingInfo, setBillingInfo] = useState({
-    firstName: "",
-    lastName: "",
+  const { items, total, clearCart } = useCart() as {
+    items: CartItem[]
+    total: number
+    clearCart: () => void
+  }
+  const { user } = useAuth() as {
+    user: { id: string; name: string; email: string } | null
+  }
+  
+  const [billingInfo, setBillingInfo] = useState<BillingInfo>({
+    firstName: user?.name?.split(" ")[0] || "",
+    lastName: user?.name?.split(" ")[1] || "",
     email: user?.email || "",
     phone: "",
     address: "",
@@ -28,24 +52,23 @@ export function CheckoutForm() {
     country: "",
   })
 
-  // ✅ Price verification on page load
+  // State to track form validity
+  const [isFormValid, setIsFormValid] = useState(false)
+
+  // ✅ Verify product prices on page load
   useEffect(() => {
     const verifyPrices = async () => {
       if (items.length === 0) return
-
       try {
         const res = await fetch("/api/domains")
-        const domains = await res.json()
-
+        const domains: { _id: string; price: number }[] = await res.json()
         let priceMismatch = false
-
         items.forEach((cartItem) => {
-          const domainData = domains.find((d: any) => d._id === cartItem.id)
+          const domainData = domains.find((d) => d._id === cartItem.id)
           if (!domainData || cartItem.price !== domainData.price) {
             priceMismatch = true
           }
         })
-
         if (priceMismatch) {
           alert("Some product prices have changed. Please review your cart.")
           clearCart()
@@ -55,55 +78,43 @@ export function CheckoutForm() {
         console.error("Price verification failed:", err)
       }
     }
-
     verifyPrices()
   }, [items, clearCart])
 
-  const handleBillingChange = (field: string, value: string) => {
+  // Check form validity whenever billingInfo changes
+  useEffect(() => {
+    const isValid = Object.values(billingInfo).every(value => value.trim() !== "")
+    setIsFormValid(isValid)
+  }, [billingInfo])
+
+  const handleBillingChange = (field: keyof BillingInfo, value: string) => {
     setBillingInfo((prev) => ({ ...prev, [field]: value }))
   }
 
-  const handlePaymentSubmit = async (paymentData: any) => {
+  const handlePaymentSubmit = async () => {
     setLoading(true)
-
     try {
-      // Process mock payment
-      const paymentResponse = await fetch("/api/payment/mock", {
+      // ✅ Create checkout session on backend
+      const response = await fetch("/api/checkout_sessions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: total,
-          currency: "USD",
-          paymentMethod: paymentData,
+          items: items.map((item) => ({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+          })),
+          billingInfo,
+          userId: user?.id,
         }),
       })
-
-      const paymentResult = await paymentResponse.json()
-
-      if (paymentResult.success) {
-        // Create order
-        const orderResponse = await fetch("/api/orders", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            items,
-            total,
-            billingInfo,
-            paymentId: paymentResult.payment.id,
-            userId: user?.id,
-          }),
-        })
-
-        const order = await orderResponse.json()
-
-        if (order.success) {
-          clearCart()
-          router.push(`/checkout/success?orderId=${order.orderId}`)
-        } else {
-          throw new Error("Failed to create order")
-        }
-      } else {
-        throw new Error("Payment failed")
+      const data = await response.json()
+      if (data.url) {
+        // Redirect to Stripe Checkout
+        window.location.href = data.url
+      } else { 
+        throw new Error("Checkout session creation failed")
       }
     } catch (error) {
       console.error("Checkout error:", error)
@@ -115,6 +126,7 @@ export function CheckoutForm() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Billing Info */}
       <div className="space-y-6">
         <Card>
           <CardHeader>
@@ -123,103 +135,115 @@ export function CheckoutForm() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="firstName">First Name</Label>
+                <Label htmlFor="firstName">First Name *</Label>
                 <Input
                   id="firstName"
                   value={billingInfo.firstName}
-                  onChange={(e) => handleBillingChange("firstName", e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleBillingChange("firstName", e.target.value)
+                  }
                   required
                 />
               </div>
               <div>
-                <Label htmlFor="lastName">Last Name</Label>
+                <Label htmlFor="lastName">Last Name *</Label>
                 <Input
                   id="lastName"
                   value={billingInfo.lastName}
-                  onChange={(e) => handleBillingChange("lastName", e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleBillingChange("lastName", e.target.value)
+                  }
                   required
                 />
               </div>
             </div>
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Email *</Label>
               <Input
                 id="email"
                 type="email"
                 value={billingInfo.email}
-                onChange={(e) => handleBillingChange("email", e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  handleBillingChange("email", e.target.value)
+                }
                 required
               />
             </div>
             <div>
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone">Phone *</Label>
               <Input
                 id="phone"
                 value={billingInfo.phone}
-                onChange={(e) => handleBillingChange("phone", e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  handleBillingChange("phone", e.target.value)
+                }
                 required
               />
             </div>
             <div>
-              <Label htmlFor="address">Address</Label>
+              <Label htmlFor="address">Address *</Label>
               <Input
                 id="address"
                 value={billingInfo.address}
-                onChange={(e) => handleBillingChange("address", e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  handleBillingChange("address", e.target.value)
+                }
                 required
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="city">City</Label>
+                <Label htmlFor="city">City *</Label>
                 <Input
                   id="city"
                   value={billingInfo.city}
-                  onChange={(e) => handleBillingChange("city", e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleBillingChange("city", e.target.value)
+                  }
                   required
                 />
               </div>
               <div>
-                <Label htmlFor="state">State</Label>
+                <Label htmlFor="state">State *</Label>
                 <Input
                   id="state"
                   value={billingInfo.state}
-                  onChange={(e) => handleBillingChange("state", e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleBillingChange("state", e.target.value)
+                  }
                   required
                 />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="zipCode">ZIP Code</Label>
+                <Label htmlFor="zipCode">ZIP Code *</Label>
                 <Input
                   id="zipCode"
                   value={billingInfo.zipCode}
-                  onChange={(e) => handleBillingChange("zipCode", e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleBillingChange("zipCode", e.target.value)
+                  }
                   required
                 />
               </div>
               <div>
-                <Label htmlFor="country">Country</Label>
+                <Label htmlFor="country">Country *</Label>
                 <Input
                   id="country"
                   value={billingInfo.country}
-                  onChange={(e) => handleBillingChange("country", e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleBillingChange("country", e.target.value)
+                  }
                   required
                 />
               </div>
             </div>
           </CardContent>
         </Card>
-
-        <PaymentMethods
-          selectedMethod={paymentMethod}
-          onMethodChange={setPaymentMethod}
-          onPaymentSubmit={handlePaymentSubmit}
-          loading={loading}
-        />
       </div>
-
+      
+      {/* Order Summary */}
       <div>
         <Card>
           <CardHeader>
@@ -238,23 +262,38 @@ export function CheckoutForm() {
                   </p>
                 </div>
               ))}
-
               <div className="border-t pt-4">
                 <div className="flex justify-between items-center text-base">
                   <span>Subtotal</span>
                   <span>${total.toFixed(2)}</span>
                 </div>
-
                 <div className="flex justify-between items-center text-base">
                   <span>Tax (8%)</span>
                   <span>${(total * 0.08).toFixed(2)}</span>
                 </div>
-
                 <div className="flex justify-between items-center text-lg font-bold mt-2">
                   <span>Total</span>
                   <span>${(total * 1.08).toFixed(2)}</span>
                 </div>
               </div>
+              
+              {/* Only show the Pay Now button if all fields are filled */}
+              {isFormValid && (
+                <button
+                  disabled={loading}
+                  onClick={handlePaymentSubmit}
+                  className="w-full bg-black text-white py-3 rounded-lg mt-4 disabled:opacity-50"
+                >
+                  {loading ? "Processing..." : "Pay Now"}
+                </button>
+              )}
+              
+              {/* Show a message if form is not complete */}
+              {!isFormValid && (
+                <div className="mt-4 p-3 bg-yellow-50 text-yellow-700 rounded-lg text-sm">
+                  Please complete all required fields to proceed with payment.
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

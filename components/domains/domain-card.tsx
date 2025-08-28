@@ -65,7 +65,7 @@ export function DomainCard({ domain }: DomainCardProps) {
     createdAt: new Date(domain.createdAt).toISOString(),
     updatedAt: new Date(domain.updatedAt).toISOString(),
   }
-  const { addItem } = useCart()
+  const { addItem, clearCart } = useCart()
   const { toast } = useToast()
   const [isWishlisted, setIsWishlisted] = useState(false)
 
@@ -104,12 +104,24 @@ export function DomainCard({ domain }: DomainCardProps) {
       })
       return
     }
+    
+    // Clear the cart first
+    clearCart()
+    
+    // Add the current domain to the cart
     addItem({
       id: parsedDomain._id,
       name: parsedDomain.name,
       price: parsedDomain.price,
       domain: parsedDomain,
     })
+    
+    toast({
+      title: "Added to Cart",
+      description: `${domain.name} has been added to your cart. Redirecting to checkout...`,
+    })
+    
+    // Redirect to checkout
     window.location.href = "/checkout"
   }
 

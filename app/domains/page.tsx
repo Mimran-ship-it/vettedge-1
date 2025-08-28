@@ -272,7 +272,7 @@ export default function DomainsPage() {
   return (
     <div className="min-h-screen   bg-gray-50">
       <Header />
-      <main className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-16 pt-24 pb-8">
+      <main className="max-w-8xl mx-auto ps-3 pe-6 sm:px-6 lg:px-16 pt-24 pb-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
             Premium Expired Domains
