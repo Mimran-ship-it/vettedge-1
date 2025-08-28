@@ -1,6 +1,7 @@
 "use client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import {
   Heart,
@@ -60,6 +61,7 @@ interface DomainCardProps {
 }
 
 export function DomainCard({ domain }: DomainCardProps) {
+  const router = useRouter()
   const parsedDomain: Domain = {
     ...domain,
     createdAt: new Date(domain.createdAt).toISOString(),
@@ -122,7 +124,7 @@ export function DomainCard({ domain }: DomainCardProps) {
     })
     
     // Redirect to checkout
-    window.location.href = "/checkout"
+    router.push("/checkout")
   }
 
   const handleWishlistToggle = () => {
