@@ -1,7 +1,6 @@
+// components/chat/live-chat.tsx
 "use client"
-
 import type React from "react"
-
 import { useState, useEffect, useRef } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -11,6 +10,7 @@ import { MessageSquare, X, Send, Minimize2 } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { useChat } from "@/hooks/use-chat"
 import { formatDistanceToNow } from "date-fns"
+import { useToast } from "@/hooks/use-toast"
 
 export function LiveChat() {
   const [isOpen, setIsOpen] = useState(false)
@@ -19,28 +19,28 @@ export function LiveChat() {
   const { user } = useAuth()
   const { messages, sendMessage, unreadCount, currentSession, isConnected } = useChat()
   const messagesEndRef = useRef<HTMLDivElement>(null)
-
+  const { toast } = useToast()
+  
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
-
+  
   useEffect(() => {
     scrollToBottom()
   }, [messages])
-
+  
   useEffect(() => {
     console.log("LiveChat - Current session:", currentSession)
     console.log("LiveChat - Is connected:", isConnected)
     console.log("LiveChat - Messages count:", messages.length)
   }, [currentSession, isConnected, messages])
-
+  
   const handleSendMessage = (e?: React.MouseEvent) => {
     e?.preventDefault()
     e?.stopPropagation()
     
     console.log("Send button clicked", { user, message, currentSession, isConnected })
     
-    // Temporarily remove currentSession requirement to test if that's the issue
     if (message.trim() && user) {
       console.log("Sending message:", message, "Session:", currentSession?._id || "No session")
       sendMessage(message)
@@ -52,15 +52,29 @@ export function LiveChat() {
         hasUser: !!user,
         isConnected 
       })
+      
+      // Show feedback to user
+      if (!isConnected) {
+        toast({
+          title: "Chat Not Connected",
+          description: "Please wait or refresh the page.",
+          variant: "destructive"
+        })
+      } else if (!currentSession) {
+        toast({
+          title: "Creating Session",
+          description: "Please try again in a moment.",
+        })
+      }
     }
   }
-
+  
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       handleSendMessage()
     }
   }
-
+  
   if (!isOpen) {
     return (
       <div className="fixed bottom-4 right-4 z-50">
@@ -75,9 +89,9 @@ export function LiveChat() {
       </div>
     )
   }
-
+  
   return (
-    <div className="fixed bottom-4 right-4 z-50 max-w-[calc(100vw-2rem)]">
+    <div className="fixed bottom-4 bg-white right-4 z-500 max-w-[calc(100vw-2rem)]">
       <Card className={`w-80 max-w-full shadow-xl transition-all duration-300 ${isMinimized ? "h-14" : "h-96"} sm:w-80`}>
         <CardHeader
           className="flex flex-row items-center justify-between space-y-0 pb-2 cursor-pointer"
@@ -110,7 +124,6 @@ export function LiveChat() {
             </Button>
           </div>
         </CardHeader>
-
         {!isMinimized && (
           <CardContent className="flex flex-col h-80 p-3 sm:p-6">
             {/* Messages */}
@@ -138,7 +151,6 @@ export function LiveChat() {
               )}
               <div ref={messagesEndRef} />
             </div>
-
             {/* Input */}
             <div className="flex space-x-2 mt-auto">
               <Input
@@ -159,7 +171,6 @@ export function LiveChat() {
                 <Send className="h-4 w-4" />
               </Button>
             </div>
-
             {!user && (
               <p className="text-xs text-gray-500 mt-2 text-center">
                 Please{" "}

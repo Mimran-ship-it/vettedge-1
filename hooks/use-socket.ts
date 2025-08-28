@@ -1,81 +1,104 @@
+// hooks/use-socket.ts
 "use client"
-
 import { useEffect, useRef, useState } from "react"
-import io, { type Socket } from "socket.io-client"
-import { useAuth } from "@/hooks/use-auth"
+import { io, Socket } from "socket.io-client"
+import { useAuth } from "./use-auth"
 
 export function useSocket() {
-  const [isConnected, setIsConnected] = useState(false)
   const { user } = useAuth()
+  const [socket, setSocket] = useState<Socket | null>(null)
+  const [isConnected, setIsConnected] = useState(false)
+  const [connectionError, setConnectionError] = useState<string | null>(null)
+  const [connectionStatus, setConnectionStatus] = useState<'idle' | 'connecting' | 'connected' | 'disconnected'>('idle')
   const socketRef = useRef<Socket | null>(null)
 
   useEffect(() => {
-    console.log("🔄 useSocket effect triggered, user:", user?.name)
-
+    // Only create socket if user is authenticated
     if (!user) {
-      console.log("No user, cleaning up socket")
+      console.log("🚫 No user, cleaning up socket")
       if (socketRef.current) {
         socketRef.current.disconnect()
         socketRef.current = null
+        setSocket(null)
+        setIsConnected(false)
+        setConnectionStatus('disconnected')
       }
-      setIsConnected(false)
       return
     }
 
-    // Get token from socket_token cookie (non-HttpOnly)
-    console.log("All cookies:", document.cookie)
-    const token = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('socket_token='))
-      ?.split('=')[1];
-    
-    console.log("Extracted socket_token:", token ? "Token found" : "No token found")
-    
+    // Get the token from cookies
+    const getAuthToken = () => {
+      console.log("🔍 Looking for token in cookies...")
+      const cookies = document.cookie.split(';')
+      console.log("🍪 Found cookies:", cookies)
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('token='))
+      if (tokenCookie) {
+        const token = tokenCookie.split('=')[1]
+        console.log("✅ Token found:", token.substring(0, 20) + "...")
+        return token
+      }
+      console.log("❌ No token found in cookies")
+      return null
+    }
+
+    const token = getAuthToken()
+
     if (!token) {
-      console.error("No socket_token found in cookies")
-      console.log("Available cookies:", document.cookie.split('; '))
+      console.warn("⚠️ No authentication token found for socket")
+      setConnectionError("No authentication token found")
       return
     }
 
-    if (socketRef.current) {
-      console.log("♻️ Socket already connected, skipping new connection")
-      return
-    }
+    console.log("🔄 useSocket effect triggered, user:", user.name)
+    setConnectionStatus('connecting')
 
-    console.log("🌐 Creating new socket connection...")
-    const newSocket = io(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000", {
+    // Initialize socket
+    const socketInstance = io(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000", {
       path: "/api/socket",
-      auth: { token },
       transports: ["websocket", "polling"],
-      timeout: 20000,
+      timeout: 15000, // Increased timeout
       forceNew: true,
+      auth: {
+        token: token
+      }
     })
 
-    newSocket.on("connect", () => {
-      console.log("✅ Socket connected:", newSocket.id)
+    socketRef.current = socketInstance
+
+    socketInstance.on("connect", () => {
+      console.log("✅ Socket connected:", socketInstance.id)
       setIsConnected(true)
+      setSocket(socketInstance)
+      setConnectionError(null)
+      setConnectionStatus('connected')
     })
 
-    newSocket.on("connect_error", (error: any) => {
-      console.error("❌ Socket connection error:", error.message || error)
+    socketInstance.on("disconnect", (reason) => {
+      console.log("❌ Socket disconnected:", reason)
       setIsConnected(false)
+      setConnectionStatus('disconnected')
+      if (reason === "io server disconnect") {
+        // The server forcefully disconnected the socket
+        socketInstance.connect()
+      }
     })
 
-    newSocket.on("disconnect", (reason: string) => {
-      console.log("🔌 Socket disconnected, reason:", reason)
+    socketInstance.on("connect_error", (error) => {
+      console.error("❌ Socket connection error:", error.message)
+      console.error("Full error details:", error)
       setIsConnected(false)
+      setConnectionError(error.message)
+      setConnectionStatus('disconnected')
     })
 
-    socketRef.current = newSocket
-
+    // Cleanup on unmount or when user changes
     return () => {
       console.log("🧹 Cleaning up socket connection")
-      if (socketRef.current) {
-        socketRef.current.disconnect()
-        socketRef.current = null
+      if (socketInstance) {
+        socketInstance.disconnect()
       }
     }
   }, [user])
 
-  return { socket: socketRef.current, isConnected }
+  return { socket, isConnected, connectionError, connectionStatus }
 }

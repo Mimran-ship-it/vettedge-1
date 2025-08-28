@@ -1,4 +1,4 @@
-// sessions/[id]/route.ts
+// app/admin/sessions/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server"
 import { ChatSession } from "@/lib/models/chat"
 import UserModel from "@/lib/models/User"

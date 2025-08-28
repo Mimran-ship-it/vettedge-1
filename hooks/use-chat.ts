@@ -1,3 +1,4 @@
+// hooks/use-chat.ts
 "use client"
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react"
 import { useAuth } from "@/hooks/use-auth"
@@ -49,7 +50,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!socket || !isConnected) return
-
     console.log("Setting up socket listeners")
     
     const handleNewMessage = (message: ChatMessage) => {
@@ -72,7 +72,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         }
       }
     }
-
+    
     const handleSessionStatusUpdated = ({ sessionId, status }: { 
       sessionId: string
       status: "active" | "closed" | "waiting" 
@@ -82,20 +82,20 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         setCurrentSession(prev => prev ? { ...prev, status } : null)
       }
     }
-
+    
     const handleSessionJoined = ({ sessionId }: { sessionId: string }) => {
       console.log("Session joined:", sessionId)
     }
-
+    
     const handleError = (error: any) => {
       console.error("Socket error:", error)
     }
-
+    
     socket.on("new_message", handleNewMessage)
     socket.on("session_status_updated", handleSessionStatusUpdated)
     socket.on("session_joined", handleSessionJoined)
     socket.on("error", handleError)
-
+    
     return () => {
       socket.off("new_message", handleNewMessage)
       socket.off("session_status_updated", handleSessionStatusUpdated)
@@ -115,7 +115,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const fetchMessages = async (sessionId: string) => {
     try {
       const response = await fetch(`/api/chat/messages?sessionId=${sessionId}`, {
-        credentials: 'include' // Include cookies in the request
+        credentials: 'include'
       })
       
       if (response.ok) {
@@ -135,12 +135,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       console.warn("User must be signed in to start chat")
       return
     }
-
     if (isCreatingSession) {
       console.log("Session creation already in progress")
       return
     }
-
     setIsCreatingSession(true)
     
     try {
@@ -150,7 +148,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         headers: {
           "Content-Type": "application/json"
         },
-        credentials: 'include' // Include cookies in the request
+        credentials: 'include'
       })
       
       if (response.ok) {
@@ -182,7 +180,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const sendMessage = (content: string) => {
+  const sendMessage = async (content: string) => {
     console.log("sendMessage called with:", content)
     
     if (!user) {
@@ -200,11 +198,30 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       return
     }
     
-    // Send message via socket - don't add optimistic message to avoid duplicates
-    console.log("Emitting send_message event:", { content })
+    // If no session, create one first
+    if (!currentSession) {
+      console.log("No current session, creating one before sending message")
+      try {
+        await createSession()
+        // After session is created, send the message
+        if (socket && socket.connected && currentSession) {
+          socket.emit("send_message", {
+            content,
+            sessionId: currentSession._id
+          })
+        }
+      } catch (error) {
+        console.error("Failed to create session:", error)
+        return
+      }
+      return
+    }
+    
+    // Send message via socket
+    console.log("Emitting send_message event:", { content, sessionId: currentSession._id })
     socket.emit("send_message", {
       content,
-      sessionId: currentSession?._id // Include sessionId if available
+      sessionId: currentSession._id
     })
   }
 
