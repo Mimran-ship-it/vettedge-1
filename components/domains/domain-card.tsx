@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
+import { useAuth } from "@/hooks/use-auth"
 import {
   Heart,
   ShoppingCart,
@@ -61,6 +62,7 @@ interface DomainCardProps {
 }
 
 export function DomainCard({ domain }: DomainCardProps) {
+    const { user } = useAuth()
   const router = useRouter()
   const parsedDomain: Domain = {
     ...domain,
@@ -124,7 +126,12 @@ export function DomainCard({ domain }: DomainCardProps) {
     })
     
     // Redirect to checkout
+    if (!user) {
+      router.push("/auth/signin?redirect=/checkout")
+      return
+    }else{
     router.push("/checkout")
+ } 
   }
 
   const handleWishlistToggle = () => {
@@ -149,7 +156,7 @@ export function DomainCard({ domain }: DomainCardProps) {
 
   return (
     <Card className={cn(
-      "relative group hover:shadow-sm hover:rounded-xl transition-all duration-300 overflow-hidden flex flex-col w-full max-w-xs",
+      "relative group mx-auto hover:shadow-sm hover:rounded-xl transition-all duration-300 overflow-hidden flex flex-col w-full max-w-xs",
       domain.isSold && "opacity-60"
     )}>
       {/* Top Image - Square */}
