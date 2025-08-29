@@ -8,10 +8,10 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { MessageSquare, Send, Users, Clock } from "lucide-react"
-import { useSocket } from "@/hooks/use-socket"
 import { useAuth } from "@/hooks/use-auth"
 import { AdminNotificationBell } from "@/components/admin/admin-notification-bell"
 import { formatDistanceToNow } from "date-fns"
+import Pusher from "pusher-js"
 
 interface ChatSession {
   _id: string
@@ -39,12 +39,12 @@ interface ChatMessage {
 
 export function AdminChatInterface() {
   const { user } = useAuth()
-  const { socket, isConnected } = useSocket()
   const [sessions, setSessions] = useState<ChatSession[]>([])
   const [selectedSession, setSelectedSession] = useState<ChatSession | null>(null)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [newMessage, setNewMessage] = useState("")
   const [loading, setLoading] = useState(true)
+  const [isConnected, setIsConnected] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -54,6 +54,58 @@ export function AdminChatInterface() {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // 🔹 Initialize Pusher
+  useEffect(() => {
+    if (!user || user.role !== "admin") return
+
+    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
+      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
+    })
+
+    setIsConnected(true)
+
+    // Subscribe to global admin channel
+    const channel = pusher.subscribe("admin-channel")
+
+    channel.bind("new_message", (message: ChatMessage) => {
+      if (selectedSession && message.sessionId === selectedSession._id) {
+        setMessages(prev => [...prev, message])
+      }
+
+      setSessions(prev =>
+        prev.map(session =>
+          session._id === message.sessionId
+            ? {
+                ...session,
+                lastMessageAt: message.createdAt,
+                unreadCount:
+                  session.unreadCount + (message.senderRole === "customer" ? 1 : 0),
+              }
+            : session
+        )
+      )
+    })
+
+    channel.bind("new_customer_message", ({ sessionId }: { sessionId: string }) => {
+      setSessions(prev =>
+        prev.map(s =>
+          s._id === sessionId
+            ? {
+                ...s,
+                lastMessageAt: new Date().toISOString(),
+                unreadCount: s.unreadCount + 1,
+              }
+            : s
+        )
+      )
+    })
+
+    return () => {
+      pusher.unsubscribe("admin-channel")
+      pusher.disconnect()
+    }
+  }, [user, selectedSession])
 
   // 🔹 Fetch chat sessions
   const fetchSessions = async () => {
@@ -85,84 +137,56 @@ export function AdminChatInterface() {
     }
   }
 
-  // 🔹 Send message
-  const sendMessage = () => {
-    if (!newMessage.trim() || !selectedSession || !socket) return
+  // 🔹 Send message via backend API (triggers Pusher)
+// 🔹 Send message via backend API (with optimistic update)
+const sendMessage = async () => {
+  if (!newMessage.trim() || !selectedSession || !user) return
 
-    socket.emit("send_message", {
-      sessionId: selectedSession._id,
-      content: newMessage.trim(),
-    })
+  const tempId = `temp-${Date.now()}`
 
-    setNewMessage("")
+  // Optimistic message
+  const optimisticMessage: ChatMessage = {
+    _id: tempId,
+    sessionId: selectedSession._id,
+    senderId: user.id,
+    senderName: user.name || "Admin",
+    senderRole: "admin",
+    content: newMessage.trim(),
+    messageType: "text",
+    isRead: true,
+    createdAt: new Date().toISOString(),
   }
 
-  // 🔹 Handle socket events (single effect, no duplication)
-  useEffect(() => {
-    if (!socket || !isConnected) return
+  // Show immediately
+  setMessages(prev => [...prev, optimisticMessage])
+  setNewMessage("")
 
-    const handleNewMessage = (message: ChatMessage) => {
-      if (selectedSession && message.sessionId === selectedSession._id) {
-        setMessages(prev => [...prev, message])
-      }
+  try {
+    const res = await fetch("/api/chat/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        sessionId: selectedSession._id,
+        content: optimisticMessage.content,
+      }),
+    })
 
-      setSessions(prev =>
-        prev.map(session =>
-          session._id === message.sessionId
-            ? {
-                ...session,
-                lastMessageAt: message.createdAt,
-                unreadCount:
-                  session.unreadCount + (message.senderRole === "customer" ? 1 : 0),
-              }
-            : session
-        )
-      )
+    if (!res.ok) {
+      console.error("Failed to send message:", res.status, await res.text())
+      // rollback optimistic message if failed
+      setMessages(prev => prev.filter(m => m._id !== tempId))
     }
 
-    const handleSessionJoined = () => {
-      if (selectedSession) {
-        fetchMessages(selectedSession._id)
-      }
-    }
-
-    const handleNewCustomerMessage = ({
-      sessionId,
-    }: {
-      sessionId: string
-      customerName: string
-      content: string
-    }) => {
-      setSessions(prev =>
-        prev.map(s =>
-          s._id === sessionId
-            ? {
-                ...s,
-                lastMessageAt: new Date().toISOString(),
-                unreadCount: s.unreadCount + 1,
-              }
-            : s
-        )
-      )
-    }
-
-    socket.on("new_message", handleNewMessage)
-    socket.on("session_joined", handleSessionJoined)
-    socket.on("new_customer_message", handleNewCustomerMessage)
-
-    return () => {
-      socket.off("new_message", handleNewMessage)
-      socket.off("session_joined", handleSessionJoined)
-      socket.off("new_customer_message", handleNewCustomerMessage)
-    }
-  }, [socket, isConnected, selectedSession])
-
-  // 🔹 Join session when selected
-  useEffect(() => {
-    if (socket && selectedSession) {
-      socket.emit("join_session", selectedSession._id)
-    }
-  }, [socket, selectedSession])
+    // Otherwise: we do nothing.
+    // Pusher will deliver the real message with correct _id
+    // and it will append to the chat normally.
+  } catch (error) {
+    console.error("Failed to send message:", error)
+    // rollback optimistic message on network error
+    setMessages(prev => prev.filter(m => m._id !== tempId))
+  }
+}
 
   // 🔹 Initial fetch
   useEffect(() => {

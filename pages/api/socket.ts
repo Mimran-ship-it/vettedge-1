@@ -1,251 +1,140 @@
-import { NextApiRequest, NextApiResponse } from "next"
-import { Server as NetServer } from "http"
-import { Server as SocketIOServer, Socket } from "socket.io"
+import type { NextApiRequest, NextApiResponse } from "next"
 import jwt from "jsonwebtoken"
+import Pusher from "pusher"
 import { connectDB } from "@/lib/db"
 import UserModel from "@/lib/models/User"
 import { ChatSession, ChatMessage } from "@/lib/models/chat"
 
-// Extend Socket interface to include custom properties
-interface CustomSocket extends Socket {
-  userId?: string 
-  userRole?: string
-  userName?: string
-  currentSession?: string
+const pusher = new Pusher({
+  appId: process.env.PUSHER_APP_ID!,
+  key: process.env.NEXT_PUBLIC_PUSHER_KEY!,
+  secret: process.env.PUSHER_SECRET!,
+  cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
+  useTLS: true,
+})
+
+// Middleware to authenticate via JWT in request header/body
+async function authenticate(req: NextApiRequest) {
+  const authHeader = req.headers.authorization
+  if (!authHeader) throw new Error("No token provided")
+
+  const token = authHeader.replace("Bearer ", "")
+  const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback-secret") as any
+
+  await connectDB()
+  const user = await UserModel.findById(decoded.userId)
+  if (!user) throw new Error("User not found")
+
+  return user
 }
 
-export type NextApiResponseServerIO = NextApiResponse & {
-  socket: {
-    server: NetServer & {
-      io: SocketIOServer
-    }
-  }
-}
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  try {
+    const user = await authenticate(req)
 
-const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
-  if (res.socket.server.io) {
-    console.log("Socket is already running")
-    res.end()
-    return
-  } else {
-    console.log("Socket is initializing")
-    const io = new SocketIOServer(res.socket.server, {
-      path: "/api/socket",
-      addTrailingSlash: false,
-      cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-      }
-    })
+    // --- Handle sending a message ---
+    if (req.method === "POST") {
+      const { sessionId, content } = req.body
 
-    // Authentication middleware
-    io.use(async (socket: CustomSocket, next: (err?: Error) => void) => {
-      try {
-        const token = socket.handshake.auth.token
-        if (!token) {
-          return next(new Error("Authentication error"))
-        }
+      await connectDB()
+      let session
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback-secret") as any
-        await connectDB()
-        
-        const user = await UserModel.findById(decoded.userId)
-        if (!user) {
-          return next(new Error("User not found"))
-        }
-
-        socket.userId = user._id.toString()
-        socket.userRole = user.role
-        socket.userName = user.name
-        next()
-      } catch (err) {
-        console.error("Socket auth error:", err)
-        next(new Error("Authentication error"))
-      }
-    })
-
-    io.on("connection", (socket: CustomSocket) => {
-      console.log(`User connected: ${socket.userId} (${socket.userName})`)
-      
-      // Join user to their personal room
-      socket.join(`user:${socket.userId}`)
-      
-      // Join admins to admin room
-      if (socket.userRole === "admin") {
-        socket.join("admins")
-      }
-
-      // Join session
-      socket.on("join_session", async (sessionId: string) => {
-        try {
-          await connectDB()
-          const session = await ChatSession.findById(sessionId)
-          
-          if (!session) {
-            socket.emit("error", { message: "Session not found" })
-            return
-          }
-
-          // Check if user has access to this session
-          if (socket.userRole !== "admin" && session.userId.toString() !== socket.userId) {
-            socket.emit("error", { message: "Access denied" })
-            return
-          }
-
-          socket.currentSession = sessionId
-          socket.join(`session:${sessionId}`)
-          
-          console.log(`User ${socket.userName} joined session ${sessionId}`)
-          socket.emit("session_joined", { sessionId })
-        } catch (error) {
-          console.error("Join session error:", error)
-          socket.emit("error", { message: "Failed to join session" })
-        }
-      })
-
-      // Send message
-      socket.on("send_message", async (data: { sessionId?: string; content: string }) => {
-        try {
-          console.log("Received send_message event:", data, "from user:", socket.userName)
-          await connectDB()
-          
-          let session
-          if (data.sessionId) {
-            session = await ChatSession.findById(data.sessionId)
-          } else {
-            // Find or create session for this user
-            session = await ChatSession.findOne({ 
-              userId: socket.userId, 
-              status: { $in: ["active", "waiting"] }
-            })
-            
-            if (!session) {
-              console.log("Creating new session for user:", socket.userName)
-              session = new ChatSession({
-                userId: socket.userId,
-                userName: socket.userName,
-                userEmail: "unknown@example.com",
-                status: "waiting"
-              })
-              await session.save()
-            }
-          }
-          
-          if (!session) {
-            console.error("No session found or created")
-            socket.emit("error", { message: "Session not found" })
-            return
-          }
-
-          // Check access
-          if (socket.userRole !== "admin" && session.userId.toString() !== socket.userId) {
-            console.error("Access denied for user:", socket.userName)
-            socket.emit("error", { message: "Access denied" })
-            return
-          }
-
-          // Create message
-          const message = new ChatMessage({
-            sessionId: session._id,
-            senderId: socket.userId,
-            senderName: socket.userName,
-            senderRole: socket.userRole,
-            content: data.content,
-            messageType: "text",
-            isRead: false
-          })
-
-          await message.save()
-
-          console.log("Message saved:", message._id)
-
-          // Update session
-          await ChatSession.findByIdAndUpdate(session._id, {
-            lastMessageAt: new Date(),
-            $inc: { unreadCount: socket.userRole === "admin" ? 0 : 1 }
-          })
-
-          console.log("Emitting new_message to session room:", `session:${session._id}`)
-
-          // Emit to session room (this will reach all participants including sender)
-          io.to(`session:${session._id}`).emit("new_message", {
-            _id: message._id,
-            sessionId: session._id,
-            senderId: socket.userId,
-            senderName: socket.userName,
-            senderRole: socket.userRole,
-            content: data.content,
-            messageType: "text",
-            isRead: false,
-            createdAt: message.createdAt
-          })
-
-          // Notify admins if customer sent message
-          if (socket.userRole === "customer") {
-            io.to("admins").emit("new_customer_message", {
-              sessionId: data.sessionId,
-              customerName: socket.userName,
-              content: data.content
-            })
-          }
-
-        } catch (error) {
-          console.error("Send message error:", error)
-          socket.emit("error", { message: "Failed to send message" })
-        }
-      })
-
-      // Typing indicator
-      socket.on("typing", (data: { sessionId: string; isTyping: boolean }) => {
-        socket.to(`session:${data.sessionId}`).emit("user_typing", {
-          userId: socket.userId,
-          userName: socket.userName,
-          isTyping: data.isTyping
+      if (sessionId) {
+        session = await ChatSession.findById(sessionId)
+      } else {
+        // find or create active session for customer
+        session = await ChatSession.findOne({
+          userId: user._id,
+          status: { $in: ["active", "waiting"] }
         })
-      })
 
-      // Update session status (admin only)
-      socket.on("update_session_status", async (data: { sessionId: string; status: string }) => {
-        if (socket.userRole !== "admin") {
-          socket.emit("error", { message: "Access denied" })
-          return
+        if (!session) {
+          session = new ChatSession({
+            userId: user._id,
+            userName: user.name,
+            userEmail: user.email || "unknown@example.com",
+            status: "waiting",
+          })
+          await session.save()
         }
+      }
 
-        try {
-          await connectDB()
-          const session = await ChatSession.findByIdAndUpdate(
-            data.sessionId,
-            { status: data.status },
-            { new: true }
-          )
+      if (!session) {
+        return res.status(404).json({ error: "Session not found" })
+      }
 
-          if (session) {
-            io.to(`session:${data.sessionId}`).emit("session_status_updated", {
-              sessionId: data.sessionId,
-              status: data.status
-            })
-          }
-        } catch (error) {
-          console.error("Update session status error:", error)
-          socket.emit("error", { message: "Failed to update session status" })
-        }
+      if (user.role !== "admin" && session.userId.toString() !== user._id.toString()) {
+        return res.status(403).json({ error: "Access denied" })
+      }
+
+      // Save message
+      const message = new ChatMessage({
+        sessionId: session._id,
+        senderId: user._id,
+        senderName: user.name,
+        senderRole: user.role,
+        content,
+        messageType: "text",
+        isRead: false,
+      })
+      await message.save()
+
+      await ChatSession.findByIdAndUpdate(session._id, {
+        lastMessageAt: new Date(),
+        $inc: { unreadCount: user.role === "admin" ? 0 : 1 }
       })
 
-      socket.on("disconnect", () => {
-        console.log(`User disconnected: ${socket.userId} (${socket.userName})`)
+      // 🔔 Broadcast message via Pusher
+      await pusher.trigger(`session-${session._id}`, "new_message", {
+        _id: message._id,
+        sessionId: session._id,
+        senderId: user._id,
+        senderName: user.name,
+        senderRole: user.role,
+        content,
+        messageType: "text",
+        isRead: false,
+        createdAt: message.createdAt,
       })
-    })
 
-    res.socket.server.io = io
+      // Notify admins if customer sent message
+      if (user.role === "customer") {
+        await pusher.trigger("admins", "new_customer_message", {
+          sessionId: session._id,
+          customerName: user.name,
+          content,
+        })
+      }
+
+      return res.status(200).json({ success: true, message })
+    }
+
+    // --- Handle session status updates (admin only) ---
+    if (req.method === "PUT") {
+      if (user.role !== "admin") {
+        return res.status(403).json({ error: "Access denied" })
+      }
+
+      const { sessionId, status } = req.body
+      const session = await ChatSession.findByIdAndUpdate(
+        sessionId,
+        { status },
+        { new: true }
+      )
+
+      if (session) {
+        await pusher.trigger(`session-${sessionId}`, "session_status_updated", {
+          sessionId,
+          status,
+        })
+      }
+
+      return res.status(200).json({ success: true, session })
+    }
+
+    return res.status(405).json({ error: "Method not allowed" })
+  } catch (error: any) {
+    console.error("Chat API error:", error)
+    return res.status(401).json({ error: error.message || "Authentication error" })
   }
-
-  res.end()
-}
-
-export default SocketHandler
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
 }

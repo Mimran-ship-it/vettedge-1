@@ -1,82 +1,80 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import io, { type Socket } from "socket.io-client"
-import { useAuth } from "@/hooks/use-auth"
+import { useEffect, useRef, useState } from "react";
+import Pusher from "pusher-js";
+import { useAuth } from "@/hooks/use-auth";
 
-export function useSocket() {
-  const [isConnected, setIsConnected] = useState(false)
-  const { user } = useAuth()
-  const socketRef = useRef<Socket | null>(null)
-
+export function useRealtime() {
+  const { user } = useAuth();
+  const pusherRef = useRef<any | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    console.log("🔄 useSocket effect triggered, user:", user?.name)
-    
+    // extract token from cookie (same cookie name you used earlier)
+    const socketToken =
+      typeof document !== "undefined"
+        ? document.cookie.split("; ").find((c) => c.startsWith("socket_token="))?.split("=")[1] ?? ""
+        : "";
+
+    // cleanup when no user
     if (!user) {
-      console.log("No user, cleaning up socket")
-      if (socketRef.current) {
-        socketRef.current.disconnect()
-        socketRef.current = null
+      if (pusherRef.current) {
+        pusherRef.current.disconnect();
+        pusherRef.current = null;
       }
-      setIsConnected(false)
-      return
+      setIsConnected(false);
+      return;
     }
 
-    // Get token from socket_token cookie (non-HttpOnly)
-    console.log("All cookies:", document.cookie)
-    const token = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('socket_token='))
-      ?.split('=')[1];
-    
-    console.log("Extracted socket_token:", token ? "Token found" : "No token found")
-    
-    if (!token) {
-      console.error("No socket_token found in cookies")
-      console.log("Available cookies:", document.cookie.split('; '))
-      return
+    // avoid double-init
+    if (pusherRef.current) return;
+
+    const key = process.env.NEXT_PUBLIC_PUSHER_KEY ?? "";
+    const cluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER ?? "";
+
+    if (!key) {
+      console.warn("NEXT_PUBLIC_PUSHER_KEY is not set. Realtime will not initialize.");
+      return;
     }
 
-    if (socketRef.current) {
-      console.log("♻️ Socket already connected, skipping new connection")
-      return
-    }
-
-    console.log("🌐 Creating new socket connection...")
-    const newSocket = io(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000", {
-      path: "/api/socket/",
-      transports: ["websocket"], // 👈 important
-      auth: { token },
-      timeout: 20000,
-      forceNew: true,
+    const pusher = new Pusher(key, {
+      cluster,
+      authEndpoint: "/api/pusher/auth", // optional, only required for private/authenticated channels
+      auth: {
+        headers: {
+          Authorization: `Bearer ${socketToken}`,
+        },
+      },
     });
 
-    newSocket.on("connect", () => {
-      console.log("✅ Socket connected:", newSocket.id)
-      setIsConnected(true)
-    })
+    pusher.connection.bind("connected", () => {
+      setIsConnected(true);
+      console.debug("Pusher connected");
+    });
 
-    newSocket.on("connect_error", (error: any) => {
-      console.error("❌ Socket connection error:", error.message || error)
-      setIsConnected(false)
-    })
+    pusher.connection.bind("disconnected", () => {
+      setIsConnected(false);
+      console.debug("Pusher disconnected");
+    });
 
-    newSocket.on("disconnect", (reason: string) => {
-      console.log("🔌 Socket disconnected, reason:", reason)
-      setIsConnected(false)
-    })
+    pusher.connection.bind("error", (err: any) => {
+      console.error("Pusher connection error:", err);
+      setIsConnected(false);
+    });
 
-    socketRef.current = newSocket
+    pusherRef.current = pusher;
 
     return () => {
-      console.log("🧹 Cleaning up socket connection")
-      if (socketRef.current) {
-        socketRef.current.disconnect()
-        socketRef.current = null
+      try {
+        pusher.disconnect();
+      } catch (e) {
+        /* ignore */
       }
-    }
-  }, [user])
+      pusherRef.current = null;
+      setIsConnected(false);
+    };
+    // only recreate when user changes
+  }, [user]);
 
-  return { socket: socketRef.current, isConnected }
+  return { pusher: pusherRef.current, isConnected };
 }

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useSocket } from "@/hooks/use-socket"
+import Pusher, { Channel } from "pusher-js"
 import { useAuth } from "@/hooks/use-auth"
 
 interface AdminNotification {
@@ -15,52 +15,68 @@ interface AdminNotification {
 }
 
 export function useAdminNotifications() {
-  const { socket, isConnected } = useSocket()
   const { user } = useAuth()
   const [notifications, setNotifications] = useState<AdminNotification[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
 
   useEffect(() => {
-    if (socket && isConnected && user?.role === "admin") {
-      // Listen for new customer messages
-      socket.on("new_customer_message", (data: {
-        sessionId: string
-        customerName: string
-        content: string
-      }) => {
-        const notification: AdminNotification = {
-          id: `msg_${Date.now()}`,
-          type: "new_message",
-          title: "New Message",
-          message: `${data.customerName}: ${data.content.substring(0, 50)}${data.content.length > 50 ? '...' : ''}`,
-          sessionId: data.sessionId,
-          timestamp: new Date(),
-          isRead: false
-        }
+    if (!user || user.role !== "admin") return
 
-        setNotifications(prev => [notification, ...prev.slice(0, 19)]) // Keep last 20
-        setUnreadCount(prev => prev + 1)
+    // ✅ Initialize Pusher
+    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
+      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
+    })
 
-        // Show browser notification if permission granted
-        if (Notification.permission === "granted") {
-          new Notification("New Chat Message", {
-            body: `${data.customerName}: ${data.content}`,
-            icon: "/logo.jpg"
-          })
-        }
-      })
+    // ✅ Subscribe to admin channel
+    const channel: Channel = pusher.subscribe("admin-channel")
 
-      return () => {
-        socket.off("new_customer_message")
+    // ✅ Listen for new customer messages
+    channel.bind("new_customer_message", (data: {
+      sessionId: string
+      customerName: string
+      content: string
+    }) => {
+      const notification: AdminNotification = {
+        id: `msg_${Date.now()}`,
+        type: "new_message",
+        title: "New Message",
+        message: `${data.customerName}: ${data.content.substring(0, 50)}${data.content.length > 50 ? "..." : ""}`,
+        sessionId: data.sessionId,
+        timestamp: new Date(),
+        isRead: false,
       }
-    }
-  }, [socket, isConnected, user])
 
+      setNotifications(prev => [notification, ...prev.slice(0, 19)]) // keep last 20
+      setUnreadCount(prev => prev + 1)
+
+      // ✅ Show browser notification
+      if (Notification.permission === "granted") {
+        new Notification("New Chat Message", {
+          body: `${data.customerName}: ${data.content}`,
+          icon: "/logo.jpg",
+        })
+      }
+    })
+
+    // ✅ Cleanup on unmount
+    return () => {
+      channel.unbind_all()
+      channel.unsubscribe()
+      pusher.disconnect()
+    }
+  }, [user])
+
+  // ✅ Request browser notification permission
+  useEffect(() => {
+    if (user?.role === "admin" && Notification.permission === "default") {
+      Notification.requestPermission()
+    }
+  }, [user])
+
+  // ✅ Actions
   const markAsRead = (notificationId: string) => {
-    setNotifications(prev => 
-      prev.map(n => 
-        n.id === notificationId ? { ...n, isRead: true } : n
-      )
+    setNotifications(prev =>
+      prev.map(n => (n.id === notificationId ? { ...n, isRead: true } : n))
     )
     setUnreadCount(prev => Math.max(0, prev - 1))
   }
@@ -75,18 +91,11 @@ export function useAdminNotifications() {
     setUnreadCount(0)
   }
 
-  // Request notification permission on mount
-  useEffect(() => {
-    if (user?.role === "admin" && Notification.permission === "default") {
-      Notification.requestPermission()
-    }
-  }, [user])
-
   return {
     notifications,
     unreadCount,
     markAsRead,
     markAllAsRead,
-    clearNotifications
+    clearNotifications,
   }
 }
