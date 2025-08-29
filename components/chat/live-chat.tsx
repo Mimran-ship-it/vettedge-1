@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/use-auth"
 import { useChat } from "@/hooks/use-chat"
 import { formatDistanceToNow } from "date-fns"
 
+
 export function LiveChat() {
   const [isOpen, setIsOpen] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
@@ -24,6 +25,21 @@ export function LiveChat() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
 
+    // Auto scroll when messages change
+    useEffect(() => {
+      if (isOpen && !isMinimized) {
+        scrollToBottom()
+      }
+    }, [messages, isOpen, isMinimized])
+  
+    // Auto scroll when chat is first opened
+    useEffect(() => {
+      if (isOpen && !isMinimized) {
+        // slight delay so DOM renders before scrolling
+        setTimeout(scrollToBottom, 100)
+      }
+    }, [isOpen, isMinimized])
+  
   useEffect(() => {
     scrollToBottom()
   }, [messages])
@@ -57,11 +73,13 @@ export function LiveChat() {
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
+      
       handleSendMessage()
     }
   }
 
   if (!isOpen) {
+    console.log('counter is',unreadCount)
     return (
       <div className="fixed bottom-4 right-4 z-50">
         <Button onClick={() => setIsOpen(true)} className="rounded-full w-14 h-14 shadow-lg relative">
