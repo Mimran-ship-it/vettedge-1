@@ -1,13 +1,13 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { MessageSquare, Send, Users, Clock, Bell } from "lucide-react"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { MessageSquare, Send, Users, Clock } from "lucide-react"
 import { useSocket } from "@/hooks/use-socket"
 import { useAuth } from "@/hooks/use-auth"
 import { AdminNotificationBell } from "@/components/admin/admin-notification-bell"
@@ -55,44 +55,10 @@ export function AdminChatInterface() {
     scrollToBottom()
   }, [messages])
 
-  useEffect(() => {
-    if (socket && isConnected) {
-      console.log("Admin: Setting up socket listeners")
-      
-      // Listen for new messages
-      socket.on("new_message", (message: ChatMessage) => {
-        console.log("Admin: Received new_message:", message)
-        if (selectedSession && message.sessionId === selectedSession._id) {
-          setMessages(prev => [...prev, message])
-        }
-      })
-
-      // Listen for new customer messages (notifications)
-      socket.on("new_customer_message", ({ sessionId, customerName, content }: {
-        sessionId: string
-        customerName: string
-        content: string
-      }) => {
-        console.log("Admin: Received new_customer_message:", { sessionId, customerName, content })
-        // Update sessions list
-        setSessions(prev => prev.map(s => 
-          s._id === sessionId ? { ...s, lastMessageAt: new Date().toISOString(), unreadCount: s.unreadCount + 1 } : s
-        ))
-      })
-
-      return () => {
-        socket.off("new_message")
-        socket.off("new_customer_message")
-      }
-    }
-  }, [socket, isConnected, selectedSession])
-
-  // Fetch chat sessions
+  // 🔹 Fetch chat sessions
   const fetchSessions = async () => {
     try {
-      const response = await fetch("/api/chat/sessions", {
-        credentials: 'include' // Use cookies instead of localStorage
-      })
+      const response = await fetch("/api/chat/sessions", { credentials: "include" })
       if (response.ok) {
         const data = await response.json()
         setSessions(data.sessions || [])
@@ -104,81 +70,101 @@ export function AdminChatInterface() {
     }
   }
 
-  // Fetch messages for selected session
+  // 🔹 Fetch messages for selected session
   const fetchMessages = async (sessionId: string) => {
     try {
-      console.log("Admin: Fetching messages for session:", sessionId)
       const response = await fetch(`/api/chat/messages?sessionId=${sessionId}`, {
-        credentials: 'include' // Use cookies instead of localStorage
+        credentials: "include",
       })
       if (response.ok) {
         const data = await response.json()
-        console.log("Admin: Fetched messages:", data.messages)
         setMessages(data.messages || [])
-      } else {
-        console.error("Admin: Failed to fetch messages, status:", response.status)
       }
     } catch (error) {
       console.error("Failed to fetch messages:", error)
     }
   }
 
-  // Send message
+  // 🔹 Send message
   const sendMessage = () => {
     if (!newMessage.trim() || !selectedSession || !socket) return
 
     socket.emit("send_message", {
       sessionId: selectedSession._id,
-      content: newMessage.trim()
+      content: newMessage.trim(),
     })
 
     setNewMessage("")
   }
 
-  // Socket event listeners
+  // 🔹 Handle socket events (single effect, no duplication)
   useEffect(() => {
-    if (socket && isConnected) {
-      socket.on("new_message", (message: ChatMessage) => {
-        if (selectedSession && message.sessionId === selectedSession._id) {
-          setMessages(prev => [...prev, message])
-        }
-        
-        // Update session unread count
-        setSessions(prev => 
-          prev.map(session => 
-            session._id === message.sessionId
-              ? { ...session, lastMessageAt: message.createdAt, unreadCount: session.unreadCount + (message.senderRole === "customer" ? 1 : 0) }
-              : session
-          )
-        )
-      })
+    if (!socket || !isConnected) return
 
-      socket.on("session_joined", () => {
-        if (selectedSession) {
-          fetchMessages(selectedSession._id)
-        }
-      })
-
-      return () => {
-        socket.off("new_message")
-        socket.off("session_joined")
+    const handleNewMessage = (message: ChatMessage) => {
+      if (selectedSession && message.sessionId === selectedSession._id) {
+        setMessages(prev => [...prev, message])
       }
+
+      setSessions(prev =>
+        prev.map(session =>
+          session._id === message.sessionId
+            ? {
+                ...session,
+                lastMessageAt: message.createdAt,
+                unreadCount:
+                  session.unreadCount + (message.senderRole === "customer" ? 1 : 0),
+              }
+            : session
+        )
+      )
+    }
+
+    const handleSessionJoined = () => {
+      if (selectedSession) {
+        fetchMessages(selectedSession._id)
+      }
+    }
+
+    const handleNewCustomerMessage = ({
+      sessionId,
+    }: {
+      sessionId: string
+      customerName: string
+      content: string
+    }) => {
+      setSessions(prev =>
+        prev.map(s =>
+          s._id === sessionId
+            ? {
+                ...s,
+                lastMessageAt: new Date().toISOString(),
+                unreadCount: s.unreadCount + 1,
+              }
+            : s
+        )
+      )
+    }
+
+    socket.on("new_message", handleNewMessage)
+    socket.on("session_joined", handleSessionJoined)
+    socket.on("new_customer_message", handleNewCustomerMessage)
+
+    return () => {
+      socket.off("new_message", handleNewMessage)
+      socket.off("session_joined", handleSessionJoined)
+      socket.off("new_customer_message", handleNewCustomerMessage)
     }
   }, [socket, isConnected, selectedSession])
 
-  // Join session when selected
+  // 🔹 Join session when selected
   useEffect(() => {
     if (socket && selectedSession) {
       socket.emit("join_session", selectedSession._id)
     }
   }, [socket, selectedSession])
 
-  // Scroll to bottom when messages change
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages])
-
-  // Initial data fetch
+  // 🔹 Initial fetch
   useEffect(() => {
     if (user?.role === "admin") {
       fetchSessions()
@@ -188,24 +174,23 @@ export function AdminChatInterface() {
   const handleSessionSelect = (session: ChatSession) => {
     setSelectedSession(session)
     setMessages([])
-    
-    // Fetch messages for the selected session
     fetchMessages(session._id)
-    
-    // Mark session as read
-    setSessions(prev => 
-      prev.map(s => 
-        s._id === session._id ? { ...s, unreadCount: 0 } : s
-      )
+
+    setSessions(prev =>
+      prev.map(s => (s._id === session._id ? { ...s, unreadCount: 0 } : s))
     )
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active": return "bg-green-500"
-      case "waiting": return "bg-yellow-500"
-      case "closed": return "bg-gray-500"
-      default: return "bg-gray-500"
+      case "active":
+        return "bg-green-500"
+      case "waiting":
+        return "bg-yellow-500"
+      case "closed":
+        return "bg-gray-500"
+      default:
+        return "bg-gray-500"
     }
   }
 
@@ -222,18 +207,16 @@ export function AdminChatInterface() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sessions Sidebar */}
+      {/* Sidebar */}
       <div className="w-80 bg-white border-r border-gray-200">
-        <div className="p-4 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              Chat Sessions
-            </h2>
-            <AdminNotificationBell />
-          </div>
+        <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+          <h2 className="text-lg font-semibold flex items-center gap-2">
+            <Users className="h-5 w-5" />
+            Chat Sessions
+          </h2>
+          <AdminNotificationBell />
         </div>
-        
+
         <ScrollArea className="h-[calc(100vh-80px)]">
           <div className="p-2">
             {sessions.length === 0 ? (
@@ -242,10 +225,10 @@ export function AdminChatInterface() {
                 <p>No chat sessions yet</p>
               </div>
             ) : (
-              sessions.map((session) => (
+              sessions.map(session => (
                 <Card
                   key={session._id}
-                  className={`mb-2 cursor-pointer transition-colors hover:bg-gray-50 ${
+                  className={`mb-2 cursor-pointer hover:bg-gray-50 ${
                     selectedSession?._id === session._id ? "ring-2 ring-blue-500" : ""
                   }`}
                   onClick={() => handleSessionSelect(session)}
@@ -277,7 +260,9 @@ export function AdminChatInterface() {
                     <div className="flex items-center gap-1 text-xs text-gray-500">
                       <Clock className="h-3 w-3" />
                       <span>
-                        {formatDistanceToNow(new Date(session.lastMessageAt), { addSuffix: true })}
+                        {formatDistanceToNow(new Date(session.lastMessageAt), {
+                          addSuffix: true,
+                        })}
                       </span>
                     </div>
                   </CardContent>
@@ -292,30 +277,28 @@ export function AdminChatInterface() {
       <div className="flex-1 flex flex-col">
         {selectedSession ? (
           <>
-            {/* Chat Header */}
-            <div className="p-4 bg-white border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Avatar>
-                    <AvatarFallback>
-                      {selectedSession.userName.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="font-semibold">{selectedSession.userName}</h3>
-                    <p className="text-sm text-gray-500">{selectedSession.userEmail}</p>
-                  </div>
+            {/* Header */}
+            <div className="p-4 bg-white border-b border-gray-200 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Avatar>
+                  <AvatarFallback>
+                    {selectedSession.userName.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <h3 className="font-semibold">{selectedSession.userName}</h3>
+                  <p className="text-sm text-gray-500">{selectedSession.userEmail}</p>
                 </div>
-                <Badge className={getStatusColor(selectedSession.status)}>
-                  {selectedSession.status}
-                </Badge>
               </div>
+              <Badge className={getStatusColor(selectedSession.status)}>
+                {selectedSession.status}
+              </Badge>
             </div>
 
             {/* Messages */}
             <ScrollArea className="flex-1 p-4">
               <div className="space-y-4">
-                {messages.map((message) => (
+                {messages.map(message => (
                   <div
                     key={message._id}
                     className={`flex ${
@@ -330,10 +313,16 @@ export function AdminChatInterface() {
                       }`}
                     >
                       <p className="text-sm">{message.content}</p>
-                      <p className={`text-xs mt-1 ${
-                        message.senderRole === "admin" ? "text-blue-100" : "text-gray-500"
-                      }`}>
-                        {formatDistanceToNow(new Date(message.createdAt), { addSuffix: true })}
+                      <p
+                        className={`text-xs mt-1 ${
+                          message.senderRole === "admin"
+                            ? "text-blue-100"
+                            : "text-gray-500"
+                        }`}
+                      >
+                        {formatDistanceToNow(new Date(message.createdAt), {
+                          addSuffix: true,
+                        })}
                       </p>
                     </div>
                   </div>
@@ -342,31 +331,35 @@ export function AdminChatInterface() {
               </div>
             </ScrollArea>
 
-            {/* Message Input */}
-            <div className="p-4 bg-white border-t border-gray-200">
-              <div className="flex gap-2">
-                <Input
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder="Type your message..."
-                  onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-                  className="flex-1"
-                />
-                <Button onClick={sendMessage} disabled={!newMessage.trim() || !isConnected}>
-                  <Send className="h-4 w-4" />
-                </Button>
-              </div>
-              {!isConnected && (
-                <p className="text-xs text-red-500 mt-1">Disconnected from chat server</p>
-              )}
+            {/* Input */}
+            <div className="p-4 bg-white border-t border-gray-200 flex gap-2">
+              <Input
+                value={newMessage}
+                onChange={e => setNewMessage(e.target.value)}
+                placeholder="Type your message..."
+                onKeyDown={e => e.key === "Enter" && sendMessage()}
+                className="flex-1"
+              />
+              <Button onClick={sendMessage} disabled={!newMessage.trim() || !isConnected}>
+                <Send className="h-4 w-4" />
+              </Button>
             </div>
+            {!isConnected && (
+              <p className="text-xs text-red-500 px-4 pb-2">
+                Disconnected from chat server
+              </p>
+            )}
           </>
         ) : (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
               <MessageSquare className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Select a chat session</h3>
-              <p className="text-gray-500">Choose a session from the sidebar to start chatting</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Select a chat session
+              </h3>
+              <p className="text-gray-500">
+                Choose a session from the sidebar to start chatting
+              </p>
             </div>
           </div>
         )}

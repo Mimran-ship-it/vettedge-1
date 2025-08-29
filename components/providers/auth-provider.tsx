@@ -3,15 +3,18 @@
 
 import React, { useEffect, useState } from "react"
 import { AuthContext, type User } from "@/hooks/use-auth"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
+import { signIn as nextAuthSignIn } from "next-auth/react";
+import router from "next/router";
 interface AuthProviderProps {
   children: React.ReactNode
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const router=useRouter()
+  const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const searchParams = useSearchParams()
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -19,6 +22,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const res = await fetch("/api/auth/me")
         const data = await res.json()
         setUser(data.user || null)
+        console.log('user fetched', data.user)
       } catch {
         setUser(null)
       } finally {
@@ -45,41 +49,66 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const meRes = await fetch("/api/auth/me")
     const meData = await meRes.json()
     setUser(meData.user)
-    return meData.user 
+    return meData.user
   }
+  // const signInWithGoogle = async () => {
+  //   return new Promise<void>((resolve, reject) => {
+  //     window.google.accounts.id.initialize({
+  //       client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+  //       callback: async (response: any) => {
+  //         try {
+  //           const res = await fetch("/api/auth/google", {
+  //             method: "POST",
+  //             headers: { "Content-Type": "application/json" },
+  //             body: JSON.stringify({ credential: response.credential }),
+  //             credentials: "include" // needed for cookie-based auth
+  //           });
+
+  //           if (!res.ok) {
+  //             const data = await res.json();
+  //             throw new Error(data.error || "Google sign in failed");
+  //           }
+
+  //           const meRes = await fetch("/api/auth/me");
+  //           const meData = await meRes.json();
+  //           setUser(meData.user);
+  //           resolve();
+  //         } catch (err) {
+  //           reject(err);
+  //         }
+  //       },
+  //     });
+
+  //     window.google.accounts.id.prompt();
+  //   });
+  // };
+
   const signInWithGoogle = async () => {
-    return new Promise<void>((resolve, reject) => {
-      window.google.accounts.id.initialize({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
-        callback: async (response: any) => {
-          try {
-            const res = await fetch("/api/auth/google", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ credential: response.credential }),
-              credentials: "include" // needed for cookie-based auth
-            });
-  
-            if (!res.ok) {
-              const data = await res.json();
-              throw new Error(data.error || "Google sign in failed");
-            }
-  
-            const meRes = await fetch("/api/auth/me");
-            const meData = await meRes.json();
-            setUser(meData.user);
-            resolve();
-          } catch (err) {
-            reject(err);
-          }
-        },
-      });
-  
-      window.google.accounts.id.prompt();
-    });
-  };
-  
-  
+    try {
+      const redirect = searchParams?.get("redirect") || "/"
+
+      // prevent auto redirect
+      const result = await nextAuthSignIn("google", {
+        callbackUrl: redirect,
+        redirect: false,
+      })
+
+      console.log('setting user')
+      // now call your API
+      const meRes = await fetch("/api/auth/me")
+      const meData = await meRes.json()
+      setUser(meData.user)
+
+      console.log('user set', user)
+
+      // finally, redirect manually
+      router.push(redirect)
+    } catch (err) {
+      console.error("Google sign in error:", err)
+    }
+  }
+
+
 
   const signOut = () => {
     // Add this route too — it will clear the token cookie
@@ -88,28 +117,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(null)
   }
 
-  const signUp = async (name: string, email: string, password: string): Promise<User> => {
-    const res = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
-    })
-
-    if (!res.ok) {
-      const data = await res.json()
-      throw new Error(data?.error || "Sign up failed")
-    }
-
-    // After signup, fetch user again
-    const meRes = await fetch("/api/auth/me")
-    const meData = await meRes.json()
-    setUser(meData.user)
-    return meData.user
-  }
-
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut, signInWithGoogle }}>
+    <AuthContext.Provider value={{ user, loading, signIn, signOut, signInWithGoogle }}>
       {children}
     </AuthContext.Provider>
   )
 }
+

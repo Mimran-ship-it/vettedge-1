@@ -9,9 +9,10 @@ export function useSocket() {
   const { user } = useAuth()
   const socketRef = useRef<Socket | null>(null)
 
+
   useEffect(() => {
     console.log("🔄 useSocket effect triggered, user:", user?.name)
-
+    
     if (!user) {
       console.log("No user, cleaning up socket")
       if (socketRef.current) {
@@ -44,12 +45,12 @@ export function useSocket() {
 
     console.log("🌐 Creating new socket connection...")
     const newSocket = io(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000", {
-      path: "/api/socket",
+      path: "/api/socket/",
+      transports: ["websocket"], // 👈 important
       auth: { token },
-      transports: ["websocket", "polling"],
       timeout: 20000,
       forceNew: true,
-    })
+    });
 
     newSocket.on("connect", () => {
       console.log("✅ Socket connected:", newSocket.id)

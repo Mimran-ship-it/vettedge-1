@@ -1,5 +1,5 @@
 "use client"
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react"
+import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from "react"
 import { useAuth } from "@/hooks/use-auth"
 import { useSocket } from "@/hooks/use-socket"
 
@@ -36,7 +36,7 @@ interface ChatContextType {
   createSession: () => Promise<void>
   joinSession: (sessionId: string) => void
 }
- 
+
 const ChatContext = createContext<ChatContextType | undefined>(undefined)
 
 export function ChatProvider({ children }: { children: ReactNode }) {
@@ -46,18 +46,49 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const [currentSession, setCurrentSession] = useState<ChatSession | null>(null)
   const [unreadCount, setUnreadCount] = useState(0)
   const [isCreatingSession, setIsCreatingSession] = useState(false)
+  const [pendingMessages, setPendingMessages] = useState<Set<string>>(new Set())
+  const processedMessageIds = useRef<Set<string>>(new Set())
+
+  // Reset processed messages when session changes
+  useEffect(() => {
+    processedMessageIds.current = new Set()
+    setPendingMessages(new Set())
+  }, [currentSession])
 
   useEffect(() => {
     if (!socket || !isConnected) return
-
     console.log("Setting up socket listeners")
     
     const handleNewMessage = (message: ChatMessage) => {
       console.log("Received new_message:", message)
       
+      // Skip if we've already processed this message
+      if (processedMessageIds.current.has(message._id)) {
+        console.log("Message already processed, ignoring:", message._id)
+        return
+      }
+      
+      // Mark this message as processed
+      processedMessageIds.current.add(message._id)
+      
+      // Remove from pending messages if it was there
+      if (pendingMessages.has(message._id)) {
+        setPendingMessages(prev => {
+          const newSet = new Set(prev)
+          newSet.delete(message._id)
+          return newSet
+        })
+      }
+      
       // Add message if it belongs to current session
       if (currentSession && message.sessionId === currentSession._id) {
-        setMessages(prev => [...prev, message])
+        setMessages(prev => {
+          // Check if message already exists in state
+          if (prev.some(msg => msg._id === message._id)) {
+            return prev;
+          }
+          return [...prev, message];
+        });
       } else {
         console.log("Message not added - session mismatch:", { 
           currentSession: currentSession?._id, 
@@ -72,7 +103,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         }
       }
     }
-
+    
     const handleSessionStatusUpdated = ({ sessionId, status }: { 
       sessionId: string
       status: "active" | "closed" | "waiting" 
@@ -82,28 +113,28 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         setCurrentSession(prev => prev ? { ...prev, status } : null)
       }
     }
-
+    
     const handleSessionJoined = ({ sessionId }: { sessionId: string }) => {
       console.log("Session joined:", sessionId)
     }
-
+    
     const handleError = (error: any) => {
       console.error("Socket error:", error)
     }
-
+    
     socket.on("new_message", handleNewMessage)
     socket.on("session_status_updated", handleSessionStatusUpdated)
     socket.on("session_joined", handleSessionJoined)
     socket.on("error", handleError)
-
+    
     return () => {
       socket.off("new_message", handleNewMessage)
       socket.off("session_status_updated", handleSessionStatusUpdated)
       socket.off("session_joined", handleSessionJoined)
       socket.off("error", handleError)
     }
-  }, [socket, isConnected, currentSession, user])
-
+  }, [socket, isConnected, currentSession, user, pendingMessages])
+  
   // Combined effect for session creation
   useEffect(() => {
     if (user && user.role === "customer" && !currentSession && socket && isConnected && !isCreatingSession) {
@@ -111,7 +142,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       createSession()
     }
   }, [user, currentSession, socket, isConnected, isCreatingSession])
-
+  
   const fetchMessages = async (sessionId: string) => {
     try {
       const response = await fetch(`/api/chat/messages?sessionId=${sessionId}`, {
@@ -120,6 +151,12 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       
       if (response.ok) {
         const data = await response.json()
+        
+        // Mark all fetched messages as processed to prevent duplicates
+        data.messages.forEach((msg: ChatMessage) => {
+          processedMessageIds.current.add(msg._id)
+        })
+        
         setMessages(data.messages)
         setUnreadCount(0)
       } else {
@@ -129,18 +166,16 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       console.error("Error fetching messages:", error)
     }
   }
-
+  
   const createSession = async () => {
     if (!user) {
       console.warn("User must be signed in to start chat")
       return
     }
-
     if (isCreatingSession) {
       console.log("Session creation already in progress")
       return
     }
-
     setIsCreatingSession(true)
     
     try {
@@ -175,13 +210,14 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       setIsCreatingSession(false)
     }
   }
-
+  
   const joinSession = (sessionId: string) => {
     if (socket && isConnected) {
       socket.emit("join_session", sessionId)
+      fetchMessages(sessionId)
     }
   }
-
+  
   const sendMessage = (content: string) => {
     console.log("sendMessage called with:", content)
     
@@ -200,14 +236,21 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       return
     }
     
-    // Send message via socket - don't add optimistic message to avoid duplicates
-    console.log("Emitting send_message event:", { content })
+    // Generate a temporary ID for this message
+    const tempId = `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    
+    // Add to pending messages
+    setPendingMessages(prev => new Set(prev).add(tempId))
+    
+    // Send message via socket
+    console.log("Emitting send_message event:", { content, tempId })
     socket.emit("send_message", {
       content,
-      sessionId: currentSession?._id // Include sessionId if available
+      sessionId: currentSession?._id,
+      tempId // Include temporary ID for tracking
     })
   }
-
+  
   const contextValue: ChatContextType = {
     messages,
     currentSession,
@@ -217,7 +260,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     createSession,
     joinSession
   }
-
+  
   return React.createElement(
     ChatContext.Provider,
     { value: contextValue },

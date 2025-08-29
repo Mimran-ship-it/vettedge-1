@@ -8,7 +8,7 @@ import { ChatSession, ChatMessage } from "@/lib/models/chat"
 
 // Extend Socket interface to include custom properties
 interface CustomSocket extends Socket {
-  userId?: string
+  userId?: string 
   userRole?: string
   userName?: string
   currentSession?: string

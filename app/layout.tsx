@@ -1,3 +1,4 @@
+'use client'
 import type React from "react"
 import "./globals.css"
 import type { Metadata } from "next"
@@ -9,17 +10,36 @@ import { ChatProvider } from "@/components/providers/chat-provider"
 import { StripeProvider } from "@/components/providers/stripe-provider"
 import Script from "next/script"
 import { Footer } from "@/components/layout/footer"
-const inter = Inter({ subsets: ["latin"] })
-
 import { Elements } from "@stripe/react-stripe-js"
 import { loadStripe } from "@stripe/stripe-js"
+import { useEffect } from "react"
 
+const inter = Inter({ subsets: ["latin"] })
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
-export const metadata: Metadata = {
-  title: "Vettedge.domains - Premium Expired Domains",
-  description: "Discover & Buy Premium Expired Domains With Real Authority",
-  generator: 'v0.dev'
+
+
+// Socket initializer component
+function SocketInitializer() {
+  useEffect(() => {
+    const initializeSocket = async () => {
+      try {
+        await fetch("/api/socket", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log("Socket server initialized successfully");
+      } catch (error) {
+        console.error("Failed to initialize socket server:", error);
+      }
+    };
+
+    initializeSocket();
+  }, []);
+
+  return null;
 }
 
 export default function RootLayout({
@@ -30,10 +50,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <SocketInitializer />
         <AuthProvider>
           <CartProvider>
             <ChatProvider>
-
               <StripeProvider>
                 {children}
               </StripeProvider>
@@ -42,7 +62,6 @@ export default function RootLayout({
                 strategy="afterInteractive"
               />
               <Toaster />
-
             </ChatProvider>
           </CartProvider>
         </AuthProvider>

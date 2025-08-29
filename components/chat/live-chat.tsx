@@ -77,7 +77,7 @@ export function LiveChat() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 max-w-[calc(100vw-2rem)]">
+    <div className="fixed bottom-4 right-4 z-[999px] bg-white max-w-[calc(100vw-2rem)]">
       <Card className={`w-80 max-w-full shadow-xl transition-all duration-300 ${isMinimized ? "h-14" : "h-96"} sm:w-80`}>
         <CardHeader
           className="flex flex-row items-center justify-between space-y-0 pb-2 cursor-pointer"
