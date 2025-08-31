@@ -1,7 +1,6 @@
 "use client"
 
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
+import { Header } from "@/components/layout/header" 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -416,9 +415,6 @@ export default function VettingProcessPage() {
           </div>
         </motion.div>
       </section>
-
-      <Footer />
-      <LiveChat />
     </div>
   )
 }

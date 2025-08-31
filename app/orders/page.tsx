@@ -211,9 +211,6 @@ export default function OrdersPage() {
           </CardContent>
         </Card>
       </main>
-
-      <Footer />
-      <LiveChat />
     </div>
   )
 }

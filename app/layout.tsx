@@ -10,6 +10,7 @@ import { ChatProvider } from "@/components/providers/chat-provider"
 import { StripeProvider } from "@/components/providers/stripe-provider"
 import Script from "next/script"
 import { Footer } from "@/components/layout/footer"
+import { Header } from "@/components/layout/header" // Import the Header component
 import { Elements } from "@stripe/react-stripe-js"
 import { loadStripe } from "@stripe/stripe-js"
 import { useEffect } from "react"
@@ -17,9 +18,6 @@ import { useEffect } from "react"
 const inter = Inter({ subsets: ["latin"] })
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
-
-
-// Socket initializer component
 function SocketInitializer() {
   useEffect(() => {
     const initializeSocket = async () => {
@@ -55,7 +53,9 @@ export default function RootLayout({
           <CartProvider>
             <ChatProvider>
               <StripeProvider>
+                <Header /> {/* Add the Header component here */}
                 {children}
+                <Footer /> {/* Add the Footer component here */}
               </StripeProvider>
               <Script
                 src="https://accounts.google.com/gsi/client"

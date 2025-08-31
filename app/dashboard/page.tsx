@@ -255,10 +255,7 @@ export default function DashboardPage() {
             </div>
           </CardContent>
         </Card>
-      </main>
-
-      <Footer />
-      <LiveChat />
+      </main> 
     </div>
   )
 }

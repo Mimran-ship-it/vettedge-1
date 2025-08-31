@@ -14,7 +14,7 @@ export default function NotFound() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4">
+    <div className="min-h-screen py-20 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4">
       <div className="max-w-2xl mx-auto text-center">
         {/* 404 Visual */}
         <div className="mb-8">

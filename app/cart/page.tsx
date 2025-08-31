@@ -71,10 +71,7 @@ export default function CartPage() {
             </motion.div>
           </div>
         )}
-      </main>
-
-      <Footer />
-      <LiveChat />
+      </main> 
     </div>
   )
 }

@@ -382,9 +382,7 @@ export default function DomainsPage() {
             </Button>
           </div>
         )}
-      </main>
-      <Footer />
-      <LiveChat />
+      </main> 
     </div>
   )
 }

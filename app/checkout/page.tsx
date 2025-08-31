@@ -42,9 +42,7 @@ export default function CheckoutPage() {
          
         </div>
       </main>
-
-      <Footer />
-      <LiveChat />
+ 
     </div>
   )
 }

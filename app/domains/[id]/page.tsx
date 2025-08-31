@@ -207,13 +207,7 @@ export default function DomainDetailsPage() {
                 <h2 className="text-xl font-semibold text-gray-900">Domain Overview</h2>
                 <p className="text-gray-700 leading-relaxed">{domain.description}</p>
                 
-                <div className="flex flex-wrap gap-2 mt-4">
-                  {domain.tags?.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors">
-                      <Tag className="h-3 w-3 mr-1" /> {tag}
-                    </Badge>
-                  ))}
-                </div>
+               
               </div>
 
               {/* Tabs for additional information */}
@@ -436,12 +430,7 @@ export default function DomainDetailsPage() {
                         {domain.isAvailable ? "Available" : "Unavailable"}
                       </Badge>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Featured</span>
-                      <Badge variant={domain.featured ? "default" : "outline"}>
-                        {domain.featured ? "Yes" : "No"}
-                      </Badge>
-                    </div>
+                    
                     <div className="flex items-center justify-between">
                       <span className="text-gray-600">Hot Deal</span>
                       <Badge variant={domain.isHot ? "default" : "outline"}>
@@ -452,28 +441,6 @@ export default function DomainDetailsPage() {
                 </CardContent>
               </Card>
 
-              {/* Quick Actions */}
-              {/* <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><Zap className="h-5 w-5" /> Quick Actions</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <Button variant="outline" className="w-full justify-between">
-                      <span>View WHOIS Data</span>
-                      <ExternalLink className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" className="w-full justify-between">
-                      <span>Check Backlinks</span>
-                      <LinkIcon className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" className="w-full justify-between">
-                      <span>Estimate Value</span>
-                      <BarChart3 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card> */}
             </div>
           </div>
         </div>
@@ -497,11 +464,11 @@ export default function DomainDetailsPage() {
 
           <Card className="border-purple-100 bg-purple-50">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-purple-800"><ThumbsUp className="h-5 w-5" /> Authority Score</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-purple-800"><ThumbsUp className="h-5 w-5" /> Overall Score</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-600 mb-4">
-                Domain Authority: {domain.metrics.domainAuthority || 'N/A'}/100
+                Domain Score: {domain.metrics.domainAuthority || 'N/A'}/100
               </p>
               <div className="w-full bg-gray-200 rounded-full h-2.5">
                 <div 

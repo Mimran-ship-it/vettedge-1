@@ -151,8 +151,6 @@ export default function WishlistPage() {
         )}
       </main>
 
-      <Footer />
-      <LiveChat />
     </div>
   )
 }
