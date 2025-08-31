@@ -141,7 +141,7 @@ export default function DomainDetailsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Header />
-      <main className="max-w-7xl mx-auto px-4 pb-8 pt-24">
+      <main className="max-w-7xl mx-auto px-4 sm:px-16 pb-8 pt-24">
         {/* Breadcrumb */}
         <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-8">
           <a href="/" className="hover:text-gray-700 transition-colors">Home</a>
@@ -156,7 +156,7 @@ export default function DomainDetailsPage() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900">{domain.name}</h1>
+                <h1 className="text-1xl md:text-4xl font-bold text-gray-900">{domain.name}</h1>
                 {domain.isHot && (
                   <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white border-0">
                     <Zap className="h-3 w-3 mr-1" /> HOT
@@ -486,7 +486,7 @@ export default function DomainDetailsPage() {
               </Card>
 
               {/* Quick Actions */}
-              <Card>
+              {/* <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2"><Zap className="h-5 w-5" /> Quick Actions</CardTitle>
                 </CardHeader>
@@ -506,7 +506,7 @@ export default function DomainDetailsPage() {
                     </Button>
                   </div>
                 </CardContent>
-              </Card>
+              </Card> */}
             </div>
           </div>
         </div>
