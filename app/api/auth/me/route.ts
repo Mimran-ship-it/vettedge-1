@@ -16,3 +16,4 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({ user: decoded }, { status: 200 })
 }
+ 
