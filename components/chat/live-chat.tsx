@@ -12,6 +12,7 @@ import { useChat } from "@/hooks/use-chat"
 import { formatDistanceToNow } from "date-fns"
 import { useToast } from "@/hooks/use-toast"
 
+
 export function LiveChat() {
   const [isOpen, setIsOpen] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
@@ -24,6 +25,21 @@ export function LiveChat() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
+
+    // Auto scroll when messages change
+    useEffect(() => {
+      if (isOpen && !isMinimized) {
+        scrollToBottom()
+      }
+    }, [messages, isOpen, isMinimized])
+  
+    // Auto scroll when chat is first opened
+    useEffect(() => {
+      if (isOpen && !isMinimized) {
+        // slight delay so DOM renders before scrolling
+        setTimeout(scrollToBottom, 100)
+      }
+    }, [isOpen, isMinimized])
   
   useEffect(() => {
     scrollToBottom()
@@ -71,11 +87,13 @@ export function LiveChat() {
   
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
+      
       handleSendMessage()
     }
   }
   
   if (!isOpen) {
+    console.log('counter is',unreadCount)
     return (
       <div className="fixed bottom-4 right-4 z-50">
         <Button onClick={() => setIsOpen(true)} className="rounded-full w-14 h-14 shadow-lg relative">
@@ -91,7 +109,7 @@ export function LiveChat() {
   }
   
   return (
-    <div className="fixed bottom-4 bg-white right-4 z-500 max-w-[calc(100vw-2rem)]">
+    <div className="fixed bottom-4 right-4 z-[999px] bg-white max-w-[calc(100vw-2rem)]">
       <Card className={`w-80 max-w-full shadow-xl transition-all duration-300 ${isMinimized ? "h-14" : "h-96"} sm:w-80`}>
         <CardHeader
           className="flex flex-row items-center justify-between space-y-0 pb-2 cursor-pointer"
