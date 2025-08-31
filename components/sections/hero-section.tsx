@@ -145,34 +145,34 @@ export function HeroSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
           >
-            <Card className="bg-white text-gray-800 border border-gray-200 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
-              <CardContent className="p-6 sm:p-8 space-y-8">
+            <Card className="bg-white text-gray-800 border border-gray-200 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02]">
+              <CardContent className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8">
                 
                 {/* Features */}
                 <motion.div
-                  className="flex items-center space-x-3"
+                  className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-3"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6, duration: 0.5 }}
                 >
-                      <div className="flex items-center justify-center mb-4">
-    <Image
-      src="/logo.jpg" // Change to your logo path
-      alt="Vettedge Logo"
-      width={55} // similar to w-12
-      height={55} // similar to h-12
-      priority
-      className="bg-[#FAFAFA]"
-    />
-  </div>
-                  <div>
+                  <div className="flex items-center justify-center">
+                    <Image
+                      src="/logo.jpg"
+                      alt="Vettedge Logo"
+                      width={55}
+                      height={55}
+                      priority
+                      className="bg-[#FAFAFA]"
+                    />
+                  </div>
+                  <div className="text-center sm:text-left">
                     <h3 className="text-xl sm:text-2xl font-bold">Discover & Buy</h3>
                     <p className="text-gray-500 text-sm sm:text-base">Premium Expired Domains</p>
                   </div>
                 </motion.div>
 
                 <motion.div
-                  className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6"
+                  className="grid grid-cols-1 sm:grid-cols-3 gap-4"
                   initial="hidden"
                   animate="visible"
                   variants={{
@@ -207,10 +207,10 @@ export function HeroSection() {
                       variants={fadeUp}
                       custom={i * 0.2}
                     >
-                      <div className={`w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br ${bg} rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-200`}>
-                        <Icon className={`h-6 w-6 sm:h-8 sm:w-8 ${color}`} />
+                      <div className={`w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br ${bg} rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-200`}>
+                        <Icon className={`h-5 w-5 sm:h-8 sm:w-8 ${color}`} />
                       </div>
-                      <h4 className="font-semibold text-sm">{title}</h4>
+                      <h4 className="font-semibold text-sm sm:text-base">{title}</h4>
                       <p className="text-xs text-gray-500">{desc}</p>
                     </motion.div>
                   ))}
@@ -246,13 +246,13 @@ export function HeroSection() {
                 {/* CTA Button */}
                 <motion.div variants={fadeUp} custom={1}>
                   <Button
-                    className="w-full bg-[#38C172] hover:bg-[#30c97c] text-white font-semibold h-12 text-lg shadow hover:shadow-md transform hover:scale-105 transition-all duration-200"
+                    className="w-full bg-[#38C172] hover:bg-[#30c97c] text-white font-semibold h-12 sm:h-14 text-base sm:text-lg shadow hover:shadow-md transform hover:scale-[1.02] transition-all duration-200"
                     size="lg"
                     asChild
                   >
                     <Link href="/domains">
                       Start Your Search Now
-                      <ArrowRight className="h-5 w-5 ml-2" />
+                      <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 ml-2" />
                     </Link>
                   </Button>
                 </motion.div>

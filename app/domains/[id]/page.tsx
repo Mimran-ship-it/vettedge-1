@@ -141,15 +141,15 @@ export default function DomainDetailsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Header />
-      <main className="max-w-7xl mx-auto px-4 sm:px-16 pb-8 pt-24">
+      <main className="max-w-7xl mx-auto px-2 sm:px-16 pb-8 pt-24">
         {/* Breadcrumb */}
-        <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-8">
+        {/* <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-8">
           <a href="/" className="hover:text-gray-700 transition-colors">Home</a>
           <span>/</span>
           <a href="/domains" className="hover:text-gray-700 transition-colors">Domains</a>
           <span>/</span>
           <span className="text-gray-900 font-medium">{domain.name}</span>
-        </nav>
+        </nav> */}
 
         {/* Hero Section */}
         <div className="bg-white rounded-2xl shadow-xl p-6 mb-8">
@@ -248,8 +248,8 @@ export default function DomainDetailsPage() {
                         <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                           <Clock className="h-5 w-5 text-purple-500" />
                           <div>
-                            <p className="text-sm text-gray-500">Registration Year</p>
-                            <p className="font-medium">{domain.metrics.year || 'N/A'}</p>
+                            <p className="text-sm text-gray-500">Industry</p>
+                            <p className="font-medium">{domain.tags || 'N/A'}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
@@ -410,47 +410,14 @@ export default function DomainDetailsPage() {
                   <div className="space-y-3">
                     <TrustItem icon={<CheckCircle />} text="Secure transfer guaranteed" color="green" />
                     <TrustItem icon={<Clock />} text="Transfer within 24-48 hours" color="blue" />
-                    <TrustItem icon={<Search />} text="Full SEO history included" color="purple" />
-                    <TrustItem icon={<Shield />} text="30-day money-back guarantee" color="red" />
+                    {/* <TrustItem icon={<Search />} text="Full SEO history included" color="purple" /> */}
+                    <TrustItem icon={<Shield />} text="14-day money-back guarantee" color="red" />
                     <TrustItem icon={<Users />} text="Free dedicated support" color="yellow" />
                   </div>
                 </div>
               </div>
 
-              {/* Domain Value Proposition */}
-              <Card className="border-green-100 bg-green-50">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-green-800"><Award className="h-5 w-5" /> Domain Value</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Domain Authority</span>
-                      <Badge variant="outline" className="bg-white border-green-200 text-green-700">
-                        {domain.metrics.domainAuthority || 'N/A'}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Trust Flow</span>
-                      <Badge variant="outline" className="bg-white border-green-200 text-green-700">
-                        {domain.metrics.trustFlow || 'N/A'}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Citation Flow</span>
-                      <Badge variant="outline" className="bg-white border-green-200 text-green-700">
-                        {domain.metrics.citationFlow || 'N/A'}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Domain Age</span>
-                      <Badge variant="outline" className="bg-white border-green-200 text-green-700">
-                        {domain.metrics.age || 'N/A'} years
-                      </Badge>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              
 
               {/* Additional Information */}
               <Card>

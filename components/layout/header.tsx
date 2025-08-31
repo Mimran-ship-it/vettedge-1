@@ -11,25 +11,22 @@ import { useCart } from "@/components/providers/cart-provider"
 import { useWishlist } from "@/hooks/use-wishlist"
 import { motion, AnimatePresence } from "framer-motion"
 import {
-  DropdownMenu, 
+  DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [showHeader, setShowHeader] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
-
   const { user, loading, signOut } = useAuth()
   const { items } = useCart()
   const { wishlist } = useWishlist()
   const pathname = usePathname()
   const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0)
   const wishlistCount = wishlist.length
-
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isMenuOpen) {
@@ -41,7 +38,6 @@ export function Header() {
       document.body.style.overflow = 'unset'
     }
   }, [isMenuOpen])
-
   // Detect scroll direction to show/hide header
   useEffect(() => {
     const handleScroll = () => {
@@ -55,16 +51,13 @@ export function Header() {
       }
       setLastScrollY(currentScrollY)
     }
-
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [lastScrollY])
-
   const linkClass = (href: string) =>
     pathname === href
       ? "text-[#33BDC7] font-medium transition-colors"
       : "text-gray-700 hover:text-[#33BDC7] transition-colors"
-
   const renderUserMenu = () => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -73,7 +66,6 @@ export function Header() {
           <span className="ml-2 hidden sm:inline">{user?.name}</span>
         </Button>
       </DropdownMenuTrigger>
-      
       <AnimatePresence>
         <DropdownMenuContent asChild align="end" className="w-56">
           <motion.div
@@ -107,38 +99,35 @@ export function Header() {
       </AnimatePresence>
     </DropdownMenu>
   )
-
-  return ( 
+  return (
     <>
       {/* Animated Header */}
       <motion.header
-  initial={{ y: 0 }}
-  animate={{ y: showHeader ? 0 : -100 }}
-  transition={{ duration: 0.3 }}
-  className="bg-white shadow-sm border-b w-full z-50 fixed top-0 left-0 will-change-transform [backface-visibility:hidden] [transform:translateZ(0)]"
->
-
-      
+        initial={{ y: 0 }}
+        animate={{ y: showHeader ? 0 : -100 }}
+        transition={{ duration: 0.3 }}
+        className="bg-white shadow-sm border-b w-full z-50 fixed top-0 left-0 will-change-transform [backface-visibility:hidden] [transform:translateZ(0)]"
+      >
         <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-1">
-              <div className="w-20 h-20 rounded-lg overflow-hidden flex items-center justify-center">
+              <div className="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center">
                 <Image
                   src="/logo.jpg"
                   alt="Vettedge Logo"
-                  width={50}
-                  height={50}
+                  width={40}
+                  height={40}
                   className="object-contain"
                 />
               </div>
-              <span className="text-xl hidden lg:flex font-semibold text-gray-900">
+              <span className="text-lg sm:text-xl font-semibold text-gray-900">
                 Vettedge.domains
               </span>
             </Link>
             
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-5 xl:space-x-7">
+            {/* Desktop Navigation - Hidden on mobile */}
+            <nav className="hidden md:flex items-center space-x-4 lg:space-x-6">
               <Link href="/domains" className={linkClass("/domains")}>
                 Buy Domains
               </Link>
@@ -162,6 +151,11 @@ export function Header() {
               <Link href="/wishlist" className="relative">
                 <Button variant="ghost" size="sm">
                   <Heart className="h-5 w-5" />
+                  {wishlistCount > 0 && (
+                    <Badge className="absolute bg-[#33BDC7] -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                      {wishlistCount}
+                    </Badge>
+                  )}
                 </Button>
               </Link>
               
@@ -177,7 +171,7 @@ export function Header() {
                 </Button>
               </Link>
               
-              {/* Desktop Profile or Auth Buttons */}
+              {/* Desktop Profile or Auth Buttons - Hidden on mobile */}
               <div className="hidden md:flex items-center space-x-2">
                 {loading ? (
                   <span className="flex items-center text-gray-500 text-sm ms-4">
@@ -205,7 +199,7 @@ export function Header() {
                   </>
                 )}
               </div>
-
+              
               {/* Mobile Menu Toggle */}
               <Button
                 variant="ghost"
@@ -219,7 +213,7 @@ export function Header() {
           </div>
         </div>
       </motion.header>
-
+      
       {/* Mobile Navigation */}
       <AnimatePresence>
         {isMenuOpen && (
@@ -232,28 +226,27 @@ export function Header() {
               className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
               onClick={() => setIsMenuOpen(false)}
             />
-            
             {/* Menu Panel */}
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 w-full max-w-sm h-full bg-white z-50 shadow-lg md:hidden"
+              className="fixed top-0 right-0 w-4/5 max-w-xs h-full bg-white z-50 shadow-lg md:hidden overflow-y-auto"
             >
-           <div className="p-6">
-                <div className="flex justify-between items-center mb-8">
-                  <Link href="/" className="flex items-center space-x-1">
-                    <div className="w-20 h-20 rounded-lg overflow-hidden flex items-center justify-center">
+              <div className="p-5">
+                <div className="flex justify-between items-center mb-6">
+                  <Link href="/" className="flex items-center space-x-2">
+                    <div className="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center">
                       <Image
                         src="/logo.jpg"
                         alt="Vettedge Logo"
-                        width={50}
-                        height={50}
+                        width={40}
+                        height={40}
                         className="object-contain"
                       />
                     </div>
-                    <span className="text-xl font-semibold text-gray-900">
+                    <span className="text-lg font-semibold text-gray-900">
                       Vettedge.domains
                     </span>
                   </Link>
@@ -265,8 +258,8 @@ export function Header() {
                     <X className="h-6 w-6" />
                   </Button>
                 </div>
-
-                <nav className="flex flex-col space-y-6">
+                
+                <nav className="flex flex-col space-y-4">
                   <Link href="/domains" className={linkClass("/domains")} onClick={() => setIsMenuOpen(false)}>
                     Buy Domains
                   </Link>
@@ -282,15 +275,15 @@ export function Header() {
                   <Link href="/contact" className={linkClass("/contact")} onClick={() => setIsMenuOpen(false)}>
                     Contact Us
                   </Link>
-
+                  
                   {/* User menu for mobile */}
                   {user && (
-                    <div className="pt-4 border-t">
+                    <div className="pt-4 border-t mt-4">
                       <div className="flex items-center space-x-2 mb-4">
                         <User className="h-5 w-5" />
                         <span className="font-medium">{user.name}</span>
                       </div>
-                      <div className="flex flex-col space-y-2">
+                      <div className="flex flex-col space-y-3">
                         <Link href="/dashboard" className={linkClass("/dashboard")} onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
                         <Link href="/orders" className={linkClass("/orders")} onClick={() => setIsMenuOpen(false)}>My Orders</Link>
                         <Link href="/wishlist" className={linkClass("/wishlist")} onClick={() => setIsMenuOpen(false)}>Wishlist</Link>
@@ -301,9 +294,9 @@ export function Header() {
                       </div>
                     </div>
                   )}
-
+                  
                   {!loading && !user && (
-                    <div className="pt-4 flex flex-col space-y-4 border-t">
+                    <div className="pt-4 flex flex-col space-y-3 border-t mt-4">
                       <Link href="/auth/signin" className={linkClass("/auth/signin")} onClick={() => setIsMenuOpen(false)}>
                         Sign In
                       </Link>
