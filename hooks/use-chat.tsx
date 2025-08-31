@@ -9,7 +9,7 @@ import React, {
   useRef,
 } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { useRealtime } from "@/hooks/use-socket";
+import { useRealtime } from "@/hooks/use-pusher";
 
 /* ----------------------------- Types ----------------------------- */
 
@@ -123,16 +123,20 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     
       /* ---------- UNREAD COUNT LOGIC ---------- */
       if (user?.role === "customer") {
-        // Customer receives from admin
         if (msg.senderRole === "admin") {
-          // If it's not in the active session OR the tab isn't focused → increment unread
           const pageVisible =
             typeof document !== "undefined" && document.visibilityState === "visible";
-          if (!isCurrent || !pageVisible) {
+      
+          // increment if not current OR (current but chat not actively open)
+          const shouldIncrement = !isCurrent || !pageVisible;
+      
+          if (shouldIncrement) {
             setUnreadCount((s) => s + 1);
           }
         }
-      } else if (user?.role === "admin") {
+      }
+      
+      else if (user?.role === "admin") {
         // Admin receives from customer
         if (msg.senderRole === "customer") {
           const pageVisible =
@@ -318,6 +322,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       return;
     }
     if (!currentSession) {
+      console.log('useer',user)
       console.warn("sendMessage: no current session");
       return;
     }
