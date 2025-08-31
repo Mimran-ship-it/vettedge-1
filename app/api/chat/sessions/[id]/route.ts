@@ -11,31 +11,33 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
+    console.log("📝 PATCH session request received for ID:", params.id)
     await connectDB()
     
     const token = getAuthToken(request)
     if (!token) {
-      console.error("Unauthorized: No token provided")
+      console.log("❌ No token found in request")
       return NextResponse.json({ error: "Unauthorized: No token provided" }, { status: 401 })
     }
     
     let decoded;
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET!) as any
+      console.log("✅ Token verified, user ID:", decoded.userId)
     } catch (jwtError) {
-      console.error("JWT verification error:", jwtError)
+      console.error("❌ JWT verification error:", jwtError)
       return NextResponse.json({ error: "Unauthorized: Invalid token" }, { status: 401 })
     }
     
     const user = await UserModel.findById(decoded.userId).lean().exec()
     
     if (!user) {
-      console.error(`User not found for ID: ${decoded.userId}`)
+      console.log("❌ User not found")
       return NextResponse.json({ error: "Unauthorized: User not found" }, { status: 401 })
     }
     
     if (user.role !== "admin") {
-      console.error(`Forbidden: User ${user.name} is not an admin`)
+      console.log("❌ User is not an admin")
       return NextResponse.json({ error: "Forbidden: Admin access required" }, { status: 403 })
     }
     
@@ -43,10 +45,11 @@ export async function PATCH(
     const sessionId = params.id
     
     if (!["active", "closed", "waiting"].includes(status)) {
-      console.error(`Invalid status provided: ${status}`)
+      console.log("❌ Invalid status:", status)
       return NextResponse.json({ error: "Bad Request: Invalid status" }, { status: 400 })
     }
     
+    console.log("📝 Updating session:", sessionId, "to status:", status)
     const session = await ChatSession.findByIdAndUpdate(
       sessionId,
       { status },
@@ -54,14 +57,14 @@ export async function PATCH(
     ).lean().exec()
     
     if (!session) {
-      console.error(`Session not found: ${sessionId}`)
+      console.log("❌ Session not found")
       return NextResponse.json({ error: "Not Found: Session not found" }, { status: 404 })
     }
     
-    console.log(`Session ${sessionId} status updated to ${status} by admin ${user.name}`)
+    console.log("✅ Session updated by admin:", user.name)
     return NextResponse.json({ session })
   } catch (error) {
-    console.error("Error updating session:", error)
+    console.error("❌ Error updating session:", error)
     return NextResponse.json({ 
       error: "Internal Server Error",
       details: error instanceof Error ? error.message : "Unknown error"

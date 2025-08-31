@@ -62,7 +62,7 @@ interface DomainCardProps {
 }
 
 export function DomainCard({ domain }: DomainCardProps) {
-    const { user } = useAuth()
+  const { user } = useAuth()
   const router = useRouter()
   const parsedDomain: Domain = {
     ...domain,
@@ -108,10 +108,10 @@ export function DomainCard({ domain }: DomainCardProps) {
       })
       return
     }
-    
+
     // Clear the cart first
     clearCart()
-    
+
     // Add the current domain to the cart
     addItem({
       id: parsedDomain._id,
@@ -119,19 +119,19 @@ export function DomainCard({ domain }: DomainCardProps) {
       price: parsedDomain.price,
       domain: parsedDomain,
     })
-    
+
     toast({
       title: "Added to Cart",
       description: `${domain.name} has been added to your cart. Redirecting to checkout...`,
     })
-    
+
     // Redirect to checkout
     if (!user) {
       router.push("/auth/signin?redirect=/checkout")
       return
-    }else{
-    router.push("/checkout")
- } 
+    } else {
+      router.push("/checkout")
+    }
   }
 
   const handleWishlistToggle = () => {
@@ -161,12 +161,12 @@ export function DomainCard({ domain }: DomainCardProps) {
     )}>
       {/* Top Image - Square */}
       {domain.image?.length > 0 && (
-        <div className="relative aspect-square w-full">
+        <div className="relative w-80 h-60">
           <img
             src={domain.image[0]}
             alt={domain.name}
             className={cn(
-              "w-full rounded-3xl h-full object-cover transition duration-300",
+              "w-full h-full rounded-3xl object-cover transition duration-300",
               !domain.isAvailable && !domain.isSold && "blur-sm"
             )}
           />

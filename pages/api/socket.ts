@@ -28,26 +28,32 @@ export type NextApiResponseServerIO = NextApiResponse & {
 let dbConnected = false;
 async function ensureDBConnection() {
   if (!dbConnected) {
+    console.log("🔌 Connecting to database...")
     await connectDB();
     dbConnected = true;
+    console.log("✅ Database connected")
   }
 }
 
 const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
+  console.log("📥 Socket API request received")
+  
   if (res.socket.server.io) {
-    console.log("Socket is already running")
+    console.log("🔄 Socket is already running")
     res.end()
     return
   }
   
-  console.log("Socket is initializing")
+  console.log("🚀 Socket is initializing")
   
   // Verify JWT_SECRET is configured
   if (!process.env.JWT_SECRET) {
-    console.error("JWT_SECRET is not defined in environment variables");
+    console.error("❌ JWT_SECRET is not defined in environment variables");
     res.status(500).end("Server configuration error");
     return;
   }
+  
+  console.log("✅ JWT_SECRET is configured")
   
   const io = new SocketIOServer(res.socket.server, {
     path: "/api/socket",
@@ -65,14 +71,20 @@ const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) 
     transports: ["websocket", "polling"]
   })
 
+  console.log("✅ Socket.IO server created")
+
   // Authentication middleware with timeout
   io.use(async (socket: CustomSocket, next) => {
     try {
+      console.log("🔐 Authentication middleware called")
+      
       const token = getSocketToken(socket.handshake);
       if (!token) {
-        console.error("Authentication error: No token provided");
+        console.error("❌ Authentication error: No token provided");
         return next(new Error("Authentication error: No token provided"));
       }
+      
+      console.log("🔑 Token found, attempting to verify")
       
       // Add timeout for authentication
       const timeoutPromise = new Promise((_, reject) => {
@@ -81,10 +93,14 @@ const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) 
       
       const authPromise = (async () => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
+        console.log("✅ Token verified, user ID:", decoded.userId);
+        
         await ensureDBConnection();
+        console.log("✅ Database connected");
         
         const user = await UserModel.findById(decoded.userId).lean().exec();
         if (!user) {
+          console.error("❌ User not found in database");
           throw new Error("User not found");
         }
         
@@ -92,19 +108,19 @@ const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) 
         socket.userRole = user.role;
         socket.userName = user.name;
         
-        console.log(`User authenticated: ${socket.userName} (${socket.userId})`);
+        console.log(`✅ User authenticated: ${socket.userName} (${socket.userId})`);
       })();
       
       await Promise.race([authPromise, timeoutPromise]);
       next();
     } catch (err) {
-      console.error("Socket auth error:", err);
+      console.error("❌ Socket auth error:", err);
       next(new Error(err instanceof Error ? err.message : "Authentication error"));
     }
   })
 
   io.on("connection", (socket: CustomSocket) => {
-    console.log(`User connected: ${socket.userId} (${socket.userName})`)
+    console.log(`🔌 User connected: ${socket.userId} (${socket.userName})`)
     
     // Join user to their personal room
     socket.join(`user:${socket.userId}`)
@@ -117,19 +133,19 @@ const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) 
     // Join session
     socket.on("join_session", async (sessionId: string) => {
       try {
-        console.log(`User ${socket.userName} attempting to join session ${sessionId}`);
+        console.log(`🔗 User ${socket.userName} attempting to join session ${sessionId}`);
         await ensureDBConnection();
         
         const session = await ChatSession.findById(sessionId);
         if (!session) {
-          console.error(`Session not found: ${sessionId}`);
+          console.error(`❌ Session not found: ${sessionId}`);
           socket.emit("error", { message: "Session not found" });
           return;
         }
         
         // Check if user has access to this session
         if (socket.userRole !== "admin" && session.userId.toString() !== socket.userId) {
-          console.error(`Access denied for user ${socket.userName} to session ${sessionId}`);
+          console.error(`❌ Access denied for user ${socket.userName} to session ${sessionId}`);
           socket.emit("error", { message: "Access denied" });
           return;
         }
@@ -137,10 +153,10 @@ const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) 
         socket.currentSession = sessionId;
         socket.join(`session:${sessionId}`);
         
-        console.log(`User ${socket.userName} joined session ${sessionId}`);
+        console.log(`✅ User ${socket.userName} joined session ${sessionId}`);
         socket.emit("session_joined", { sessionId });
       } catch (error) {
-        console.error("Join session error:", error);
+        console.error("❌ Join session error:", error);
         socket.emit("error", { 
           message: "Failed to join session",
           details: error instanceof Error ? error.message : "Unknown error"
@@ -151,14 +167,14 @@ const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) 
     // Send message
     socket.on("send_message", async (data: { sessionId?: string; content: string }) => {
       try {
-        console.log(`Message from ${socket.userName}:`, data);
+        console.log(`📨 Message from ${socket.userName}:`, data);
         await ensureDBConnection();
         
         let session;
         if (data.sessionId) {
           session = await ChatSession.findById(data.sessionId);
           if (!session) {
-            console.error(`Session not found: ${data.sessionId}`);
+            console.error(`❌ Session not found: ${data.sessionId}`);
             socket.emit("error", { message: "Session not found" });
             return;
           }
@@ -170,7 +186,7 @@ const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) 
           });
           
           if (!session) {
-            console.log(`Creating new session for user: ${socket.userName}`);
+            console.log(`🆕 Creating new session for user: ${socket.userName}`);
             session = new ChatSession({
               userId: socket.userId,
               userName: socket.userName,
@@ -178,13 +194,13 @@ const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) 
               status: "waiting"
             });
             await session.save();
-            console.log(`New session created: ${session._id}`);
+            console.log(`✅ New session created: ${session._id}`);
           }
         }
         
         // Check access
         if (socket.userRole !== "admin" && session.userId.toString() !== socket.userId) {
-          console.error(`Access denied for user ${socket.userName} to session ${session._id}`);
+          console.error(`❌ Access denied for user ${socket.userName} to session ${session._id}`);
           socket.emit("error", { message: "Access denied" });
           return;
         }
@@ -200,7 +216,7 @@ const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) 
           isRead: false
         });
         await message.save();
-        console.log(`Message saved: ${message._id}`);
+        console.log(`✅ Message saved: ${message._id}`);
         
         // Update session
         await ChatSession.findByIdAndUpdate(session._id, {
@@ -208,7 +224,7 @@ const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) 
           $inc: { unreadCount: socket.userRole === "admin" ? 0 : 1 }
         });
         
-        console.log(`Emitting new_message to session room: session:${session._id}`);
+        console.log(`📡 Emitting new_message to session room: session:${session._id}`);
         
         // Emit to session room (this will reach all participants including sender)
         io.to(`session:${session._id}`).emit("new_message", {
@@ -232,7 +248,7 @@ const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) 
           });
         }
       } catch (error) {
-        console.error("Send message error:", error);
+        console.error("❌ Send message error:", error);
         socket.emit("error", { 
           message: "Failed to send message",
           details: error instanceof Error ? error.message : "Unknown error"
@@ -252,7 +268,7 @@ const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) 
     // Update session status (admin only)
     socket.on("update_session_status", async (data: { sessionId: string; status: string }) => {
       if (socket.userRole !== "admin") {
-        console.error(`Unauthorized status update attempt by ${socket.userName}`);
+        console.error(`❌ Unauthorized status update attempt by ${socket.userName}`);
         socket.emit("error", { message: "Access denied" });
         return;
       }
@@ -266,16 +282,16 @@ const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) 
         );
         
         if (session) {
-          console.log(`Session ${data.sessionId} status updated to ${data.status}`);
+          console.log(`✅ Session ${data.sessionId} status updated to ${data.status}`);
           io.to(`session:${data.sessionId}`).emit("session_status_updated", {
             sessionId: data.sessionId,
             status: data.status
           });
         } else {
-          console.error(`Session not found for status update: ${data.sessionId}`);
+          console.error(`❌ Session not found for status update: ${data.sessionId}`);
         }
       } catch (error) {
-        console.error("Update session status error:", error);
+        console.error("❌ Update session status error:", error);
         socket.emit("error", { 
           message: "Failed to update session status",
           details: error instanceof Error ? error.message : "Unknown error"
@@ -284,11 +300,12 @@ const SocketHandler = async (req: NextApiRequest, res: NextApiResponseServerIO) 
     })
     
     socket.on("disconnect", () => {
-      console.log(`User disconnected: ${socket.userId} (${socket.userName})`)
+      console.log(`❌ User disconnected: ${socket.userId} (${socket.userName})`)
     })
   })
   
   res.socket.server.io = io
+  console.log("✅ Socket.IO server attached to response")
   res.end()
 }
 

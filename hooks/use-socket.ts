@@ -6,11 +6,12 @@ import { useAuth } from "./use-auth"
 
 export function useSocket() {
   const { user } = useAuth()
-  const [socket, setSocket] = useState<Socket | null>(null)
-  const [isConnected, setIsConnected] = useState(false)
-  const [connectionError, setConnectionError] = useState<string | null>(null)
-  const [connectionStatus, setConnectionStatus] = useState<'idle' | 'connecting' | 'connected' | 'disconnected'>('idle')
-  const socketRef = useRef<Socket | null>(null)
+const [socket, setSocket] = useState<typeof Socket | null>(null)
+const socketRef = useRef<typeof Socket | null>(null) 
+const [isConnected, setIsConnected] = useState(false)
+const [connectionError, setConnectionError] = useState<string | null>(null)
+const [connectionStatus, setConnectionStatus] = useState<'idle' | 'connecting' | 'connected' | 'disconnected'>('idle')
+  // const socketRef = useRef<Socket | null>(null)
 
   useEffect(() => {
     // Only create socket if user is authenticated
