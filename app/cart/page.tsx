@@ -72,6 +72,7 @@ export default function CartPage() {
           </div>
         )}
       </main> 
+      <Footer/>
     </div>
   )
 }

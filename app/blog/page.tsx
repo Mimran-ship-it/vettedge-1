@@ -36,6 +36,7 @@ export default async function BlogPage() {
           <BlogList posts={regularPosts} />
         </section>
       </main> 
+      <Footer/>
     </div>
   )
 }

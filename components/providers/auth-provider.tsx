@@ -67,7 +67,11 @@ function AuthProviderInner({ children }: AuthProviderProps) {
       // now call your API
       const meRes = await fetch("/api/auth/me")
       const meData = await meRes.json()
-      setUser(meData.user)
+      setUser({
+        ...meData.user,
+        role: meData.user.role || "customer",
+      })
+    
 
       console.log("user set", meData.user)
 

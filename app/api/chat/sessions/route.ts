@@ -63,3 +63,27 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
+export async function GET(request: NextRequest) {
+  try {
+    await connectDB()
+    const token = getAuthToken(request)
+    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any
+    const user = await UserModel.findById(decoded.userId)
+    if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 })
+
+    // Admin fetches all sessions
+    if (user.role === "admin") {
+      const sessions = await ChatSession.find().sort({ updatedAt: -1 })
+      return NextResponse.json({ sessions })
+    }
+
+    // Customers fetch only their sessions
+    const sessions = await ChatSession.find({ userId: user._id })
+    return NextResponse.json({ sessions })
+  } catch (error) {
+    console.error("❌ Error fetching sessions:", error)
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+  }
+}

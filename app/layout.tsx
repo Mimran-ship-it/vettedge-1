@@ -53,9 +53,8 @@ export default function RootLayout({
           <CartProvider>
             <ChatProvider>
               <StripeProvider>
-                <Header /> {/* Add the Header component here */}
                 {children}
-                <Footer /> {/* Add the Footer component here */}
+                
               </StripeProvider>
               <Script
                 src="https://accounts.google.com/gsi/client"

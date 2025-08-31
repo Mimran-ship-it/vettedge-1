@@ -45,7 +45,6 @@ interface ChatContextType {
   sendMessage: (content: string) => Promise<void>;
   createSession: () => Promise<void>;
   joinSession: (sessionId: string) => Promise<void>;
-  markSessionRead: (sessionId?: string) => Promise<void>;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -69,86 +68,32 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     processedMessageIds.current = new Set();
   }, [currentSession?._id]);
 
-  /* ------------------- Helper: normalize user id/name ------------------- */
-  const getUserId = () => {
-    // tolerant to different auth shapes
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const u = user as any;
-    return (u?._id ?? u?.id ?? "") as string;
-  };
-  const getUserName = () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const u = user as any;
-    return (u?.name ?? u?.fullName ?? "You") as string;
-  };
-
-  /* ------------------- Subscribe to session channel ------------------- */
+  // Subscribe to session channel (and update messages) when pusher + session are available
   useEffect(() => {
     if (!pusher || !currentSession) return;
 
     const channelName = `session-${currentSession._id}`;
     const channel = pusher.subscribe(channelName) as any;
+
     const onNewMessage = (msg: ChatMessage) => {
-      if (!msg || !msg._id) return;
-    
       // dedupe
       if (processedMessageIds.current.has(msg._id)) return;
       processedMessageIds.current.add(msg._id);
-    
-      const isCurrent = msg.sessionId === currentSession?._id;
-    
-      setMessages((prev) => {
-        if (isCurrent) {
-          // replace optimistic
-          const optIndex = prev.findIndex(
-            (m) =>
-              m._id.startsWith("temp-") &&
-              m.senderId === msg.senderId &&
-              m.content === msg.content
-          );
-    
-          if (optIndex > -1) {
-            const next = [...prev];
-            next[optIndex] = msg;
-            return next;
-          }
-    
-          if (!prev.some((m) => m._id === msg._id)) {
-            return [...prev, msg];
-          }
-          return prev;
-        }
-        return prev;
-      });
-    
-      /* ---------- UNREAD COUNT LOGIC ---------- */
-      if (user?.role === "customer") {
-        if (msg.senderRole === "admin") {
-          const pageVisible =
-            typeof document !== "undefined" && document.visibilityState === "visible";
-      
-          // increment if not current OR (current but chat not actively open)
-          const shouldIncrement = !isCurrent || !pageVisible;
-      
-          if (shouldIncrement) {
-            setUnreadCount((s) => s + 1);
-          }
-        }
-      }
-      
-      else if (user?.role === "admin") {
-        // Admin receives from customer
-        if (msg.senderRole === "customer") {
-          const pageVisible =
-            typeof document !== "undefined" && document.visibilityState === "visible";
-          if (!isCurrent || !pageVisible) {
-            setUnreadCount((s) => s + 1);
-          }
+
+      // if belongs to this session, append
+      if (msg.sessionId === currentSession._id) {
+        setMessages((prev) => {
+          // avoid duplicates in state
+          if (prev.some((m) => m._id === msg._id)) return prev;
+          return [...prev, msg];
+        });
+      } else {
+        // messages for other sessions increase unread if customer
+        if (msg.senderRole === "admin" && user?.role === "customer") {
+          setUnreadCount((s) => s + 1);
         }
       }
     };
-    
-    
 
     const onSessionStatus = (payload: { sessionId: string; status: ChatSession["status"] }) => {
       if (payload?.sessionId === currentSession._id) {
@@ -170,14 +115,15 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     };
   }, [pusher, currentSession, user]);
 
-  /* ---------------- Admin-channel notifications ---------------- */
+  // Admins: subscribe to admins channel for notifications about new customer messages
   useEffect(() => {
     if (!pusher || !user || user.role !== "admin") return;
 
     const adminChannel = pusher.subscribe("admins") as any;
 
     const onNewCustomer = (payload: { sessionId: string; customerName?: string; content?: string }) => {
-      // admin UI might show overall unread badge
+      console.log("admin received new_customer_message:", payload);
+      // you can implement UI logic here (e.g., show badge), for now we increment unread
       setUnreadCount((s) => s + 1);
     };
 
@@ -206,10 +152,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       }
       const data = await res.json();
       if (Array.isArray(data.messages)) {
-        // seed processed ids to avoid duplicate re-processing
         data.messages.forEach((m: ChatMessage) => processedMessageIds.current.add(m._id));
         setMessages(data.messages);
-        // when fetching messages for the session we consider them read
         setUnreadCount(0);
       }
     } catch (err) {
@@ -220,6 +164,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   // Try to fetch full session object. If not found, return a minimal (safe) session object.
   const fetchSessionData = async (sessionId: string): Promise<ChatSession | null> => {
     try {
+      // try GET /api/chat/sessions/:id
       let res = await fetch(`/api/chat/sessions/${encodeURIComponent(sessionId)}`, {
         credentials: "include",
       });
@@ -235,6 +180,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         return null;
       }
       const data = await res.json();
+      // accept `data.session` or `data` shaped like the session
       const session: ChatSession | undefined = data.session ?? data;
       if (session && session._id) return session;
       return null;
@@ -299,21 +245,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       };
       setCurrentSession(fallback);
     }
-
-    // fetched messages => clear unread
-    setUnreadCount(0);
-
-    // optionally notify server that messages were read
-    try {
-      await fetch("/api/chat/mark-read", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId }),
-      });
-    } catch (e) {
-      // ignore server errors (non-critical)
-    }
   };
 
   const sendMessage = async (content: string): Promise<void> => {
@@ -322,28 +253,28 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       return;
     }
     if (!currentSession) {
-      console.log('useer',user)
       console.warn("sendMessage: no current session");
+      console.log('user is',user)
       return;
     }
-
+  
     // Create a temp (optimistic) message
     const tempId = `temp-${Date.now()}`;
     const optimisticMessage: ChatMessage = {
       _id: tempId,
       sessionId: currentSession._id,
-      senderId: getUserId(),
-      senderName: getUserName(),
+      senderId: user.id,
+      senderName: user.name || "You",
       senderRole: user.role,
       content,
       messageType: "text",
       isRead: true,
       createdAt: new Date().toISOString(),
     };
-
+  
     // Push immediately to UI
     setMessages((prev) => [...prev, optimisticMessage]);
-
+  
     try {
       const res = await fetch("/api/chat/messages", {
         method: "POST",
@@ -351,40 +282,20 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({ content, sessionId: currentSession._id }),
         credentials: "include",
       });
-
+  
       if (!res.ok) {
         console.error("Failed to send message:", res.status, await res.text());
-        // Optionally mark optimistic message as failed (remove it)
+        // Optionally mark optimistic message as failed
         setMessages((prev) => prev.filter((m) => m._id !== tempId));
       }
-      // We rely on Pusher to publish the stored message and our subscription to replace the optimistic msg
+      // Otherwise we rely on Pusher to replace this optimistic message with the real one
     } catch (err) {
       console.error("Failed to send message (network):", err);
       // Rollback optimistic message on error
       setMessages((prev) => prev.filter((m) => m._id !== tempId));
     }
   };
-
-  /* ------------------ Clear / mark read ------------------ */
-
-  const markSessionRead = async (sessionId?: string): Promise<void> => {
-    const sid = sessionId ?? currentSession?._id;
-    if (!sid) {
-      setUnreadCount(0);
-      return;
-    }
-    setUnreadCount(0);
-    try {
-      await fetch("/api/chat/mark-read", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId: sid }),
-      });
-    } catch (e) {
-      // ignore server errors for now
-    }
-  };
+  
 
   /* ----------------------- Auto-create for customers ----------------------- */
   useEffect(() => {
@@ -399,38 +310,9 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       // auto-create session if none
       createSession().catch((e) => console.error("auto create session error:", e));
     }
+    // we intentionally don't want createSession as dependency (it is stable here)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, currentSession, pusher, isConnected, isCreatingSession]);
-
-  /* ------------------ Visibility: quick UX improvement ------------------ */
-  useEffect(() => {
-    const onVisibility = () => {
-      try {
-        // If page becomes visible, clear unread for customers (they're likely to see messages)
-        if (typeof document !== "undefined" && document.visibilityState === "visible") {
-          if (user?.role === "customer") {
-            setUnreadCount(0);
-            // optionally call server to mark read for current session
-            if (currentSession?._id) {
-              fetch("/api/chat/mark-read", {
-                method: "POST",
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ sessionId: currentSession._id }),
-              }).catch(() => {});
-            }
-          }
-        }
-      } catch (e) {
-        /* ignore */
-      }
-    };
-
-    if (typeof document !== "undefined") {
-      document.addEventListener("visibilitychange", onVisibility);
-      return () => document.removeEventListener("visibilitychange", onVisibility);
-    }
-  }, [user, currentSession]);
 
   /* ------------------------- Context value ------------------------- */
 
@@ -442,7 +324,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     sendMessage,
     createSession,
     joinSession,
-    markSessionRead,
   };
 
   return <ChatContext.Provider value={contextValue}>{children}</ChatContext.Provider>;

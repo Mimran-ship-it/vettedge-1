@@ -1,41 +1,10 @@
-
-
-
-// import NextAuth from "next-auth"
-// import GoogleProvider from "next-auth/providers/google"
-// import { createUserIfNotExists } from "@/lib/helpers/createUserIfNotExists"
-
-// const handler =  NextAuth({
-//   providers: [
-//     GoogleProvider({
-//       clientId: process.env.GOOGLE_CLIENT_ID!,
-//       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-//     }),
-//   ],
-//   callbacks: {
-//     async signIn({ user, profile }) {
-//       try {
-//         await createUserIfNotExists({
-//           name: user.name || profile?.name || "Unknown User",
-//           email: user.email || "",
-//           oauthProvider: "google"
-//         })
-//         return true
-//       } catch (err) {
-//         console.error("Google user creation error:", err)
-//         return false
-//       }
-//     },
-//   },
-// })
-
-
-// export { handler as GET, handler as POST }
+// app/api/auth/[...nextauth]/route.ts
 import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import { signJwt } from "@/lib/jwt"
-import { createUserIfNotExists } from "@/lib/helpers/createUserIfNotExists"
 import { cookies } from "next/headers"
+import UserModel from "@/lib/models/User"
+import { connectDB } from "@/lib/db"
 
 export const authOptions = {
   providers: [
@@ -44,29 +13,48 @@ export const authOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
+
   callbacks: {
-    async signIn({ user, profile }) {
-      await createUserIfNotExists({
-        name: user.name || profile?.name || "Unknown User",
-        email: user.email || "",
-        oauthProvider: "google"
-      })
-      return true
-    },
-  },
-  events: {
+    // Runs whenever a user signs in
     async signIn({ user }) {
-      const token = signJwt({ email: user.email!, name: user.name })
-      const cookieStore = await cookies()   // 👈 await here
+      await connectDB()
+
+      // Try to find existing user in DB
+      let dbUser = await UserModel.findOne({ email: user.email })
+
+      // If user doesn't exist → create them
+      if (!dbUser) {
+        dbUser = await UserModel.create({
+          name: user.name || "Unknown User",
+          email: user.email || "",
+          oauthProvider: "google",
+          role: "customer", // default role
+        })
+      }
+
+      // ✅ Generate JWT including role
+      const token = signJwt({
+        userId: dbUser._id,
+        email: dbUser.email,
+        name: dbUser.name,
+        role: dbUser.role || "customer",
+      })
+
+      // ✅ Set JWT cookie
+      const cookieStore = await cookies()
       cookieStore.set("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         path: "/",
+        maxAge: 7 * 24 * 60 * 60, // 7 days
       })
+
+      return true
     },
   },
 }
 
 const handler = NextAuth(authOptions)
+
 export { handler as GET, handler as POST }

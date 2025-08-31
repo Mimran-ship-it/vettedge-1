@@ -150,7 +150,7 @@ export default function WishlistPage() {
           </motion.div>
         )}
       </main>
-
+      <Footer/>
     </div>
   )
 }

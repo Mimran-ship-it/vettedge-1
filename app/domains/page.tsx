@@ -383,6 +383,7 @@ export default function DomainsPage() {
           </div>
         )}
       </main> 
+      <Footer/>
     </div>
   )
 }
