@@ -1,5 +1,4 @@
 "use client";
-
 import React, {
   createContext,
   useContext,
@@ -7,12 +6,12 @@ import React, {
   useState,
   ReactNode,
   useRef,
+  useCallback,
 } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useRealtime } from "@/hooks/use-pusher";
 
 /* ----------------------------- Types ----------------------------- */
-
 interface ChatMessage {
   _id: string;
   sessionId: string;
@@ -45,103 +44,30 @@ interface ChatContextType {
   sendMessage: (content: string) => Promise<void>;
   createSession: () => Promise<void>;
   joinSession: (sessionId: string) => Promise<void>;
+  refreshMessages: () => Promise<void>;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 /* --------------------------- Provider ----------------------------- */
-
 export function ChatProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const { pusher, isConnected } = useRealtime();
-
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentSession, setCurrentSession] = useState<ChatSession | null>(null);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
-
+  
   // dedupe incoming messages
   const processedMessageIds = useRef<Set<string>>(new Set());
-
+  
   // reset dedupe when session changes
   useEffect(() => {
     processedMessageIds.current = new Set();
   }, [currentSession?._id]);
 
-  // Subscribe to session channel (and update messages) when pusher + session are available
-  useEffect(() => {
-    if (!pusher || !currentSession) return;
-
-    const channelName = `session-${currentSession._id}`;
-    const channel = pusher.subscribe(channelName) as any;
-
-    const onNewMessage = (msg: ChatMessage) => {
-      // dedupe
-      if (processedMessageIds.current.has(msg._id)) return;
-      processedMessageIds.current.add(msg._id);
-
-      // if belongs to this session, append
-      if (msg.sessionId === currentSession._id) {
-        setMessages((prev) => {
-          // avoid duplicates in state
-          if (prev.some((m) => m._id === msg._id)) return prev;
-          return [...prev, msg];
-        });
-      } else {
-        // messages for other sessions increase unread if customer
-        if (msg.senderRole === "admin" && user?.role === "customer") {
-          setUnreadCount((s) => s + 1);
-        }
-      }
-    };
-
-    const onSessionStatus = (payload: { sessionId: string; status: ChatSession["status"] }) => {
-      if (payload?.sessionId === currentSession._id) {
-        setCurrentSession((prev) => (prev ? { ...prev, status: payload.status } : prev));
-      }
-    };
-
-    channel.bind("new_message", onNewMessage);
-    channel.bind("session_status_updated", onSessionStatus);
-
-    return () => {
-      try {
-        channel.unbind("new_message", onNewMessage);
-        channel.unbind("session_status_updated", onSessionStatus);
-        pusher.unsubscribe(channelName);
-      } catch (e) {
-        /* ignore */
-      }
-    };
-  }, [pusher, currentSession, user]);
-
-  // Admins: subscribe to admins channel for notifications about new customer messages
-  useEffect(() => {
-    if (!pusher || !user || user.role !== "admin") return;
-
-    const adminChannel = pusher.subscribe("admins") as any;
-
-    const onNewCustomer = (payload: { sessionId: string; customerName?: string; content?: string }) => {
-      console.log("admin received new_customer_message:", payload);
-      // you can implement UI logic here (e.g., show badge), for now we increment unread
-      setUnreadCount((s) => s + 1);
-    };
-
-    adminChannel.bind("new_customer_message", onNewCustomer);
-
-    return () => {
-      try {
-        adminChannel.unbind("new_customer_message", onNewCustomer);
-        pusher.unsubscribe("admins");
-      } catch (e) {
-        /* ignore */
-      }
-    };
-  }, [pusher, user]);
-
-  /* -------------------------- Helpers -------------------------- */
-
-  const fetchMessages = async (sessionId: string) => {
+  // Fetch messages with useCallback to stabilize the function
+  const fetchMessages = useCallback(async (sessionId: string) => {
     try {
       const res = await fetch(`/api/chat/messages?sessionId=${encodeURIComponent(sessionId)}`, {
         credentials: "include",
@@ -159,8 +85,92 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       console.error("Error fetching messages:", err);
     }
-  };
+  }, []);
 
+  // Auto-refresh messages every 30 seconds when session is active
+  useEffect(() => {
+    if (!currentSession || !isConnected) return;
+    
+    const intervalId = setInterval(() => {
+      fetchMessages(currentSession._id);
+    }, 30000); // Refresh every 30 seconds
+
+    return () => clearInterval(intervalId);
+  }, [currentSession, isConnected, fetchMessages]);
+
+  // Subscribe to session channel (and update messages) when pusher + session are available
+  useEffect(() => {
+    if (!pusher || !currentSession) return;
+    
+    const channelName = `session-${currentSession._id}`;
+    const channel = pusher.subscribe(channelName) as any;
+    
+    const onNewMessage = (msg: ChatMessage) => {
+      // dedupe
+      if (processedMessageIds.current.has(msg._id)) return;
+      processedMessageIds.current.add(msg._id);
+      
+      // if belongs to this session, append
+      if (msg.sessionId === currentSession._id) {
+        setMessages((prev) => {
+          // avoid duplicates in state
+          if (prev.some((m) => m._id === msg._id)) return prev;
+          return [...prev, msg];
+        });
+      } else {
+        // messages for other sessions increase unread if customer
+        if (msg.senderRole === "admin" && user?.role === "customer") {
+          setUnreadCount((s) => s + 1);
+        }
+      }
+    };
+    
+    const onSessionStatus = (payload: { sessionId: string; status: ChatSession["status"] }) => {
+      if (payload?.sessionId === currentSession._id) {
+        setCurrentSession((prev) => (prev ? { ...prev, status: payload.status } : prev));
+      }
+    };
+    
+    channel.bind("new_message", onNewMessage);
+    channel.bind("session_status_updated", onSessionStatus);
+    
+    return () => {
+      try {
+        channel.unbind("new_message", onNewMessage);
+        channel.unbind("session_status_updated", onSessionStatus);
+        pusher.unsubscribe(channelName);
+      } catch (e) {
+        /* ignore */
+      }
+    };
+  }, [pusher, currentSession, user]);
+
+  // Admins: subscribe to admins channel for notifications about new customer messages
+  useEffect(() => {
+    if (!pusher || !user || user.role !== "admin") return;
+    
+    const adminChannel = pusher.subscribe("admins") as any;
+    
+    const onNewCustomer = (payload: { sessionId: string; customerName?: string; content?: string }) => {
+      console.log("admin received new_customer_message:", payload);
+      // you can implement UI logic here (e.g., show badge), for now we increment unread
+      setUnreadCount((s) => s + 1);
+    };
+    
+    adminChannel.bind("new_customer_message", onNewCustomer);
+    
+    return () => {
+      try {
+        adminChannel.unbind("new_customer_message", onNewCustomer);
+        pusher.unsubscribe("admins");
+      } catch (e) {
+        /* ignore */
+      }
+    };
+  }, [pusher, user]);
+
+  /* -------------------------- Helpers -------------------------- */
+  
   // Try to fetch full session object. If not found, return a minimal (safe) session object.
   const fetchSessionData = async (sessionId: string): Promise<ChatSession | null> => {
     try {
@@ -168,14 +178,12 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       let res = await fetch(`/api/chat/sessions/${encodeURIComponent(sessionId)}`, {
         credentials: "include",
       });
-
       if (!res.ok) {
         // fallback to query-style endpoint if the id route is not implemented
         res = await fetch(`/api/chat/sessions?sessionId=${encodeURIComponent(sessionId)}`, {
           credentials: "include",
         });
       }
-
       if (!res.ok) {
         return null;
       }
@@ -191,7 +199,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   };
 
   /* -------------------------- Actions -------------------------- */
-
   const createSession = async (): Promise<void> => {
     if (!user || isCreatingSession) return;
     setIsCreatingSession(true);
@@ -224,10 +231,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     if (!sessionId) return;
     // fetch messages first (so messages appear quickly)
     await fetchMessages(sessionId);
-
     // fetch session data if available
     const sessionData = await fetchSessionData(sessionId);
-
     if (sessionData) {
       setCurrentSession(sessionData);
     } else {
@@ -295,8 +300,14 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       setMessages((prev) => prev.filter((m) => m._id !== tempId));
     }
   };
-  
 
+  // Function to manually refresh messages
+  const refreshMessages = async (): Promise<void> => {
+    if (currentSession) {
+      await fetchMessages(currentSession._id);
+    }
+  };
+  
   /* ----------------------- Auto-create for customers ----------------------- */
   useEffect(() => {
     if (
@@ -315,7 +326,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   }, [user, currentSession, pusher, isConnected, isCreatingSession]);
 
   /* ------------------------- Context value ------------------------- */
-
   const contextValue: ChatContextType = {
     messages,
     currentSession,
@@ -324,13 +334,13 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     sendMessage,
     createSession,
     joinSession,
+    refreshMessages,
   };
 
   return <ChatContext.Provider value={contextValue}>{children}</ChatContext.Provider>;
 }
 
 /* --------------------------- Hook export --------------------------- */
-
 export function useChat() {
   const ctx = useContext(ChatContext);
   if (!ctx) throw new Error("useChat must be used within a ChatProvider");

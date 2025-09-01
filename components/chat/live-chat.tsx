@@ -1,4 +1,3 @@
-// components/chat/live-chat.tsx
 "use client"
 import type React from "react"
 import { useState, useEffect, useRef } from "react"
@@ -6,40 +5,52 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { MessageSquare, X, Send, Minimize2 } from "lucide-react"
+import { MessageSquare, X, Send, Minimize2, RefreshCw } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { useChat } from "@/hooks/use-chat"
 import { formatDistanceToNow } from "date-fns"
 import { useToast } from "@/hooks/use-toast"
-
 
 export function LiveChat() {
   const [isOpen, setIsOpen] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
   const [message, setMessage] = useState("")
   const { user } = useAuth()
-  const { messages, sendMessage, unreadCount, currentSession, isConnected } = useChat()
+  const { messages, sendMessage, unreadCount, currentSession, isConnected, refreshMessages } = useChat()
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
+  
+  // Track previous unread count to detect new messages
+  const prevUnreadCount = useRef(unreadCount)
+  
+  // Auto-open chat when new message arrives
+  useEffect(() => {
+    if (unreadCount > prevUnreadCount.current && !isOpen) {
+      setIsOpen(true)
+      // Also unminimize if it was minimized
+      setIsMinimized(false)
+    }
+    prevUnreadCount.current = unreadCount
+  }, [unreadCount, isOpen])
   
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
-
-    // Auto scroll when messages change
-    useEffect(() => {
-      if (isOpen && !isMinimized) {
-        scrollToBottom()
-      }
-    }, [messages, isOpen, isMinimized])
   
-    // Auto scroll when chat is first opened
-    useEffect(() => {
-      if (isOpen && !isMinimized) {
-        // slight delay so DOM renders before scrolling
-        setTimeout(scrollToBottom, 100)
-      }
-    }, [isOpen, isMinimized])
+  // Auto scroll when messages change
+  useEffect(() => {
+    if (isOpen && !isMinimized) {
+      scrollToBottom()
+    }
+  }, [messages, isOpen, isMinimized])
+  
+  // Auto scroll when chat is first opened
+  useEffect(() => {
+    if (isOpen && !isMinimized) {
+      // slight delay so DOM renders before scrolling
+      setTimeout(scrollToBottom, 100)
+    }
+  }, [isOpen, isMinimized])
   
   useEffect(() => {
     scrollToBottom()
@@ -87,13 +98,19 @@ export function LiveChat() {
   
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      
       handleSendMessage()
     }
   }
   
+  const handleRefresh = () => {
+    refreshMessages()
+    toast({
+      title: "Refreshing Messages",
+      description: "Fetching latest messages...",
+    })
+  }
+  
   if (!isOpen) {
-    console.log('counter is',unreadCount)
     return (
       <div className="fixed bottom-4 right-4 z-50">
         <Button onClick={() => setIsOpen(true)} className="rounded-full w-14 h-14 shadow-lg relative">
@@ -118,8 +135,22 @@ export function LiveChat() {
           <CardTitle className="text-sm font-medium flex items-center space-x-2">
             <MessageSquare className="h-4 w-4" />
             <span>Live Support</span>
+            {!isConnected && (
+              <Badge variant="destructive" className="text-xs">Offline</Badge>
+            )}
           </CardTitle>
           <div className="flex items-center space-x-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation()
+                handleRefresh()
+              }}
+              disabled={!isConnected}
+            >
+              <RefreshCw className="h-4 w-4" />
+            </Button>
             <Button
               variant="ghost"
               size="sm"

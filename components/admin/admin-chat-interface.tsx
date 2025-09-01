@@ -1,13 +1,12 @@
 "use client"
-
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { MessageSquare, Send, Users, Clock } from "lucide-react"
+import { MessageSquare, Send, Users, Clock, RefreshCw } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { AdminNotificationBell } from "@/components/admin/admin-notification-bell"
 import { formatDistanceToNow } from "date-fns"
@@ -45,34 +44,36 @@ export function AdminChatInterface() {
   const [newMessage, setNewMessage] = useState("")
   const [loading, setLoading] = useState(true)
   const [isConnected, setIsConnected] = useState(false)
+  const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null)
+  const [isRefreshing, setIsRefreshing] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-
+  
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
-
+  
   useEffect(() => {
     scrollToBottom()
   }, [messages])
-
+  
   // 🔹 Initialize Pusher
   useEffect(() => {
     if (!user || user.role !== "admin") return
-
+    
     const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
       cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
     })
-
+    
     setIsConnected(true)
-
+    
     // Subscribe to global admin channel
     const channel = pusher.subscribe("admin-channel")
-
+    
     channel.bind("new_message", (message: ChatMessage) => {
       if (selectedSession && message.sessionId === selectedSession._id) {
         setMessages(prev => [...prev, message])
       }
-
+      
       setSessions(prev =>
         prev.map(session =>
           session._id === message.sessionId
@@ -86,7 +87,7 @@ export function AdminChatInterface() {
         )
       )
     })
-
+    
     channel.bind("new_customer_message", ({ sessionId }: { sessionId: string }) => {
       setSessions(prev =>
         prev.map(s =>
@@ -100,15 +101,15 @@ export function AdminChatInterface() {
         )
       )
     })
-
+    
     return () => {
       pusher.unsubscribe("admin-channel")
       pusher.disconnect()
     }
   }, [user, selectedSession])
-
-  // 🔹 Fetch chat sessions
-  const fetchSessions = async () => {
+  
+  // 🔹 Fetch chat sessions with useCallback
+  const fetchSessions = useCallback(async () => {
     try {
       const response = await fetch("/api/chat/sessions", { credentials: "include" })
       if (response.ok) {
@@ -120,10 +121,10 @@ export function AdminChatInterface() {
     } finally {
       setLoading(false)
     }
-  }
-
-  // 🔹 Fetch messages for selected session
-  const fetchMessages = async (sessionId: string) => {
+  }, [])
+  
+  // 🔹 Fetch messages for selected session with useCallback
+  const fetchMessages = useCallback(async (sessionId: string) => {
     try {
       const response = await fetch(`/api/chat/messages?sessionId=${sessionId}`, {
         credentials: "include",
@@ -135,76 +136,104 @@ export function AdminChatInterface() {
     } catch (error) {
       console.error("Failed to fetch messages:", error)
     }
-  }
-
-  // 🔹 Send message via backend API (triggers Pusher)
-// 🔹 Send message via backend API (with optimistic update)
-const sendMessage = async () => {
-  if (!newMessage.trim() || !selectedSession || !user) return
-
-  const tempId = `temp-${Date.now()}`
-
-  // Optimistic message
-  const optimisticMessage: ChatMessage = {
-    _id: tempId,
-    sessionId: selectedSession._id,
-    senderId: user.id,
-    senderName: user.name || "Admin",
-    senderRole: "admin",
-    content: newMessage.trim(),
-    messageType: "text",
-    isRead: true,
-    createdAt: new Date().toISOString(),
-  }
-
-  // Show immediately
-  setMessages(prev => [...prev, optimisticMessage])
-  setNewMessage("")
-
-  try {
-    const res = await fetch("/api/chat/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({
-        sessionId: selectedSession._id,
-        content: optimisticMessage.content,
-      }),
-    })
-
-    if (!res.ok) {
-      console.error("Failed to send message:", res.status, await res.text())
-      // rollback optimistic message if failed
+  }, [])
+  
+  // 🔹 Auto-refresh data every 30 seconds
+  useEffect(() => {
+    if (!user || user.role !== "admin") return
+    
+    const intervalId = setInterval(() => {
+      // Fetch sessions
+      fetchSessions()
+      
+      // Fetch messages for selected session
+      if (selectedSession) {
+        fetchMessages(selectedSession._id)
+      }
+      
+      // Update last refreshed time
+      setLastRefreshed(new Date())
+    }, 30000) // 30 seconds
+    
+    // Initial fetch
+    fetchSessions()
+    
+    return () => clearInterval(intervalId)
+  }, [user, selectedSession, fetchSessions, fetchMessages])
+  
+  // 🔹 Send message via backend API (with optimistic update)
+  const sendMessage = async () => {
+    if (!newMessage.trim() || !selectedSession || !user) return
+    
+    const tempId = `temp-${Date.now()}`
+    // Optimistic message
+    const optimisticMessage: ChatMessage = {
+      _id: tempId,
+      sessionId: selectedSession._id,
+      senderId: user.id,
+      senderName: user.name || "Admin",
+      senderRole: "admin",
+      content: newMessage.trim(),
+      messageType: "text",
+      isRead: true,
+      createdAt: new Date().toISOString(),
+    }
+    
+    // Show immediately
+    setMessages(prev => [...prev, optimisticMessage])
+    setNewMessage("")
+    
+    try {
+      const res = await fetch("/api/chat/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          sessionId: selectedSession._id,
+          content: optimisticMessage.content,
+        }),
+      })
+      
+      if (!res.ok) {
+        console.error("Failed to send message:", res.status, await res.text())
+        // rollback optimistic message if failed
+        setMessages(prev => prev.filter(m => m._id !== tempId))
+      }
+      // Otherwise: we do nothing.
+      // Pusher will deliver the real message with correct _id
+      // and it will append to the chat normally.
+    } catch (error) {
+      console.error("Failed to send message:", error)
+      // rollback optimistic message on network error
       setMessages(prev => prev.filter(m => m._id !== tempId))
     }
-
-    // Otherwise: we do nothing.
-    // Pusher will deliver the real message with correct _id
-    // and it will append to the chat normally.
-  } catch (error) {
-    console.error("Failed to send message:", error)
-    // rollback optimistic message on network error
-    setMessages(prev => prev.filter(m => m._id !== tempId))
   }
-}
-
-  // 🔹 Initial fetch
-  useEffect(() => {
-    if (user?.role === "admin") {
-      fetchSessions()
+  
+  // 🔹 Handle manual refresh
+  const handleRefresh = async () => {
+    if (isRefreshing) return
+    
+    setIsRefreshing(true)
+    try {
+      await fetchSessions()
+      if (selectedSession) {
+        await fetchMessages(selectedSession._id)
+      }
+      setLastRefreshed(new Date())
+    } finally {
+      setIsRefreshing(false)
     }
-  }, [user])
-
+  }
+  
   const handleSessionSelect = (session: ChatSession) => {
     setSelectedSession(session)
     setMessages([])
     fetchMessages(session._id)
-
     setSessions(prev =>
       prev.map(s => (s._id === session._id ? { ...s, unreadCount: 0 } : s))
     )
   }
-
+  
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
@@ -217,7 +246,7 @@ const sendMessage = async () => {
         return "bg-gray-500"
     }
   }
-
+  
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -228,7 +257,7 @@ const sendMessage = async () => {
       </div>
     )
   }
-
+  
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
@@ -238,9 +267,25 @@ const sendMessage = async () => {
             <Users className="h-5 w-5" />
             Chat Sessions
           </h2>
-          <AdminNotificationBell />
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+            >
+              <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            </Button>
+            <AdminNotificationBell />
+          </div>
         </div>
-
+        
+        {lastRefreshed && (
+          <div className="px-4 py-2 text-xs text-gray-500 border-b border-gray-100">
+            Last refreshed: {lastRefreshed.toLocaleTimeString()}
+          </div>
+        )}
+        
         <ScrollArea className="h-[calc(100vh-80px)]">
           <div className="p-2">
             {sessions.length === 0 ? (
@@ -296,7 +341,7 @@ const sendMessage = async () => {
           </div>
         </ScrollArea>
       </div>
-
+      
       {/* Chat Area */}
       <div className="flex-1 flex flex-col">
         {selectedSession ? (
@@ -314,11 +359,21 @@ const sendMessage = async () => {
                   <p className="text-sm text-gray-500">{selectedSession.userEmail}</p>
                 </div>
               </div>
-              <Badge className={getStatusColor(selectedSession.status)}>
-                {selectedSession.status}
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge className={getStatusColor(selectedSession.status)}>
+                  {selectedSession.status}
+                </Badge>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => fetchMessages(selectedSession._id)}
+                  disabled={isRefreshing}
+                >
+                  <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                </Button>
+              </div>
             </div>
-
+            
             {/* Messages */}
             <ScrollArea className="flex-1 p-4">
               <div className="space-y-4">
@@ -354,7 +409,7 @@ const sendMessage = async () => {
                 <div ref={messagesEndRef} />
               </div>
             </ScrollArea>
-
+            
             {/* Input */}
             <div className="p-4 bg-white border-t border-gray-200 flex gap-2">
               <Input
@@ -368,6 +423,7 @@ const sendMessage = async () => {
                 <Send className="h-4 w-4" />
               </Button>
             </div>
+            
             {!isConnected && (
               <p className="text-xs text-red-500 px-4 pb-2">
                 Disconnected from chat server
