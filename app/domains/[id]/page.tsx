@@ -31,6 +31,7 @@ import {
   ExternalLink,
   ThumbsUp,
   Eye,
+  Share,
 } from "lucide-react"
 import type { Domain } from "@/types/domain"
 import { useCart } from "@/components/providers/cart-provider"
@@ -48,7 +49,7 @@ export default function DomainDetailsPage() {
   const [isWishlisted, setIsWishlisted] = useState(false)
   const { addItem } = useCart()
   const { toast } = useToast()
-
+  
   useEffect(() => {
     const fetchDomain = async () => {
       try {
@@ -71,7 +72,7 @@ export default function DomainDetailsPage() {
     }
     fetchDomain()
   }, [params?.id])
-
+  
   const handleAddToCart = () => {
     if (!domain || domain.isSold || !domain.isAvailable) {
       toast({
@@ -87,7 +88,7 @@ export default function DomainDetailsPage() {
       description: `${domain.name} has been added to your cart.`,
     })
   }
-
+  
   const handleWishlistToggle = () => {
     if (!domain) return
     
@@ -113,7 +114,55 @@ export default function DomainDetailsPage() {
     
     Cookies.set("wishlist", JSON.stringify(wishlist), { expires: 30 })
   }
-
+  
+  const handleShare = async () => {
+    if (!domain) return
+    
+    const url = window.location.href
+    const title = `Check out this domain: ${domain.name}`
+    
+    // Check if Web Share API is available
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: title,
+          text: `I found this premium domain for sale: ${domain.name} at $${domain.price.toLocaleString()}`,
+          url: url,
+        })
+        toast({
+          title: "Shared successfully",
+          description: "Domain details have been shared.",
+        })
+      } catch (error) {
+        // User cancelled or error occurred
+        if ((error as Error).name !== 'AbortError') {
+          console.error('Error sharing:', error)
+          toast({
+            title: "Sharing failed",
+            description: "Could not share the domain details.",
+            variant: "destructive",
+          })
+        }
+      }
+    } else {
+      // Fallback: Copy to clipboard
+      try {
+        await navigator.clipboard.writeText(url)
+        toast({
+          title: "Link copied to clipboard",
+          description: "You can now share the domain details link.",
+        })
+      } catch (error) {
+        console.error('Error copying to clipboard:', error)
+        toast({
+          title: "Copy failed",
+          description: "Could not copy the link to clipboard.",
+          variant: "destructive",
+        })
+      }
+    }
+  }
+  
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -133,7 +182,7 @@ export default function DomainDetailsPage() {
       </div>
     )
   }
-
+  
   if (!domain) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -154,11 +203,11 @@ export default function DomainDetailsPage() {
       </div>
     )
   }
-
+  
   const discountPercentage = domain.Actualprice > domain.price 
     ? Math.round(((domain.Actualprice - domain.price) / domain.Actualprice) * 100) 
     : 0
-
+    
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Header />
@@ -389,19 +438,30 @@ export default function DomainDetailsPage() {
                     {domain.isSold ? "Sold Out" : domain.isAvailable ? "Add to Cart" : "Unavailable"}
                   </Button>
                   
-                  <Button 
-                    variant="outline" 
-                    onClick={handleWishlistToggle} 
-                    className={cn(
-                      "w-full py-3 border-2", 
-                      isWishlisted
-                        ? "border-red-300 text-red-500 hover:bg-red-50" 
-                        : "border-gray-300 hover:bg-gray-50"
-                    )}
-                  >
-                    <Heart className={cn("h-4 w-4 mr-2", isWishlisted && "fill-current")} />
-                    {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
-                  </Button>
+                  <div className="flex gap-3">
+                    <Button 
+                      variant="outline" 
+                      onClick={handleWishlistToggle} 
+                      className={cn(
+                        "flex-1 py-3 border-2", 
+                        isWishlisted
+                          ? "border-red-300 text-red-500 hover:bg-red-50" 
+                          : "border-gray-300 hover:bg-gray-50"
+                      )}
+                    >
+                      <Heart className={cn("h-4 w-4 mr-2", isWishlisted && "fill-current")} />
+                      {isWishlisted ? "Remove" : "Wishlist"}
+                    </Button>
+                    
+                    <Button 
+                      variant="outline" 
+                      onClick={handleShare}
+                      className="flex-1 py-3 border-2 border-gray-300 hover:bg-gray-50"
+                    >
+                      <Share className="h-4 w-4 mr-2" />
+                      Share
+                    </Button>
+                  </div>
                 </div>
                 <Separator className="my-6" />
                 <div className="space-y-4">

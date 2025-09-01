@@ -16,76 +16,70 @@ export function LiveChat() {
   const [isMinimized, setIsMinimized] = useState(false)
   const [message, setMessage] = useState("")
   const { user } = useAuth()
-  const { messages, sendMessage, unreadCount, currentSession, isConnected, refreshMessages } = useChat()
+  const { messages, sendMessage, currentSession, isConnected, refreshMessages } = useChat()
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
-  
-  // Track previous unread count to detect new messages
-  const prevUnreadCount = useRef(unreadCount)
-  
-  // Auto-open chat when new message arrives
+
+  // Track previous total message count
+  const prevMessageCount = useRef(messages.length)
+
+  // Auto-open chat when a new message arrives (only if closed)
   useEffect(() => {
-    if (unreadCount > prevUnreadCount.current && !isOpen) {
+    if (messages.length > prevMessageCount.current && !isOpen&&(prevMessageCount.current!=0||messages.length==0)) {
+      console.log('length',messages.length,prevMessageCount.current)
       setIsOpen(true)
-      // Also unminimize if it was minimized
       setIsMinimized(false)
     }
-    prevUnreadCount.current = unreadCount
-  }, [unreadCount, isOpen])
-  
+    prevMessageCount.current = messages.length
+  }, [messages.length, isOpen])
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
-  
+
   // Auto scroll when messages change
   useEffect(() => {
     if (isOpen && !isMinimized) {
       scrollToBottom()
     }
   }, [messages, isOpen, isMinimized])
-  
+
   // Auto scroll when chat is first opened
   useEffect(() => {
     if (isOpen && !isMinimized) {
-      // slight delay so DOM renders before scrolling
       setTimeout(scrollToBottom, 100)
     }
   }, [isOpen, isMinimized])
-  
-  useEffect(() => {
-    scrollToBottom()
-  }, [messages])
-  
+
   useEffect(() => {
     console.log("LiveChat - Current session:", currentSession)
     console.log("LiveChat - Is connected:", isConnected)
     console.log("LiveChat - Messages count:", messages.length)
   }, [currentSession, isConnected, messages])
-  
+
   const handleSendMessage = (e?: React.MouseEvent) => {
     e?.preventDefault()
     e?.stopPropagation()
-    
+
     console.log("Send button clicked", { user, message, currentSession, isConnected })
-    
+
     if (message.trim() && user) {
       console.log("Sending message:", message, "Session:", currentSession?._id || "No session")
       sendMessage(message)
       setMessage("")
     } else {
-      console.log("Cannot send message - missing requirements", { 
-        hasMessage: !!message.trim(), 
-        hasSession: !!currentSession, 
+      console.log("Cannot send message - missing requirements", {
+        hasMessage: !!message.trim(),
+        hasSession: !!currentSession,
         hasUser: !!user,
-        isConnected 
+        isConnected,
       })
-      
-      // Show feedback to user
+
       if (!isConnected) {
         toast({
           title: "Chat Not Connected",
           description: "Please wait or refresh the page.",
-          variant: "destructive"
+          variant: "destructive",
         })
       } else if (!currentSession) {
         toast({
@@ -95,13 +89,13 @@ export function LiveChat() {
       }
     }
   }
-  
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       handleSendMessage()
     }
   }
-  
+
   const handleRefresh = () => {
     refreshMessages()
     toast({
@@ -109,25 +103,24 @@ export function LiveChat() {
       description: "Fetching latest messages...",
     })
   }
-  
+
   if (!isOpen) {
     return (
       <div className="fixed bottom-4 right-4 z-50">
         <Button onClick={() => setIsOpen(true)} className="rounded-full w-14 h-14 shadow-lg relative">
           <MessageSquare className="h-6 w-6" />
-          {unreadCount > 0 && (
-            <Badge className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 flex items-center justify-center text-xs">
-              {unreadCount}
-            </Badge>
-          )}
         </Button>
       </div>
     )
   }
-  
+
   return (
     <div className="fixed bottom-4 right-4 z-[999px] bg-white max-w-[calc(100vw-2rem)]">
-      <Card className={`w-80 max-w-full shadow-xl transition-all duration-300 ${isMinimized ? "h-14" : "h-96"} sm:w-80`}>
+      <Card
+        className={`w-80 max-w-full shadow-xl transition-all duration-300 ${
+          isMinimized ? "h-14" : "h-96"
+        } sm:w-80`}
+      >
         <CardHeader
           className="flex flex-row items-center justify-between space-y-0 pb-2 cursor-pointer"
           onClick={() => setIsMinimized(!isMinimized)}
@@ -136,7 +129,9 @@ export function LiveChat() {
             <MessageSquare className="h-4 w-4" />
             <span>Live Support</span>
             {!isConnected && (
-              <Badge variant="destructive" className="text-xs">Offline</Badge>
+              <Badge variant="destructive" className="text-xs">
+                Offline
+              </Badge>
             )}
           </CardTitle>
           <div className="flex items-center space-x-1">
@@ -184,14 +179,23 @@ export function LiveChat() {
                 </div>
               ) : (
                 messages.map((msg) => (
-                  <div key={msg._id} className={`flex ${msg.senderRole === "customer" ? "justify-end" : "justify-start"}`}>
+                  <div
+                    key={msg._id}
+                    className={`flex ${msg.senderRole === "customer" ? "justify-end" : "justify-start"}`}
+                  >
                     <div
                       className={`max-w-[75%] sm:max-w-xs px-3 py-2 rounded-lg text-sm ${
-                        msg.senderRole === "customer" ? "bg-cyan-500 text-white" : "bg-gray-100 text-gray-900"
+                        msg.senderRole === "customer"
+                          ? "bg-cyan-500 text-white"
+                          : "bg-gray-100 text-gray-900"
                       }`}
                     >
                       <p className="break-words">{msg.content}</p>
-                      <p className={`text-xs mt-1 ${msg.senderRole === "customer" ? "text-cyan-100" : "text-gray-500"}`}>
+                      <p
+                        className={`text-xs mt-1 ${
+                          msg.senderRole === "customer" ? "text-cyan-100" : "text-gray-500"
+                        }`}
+                      >
                         {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
                       </p>
                     </div>
@@ -210,10 +214,10 @@ export function LiveChat() {
                 disabled={!user}
                 className="flex-1 text-sm"
               />
-              <Button 
+              <Button
                 type="button"
-                onClick={handleSendMessage} 
-                disabled={!user || !message.trim()} 
+                onClick={handleSendMessage}
+                disabled={!user || !message.trim()}
                 size="sm"
                 className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 min-w-[40px] flex items-center justify-center border-0 shrink-0"
               >

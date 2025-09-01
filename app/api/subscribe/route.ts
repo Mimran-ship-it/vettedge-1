@@ -1,42 +1,45 @@
-import { NextRequest, NextResponse } from 'next/server'
+// app/api/subscribe/route.ts
+import { NextResponse } from "next/server"
+import User from "@/lib/models/User"  // adjust import path
+import { Resend } from "resend"
 
-export async function POST(request: NextRequest) {
+const resend = new Resend(process.env.RESEND_API_KEY)
+
+export async function POST(req: Request) {
   try {
-    const { email } = await request.json()
+    const { domain } = await req.json()
 
-    if (!email) {
-      return NextResponse.json(
-        { error: 'Email is required' },
-        { status: 400 }
-      )
+    // Fetch all users from DB
+    const users = await User.find({}, "email name")
+    if (!users.length) {
+      return NextResponse.json({ message: "No users to notify" }, { status: 200 })
     }
 
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: 'Invalid email format' },
-        { status: 400 }
-      )
+    // Send individual emails (personalized)
+    for (const user of users) {
+      await resend.emails.send({
+        from: 'vettedge.domains@resend.dev',
+        to: user.email,
+        subject: `🚀 New Domain Available: ${domain.name || "Fresh Domain"}`,
+        html: `
+          <h2>Hello ${user.name || "there"},</h2>
+          <p>A new domain has just been added to our marketplace:</p>
+          <ul>
+            <li><strong>Name:</strong> ${domain.name}</li>
+            <li><strong>Price:</strong> $${domain.price}</li>
+            <li><strong>Age:</strong> ${domain.metrics.age} years</li>
+            <li><strong>Language:</strong> ${domain.metrics.language}</li>
+          </ul>
+          <p><a href="${process.env.NEXT_PUBLIC_BASE_URL}/domains" target="_blank">
+            🔗 View Domain Now
+          </a></p>
+        `,
+      })
     }
 
-    // Here you would typically:
-    // 1. Save to database
-    // 2. Send to email marketing service (Mailchimp, ConvertKit, etc.)
-    // 3. Send confirmation email
-    
-    // For now, we'll simulate success
-    console.log(`Newsletter subscription: ${email}`)
-    
-    return NextResponse.json(
-      { message: 'Successfully subscribed to newsletter' },
-      { status: 200 }
-    )
+    return NextResponse.json({ message: "Emails sent successfully" }, { status: 200 })
   } catch (error) {
-    console.error('Newsletter subscription error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    console.error("Resend error:", error)
+    return NextResponse.json({ error: "Failed to send emails" }, { status: 500 })
   }
 }

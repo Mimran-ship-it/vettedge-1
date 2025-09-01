@@ -313,25 +313,32 @@ export default function DomainsPage() {
             </div>
             
             {/* Sort By Option */}
-            <Select value={sortBy} onValueChange={handleSortChange}>
-              <SelectTrigger className="w-40">
-                <ArrowUpDown className="h-4 w-4 mr-2" />
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                <SelectItem value="domainRank-desc">Domain Rank: High to Low</SelectItem>
-                <SelectItem value="domainAuthority-desc">Domain Authority: High to Low</SelectItem>
-                <SelectItem value="age-desc">Age: Oldest First</SelectItem>
-                <SelectItem value="referringDomains-desc">Referring Domains: High to Low</SelectItem>
-                <SelectItem value="monthlyTraffic-desc">Monthly Traffic: High to Low</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline" onClick={() => setShowFilters(!showFilters)}>
-              <Filter className="h-4 w-4 mr-2" />
-              Filters
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-2 sm:w-auto w-full">
+  <Select value={sortBy} onValueChange={handleSortChange}>
+    <SelectTrigger className="w-full sm:w-40 h-10 px-4 py-2 inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+      <ArrowUpDown className="h-4 w-4 mr-2" />
+      <SelectValue placeholder="Sort by" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="price-asc">Price: Low to High</SelectItem>
+      <SelectItem value="price-desc">Price: High to Low</SelectItem>
+      <SelectItem value="domainRank-desc">Domain Rank: High to Low</SelectItem>
+      <SelectItem value="domainAuthority-desc">Domain Authority: High to Low</SelectItem>
+      <SelectItem value="age-desc">Age: Oldest First</SelectItem>
+      <SelectItem value="referringDomains-desc">Referring Domains: High to Low</SelectItem>
+      <SelectItem value="monthlyTraffic-desc">Monthly Traffic: High to Low</SelectItem>
+    </SelectContent>
+  </Select>
+  
+  <Button 
+    variant="outline" 
+    onClick={() => setShowFilters(!showFilters)}
+    className="w-full sm:w-auto h-10 px-4 py-2 inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+  >
+    <Filter className="h-4 w-4 mr-2" />
+    Filters
+  </Button>
+</div>
           </div>
           
           {/* Debug Info */}

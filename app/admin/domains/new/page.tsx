@@ -93,10 +93,11 @@ export default function NewDomainPage() {
     setImageUploading(false)
   }
 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-
+  
     try {
       const domainData = {
         ...formData,
@@ -125,15 +126,23 @@ export default function NewDomainPage() {
           language: formData.metrics.language,
         },
       }
-
+  
       const response = await fetch("/api/domains", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(domainData),
       })
-
+  
       if (response.ok) {
         toast({ title: "Success", description: "Domain created successfully" })
+  
+        // 🔔 Notify all users
+       const check= await fetch("/api/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ domain: domainData }),
+        })
+  console.log('check',check)
         router.push("/admin/domains")
       } else throw new Error()
     } catch {
@@ -145,6 +154,7 @@ export default function NewDomainPage() {
       setLoading(false)
     }
   }
+  
 
   return (
     <SidebarProvider>

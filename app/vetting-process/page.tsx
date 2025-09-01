@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { SearchCheck, TrendingUp, Type, Layers } from "lucide-react"
 import { Variants } from "framer-motion"
+import { Footer } from "@/components/layout/footer"
 import {
   Shield,
   Search,
@@ -415,6 +416,7 @@ export default function VettingProcessPage() {
           </div>
         </motion.div>
       </section>
+      <Footer/>
     </div>
   )
 }

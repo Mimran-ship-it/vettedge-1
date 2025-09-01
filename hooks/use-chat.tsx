@@ -23,7 +23,6 @@ interface ChatMessage {
   isRead: boolean;
   createdAt: string;
 }
-
 interface ChatSession {
   _id: string;
   userId: string;
@@ -35,7 +34,6 @@ interface ChatSession {
   createdAt: string;
   updatedAt: string;
 }
-
 interface ChatContextType {
   messages: ChatMessage[];
   currentSession: ChatSession | null;
@@ -46,7 +44,6 @@ interface ChatContextType {
   joinSession: (sessionId: string) => Promise<void>;
   refreshMessages: () => Promise<void>;
 }
-
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 /* --------------------------- Provider ----------------------------- */
@@ -57,14 +54,33 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const [currentSession, setCurrentSession] = useState<ChatSession | null>(null);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
-  
+
   // dedupe incoming messages
   const processedMessageIds = useRef<Set<string>>(new Set());
-  
+
+  // visibility ref (used to decide whether to increment unread)
+  const isPageVisibleRef = useRef<boolean>(true);
+
   // reset dedupe when session changes
   useEffect(() => {
     processedMessageIds.current = new Set();
   }, [currentSession?._id]);
+
+  // track page visibility (do not cause re-subscribes)
+  useEffect(() => {
+    const handleVisibility = () => {
+      const visible = document.visibilityState === "visible";
+      isPageVisibleRef.current = visible;
+      // optionally clear unread when user returns to the page
+      if (visible) {
+        setUnreadCount(0);
+      }
+    };
+    // set initial
+    isPageVisibleRef.current = typeof document !== "undefined" ? document.visibilityState === "visible" : true;
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
 
   // Fetch messages with useCallback to stabilize the function
   const fetchMessages = useCallback(async (sessionId: string) => {
@@ -80,7 +96,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       if (Array.isArray(data.messages)) {
         data.messages.forEach((m: ChatMessage) => processedMessageIds.current.add(m._id));
         setMessages(data.messages);
-        setUnreadCount(0);
+        // We reset unread since we're explicitly fetching messages for the session
+       
       }
     } catch (err) {
       console.error("Error fetching messages:", err);
@@ -90,50 +107,58 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   // Auto-refresh messages every 30 seconds when session is active
   useEffect(() => {
     if (!currentSession || !isConnected) return;
-    
+
     const intervalId = setInterval(() => {
       fetchMessages(currentSession._id);
     }, 30000); // Refresh every 30 seconds
-
     return () => clearInterval(intervalId);
   }, [currentSession, isConnected, fetchMessages]);
 
   // Subscribe to session channel (and update messages) when pusher + session are available
   useEffect(() => {
     if (!pusher || !currentSession) return;
-    
+
     const channelName = `session-${currentSession._id}`;
     const channel = pusher.subscribe(channelName) as any;
-    
+
     const onNewMessage = (msg: ChatMessage) => {
       // dedupe
       if (processedMessageIds.current.has(msg._id)) return;
       processedMessageIds.current.add(msg._id);
-      
-      // if belongs to this session, append
+
+      // If message belongs to this session, append it
       if (msg.sessionId === currentSession._id) {
         setMessages((prev) => {
           // avoid duplicates in state
           if (prev.some((m) => m._id === msg._id)) return prev;
           return [...prev, msg];
         });
+
+        // If it's from the other party and the page is not visible, count as unread
+        const isFromOtherParty = !!user && msg.senderId !== user.id;
+        if (isFromOtherParty && !isPageVisibleRef.current) {
+          setUnreadCount((s) => s + 1);
+        }
       } else {
-        // messages for other sessions increase unread if customer
-        if (msg.senderRole === "admin" && user?.role === "customer") {
+        // Message for other session:
+        // increment unread if it's from the opposite role
+        if (user?.role === "admin" && msg.senderRole === "customer") {
+          setUnreadCount((s) => s + 1);
+        } else if (user?.role === "customer" && msg.senderRole === "admin") {
           setUnreadCount((s) => s + 1);
         }
       }
     };
-    
+
     const onSessionStatus = (payload: { sessionId: string; status: ChatSession["status"] }) => {
       if (payload?.sessionId === currentSession._id) {
         setCurrentSession((prev) => (prev ? { ...prev, status: payload.status } : prev));
       }
     };
-    
+
     channel.bind("new_message", onNewMessage);
     channel.bind("session_status_updated", onSessionStatus);
-    
+
     return () => {
       try {
         channel.unbind("new_message", onNewMessage);
@@ -143,22 +168,24 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         /* ignore */
       }
     };
+    // note: we intentionally do not include isPageVisibleRef in deps (it's a ref)
   }, [pusher, currentSession, user]);
 
   // Admins: subscribe to admins channel for notifications about new customer messages
   useEffect(() => {
     if (!pusher || !user || user.role !== "admin") return;
-    
+
     const adminChannel = pusher.subscribe("admins") as any;
-    
+
     const onNewCustomer = (payload: { sessionId: string; customerName?: string; content?: string }) => {
       console.log("admin received new_customer_message:", payload);
-      // you can implement UI logic here (e.g., show badge), for now we increment unread
+      // Increment unread unless page is visible and admin is viewing that session.
+      // We can't reliably know if admin is viewing that specific session here, so increment.
       setUnreadCount((s) => s + 1);
     };
-    
+
     adminChannel.bind("new_customer_message", onNewCustomer);
-    
+
     return () => {
       try {
         adminChannel.unbind("new_customer_message", onNewCustomer);
@@ -170,7 +197,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   }, [pusher, user]);
 
   /* -------------------------- Helpers -------------------------- */
-  
+
   // Try to fetch full session object. If not found, return a minimal (safe) session object.
   const fetchSessionData = async (sessionId: string): Promise<ChatSession | null> => {
     try {
@@ -259,10 +286,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     }
     if (!currentSession) {
       console.warn("sendMessage: no current session");
-      console.log('user is',user)
+      console.log("user is", user);
       return;
     }
-  
+
     // Create a temp (optimistic) message
     const tempId = `temp-${Date.now()}`;
     const optimisticMessage: ChatMessage = {
@@ -276,10 +303,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       isRead: true,
       createdAt: new Date().toISOString(),
     };
-  
+
     // Push immediately to UI
     setMessages((prev) => [...prev, optimisticMessage]);
-  
+
     try {
       const res = await fetch("/api/chat/messages", {
         method: "POST",
@@ -287,7 +314,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({ content, sessionId: currentSession._id }),
         credentials: "include",
       });
-  
+
       if (!res.ok) {
         console.error("Failed to send message:", res.status, await res.text());
         // Optionally mark optimistic message as failed
@@ -304,10 +331,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   // Function to manually refresh messages
   const refreshMessages = async (): Promise<void> => {
     if (currentSession) {
+      console.log('unread',unreadCount)
       await fetchMessages(currentSession._id);
     }
   };
-  
+
   /* ----------------------- Auto-create for customers ----------------------- */
   useEffect(() => {
     if (
@@ -336,7 +364,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     joinSession,
     refreshMessages,
   };
-
   return <ChatContext.Provider value={contextValue}>{children}</ChatContext.Provider>;
 }
 
@@ -346,5 +373,4 @@ export function useChat() {
   if (!ctx) throw new Error("useChat must be used within a ChatProvider");
   return ctx;
 }
-
 export { ChatContext };
