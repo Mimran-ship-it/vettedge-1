@@ -34,19 +34,19 @@ import {
 } from "lucide-react"
 import type { Domain } from "@/types/domain"
 import { useCart } from "@/components/providers/cart-provider"
-import { useWishlist } from "@/hooks/use-wishlist"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import { LiveChat } from "@/components/chat/live-chat"
 import Image from "next/image"
+import Cookies from "js-cookie"
 
 export default function DomainDetailsPage() {
   const params = useParams()
   const [domain, setDomain] = useState<Domain | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("overview")
+  const [isWishlisted, setIsWishlisted] = useState(false)
   const { addItem } = useCart()
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
   const { toast } = useToast()
 
   useEffect(() => {
@@ -54,8 +54,14 @@ export default function DomainDetailsPage() {
       try {
         const res = await fetch("/api/domains")
         const data: Domain[] = await res.json()
-        const matchedDomain = data.find((d) => d._id === params.id)
+        const matchedDomain = data.find((d) => d._id === params?.id)
         setDomain(matchedDomain || null)
+        
+        // Check if domain is already in wishlist
+        if (matchedDomain) {
+          const wishlist = JSON.parse(Cookies.get("wishlist") || "[]")
+          setIsWishlisted(wishlist.some((item: Domain) => item._id === matchedDomain._id))
+        }
       } catch (error) {
         console.error("Failed to fetch domain data:", error)
         setDomain(null)
@@ -64,7 +70,7 @@ export default function DomainDetailsPage() {
       }
     }
     fetchDomain()
-  }, [params.id])
+  }, [params?.id])
 
   const handleAddToCart = () => {
     if (!domain || domain.isSold || !domain.isAvailable) {
@@ -84,13 +90,28 @@ export default function DomainDetailsPage() {
 
   const handleWishlistToggle = () => {
     if (!domain) return
-    if (isInWishlist(domain._id)) {
-      removeFromWishlist(domain._id)
-      toast({ title: "Removed from Wishlist", description: `${domain.name} removed from wishlist.` })
+    
+    let wishlist: Domain[] = JSON.parse(Cookies.get("wishlist") || "[]")
+    
+    if (isWishlisted) {
+      // Remove from wishlist
+      wishlist = wishlist.filter((item) => item._id !== domain._id)
+      setIsWishlisted(false)
+      toast({ 
+        title: "Removed", 
+        description: `${domain.name} removed from wishlist.` 
+      })
     } else {
-      addToWishlist(domain)
-      toast({ title: "Added to Wishlist", description: `${domain.name} added to wishlist.` })
+      // Add to wishlist
+      wishlist.push(domain)
+      setIsWishlisted(true)
+      toast({ 
+        title: "Wishlisted", 
+        description: `${domain.name} added to wishlist.` 
+      })
     }
+    
+    Cookies.set("wishlist", JSON.stringify(wishlist), { expires: 30 })
   }
 
   if (loading) {
@@ -142,15 +163,6 @@ export default function DomainDetailsPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Header />
       <main className="max-w-7xl mx-auto px-2 sm:px-16 pb-8 pt-24">
-        {/* Breadcrumb */}
-        {/* <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-8">
-          <a href="/" className="hover:text-gray-700 transition-colors">Home</a>
-          <span>/</span>
-          <a href="/domains" className="hover:text-gray-700 transition-colors">Domains</a>
-          <span>/</span>
-          <span className="text-gray-900 font-medium">{domain.name}</span>
-        </nav> */}
-
         {/* Hero Section */}
         <div className="bg-white rounded-2xl shadow-xl p-6 mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
@@ -184,7 +196,6 @@ export default function DomainDetailsPage() {
               </Badge>
             </div>
           </div>
-
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Column - Image and Description */}
             <div className="lg:col-span-2 space-y-6">
@@ -202,14 +213,11 @@ export default function DomainDetailsPage() {
                   className="w-full h-64 md:h-80 object-cover" 
                 />
               </div>
-
               <div className="space-y-4">
                 <h2 className="text-xl font-semibold text-gray-900">Domain Overview</h2>
                 <p className="text-gray-700 leading-relaxed">{domain.description}</p>
-                
-               
               </div>
-
+              
               {/* Tabs for additional information */}
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-3">
@@ -277,12 +285,12 @@ export default function DomainDetailsPage() {
                           icon={<LinkIcon className="h-5 w-5" />} 
                           color="green"
                         />
-                        <MetricCard 
+                       { domain?.metrics.monthlyTraffic&&<MetricCard 
                           title="Monthly Traffic" 
                           value={domain.metrics.monthlyTraffic?.toLocaleString() || "N/A"} 
                           icon={<Users className="h-5 w-5" />} 
                           color="purple"
-                        />
+                        />}
                         <MetricCard 
                           title="Domain Authority" 
                           value={domain.metrics.domainAuthority} 
@@ -355,7 +363,7 @@ export default function DomainDetailsPage() {
                 </TabsContent>
               </Tabs>
             </div>
-
+            
             {/* Right Column - Pricing and Actions */}
             <div className="space-y-6">
               <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 shadow-lg border border-blue-100">
@@ -371,7 +379,6 @@ export default function DomainDetailsPage() {
                     </div>
                   )}
                 </div>
-
                 <div className="space-y-4">
                   <Button 
                     className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md" 
@@ -387,32 +394,27 @@ export default function DomainDetailsPage() {
                     onClick={handleWishlistToggle} 
                     className={cn(
                       "w-full py-3 border-2", 
-                      isInWishlist(domain._id) 
+                      isWishlisted
                         ? "border-red-300 text-red-500 hover:bg-red-50" 
                         : "border-gray-300 hover:bg-gray-50"
                     )}
                   >
-                    <Heart className={cn("h-4 w-4 mr-2", isInWishlist(domain._id) && "fill-current")} />
-                    {isInWishlist(domain._id) ? "Remove from Wishlist" : "Add to Wishlist"}
+                    <Heart className={cn("h-4 w-4 mr-2", isWishlisted && "fill-current")} />
+                    {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
                   </Button>
                 </div>
-
                 <Separator className="my-6" />
-
                 <div className="space-y-4">
                   <h3 className="font-semibold text-gray-900">Purchase Benefits</h3>
                   <div className="space-y-3">
                     <TrustItem icon={<CheckCircle />} text="Secure transfer guaranteed" color="green" />
                     <TrustItem icon={<Clock />} text="Transfer within 24-48 hours" color="blue" />
-                    {/* <TrustItem icon={<Search />} text="Full SEO history included" color="purple" /> */}
                     <TrustItem icon={<Shield />} text="14-day money-back guarantee" color="red" />
                     <TrustItem icon={<Users />} text="Free dedicated support" color="yellow" />
                   </div>
                 </div>
               </div>
-
               
-
               {/* Additional Information */}
               <Card>
                 <CardHeader>
@@ -440,28 +442,28 @@ export default function DomainDetailsPage() {
                   </div>
                 </CardContent>
               </Card>
-
             </div>
           </div>
         </div>
-
+        
         {/* Additional Sections */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="border-blue-100 bg-blue-50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-blue-800"><Eye className="h-5 w-5" /> Traffic Insights</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600 mb-4">
-                This domain receives approximately {domain.metrics.monthlyTraffic?.toLocaleString() || 'N/A'} monthly visitors.
-              </p>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">Traffic Quality</span>
-                <Badge className="bg-blue-100 text-blue-700">High</Badge>
-              </div>
-            </CardContent>
-          </Card>
-
+          {domain?.metrics.monthlyTraffic && (
+            <Card className="border-blue-100 bg-blue-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-blue-800"><Eye className="h-5 w-5" /> Traffic Insights</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600 mb-4">
+                  This domain receives approximately {domain.metrics.monthlyTraffic?.toLocaleString() || 'N/A'} monthly visitors.
+                </p>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-500">Traffic Quality</span>
+                  <Badge className="bg-blue-100 text-blue-700">High</Badge>
+                </div>
+              </CardContent>
+            </Card>
+          )}
           <Card className="border-purple-100 bg-purple-50">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-purple-800"><ThumbsUp className="h-5 w-5" /> Overall Score</CardTitle>
@@ -478,8 +480,7 @@ export default function DomainDetailsPage() {
               </div>
             </CardContent>
           </Card>
-
-          <Card className="border-orange-100 bg-orange-50">
+         { domain.type=='aged' &&  <Card className="border-orange-100 bg-orange-50">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-orange-800"><Calendar className="h-5 w-5" /> Age & History</CardTitle>
             </CardHeader>
@@ -492,7 +493,7 @@ export default function DomainDetailsPage() {
                 <Badge className="bg-orange-100 text-orange-700">Verified</Badge>
               </div>
             </CardContent>
-          </Card>
+          </Card>}
         </div>
       </main>
       <Footer />
@@ -515,7 +516,7 @@ const MetricCard = ({ title, value, icon, color }: {
     red: "bg-red-50 text-red-700 border-red-200",
     indigo: "bg-indigo-50 text-indigo-700 border-indigo-200",
   }[color] || "bg-gray-50 text-gray-700 border-gray-200"
-
+  
   return (
     <div className={`p-4 rounded-lg border ${colorClasses} transition-all hover:shadow-md`}>
       <div className="flex items-center justify-between mb-2">
@@ -539,7 +540,7 @@ const TrustItem = ({ icon, text, color }: {
     red: "text-red-600",
     yellow: "text-yellow-600",
   }[color] || "text-gray-600"
-
+  
   return (
     <div className={`flex items-center gap-3 ${colorClasses}`}>
       <div className="flex-shrink-0">{icon}</div>

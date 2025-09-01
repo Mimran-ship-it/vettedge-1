@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { useAuth } from "@/hooks/use-auth"
+import Link from "next/link"
 import {
   Heart,
   ShoppingCart,
@@ -250,9 +251,9 @@ export function DomainCard({ domain }: DomainCardProps) {
                 <span>TF: {domain.metrics.trustFlow}</span>
               </div>
               <div className="flex items-center gap-1 text-gray-600">
-                <Calendar className="h-2.5 w-2.5" />
-                <span>{domain.metrics.year}</span>
-              </div>
+  <LinkIcon className="h-2.5 w-2.5" />
+  <span>{domain.metrics.authorityLinks.length} ALs</span>
+</div>
             </div>
             {/* Column 2 */}
             <div className="space-y-1">
@@ -324,10 +325,13 @@ export function DomainCard({ domain }: DomainCardProps) {
               className="h-7 px-2 text-xs"
               disabled={domain.isSold || !domain.isAvailable}
             >
-              <a href={`/domains/${domain._id}`} className="flex items-center gap-1">
-                <Eye className="h-3 w-3" />
-                Details
-              </a>
+             <Link
+  href={`/domains/${domain._id}`}
+  className="flex items-center gap-1"
+>
+  <Eye className="h-3 w-3" />
+  Details
+</Link>
             </Button>
           </div>
         </CardContent>

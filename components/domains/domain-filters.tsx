@@ -1,6 +1,5 @@
 "use client"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
@@ -13,29 +12,66 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Flame } from "lucide-react"
 
-interface DomainFiltersProps {
-  onFilterChange: (filters: any) => void
-  availableTags: string[]
+interface ActiveFilters {
+  priceRange: [number, number]
+  tlds: string[]
+  availability: "all" | "available" | "sold"
+  type: "all" | "aged" | "traffic"
+  domainRankRange: [number, number]
+  domainAuthorityRange: [number, number]
+  trustFlowRange: [number, number]
+  citationFlowRange: [number, number]
+  ageMin: number
+  referringDomainsMin: number
+  authorityLinksMin: number
+  monthlyTrafficMin: number
+  tags: string[]
+  isHot: "all" | "yes" | "no"
 }
 
-export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersProps) {
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000])
-  const [selectedTlds, setSelectedTlds] = useState<string[]>([])
-  const [availability, setAvailability] = useState<"all" | "available" | "sold">("all")
-  const [type, setType] = useState<"all" | "aged" | "traffic">("all")
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
+interface DomainFiltersProps {
+  onFilterChange: (filters: ActiveFilters) => void
+  availableTags: string[]
+  currentFilters: ActiveFilters
+} 
 
-  const [domainRankRange, setDomainRankRange] = useState<[number, number]>([0, 100])
-  const [domainAuthorityRange, setDomainAuthorityRange] = useState<[number, number]>([0, 100])
-  const [trustFlowRange, setTrustFlowRange] = useState<[number, number]>([0, 100])
-  const [citationFlowRange, setCitationFlowRange] = useState<[number, number]>([0, 100])
-  const [monthlyTrafficMin, setMonthlyTrafficMin] = useState<number>(0)
-  const [ageMin, setAgeMin] = useState<number>(0)
-  const [referringDomainsMin, setReferringDomainsMin] = useState<number>(0)
-  const [authorityLinksMin, setAuthorityLinksMin] = useState<number>(0)
-
+export function DomainFilters({ onFilterChange, availableTags, currentFilters }: DomainFiltersProps) {
+  const [priceRange, setPriceRange] = useState<[number, number]>(currentFilters.priceRange)
+  const [selectedTlds, setSelectedTlds] = useState<string[]>(currentFilters.tlds)
+  const [availability, setAvailability] = useState<"all" | "available" | "sold">(currentFilters.availability)
+  const [type, setType] = useState<"all" | "aged" | "traffic">(currentFilters.type)
+  const [selectedTags, setSelectedTags] = useState<string[]>(currentFilters.tags)
+  const [domainRankRange, setDomainRankRange] = useState<[number, number]>(currentFilters.domainRankRange)
+  const [domainAuthorityRange, setDomainAuthorityRange] = useState<[number, number]>(currentFilters.domainAuthorityRange)
+  const [trustFlowRange, setTrustFlowRange] = useState<[number, number]>(currentFilters.trustFlowRange)
+  const [citationFlowRange, setCitationFlowRange] = useState<[number, number]>(currentFilters.citationFlowRange)
+  const [monthlyTrafficMin, setMonthlyTrafficMin] = useState<number>(currentFilters.monthlyTrafficMin)
+  const [ageMin, setAgeMin] = useState<number>(currentFilters.ageMin)
+  const [referringDomainsMin, setReferringDomainsMin] = useState<number>(currentFilters.referringDomainsMin)
+  const [authorityLinksMin, setAuthorityLinksMin] = useState<number>(currentFilters.authorityLinksMin)
+  const [isHot, setIsHot] = useState<"all" | "yes" | "no">(currentFilters.isHot)
+  
   const tlds = [".com", ".net", ".org", ".io", ".co", ".ai"]
+
+  // Update state when currentFilters prop changes
+  useEffect(() => {
+    setPriceRange(currentFilters.priceRange)
+    setSelectedTlds(currentFilters.tlds)
+    setAvailability(currentFilters.availability)
+    setType(currentFilters.type)
+    setSelectedTags(currentFilters.tags)
+    setDomainRankRange(currentFilters.domainRankRange)
+    setDomainAuthorityRange(currentFilters.domainAuthorityRange)
+    setTrustFlowRange(currentFilters.trustFlowRange)
+    setCitationFlowRange(currentFilters.citationFlowRange)
+    setMonthlyTrafficMin(currentFilters.monthlyTrafficMin)
+    setAgeMin(currentFilters.ageMin)
+    setReferringDomainsMin(currentFilters.referringDomainsMin)
+    setAuthorityLinksMin(currentFilters.authorityLinksMin)
+    setIsHot(currentFilters.isHot)
+  }, [currentFilters])
 
   const handleTldChange = (tld: string, checked: boolean) => {
     const newTlds = checked
@@ -54,7 +90,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
   }
 
   const applyFilters = (overrides = {}) => {
-    const filters = {
+    const filters: ActiveFilters = {
       priceRange,
       tlds: selectedTlds,
       availability,
@@ -68,27 +104,14 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
       ageMin,
       referringDomainsMin,
       authorityLinksMin,
+      isHot,
       ...overrides,
     }
     onFilterChange(filters)
   }
 
   const clearFilters = () => {
-    setPriceRange([0, 100000])
-    setSelectedTlds([])
-    setAvailability("all")
-    setType("all")
-    setSelectedTags([])
-    setDomainRankRange([0, 100])
-    setDomainAuthorityRange([0, 100])
-    setTrustFlowRange([0, 100])
-    setCitationFlowRange([0, 100])
-    setMonthlyTrafficMin(0)
-    setAgeMin(0)
-    setReferringDomainsMin(0)
-    setAuthorityLinksMin(0)
-
-    onFilterChange({
+    const defaultFilterValues: ActiveFilters = {
       priceRange: [0, 100000],
       tlds: [],
       availability: "all",
@@ -102,7 +125,25 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
       ageMin: 0,
       referringDomainsMin: 0,
       authorityLinksMin: 0,
-    })
+      isHot: "all"
+    }
+    
+    setPriceRange(defaultFilterValues.priceRange)
+    setSelectedTlds(defaultFilterValues.tlds)
+    setAvailability(defaultFilterValues.availability)
+    setType(defaultFilterValues.type)
+    setSelectedTags(defaultFilterValues.tags)
+    setDomainRankRange(defaultFilterValues.domainRankRange)
+    setDomainAuthorityRange(defaultFilterValues.domainAuthorityRange)
+    setTrustFlowRange(defaultFilterValues.trustFlowRange)
+    setCitationFlowRange(defaultFilterValues.citationFlowRange)
+    setMonthlyTrafficMin(defaultFilterValues.monthlyTrafficMin)
+    setAgeMin(defaultFilterValues.ageMin)
+    setReferringDomainsMin(defaultFilterValues.referringDomainsMin)
+    setAuthorityLinksMin(defaultFilterValues.authorityLinksMin)
+    setIsHot(defaultFilterValues.isHot)
+    
+    onFilterChange(defaultFilterValues)
   }
 
   return (
@@ -127,7 +168,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
             <span>${priceRange[1].toLocaleString()}</span>
           </div>
         </div>
-
+        
         {/* TLD Filter */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700">Domain Extension</Label>
@@ -144,7 +185,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
             ))}
           </div>
         </div>
-
+        
         {/* Availability */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700">Availability</Label>
@@ -165,7 +206,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
             </SelectContent>
           </Select>
         </div>
-
+        
         {/* Type */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700">Type</Label>
@@ -186,7 +227,31 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
             </SelectContent>
           </Select>
         </div>
-
+        
+        {/* isHot Filter */}
+        <div className="space-y-3">
+          <Label className="font-medium text-gray-700 flex items-center gap-1">
+            <Flame className="h-4 w-4 text-orange-500" />
+            Hot Deal
+          </Label>
+          <Select
+            value={isHot}
+            onValueChange={(value: "all" | "yes" | "no") => {
+              setIsHot(value)
+              applyFilters({ isHot: value })
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="All domains" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All domains</SelectItem>
+              <SelectItem value="yes">Hot deals only</SelectItem>
+              <SelectItem value="no">Exclude hot deals</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
         {/* Tags Filter */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700">Industry</Label>
@@ -203,7 +268,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
             ))}
           </div>
         </div>
-
+        
         {/* Domain Rank */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700">Domain Rank (0-100)</Label>
@@ -223,7 +288,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
             <span>{domainRankRange[1]}</span>
           </div>
         </div>
-
+        
         {/* Domain Authority */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700">Domain Authority (0-100)</Label>
@@ -243,7 +308,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
             <span>{domainAuthorityRange[1]}</span>
           </div>
         </div>
-
+        
         {/* Trust Flow */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700">Trust Flow (0-100)</Label>
@@ -263,7 +328,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
             <span>{trustFlowRange[1]}</span>
           </div>
         </div>
-
+        
         {/* Citation Flow */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700">Citation Flow (0-100)</Label>
@@ -283,7 +348,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
             <span>{citationFlowRange[1]}</span>
           </div>
         </div>
-
+        
         {/* Monthly Traffic */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700">Monthly Traffic (min)</Label>
@@ -300,7 +365,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
             className="w-full"
           />
         </div>
-
+        
         {/* Age */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700">Age (min, years)</Label>
@@ -317,7 +382,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
             className="w-full"
           />
         </div>
-
+        
         {/* Referring Domains */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700">Referring Domains (min)</Label>
@@ -334,7 +399,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
             className="w-full"
           />
         </div>
-
+        
         {/* Authority Links */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700">Authority Links (min)</Label>
@@ -352,7 +417,7 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
           />
         </div>
       </div>
-
+      
       {/* Clear Filters Button */}
       <div className="flex justify-end">
         <Button variant="outline" onClick={clearFilters} className="px-6">
@@ -362,4 +427,3 @@ export function DomainFilters({ onFilterChange, availableTags }: DomainFiltersPr
     </div>
   )
 }
-

@@ -151,11 +151,7 @@ export function Header() {
               <Link href="/wishlist" className="relative">
                 <Button variant="ghost" size="sm">
                   <Heart className="h-5 w-5" />
-                  {wishlistCount > 0 && (
-                    <Badge className="absolute bg-[#33BDC7] -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                      {wishlistCount}
-                    </Badge>
-                  )}
+                
                 </Button>
               </Link>
               

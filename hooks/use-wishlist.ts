@@ -1,23 +1,33 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import type { Domain } from "@/types/domain"
 
 export function useWishlist() {
   const [wishlist, setWishlist] = useState<Domain[]>([])
   const [mounted, setMounted] = useState(false)
 
-  useEffect(() => {
-    setMounted(true)
-    // Load wishlist from localStorage after mount
+  // 🔄 Load wishlist from localStorage
+  const refreshWishlist = useCallback(() => {
     const saved = localStorage.getItem("wishlist")
-    if (saved) {
-      setWishlist(JSON.parse(saved))
-    }
+    setWishlist(saved ? JSON.parse(saved) : [])
   }, [])
 
   useEffect(() => {
-    // Save to localStorage when wishlist changes, but only after mount
+    setMounted(true)
+    refreshWishlist()
+
+    // ✅ Listen to localStorage changes across tabs/pages
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "wishlist") {
+        refreshWishlist()
+      }
+    }
+    window.addEventListener("storage", handleStorage)
+    return () => window.removeEventListener("storage", handleStorage)
+  }, [refreshWishlist])
+
+  useEffect(() => {
     if (mounted) {
       localStorage.setItem("wishlist", JSON.stringify(wishlist))
     }
@@ -25,19 +35,25 @@ export function useWishlist() {
 
   const addToWishlist = (domain: Domain) => {
     setWishlist((prev) => {
-      if (prev.some((item) => item.id === domain.id)) {
-        return prev
-      }
-      return [...prev, domain]
+      if (prev.some((item) => item._id === domain._id)) return prev
+      const updated = [...prev, domain]
+      localStorage.setItem("wishlist", JSON.stringify(updated)) // 🔄 ensure localStorage updated immediately
+      return updated
     })
+    refreshWishlist()
   }
 
   const removeFromWishlist = (domainId: string) => {
-    setWishlist((prev) => prev.filter((item) => item.id !== domainId))
+    setWishlist((prev) => {
+      const updated = prev.filter((item) => item._id !== domainId)
+      localStorage.setItem("wishlist", JSON.stringify(updated)) // 🔄 update immediately
+      return updated
+    })
+    refreshWishlist()
   }
 
   const isInWishlist = (domainId: string) => {
-    return wishlist.some((item) => item.id === domainId)
+    return wishlist.some((item) => item._id === domainId)
   }
 
   return {
@@ -45,5 +61,6 @@ export function useWishlist() {
     addToWishlist,
     removeFromWishlist,
     isInWishlist,
+    refreshWishlist, // 👉 expose manually if you want to trigger refetch from UI
   }
 }
