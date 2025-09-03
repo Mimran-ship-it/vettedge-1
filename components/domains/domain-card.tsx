@@ -170,7 +170,7 @@ Price: $${domain.price.toLocaleString()} ${domain.Actualprice > domain.price ? `
 Registrar: ${domain.registrar}
 Status: ${domain.isAvailable ? 'Available' : 'Unavailable'} ${domain.isSold ? '(SOLD)' : ''}
 
-View full details: ${url}`;
+View full details:`;
 
     if (navigator.share) {
       try {
