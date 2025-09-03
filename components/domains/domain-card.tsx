@@ -22,6 +22,7 @@ import {
   BarChart3,
   ShoppingBag,
   Eye,
+  Share2,
 } from "lucide-react"
 import type { Domain } from "@/types/domain"
 import { useCart } from "@/components/providers/cart-provider"
@@ -109,24 +110,17 @@ export function DomainCard({ domain }: DomainCardProps) {
       })
       return
     }
-
-    // Clear the cart first
     clearCart()
-
-    // Add the current domain to the cart
     addItem({
       id: parsedDomain._id,
       name: parsedDomain.name,
       price: parsedDomain.price,
       domain: parsedDomain,
     })
-
     toast({
       title: "Added to Cart",
       description: `${domain.name} has been added to your cart. Redirecting to checkout...`,
     })
-
-    // Redirect to checkout
     if (!user) {
       router.push("/auth/signin?redirect=/checkout")
       return
@@ -154,6 +148,62 @@ export function DomainCard({ domain }: DomainCardProps) {
     }
     Cookies.set("wishlist", JSON.stringify(wishlist), { expires: 30 })
   }
+
+  const handleShare = async () => {
+    const url = `${window.location.origin}/domains/${domain._id}`;
+    
+    // Create shareable text with all key domain information
+    const shareText = `Check out this premium domain: ${domain.name}
+
+Key Metrics:
+• Domain Rank (DR): ${domain.metrics.domainRank}
+• Domain Authority (DA): ${domain.metrics.domainAuthority}
+• Trust Flow (TF): ${domain.metrics.trustFlow}
+• Citation Flow (CF): ${domain.metrics.citationFlow}
+• Referring Domains: ${domain.metrics.referringDomains}
+• Authority Links: ${domain.metrics.authorityLinks.length}
+• Domain Age: ${domain.metrics.age} years
+• Language: ${domain.metrics.language}
+${domain.metrics.monthlyTraffic ? `• Monthly Traffic: ${domain.metrics.monthlyTraffic.toLocaleString()}` : ''}
+
+Price: $${domain.price.toLocaleString()} ${domain.Actualprice > domain.price ? `(was $${domain.Actualprice.toLocaleString()})` : ''}
+Registrar: ${domain.registrar}
+Status: ${domain.isAvailable ? 'Available' : 'Unavailable'} ${domain.isSold ? '(SOLD)' : ''}
+
+View full details: ${url}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title:shareText,
+          text: shareText,
+          url: url,
+        });
+        toast({
+          title: "Shared Successfully",
+          description: "Domain details have been shared.",
+        });
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+      // Fallback: copy to clipboard
+      try {
+        await navigator.clipboard.writeText(shareText);
+        toast({
+          title: "Copied to Clipboard",
+          description: "Domain details have been copied to your clipboard.",
+        });
+      } catch (error) {
+        console.error('Error copying to clipboard:', error);
+        toast({
+          title: "Copy Failed",
+          description: "Failed to copy domain details to clipboard.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
 
   return (
     <Card className={cn(
@@ -187,15 +237,25 @@ export function DomainCard({ domain }: DomainCardProps) {
             <CardTitle className="text-base font-bold text-gray-900 truncate">
               {domain.name}
             </CardTitle>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleWishlistToggle}
-              className={cn("p-1 h-6 w-6", isWishlisted && "text-red-500")}
-              disabled={domain.isSold || !domain.isAvailable}
-            >
-              <Heart className={cn("h-3 w-3", isWishlisted && "fill-current")} />
-            </Button>
+            <div className="flex gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleShare}
+                className="p-1 h-6 w-6"
+              >
+                <Share2 className="h-3 w-3" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleWishlistToggle}
+                className={cn("p-1 h-6 w-6", isWishlisted && "text-red-500 hover:text-red-500")}
+                disabled={domain.isSold || !domain.isAvailable}
+              >
+                <Heart className={cn("h-3 w-3", isWishlisted && "fill-current")} />
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="p-0 space-y-1.5 flex-1 flex flex-col">
@@ -251,9 +311,9 @@ export function DomainCard({ domain }: DomainCardProps) {
                 <span>TF: {domain.metrics.trustFlow}</span>
               </div>
               <div className="flex items-center gap-1 text-gray-600">
-  <LinkIcon className="h-2.5 w-2.5" />
-  <span>{domain.metrics.authorityLinks.length} ALs</span>
-</div>
+                <LinkIcon className="h-2.5 w-2.5" />
+                <span>{domain.metrics.authorityLinks.length} ALs</span>
+              </div>
             </div>
             {/* Column 2 */}
             <div className="space-y-1">
@@ -325,13 +385,13 @@ export function DomainCard({ domain }: DomainCardProps) {
               className="h-7 px-2 text-xs"
               disabled={domain.isSold || !domain.isAvailable}
             >
-             <Link
-  href={`/domains/${domain._id}`}
-  className="flex items-center gap-1"
->
-  <Eye className="h-3 w-3" />
-  Details
-</Link>
+              <Link
+                href={`/domains/${domain._id}`}
+                className="flex items-center gap-1"
+              >
+                <Eye className="h-3 w-3" />
+                Details
+              </Link>
             </Button>
           </div>
         </CardContent>
