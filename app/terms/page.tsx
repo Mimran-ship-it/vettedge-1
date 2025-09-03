@@ -3,6 +3,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { FileText, Shield, CreditCard, Users, AlertTriangle, CheckCircle } from "lucide-react"
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
 
 export default function TermsOfService() {
   const sections = [
@@ -68,8 +70,9 @@ export default function TermsOfService() {
   ]
 
   return (
-    <div className="min-h-screen py-16 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen pt-16 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
       {/* Header */}
+      <Header/>
       <div className="bg-gradient-to-r from-[#33BDC7] to-[#38C172] text-white py-16">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Terms of Service</h1>
@@ -171,6 +174,7 @@ export default function TermsOfService() {
           </CardContent>
         </Card>
       </div>
+      <Footer/>
     </div>
   )
 }

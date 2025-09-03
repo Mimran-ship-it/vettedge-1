@@ -140,7 +140,7 @@ export default function NewDomainPage() {
        const check= await fetch("/api/subscribe", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ domain: domainData }),
+          body: JSON.stringify({ domain: domainData }), 
         })
   console.log('check',check)
         router.push("/admin/domains")

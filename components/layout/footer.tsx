@@ -83,9 +83,8 @@ export function Footer() {
   <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Domains</h4>
   <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
     <li><Link href="/domains" className="hover:text-[#33BDC7] hover:underline">Browse All</Link></li>
-    <li><Link href="/domains/premium" className="hover:text-[#33BDC7] hover:underline">Premium Domains</Link></li>
-    <li><Link href="/domains/categories" className="hover:text-[#33BDC7] hover:underline">By Category</Link></li>
-    <li><Link href="/domains/new-arrivals" className="hover:text-[#33BDC7] hover:underline">New Arrivals</Link></li>
+    <li><Link href="/domains" className="hover:text-[#33BDC7] hover:underline">New Arrivals</Link></li>
+    <li><Link href="/vetting-process" className="hover:text-[#33BDC7] hover:underline">Vetting Process</Link></li>
   </ul>
 </div>
 
@@ -93,9 +92,10 @@ export function Footer() {
 <div>
   <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Support</h4>
   <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
-    <li><Link href="/vetting-process" className="hover:text-[#33BDC7] hover:underline">Vetting Process</Link></li>
+    
+    <li><Link href="/transfer-process" className="hover:text-[#33BDC7] hover:underline">Transfer Process</Link></li>
     <li><Link href="/contact" className="hover:text-[#33BDC7] hover:underline">Help Center</Link></li>
-    <li><Link href="/faq" className="hover:text-[#33BDC7] hover:underline">FAQ</Link></li>
+    <li><Link href="/contact#faq" className="hover:text-[#33BDC7] hover:underline">FAQ</Link></li>
     <li><Link href="/contact" className="hover:text-[#33BDC7] hover:underline">Contact Us</Link></li>
   </ul>
 </div>
@@ -104,6 +104,7 @@ export function Footer() {
 <div>
   <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Company</h4>
   <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
+  <li><Link href="/return-policy" className="hover:text-[#33BDC7] hover:underline">Return Policy</Link></li>
     <li><Link href="/about" className="hover:text-[#33BDC7] hover:underline">About Us</Link></li>
     <li><Link href="/blog" className="hover:text-[#33BDC7] hover:underline">Blog</Link></li>
     <li><Link href="/terms" className="hover:text-[#33BDC7] hover:underline">Terms</Link></li>
