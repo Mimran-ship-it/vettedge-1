@@ -116,22 +116,23 @@ export function Header() {
         transition={{ duration: 0.3 }}
         className="bg-white shadow-sm border-b w-full z-50 fixed top-0 left-0 will-change-transform [backface-visibility:hidden] [transform:translateZ(0)]"
       >
-        <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-8xl mx-auto ps-2 pe-4 sm:pe-6 lg:pe-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-1">
-              <div className="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center">
-                <Image
-                  src="/logo.jpg"
-                  alt="Vettedge Logo"
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                />
-              </div>
-              <span className="text-lg sm:text-xl font-semibold text-gray-900">
-                Vettedge.domains
-              </span>
+            <div className="w-60 rounded-lg overflow-hidden flex items-center ">
+  <Image
+    src="logo.png"
+    alt="Vettedge Logo"
+    width={80}   // increased size
+    height={40}   // keep proportions
+    className="object-contain  border-black"
+  />
+  <span className="text-md sm:text-lg text-gray-900">
+    Vettedge.domains
+  </span>
+</div>
+              
             </Link>
             
             {/* Desktop Navigation - Hidden on mobile */}

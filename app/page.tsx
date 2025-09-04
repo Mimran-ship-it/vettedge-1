@@ -23,7 +23,7 @@ export default function HomePage() {
         <ContactSection />
         <Footer/>
       </main>
-      <LiveChat />
+      
     </div>
   )
 }
