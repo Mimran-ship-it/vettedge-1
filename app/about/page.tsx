@@ -45,6 +45,7 @@ export default function AboutPage() {
       <Header />
 
       {/* Hero Section */}
+
       <motion.section
         className="text-[#44c3cd] pt-36 pb-20"
         initial="hidden"
@@ -53,7 +54,7 @@ export default function AboutPage() {
         variants={fadeUp}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          <Badge variant="secondary" className="bg-white/30 text-white border-white/50">
+          <Badge variant="secondary" className="bg-white text-[#33BDC7] border-[#4DD184]">
             About Vettedge.domains
           </Badge>
           <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
