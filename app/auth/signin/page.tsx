@@ -1,5 +1,4 @@
 "use client"
-
 import type React from "react"
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -25,31 +24,32 @@ export default function SignInPage() {
   const { user, signIn } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirect = searchParams.get("redirect") || "/"
+  const redirect = searchParams?.get("redirect") || "/"
 
+  // Handle redirect after successful authentication
   useEffect(() => {
     if (user) {
-      router.push("/")
+      // For admin users, always redirect to admin dashboard
+      if (user.role === "admin") {
+        router.push("/admin")
+        return
+      }
+      
+      // For all other users, use the redirect parameter
+      router.push(redirect)
     }
-  }, [user, router])
+  }, [user, router, redirect])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-
     try {
       const user = await signIn(email, password)
-
       toast({
         title: "Welcome back!",
         description: "You have been signed in successfully.",
       })
-
-      if (user.role === "admin") {
-        window.location.href = "/admin"
-      } else {
-        router.push(redirect)
-      }
+      // Redirect is handled by useEffect
     } catch (error: any) {
       toast({
         title: "Sign in failed",
@@ -61,24 +61,16 @@ export default function SignInPage() {
     }
   }
 
-  //   const signInWithGoogle = async () => {
-  //   try {
-  //     await nextAuthSignIn("google", { callbackUrl: redirect }); // redirect after login
-  //   } catch (err) {
-  //     console.error("Google sign in error:", err);
-  //   }
-  // };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#e0f7f9] via-white to-[#c8f3f6] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md shadow-xl border-0">
         <CardHeader className="space-y-1 text-center">
           <div className="flex items-center justify-center mb-4">
             <Image
-              src="/logo.jpg" // Change to your logo path
+              src="/logo.jpg"
               alt="Vettedge Logo"
-              width={55} // similar to w-12
-              height={55} // similar to h-12
+              width={55}
+              height={55}
               className="rounded-xl"
               priority
             />
@@ -86,7 +78,6 @@ export default function SignInPage() {
           <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
           <p className="text-sm text-gray-600">Sign in to your Vettedge account</p>
         </CardHeader>
-
         <CardContent className="space-y-4">
           <Button
             variant="outline"
@@ -99,7 +90,7 @@ export default function SignInPage() {
                   title: "Welcome!",
                   description: "Signed in with Google successfully.",
                 })
-                router.push(redirect)
+                // Redirect is handled by useEffect
               } catch (err: any) {
                 toast({
                   title: "Google sign in failed",
@@ -132,7 +123,6 @@ export default function SignInPage() {
             Continue with Google
           </Button>
 
-
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <Separator />
@@ -141,7 +131,6 @@ export default function SignInPage() {
               <span className="bg-white px-2 text-gray-500">Or continue with email</span>
             </div>
           </div>
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -154,7 +143,6 @@ export default function SignInPage() {
                 required
               />
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
@@ -181,7 +169,6 @@ export default function SignInPage() {
                 </Button>
               </div>
             </div>
-
             <div className="flex items-center justify-between">
               <div className="text-sm">
                 <Link href="/auth/forgot-password" className="text-[#33BDC7] hover:underline">
@@ -189,7 +176,6 @@ export default function SignInPage() {
                 </Link>
               </div>
             </div>
-
             <Button
               type="submit"
               className="w-full bg-[#33BDC7] hover:bg-[#28a3ac] text-white"
@@ -205,7 +191,6 @@ export default function SignInPage() {
               )}
             </Button>
           </form>
-
           <div className="text-center text-sm">
             <span className="text-gray-600">Don't have an account? </span>
             <Link href="/auth/signup" className="text-[#33BDC7] hover:underline font-medium">

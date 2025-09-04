@@ -75,9 +75,9 @@ export function Header() {
             transition={{ duration: 0.2 }}
             className="z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md"
           >
-            <DropdownMenuItem asChild>
+          {user?.role != "admin" &&    <DropdownMenuItem asChild>
               <Link href="/dashboard" className={linkClass("/dashboard")}>Dashboard</Link>
-            </DropdownMenuItem>
+            </DropdownMenuItem>}
             <DropdownMenuItem asChild>
               <Link href="/orders" className={linkClass("/orders")}>My Orders</Link>
             </DropdownMenuItem>
