@@ -380,7 +380,7 @@ export default function DomainsPage() {
             ))}
           </div>
         ) : filteredDomains.length > 0 ? (
-          <div className="ms-8 grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
+          <div className=" grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
             {filteredDomains.map((domain) => (
               <DomainCard key={domain._id} domain={domain} />
             ))}

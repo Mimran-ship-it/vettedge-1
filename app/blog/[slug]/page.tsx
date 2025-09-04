@@ -1,14 +1,15 @@
-
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, Clock, ArrowLeft, Share2 } from "lucide-react"
+import { Calendar, Clock, ArrowLeft, Share2, User, Tag, TrendingUp } from "lucide-react"
 import type { BlogPost } from "@/types/blog"
 import { headers } from "next/headers"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
+import Image from "next/image"
+import { ShareButtons } from "@/components/blog/share-buttons"
 
 interface BlogPostPageProps {
   params: {
@@ -18,238 +19,401 @@ interface BlogPostPageProps {
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const h = await headers()
-  const host = h.get("host") || "localhost:3000" || process.env.NEXT_PUBLIC_SITE_URL
+  const host = h.get("host") || "localhost:3000" ||  process.env.NEXT_PUBLIC_SITE_URL
   const protocol = process.env.NODE_ENV === "development" ? "http" : "https"
   const baseUrl = `${protocol}://${host}`
   const res = await fetch(`${baseUrl}/api/blogs?slug=${params.slug}`, { cache: "no-store" })
   if (!res.ok) return { title: "Post Not Found - Vettedge.domains" }
   const post: BlogPost = await res.json()
-  return { title: `${post.title} - Vettedge.domains Blog`, description: post.excerpt }
+  return { 
+    title: `${post.title} - Vettedge.domains Blog`, 
+    description: post.excerpt,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      images: [post.image || '/placeholder.svg'],
+      type: 'article',
+      publishedTime: post.publishedAt,
+      authors: [post.author.name],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+      images: [post.image || '/placeholder.svg'],
+    }
+  }
 }
 
+// Using dynamic fetch; no static params
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const h = await headers()
   const host = h.get("host") || "localhost:3000"
   const protocol = process.env.NODE_ENV === "development" ? "http" : "https"
   const baseUrl = `${protocol}://${host}`
-
   const res = await fetch(`${baseUrl}/api/blogs?slug=${params.slug}`, { cache: "no-store" })
   if (!res.ok) notFound()
   const post: BlogPost = await res.json()
-
   const allRes = await fetch(`${baseUrl}/api/blogs`, { cache: "no-store" })
   const all: BlogPost[] = allRes.ok ? await allRes.json() : []
   const relatedPosts = all.filter((p) => p.category === post.category && p.slug !== post.slug).slice(0, 3)
-
+  const recentPosts = all.filter((p) => p.slug !== post.slug).slice(0, 5)
+  
+  // Get unique categories and tags
+  const categories = Array.from(new Set(all.map(p => p.category)))
+  const allTags = Array.from(new Set(all.flatMap(p => p.tags))).slice(0, 10)
+  
+  // Build the full URL for sharing
+  const fullUrl = `${protocol}://${host}/blog/${post.slug}`
+  
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       <Header />
-
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-12">
-        {/* Back Button */}
-        <div className="mb-8">
-          <Button variant="ghost" asChild className="pl-0">
-            <Link href="/blog">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Blog
-            </Link>
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          {/* LEFT COLUMN (Main Article) */}
-          <article className="lg:col-span-2">
-            <header className="mb-8">
-              <div className="flex flex-wrap gap-2 mb-4">
-                <Badge variant="secondary">{post.category}</Badge>
-                {post.featured && <Badge className="bg-cyan-500">Featured</Badge>}
-              </div>
-
-              <h1 className="text-4xl font-bold text-gray-900 mb-6 leading-tight">{post.title}</h1>
-
-              <div className="flex flex-wrap items-center gap-6 text-gray-600 mb-6">
-                <div className="flex items-center gap-2">
-                  <img
-                    src={post.author.avatar || "/placeholder.svg"}
-                    alt={post.author.name}
-                    className="w-8 h-8 rounded-full"
-                  />
-                  <span className="font-medium">{post.author.name}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  {new Date(post.publishedAt).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </div>
-                <div className="flex items-center gap-1">
-                  <Clock className="h-4 w-4" />
-                  {post.readingTime} min read
-                </div>
-              </div>
-
-              {/* Smaller Featured Image */}
-              <div className="w-full md:w-3/4 mx-auto bg-gray-100 rounded-lg overflow-hidden mb-8 shadow">
-                <img
-                  src={post.image || "/placeholder.svg"}
-                  alt={post.title}
-                  className="w-full h-64 object-cover"
-                />
-              </div>
-            </header>
-
-            {/* Article Content */}
-            <div className="prose prose-lg max-w-none">
-              <div className="text-xl text-gray-600 mb-8 font-medium leading-relaxed">{post.excerpt}</div>
-              <div className="blog-content space-y-6">{parseBlogContent(post.content)}</div>
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Main Content */}
+          <div className="lg:w-2/3">
+            {/* Back Button */}
+            <div className="mb-6">
+              <Button variant="ghost" asChild className="pl-0 text-gray-600 hover:text-gray-900">
+                <Link href="/blog">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Blog
+                </Link>
+              </Button>
             </div>
-
-            {/* Tags */}
-            <div className="mt-12 pt-8 border-t border-gray-200">
-              <div className="flex flex-wrap gap-2">
-                <span className="text-sm font-medium text-gray-900 mr-2">Tags:</span>
-                {post.tags.map((tag) => (
-                  <Badge key={tag} variant="outline" className="text-sm">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-
-        
-          </article>
-
-          {/* RIGHT COLUMN (Sidebar) */}
-          <aside className="space-y-8">
-            {/* Author Box */}
-            <div className="p-6 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
-              <div className="flex items-center gap-4 mb-4">
-                <img
-                  src={post.author.avatar || "/placeholder.svg"}
-                  alt={post.author.name}
-                  className="w-12 h-12 rounded-full"
-                />
-                <div>
-                  <h3 className="font-semibold text-gray-900">{post.author.name}</h3>
-                  <p className="text-sm text-gray-600">{ "Domain Expert"}</p>
+            
+            {/* Article Header */}
+            <article className="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
+              <div className="p-6 md:p-8">
+                <div className="flex flex-wrap gap-2 mb-4">
+                  <Badge variant="secondary" className="bg-blue-50 text-blue-700">{post.category}</Badge>
+                  {post.featured && <Badge className="bg-amber-500 hover:bg-amber-600">Featured</Badge>}
                 </div>
-              </div>
-              <p className="text-sm text-gray-600">
-                Expert in domain valuation and digital assets with years of experience in the industry.
-              </p>
-            </div>
-
-            {/* Recent Posts */}
-            <div>
-              <h3 className="font-semibold text-lg text-gray-900 mb-4">Recent Posts</h3>
-              <div className="space-y-4">
-                {all.slice(0, 3).map((recent) => (
-                  <div key={recent._id} className="flex items-center gap-3">
-                    <img
-                      src={recent.image || "/placeholder.svg"}
-                      alt={recent.title}
-                      className="w-16 h-12 rounded-md object-cover"
-                    />
+                
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight">{post.title}</h1>
+                
+                <div className="flex flex-wrap items-center gap-6 text-gray-600 mb-6 pb-6 border-b border-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <Image
+                        src={post.author.avatar || "/placeholder.svg"}
+                        alt={post.author.name}
+                        width={40}
+                        height={40}
+                        className="rounded-full border-2 border-white shadow-sm"
+                      />
+                    </div>
                     <div>
-                      <Link
-                        href={`/blog/${recent.slug}`}
-                        className="font-medium text-sm text-gray-900 hover:text-cyan-600"
-                      >
-                        {recent.title}
-                      </Link>
-                      <p className="text-xs text-gray-500">
-                        {new Date(recent.publishedAt).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </p>
+                      <div className="font-medium text-gray-900">{post.author.name}</div>
+                      <div className="text-xs text-gray-500">Author</div>
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          </aside>
-        </div>
-
-        {/* Related Posts Section */}
-        {relatedPosts.length > 0 && (
-          <section className="mt-16 pt-12 border-t border-gray-200">
-            <h2 className="text-2xl font-bold text-gray-900 mb-8">Related Articles</h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              {relatedPosts.map((relatedPost) => (
-                <div key={relatedPost._id} className="group">
-                  <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden mb-4">
-                    <img
-                      src={relatedPost.image || "/placeholder.svg"}
-                      alt={relatedPost.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
+                  
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-4 w-4" />
+                    <span>{new Date(post.publishedAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}</span>
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-cyan-600 transition-colors">
-                    <Link href={`/blog/${relatedPost.slug}`}>{relatedPost.title}</Link>
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">{relatedPost.excerpt}</p>
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <span>{relatedPost.author.name}</span>
-                    <span>•</span>
-                    <span>{relatedPost.readingTime} min read</span>
+                  
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4" />
+                    <span>{post.readingTime} min read</span>
                   </div>
                 </div>
-              ))}
+                
+                <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden mb-6">
+                  <Image 
+                    src={post.image || "/placeholder.svg"} 
+                    alt={post.title} 
+                    width={800}
+                    height={450}
+                    className="w-full h-full object-cover" 
+                  />
+                </div>
+                
+                {/* Article Content */}
+                <div className="prose prose-lg max-w-none">
+                  <div className="text-xl text-gray-600 mb-8 font-medium leading-relaxed">{post.excerpt}</div>
+                  <div className="blog-content space-y-6">
+                    {parseBlogContent(post.content)}
+                  </div>
+                </div>
+                
+                {/* Tags */}
+                <div className="mt-12 pt-8 border-t border-gray-200">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Tag className="h-5 w-5 text-gray-500" />
+                    <span className="text-sm font-medium text-gray-900">Tags:</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {post.tags.map((tag) => (
+                      <Link key={tag} href={`/blog?tag=${encodeURIComponent(tag)}`}>
+                        <Badge variant="outline" className="text-sm hover:bg-gray-100">
+                          {tag}
+                        </Badge>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Share Section */}
+                <div className="mt-8 pt-8 border-t border-gray-200">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      <span className="text-sm font-medium text-gray-900">Share:</span>
+                      <ShareButtons 
+                        title={post.title}
+                        excerpt={post.excerpt}
+                        url={fullUrl}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+            
+            {/* Related Posts */}
+            {relatedPosts.length > 0 && (
+              <section className="bg-white rounded-xl shadow-sm p-6 md:p-8">
+                <div className="flex items-center gap-2 mb-6">
+                  <TrendingUp className="h-5 w-5 text-amber-500" />
+                  <h2 className="text-2xl font-bold text-gray-900">Related Articles</h2>
+                </div>
+                <div className="grid md:grid-cols-3 gap-6">
+                  {relatedPosts.map((relatedPost) => (
+                    <div key={relatedPost._id} className="group border border-gray-200 rounded-lg overflow-hidden transition-all duration-200 hover:shadow-md">
+                      <div className="aspect-video bg-gray-100 overflow-hidden">
+                        <Image
+                          src={relatedPost.image || "/placeholder.svg"}
+                          alt={relatedPost.title}
+                          width={400}
+                          height={225}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      <div className="p-4">
+                        <Badge variant="secondary" className="text-xs mb-2">
+                          {relatedPost.category}
+                        </Badge>
+                        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-cyan-600 transition-colors">
+                          <Link href={`/blog/${relatedPost.slug}`}>{relatedPost.title}</Link>
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{relatedPost.excerpt}</p>
+                        <div className="flex items-center gap-3 text-xs text-gray-500">
+                          <div className="flex items-center gap-1">
+                            <User className="h-3 w-3" />
+                            <span>{relatedPost.author.name}</span>
+                          </div>
+                          <span>•</span>
+                          <span>{relatedPost.readingTime} min read</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+          
+          {/* Sidebar */}
+          <div className="lg:w-1/3">
+            <div className="sticky top-28 space-y-6">
+              {/* Author Card */}
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">About the Author</h3>
+                <div className="flex items-center gap-4 mb-4">
+                  <Image
+                    src={post.author.avatar || "/placeholder.svg"}
+                    alt={post.author.name}
+                    width={60}
+                    height={60}
+                    className="rounded-full border-2 border-gray-100"
+                  />
+                  <div>
+                    <h4 className="font-bold text-gray-900">{post.author.name}</h4>
+                    <p className="text-sm text-gray-600">{post.author.bio || "Domain Expert"}</p>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-600 mb-4">
+                  {post.author.bio || "Expert in domain valuation and digital assets with years of experience in the industry."}
+                </p> 
+              </div>
+              
+              {/* Recent Posts */}
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Posts</h3>
+                <div className="space-y-4">
+                  {recentPosts.map((recentPost) => (
+                    <div key={recentPost._id} className="group border-b border-gray-100 pb-4 last:border-0 last:pb-0">
+                      <Link href={`/blog/${recentPost.slug}`} className="block">
+                        <div className="flex gap-3">
+                          <div className="flex-shrink-0 w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
+                            <Image
+                              src={recentPost.image || "/placeholder.svg"}
+                              alt={recentPost.title}
+                              width={64}
+                              height={64}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-gray-900 group-hover:text-cyan-600 transition-colors line-clamp-2 text-sm">
+                              {recentPost.title}
+                            </h4>
+                            <p className="text-xs text-gray-500 mt-1">
+                              {new Date(recentPost.publishedAt).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </p>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+               
+              
+              {/* Tags Cloud */}
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Popular Tags</h3>
+                <div className="flex flex-wrap gap-2">
+                  {allTags.map((tag) => (
+                    <Link
+                      key={tag}
+                      href={`/blog?tag=${encodeURIComponent(tag)}`}
+                    >
+                      <Badge variant="outline" className="text-xs hover:bg-gray-100">
+                        {tag}
+                      </Badge>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Newsletter */}
+              <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl shadow-sm p-6 border border-cyan-100">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Subscribe to Newsletter</h3>
+                <p className="text-sm text-gray-600 mb-4">Get the latest insights on domain investing and SEO.</p>
+                <div className="space-y-3">
+                  <input 
+                    type="email" 
+                    placeholder="Your email address" 
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  />
+                  <Button className="w-full bg-cyan-600 hover:bg-cyan-700">
+                    Subscribe
+                  </Button>
+                </div>
+              </div>
             </div>
-          </section>
-        )}
+          </div>
+        </div>
       </main>
-
       <Footer />
     </div>
   )
 }
 
-// Helper to parse blog content
+// Helper function to parse blog content and render properly
 const parseBlogContent = (content: string) => {
-  if (!content) return null
-  const lines = content.split("\n")
-  const elements: React.JSX.Element[] = []
-
+  if (!content) return null;
+  const lines = content.split("\n");
+  const elements: React.JSX.Element[] = [];
   lines.forEach((line, index) => {
-    const trimmedLine = line.trim()
-
+    const trimmedLine = line.trim();
+    // Spacer for empty lines
     if (!trimmedLine) {
-      elements.push(<div key={`spacer-${index}`} className="h-3" />)
-      return
+      elements.push(<div key={`spacer-${index}`} className="h-3" />);
+      return;
     }
+    // Headings
     if (trimmedLine.startsWith("# ")) {
-      elements.push(<h1 key={index} className="text-3xl font-extrabold text-gray-900 mb-2">{trimmedLine.substring(2)}</h1>)
-      return
+      elements.push(
+        <h1
+          key={index}
+          className="text-3xl font-extrabold text-gray-900 tracking-tight mb-4 mt-6"
+        >
+          {trimmedLine.substring(2)}
+        </h1>
+      );
+      return;
     }
     if (trimmedLine.startsWith("## ")) {
-      elements.push(<h2 key={index} className="text-2xl font-bold text-gray-800 mt-6 mb-2">{trimmedLine.substring(3)}</h2>)
-      return
+      elements.push(
+        <h2
+          key={index}
+          className="text-2xl font-bold text-gray-800 tracking-tight mt-8 mb-4"
+        >
+          {trimmedLine.substring(3)}
+        </h2>
+      );
+      return;
     }
     if (trimmedLine.startsWith("### ")) {
-      elements.push(<h3 key={index} className="text-xl font-semibold text-gray-700 mt-4 mb-2">{trimmedLine.substring(4)}</h3>)
-      return
+      elements.push(
+        <h3
+          key={index}
+          className="text-xl font-semibold text-gray-700 mt-6 mb-3"
+        >
+          {trimmedLine.substring(4)}
+        </h3>
+      );
+      return;
     }
+    // Lists
     if (trimmedLine.startsWith("- ") || trimmedLine.startsWith("* ")) {
-      elements.push(<li key={index} className="text-base text-gray-600 ml-6 list-disc">{trimmedLine.substring(2)}</li>)
-      return
+      elements.push(
+        <li
+          key={index}
+          className="text-base text-gray-600 ml-6 list-disc marker:text-gray-500 mb-2"
+        >
+          {trimmedLine.substring(2)}
+        </li>
+      );
+      return;
     }
+    // Blockquotes
     if (trimmedLine.startsWith("> ")) {
-      elements.push(<blockquote key={index} className="text-base text-gray-600 italic border-l-4 border-gray-300 pl-4 bg-gray-50 rounded-md">{trimmedLine.substring(2)}</blockquote>)
-      return
+      elements.push(
+        <blockquote
+          key={index}
+          className="text-base text-gray-600 italic border-l-4 border-cyan-300 pl-4 bg-cyan-50 rounded-r-md py-2 mb-4"
+        >
+          {trimmedLine.substring(2)}
+        </blockquote>
+      );
+      return;
     }
+    // Inline formatting (bold/italic)
     if (trimmedLine.includes("**") || trimmedLine.includes("*")) {
       const formattedText = trimmedLine
         .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-        .replace(/\*(.*?)\*/g, "<em>$1</em>")
-      elements.push(<p key={index} className="text-base leading-relaxed text-gray-700" dangerouslySetInnerHTML={{ __html: formattedText }} />)
-      return
+        .replace(/\*(.*?)\*/g, "<em>$1</em>");
+      elements.push(
+        <p
+          key={index}
+          className="text-base leading-relaxed text-gray-700 mb-4"
+          dangerouslySetInnerHTML={{ __html: formattedText }}
+        />
+      );
+      return;
     }
-    elements.push(<p key={index} className="text-base leading-relaxed text-gray-700">{trimmedLine}</p>)
-  })
-
-  return <div className="space-y-3">{elements}</div>
-}
+    // Default paragraph
+    elements.push(
+      <p
+        key={index}
+        className="text-base leading-relaxed text-gray-700 mb-4"
+      >
+        {trimmedLine}
+      </p>
+    );
+  });
+  return <div className="space-y-2">{elements}</div>;
+};
