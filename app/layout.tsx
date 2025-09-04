@@ -14,6 +14,7 @@ import { Header } from "@/components/layout/header" // Import the Header compone
 import { Elements } from "@stripe/react-stripe-js"
 import { loadStripe } from "@stripe/stripe-js"
 import { useEffect } from "react"
+import { WishlistProvider } from "@/components/providers/wishlist-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
@@ -53,8 +54,9 @@ export default function RootLayout({
           <CartProvider>
             <ChatProvider>
               <StripeProvider>
-                {children}
-                
+                <WishlistProvider>
+                  {children}
+                </WishlistProvider>
               </StripeProvider>
               <Script
                 src="https://accounts.google.com/gsi/client"

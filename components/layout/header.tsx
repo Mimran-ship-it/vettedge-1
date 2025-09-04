@@ -1,3 +1,4 @@
+// Update the Header component
 "use client"
 import { useState, useEffect } from "react"
 import Link from "next/link"
@@ -8,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { ShoppingCart, User, Menu, X, Heart } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { useCart } from "@/components/providers/cart-provider"
-import { useWishlist } from "@/hooks/use-wishlist"
+import { useWishlist } from "@/components/providers/wishlist-provider"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   DropdownMenu,
@@ -17,16 +18,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [showHeader, setShowHeader] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
   const { user, loading, signOut } = useAuth()
   const { items } = useCart()
-  const { wishlist } = useWishlist()
+  const { wishlistCount } = useWishlist() // Use the wishlist count from the context
   const pathname = usePathname()
   const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0)
-  const wishlistCount = wishlist.length
+  
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isMenuOpen) {
@@ -38,6 +40,7 @@ export function Header() {
       document.body.style.overflow = 'unset'
     }
   }, [isMenuOpen])
+  
   // Detect scroll direction to show/hide header
   useEffect(() => {
     const handleScroll = () => {
@@ -54,10 +57,12 @@ export function Header() {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [lastScrollY])
+  
   const linkClass = (href: string) =>
     pathname === href
       ? "text-[#33BDC7] font-medium transition-colors"
       : "text-gray-700 hover:text-[#33BDC7] transition-colors"
+      
   const renderUserMenu = () => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -75,9 +80,11 @@ export function Header() {
             transition={{ duration: 0.2 }}
             className="z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md"
           >
-          {user?.role != "admin" &&    <DropdownMenuItem asChild>
-              <Link href="/dashboard" className={linkClass("/dashboard")}>Dashboard</Link>
-            </DropdownMenuItem>}
+            {user?.role != "admin" &&    
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard" className={linkClass("/dashboard")}>Dashboard</Link>
+              </DropdownMenuItem>
+            }
             <DropdownMenuItem asChild>
               <Link href="/orders" className={linkClass("/orders")}>My Orders</Link>
             </DropdownMenuItem>
@@ -99,6 +106,7 @@ export function Header() {
       </AnimatePresence>
     </DropdownMenu>
   )
+  
   return (
     <>
       {/* Animated Header */}
@@ -151,7 +159,11 @@ export function Header() {
               <Link href="/wishlist" className="relative">
                 <Button variant="ghost" size="sm">
                   <Heart className="h-5 w-5" />
-                
+                  {wishlistCount > 0 && (
+                    <Badge className="absolute bg-[#33BDC7] -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                      {wishlistCount}
+                    </Badge>
+                  )}
                 </Button>
               </Link>
               

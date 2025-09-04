@@ -1,3 +1,4 @@
+// Update the DomainCard component
 "use client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -26,10 +27,10 @@ import {
 } from "lucide-react"
 import type { Domain } from "@/types/domain"
 import { useCart } from "@/components/providers/cart-provider"
+import { useWishlist } from "@/components/providers/wishlist-provider"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
-import Cookies from "js-cookie"
-import { useEffect, useState } from "react"
+import Image from "next/image"
 
 interface DomainCardProps {
   domain: {
@@ -72,14 +73,10 @@ export function DomainCard({ domain }: DomainCardProps) {
     updatedAt: new Date(domain.updatedAt).toISOString(),
   }
   const { addItem, clearCart } = useCart()
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
   const { toast } = useToast()
-  const [isWishlisted, setIsWishlisted] = useState(false)
-
-  useEffect(() => {
-    const wishlist = JSON.parse(Cookies.get("wishlist") || "[]")
-    setIsWishlisted(wishlist.some((item: Domain) => item._id === domain._id))
-  }, [domain._id])
-
+  const isWishlisted = isInWishlist(domain._id)
+  
   const handleAddToCart = () => {
     if (domain.isSold || !domain.isAvailable) {
       toast({
@@ -130,23 +127,19 @@ export function DomainCard({ domain }: DomainCardProps) {
   }
 
   const handleWishlistToggle = () => {
-    let wishlist: Domain[] = JSON.parse(Cookies.get("wishlist") || "[]")
     if (isWishlisted) {
-      wishlist = wishlist.filter((item) => item._id !== domain._id)
-      setIsWishlisted(false)
+      removeFromWishlist(domain._id)
       toast({
         title: "Removed",
         description: `${domain.name} removed from wishlist.`,
       })
     } else {
-      wishlist.push(parsedDomain)
-      setIsWishlisted(true)
+      addToWishlist(parsedDomain)
       toast({
         title: "Wishlisted",
         description: `${domain.name} added to wishlist.`,
       })
     }
-    Cookies.set("wishlist", JSON.stringify(wishlist), { expires: 30 })
   }
 
   const handleShare = async () => {
@@ -154,7 +147,6 @@ export function DomainCard({ domain }: DomainCardProps) {
     
     // Create shareable text with all key domain information
     const shareText = `Check out this premium domain: ${domain.name}
-
 Key Metrics:
 • Domain Rank (DR): ${domain.metrics.domainRank}
 • Domain Authority (DA): ${domain.metrics.domainAuthority}
@@ -165,17 +157,15 @@ Key Metrics:
 • Domain Age: ${domain.metrics.age} years
 • Language: ${domain.metrics.language}
 ${domain.metrics.monthlyTraffic ? `• Monthly Traffic: ${domain.metrics.monthlyTraffic.toLocaleString()}` : ''}
-
 Price: $${domain.price.toLocaleString()} ${domain.Actualprice > domain.price ? `(was $${domain.Actualprice.toLocaleString()})` : ''}
 Registrar: ${domain.registrar}
 Status: ${domain.isAvailable ? 'Available' : 'Unavailable'} ${domain.isSold ? '(SOLD)' : ''}
-
 View full details:`;
-
+    
     if (navigator.share) {
       try {
         await navigator.share({
-          title:shareText,
+          title: shareText,
           text: shareText,
           url: url,
         });
@@ -207,17 +197,18 @@ View full details:`;
 
   return (
     <Card className={cn(
-      "relative group mx-auto hover:shadow-sm hover:rounded-xl transition-all duration-300 overflow-hidden flex flex-col w-full max-w-xs",
+      "relative group hover:shadow-sm hover:rounded-xl transition-all duration-300 overflow-hidden flex flex-col w-full",
       domain.isSold && "opacity-60"
     )}>
-      {/* Top Image - Square */}
+      {/* Top Image - Responsive Aspect Ratio */}
       {domain.image?.length > 0 && (
-        <div className="relative w-80 h-60">
-          <img
+        <div className="relative w-full aspect-video">
+          <Image
             src={domain.image[0]}
             alt={domain.name}
+            fill
             className={cn(
-              "w-full h-full rounded-3xl object-cover transition duration-300",
+              "object-cover transition duration-300",
               !domain.isAvailable && !domain.isSold && "blur-sm"
             )}
           />
@@ -228,152 +219,165 @@ View full details:`;
               </Badge>
             </div>
           )}
+          {domain.isHot && (
+            <Badge className="absolute top-2 right-2 bg-orange-500 hover:bg-orange-600 z-10">
+              HOT
+            </Badge>
+          )}
         </div>
       )}
-      <div className="flex flex-col flex-1 p-2">
+      
+      <div className="flex flex-col flex-1 p-3 sm:p-4">
         {/* Domain Name */}
-        <CardHeader className="p-0 pb-1">
+        <CardHeader className="p-0 pb-2 sm:pb-3">
           <div className="flex items-start justify-between">
-            <CardTitle className="text-base font-bold text-gray-900 truncate">
+            <CardTitle className="text-base sm:text-lg font-bold text-gray-900 truncate pr-2">
               {domain.name}
             </CardTitle>
-            <div className="flex gap-1">
+            <div className="flex gap-1 flex-shrink-0">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={handleShare}
-                className="p-1 h-6 w-6"
+                className="p-1 h-7 w-7 sm:h-8 sm:w-8"
               >
-                <Share2 className="h-3 w-3" />
+                <Share2 className="h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={handleWishlistToggle}
-                className={cn("p-1 h-6 w-6", isWishlisted && "text-red-500 hover:text-red-500")}
+                className={cn("p-1 h-7 w-7 sm:h-8 sm:w-8", isWishlisted && "text-red-500 hover:text-red-500")}
                 disabled={domain.isSold || !domain.isAvailable}
               >
-                <Heart className={cn("h-3 w-3", isWishlisted && "fill-current")} />
+                <Heart className={cn("h-3 w-3 sm:h-4 sm:w-4", isWishlisted && "fill-current")} />
               </Button>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="p-0 space-y-1.5 flex-1 flex flex-col">
+        
+        <CardContent className="p-0 space-y-2 sm:space-y-3 flex-1 flex flex-col">
           {/* Provider/Status Row */}
-          <div className="flex items-center justify-between text-xs text-gray-600">
+          <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600">
             <div className="flex items-center gap-1">
               {domain.type === "traffic" && domain.metrics.monthlyTraffic ? (
                 <>
-                  <BarChart3 className="h-3 w-3" />
+                  <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span>Traffic</span>
                 </>
               ) : (
                 <>
-                  <Calendar className="h-3 w-3" />
+                  <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span>Aged</span>
                 </>
               )}
             </div>
-            <div className="flex items-center gap-1">
-              <ShoppingBag className="h-3 w-3" />
-              <span className="truncate max-w-[70px]">{domain.registrar}</span>
+            <div className="flex items-center gap-1 truncate max-w-[70px] sm:max-w-[100px]">
+              <ShoppingBag className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+              <span className="truncate">{domain.registrar}</span>
             </div>
           </div>
+          
           {/* Price & Availability */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
             <div className="flex items-center gap-1">
-              <span className="text-lg font-bold text-gray-900">
+              <span className="text-lg sm:text-xl font-bold text-gray-900">
                 ${domain.price.toLocaleString()}
               </span>
               {domain.Actualprice > domain.price && (
-                <span className="text-xs text-gray-500 line-through">
+                <span className="text-xs sm:text-sm text-gray-500 line-through">
                   ${domain.Actualprice.toLocaleString()}
                 </span>
               )}
             </div>
             <Badge className={cn(
-              "text-xs px-1.5 py-0.5",
+              "text-xs px-1.5 py-0.5 self-start sm:self-auto",
               domain.isAvailable ? "bg-green-600 text-white" : "bg-gray-400 text-white"
             )}>
               {domain.isAvailable ? "Available" : "Unavailable"}
             </Badge>
           </div>
-          {/* SEO & Domain Metrics - 3 Columns */}
-          <div className="grid grid-cols-3 gap-1.5 text-[10px]">
+          
+          {/* SEO & Domain Metrics - Responsive Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 text-[10px] sm:text-xs">
             {/* Column 1 */}
-            <div className="space-y-1">
+            <div className="space-y-1 sm:space-y-2">
               <div className="flex items-center gap-1 text-gray-600">
-                <TrendingUp className="h-2.5 w-2.5" />
+                <TrendingUp className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>DR: {domain.metrics.domainRank}</span>
               </div>
               <div className="flex items-center gap-1 text-gray-600">
-                <Activity className="h-2.5 w-2.5" />
+                <Activity className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>TF: {domain.metrics.trustFlow}</span>
               </div>
               <div className="flex items-center gap-1 text-gray-600">
-                <LinkIcon className="h-2.5 w-2.5" />
+                <LinkIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>{domain.metrics.authorityLinks.length} ALs</span>
               </div>
             </div>
+            
             {/* Column 2 */}
-            <div className="space-y-1">
+            <div className="space-y-1 sm:space-y-2">
               <div className="flex items-center gap-1 text-gray-600">
-                <LinkIcon className="h-2.5 w-2.5" />
+                <LinkIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>{domain.metrics.referringDomains} RDs</span>
               </div>
               <div className="flex items-center gap-1 text-gray-600">
-                <Flag className="h-2.5 w-2.5" />
+                <Flag className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>CF: {domain.metrics.citationFlow}</span>
               </div>
               <div className="flex items-center gap-1 text-gray-600">
-                <Hourglass className="h-2.5 w-2.5" />
+                <Hourglass className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>{domain.metrics.age} yrs</span>
               </div>
             </div>
+            
             {/* Column 3 */}
-            <div className="space-y-1">
+            <div className="space-y-1 sm:space-y-2">
               <div className="flex items-center gap-1 text-gray-600">
-                <ShieldCheck className="h-2.5 w-2.5" />
+                <ShieldCheck className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>DA: {domain.metrics.domainAuthority}</span>
               </div>
               {domain.type === "traffic" && domain.metrics.monthlyTraffic && (
                 <div className="flex items-center gap-1 text-gray-600">
-                  <Globe className="h-2.5 w-2.5" />
+                  <Globe className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                   <span>{domain.metrics.monthlyTraffic.toLocaleString()}</span>
                 </div>
               )}
               <div className="flex items-center gap-1 text-gray-600">
-                <Languages className="h-2.5 w-2.5" />
+                <Languages className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>{domain.metrics.language}</span>
               </div>
             </div>
           </div>
+          
           {/* Tags */}
           {domain.tags?.length > 0 && (
-            <div className="flex flex-wrap gap-0.5 pt-0.5">
+            <div className="flex flex-wrap gap-1 pt-1">
               {domain.tags.slice(0, 3).map((tag, idx) => (
                 <Badge
                   key={idx}
                   variant="outline"
-                  className="text-[10px] px-1.5 py-0.5 text-gray-600 border-gray-300"
+                  className="text-[10px] sm:text-xs px-1.5 py-0.5 text-gray-600 border-gray-300"
                 >
                   {tag}
                 </Badge>
               ))}
             </div>
           )}
+          
           {/* Action Buttons */}
-          <div className="flex space-x-1 pt-1 mt-auto">
+          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 pt-2 mt-auto">
             <Button
-              className="flex-1 h-7 text-xs bg-[#33BDC7] hover:bg-[#2caab4] text-white"
+              className="flex-1 h-8 sm:h-9 text-xs sm:text-sm bg-[#33BDC7] hover:bg-[#2caab4] text-white"
               onClick={handleAddToCart}
               disabled={domain.isSold || !domain.isAvailable}
             >
-              <ShoppingCart className="h-3 w-3 mr-1" />
+              <ShoppingCart className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
               Add
             </Button>
             <Button
-              className="h-7 px-2 text-xs bg-red-600 hover:bg-red-700 text-white"
+              className="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm bg-red-600 hover:bg-red-700 text-white"
               onClick={handleBuyNow}
               disabled={domain.isSold || !domain.isAvailable}
             >
@@ -382,15 +386,15 @@ View full details:`;
             <Button
               variant="outline"
               size="sm"
-              className="h-7 px-2 text-xs"
+              className="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm"
               disabled={domain.isSold || !domain.isAvailable}
             >
               <Link
                 href={`/domains/${domain._id}`}
                 className="flex items-center gap-1"
               >
-                <Eye className="h-3 w-3" />
-                Details
+                <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span>Details</span>
               </Link>
             </Button>
           </div>
