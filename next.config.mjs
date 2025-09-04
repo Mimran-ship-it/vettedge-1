@@ -15,6 +15,16 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals.push(
+        "@napi-rs/snappy-linux-x64-gnu",
+        "@napi-rs/snappy-linux-x64-musl"
+      );
+    }
+
+    return config;
+  },
 }
 
 export default nextConfig
