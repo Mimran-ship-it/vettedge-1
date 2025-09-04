@@ -43,3 +43,29 @@ export async function POST(request: NextRequest) {
   }
 }
 
+ export async function PATCH(request: NextRequest) {
+  try {
+    await connectDB();
+    const body = await request.json();
+    const { name, isSold } = body;
+
+    if (!name) {
+      return NextResponse.json({ error: "Domain name is required" }, { status: 400 });
+    }
+
+    const updatedDomain = await Domain.findOneAndUpdate(
+      { name },              // 🔎 find by name
+      { isSold },            // ✅ update isSold
+      { new: true }          // return updated doc
+    );
+
+    if (!updatedDomain) {
+      return NextResponse.json({ error: "Domain not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(updatedDomain);
+  } catch (error) {
+    console.error("Error updating domain:", error);
+    return NextResponse.json({ error: "Failed to update domain" }, { status: 500 });
+  }
+}
