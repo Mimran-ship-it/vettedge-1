@@ -50,12 +50,7 @@ const policySections = [
       "A small processing/restocking fee may apply depending on the payment processor used",
     ],
   },
-  {
-    icon: MessageCircle,
-    title: "How to Request a Return",
-    description:
-      "To request a return, contact us via [Live Chat] or our Contact Form.",
-  },
+
 ]
 
 export default function RefundPolicyPage() {

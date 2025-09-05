@@ -62,7 +62,7 @@ export function HeroSection() {
                 variant="secondary"
                 className="bg-[#33BDC7]/10 text-[#33BDC7] border-[#33BDC7]/30 px-4 py-2 mx-auto lg:mx-0"
               >
-                🔥 Expired Domain Marketplace
+                🔥 Expired Domains Marketplace
               </Badge>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight break-words">

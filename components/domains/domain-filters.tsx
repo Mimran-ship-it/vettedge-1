@@ -23,10 +23,10 @@ interface ActiveFilters {
   domainAuthorityRange: [number, number]
   trustFlowRange: [number, number]
   citationFlowRange: [number, number]
-  ageMin: number
-  referringDomainsMin: number
-  authorityLinksMin: number
-  monthlyTrafficMin: number
+  ageMin: number | null
+  referringDomainsMin: number | null
+  authorityLinksMin: number | null
+  monthlyTrafficMin: number | null
   tags: string[]
   isHot: "all" | "yes" | "no"
 }
@@ -47,10 +47,13 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
   const [domainAuthorityRange, setDomainAuthorityRange] = useState<[number, number]>(currentFilters.domainAuthorityRange)
   const [trustFlowRange, setTrustFlowRange] = useState<[number, number]>(currentFilters.trustFlowRange)
   const [citationFlowRange, setCitationFlowRange] = useState<[number, number]>(currentFilters.citationFlowRange)
-  const [monthlyTrafficMin, setMonthlyTrafficMin] = useState<number>(currentFilters.monthlyTrafficMin)
-  const [ageMin, setAgeMin] = useState<number>(currentFilters.ageMin)
-  const [referringDomainsMin, setReferringDomainsMin] = useState<number>(currentFilters.referringDomainsMin)
-  const [authorityLinksMin, setAuthorityLinksMin] = useState<number>(currentFilters.authorityLinksMin)
+  
+  // Changed to allow null values for empty inputs
+  const [monthlyTrafficMin, setMonthlyTrafficMin] = useState<number | null>(currentFilters.monthlyTrafficMin)
+  const [ageMin, setAgeMin] = useState<number | null>(currentFilters.ageMin)
+  const [referringDomainsMin, setReferringDomainsMin] = useState<number | null>(currentFilters.referringDomainsMin)
+  const [authorityLinksMin, setAuthorityLinksMin] = useState<number | null>(currentFilters.authorityLinksMin)
+  
   const [isHot, setIsHot] = useState<"all" | "yes" | "no">(currentFilters.isHot)
   
   const tlds = [".com", ".net", ".org", ".io", ".co", ".ai"]
@@ -168,10 +171,10 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
       domainAuthorityRange: [0, 100],
       trustFlowRange: [0, 100],
       citationFlowRange: [0, 100],
-      monthlyTrafficMin: 0,
-      ageMin: 0,
-      referringDomainsMin: 0,
-      authorityLinksMin: 0,
+      monthlyTrafficMin: null,
+      ageMin: null,
+      referringDomainsMin: null,
+      authorityLinksMin: null,
       isHot: "all"
     }
     
@@ -191,6 +194,56 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
     setIsHot(defaultFilterValues.isHot)
     
     onFilterChange(defaultFilterValues)
+  }
+  
+  // Helper function to handle numeric input changes
+  const handleNumericInputChange = (
+    value: string, 
+    setter: (value: number | null) => void,
+    filterKey: keyof ActiveFilters
+  ) => {
+    if (value === '') {
+      setter(null)
+      applyFilters({ [filterKey]: null })
+    } else {
+      const numValue = Number(value)
+      if (!isNaN(numValue)) {
+        setter(numValue)
+        applyFilters({ [filterKey]: numValue })
+      }
+    }
+  }
+   
+  // Special handler for monthly traffic that also affects domain type
+  const handleMonthlyTrafficChange = (value: string) => {
+    if (value === '') {
+      setMonthlyTrafficMin(null)
+      // When null, show all domains (including aged)
+      if (type === "traffic") {
+        setType("all")
+        applyFilters({ monthlyTrafficMin: null, type: "all" })
+      } else {
+        applyFilters({ monthlyTrafficMin: null })
+      }
+    } else {
+      const numValue = Number(value)
+      if (!isNaN(numValue)) {
+        setMonthlyTrafficMin(numValue)
+        // If value is greater than 0, filter out aged domains
+        if (numValue > 0) {
+          setType("traffic")
+          applyFilters({ monthlyTrafficMin: numValue, type: "traffic" })
+        } else {
+          // If value is 0, show all domains (including aged)
+          if (type === "traffic") {
+            setType("all")
+            applyFilters({ monthlyTrafficMin: numValue, type: "all" })
+          } else {
+            applyFilters({ monthlyTrafficMin: numValue })
+          }
+        }
+      }
+    }
   }
    
   return (
@@ -247,7 +300,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
             <SelectTrigger>
               <SelectValue placeholder="All domains" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent modal={false}>
               <SelectItem value="all">All domains</SelectItem>
               <SelectItem value="available">Available only</SelectItem>
               <SelectItem value="sold">Sold domains</SelectItem>
@@ -269,7 +322,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
             <SelectTrigger>
               <SelectValue placeholder="All types" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent modal={false}>
               <SelectItem value="all">All types</SelectItem>
               <SelectItem value="aged">Aged Domain</SelectItem>
               <SelectItem value="traffic">Traffic Domain</SelectItem>
@@ -294,7 +347,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
             <SelectTrigger>
               <SelectValue placeholder="All domains" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent modal={false}>
               <SelectItem value="all">All domains</SelectItem>
               <SelectItem value="yes">Hot deals only</SelectItem>
               <SelectItem value="no">Exclude hot deals</SelectItem>
@@ -404,14 +457,10 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
           <Label className="font-medium text-gray-700">Monthly Traffic (min)</Label>
           <Input
             type="number"
-            value={monthlyTrafficMin}
-            onChange={(e) => {
-              const value = Number(e.target.value)
-              setMonthlyTrafficMin(value)
-              applyFilters({ monthlyTrafficMin: value })
-            }}
+            value={monthlyTrafficMin === null ? '' : monthlyTrafficMin}
+            onChange={(e) => handleMonthlyTrafficChange(e.target.value)}
             min={0}
-            placeholder="0"
+            placeholder="Any"
             className="w-full"
           />
         </div>
@@ -421,14 +470,10 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
           <Label className="font-medium text-gray-700">Age (min, years)</Label>
           <Input
             type="number"
-            value={ageMin}
-            onChange={(e) => {
-              const value = Number(e.target.value)
-              setAgeMin(value)
-              applyFilters({ ageMin: value })
-            }}
+            value={ageMin === null ? '' : ageMin}
+            onChange={(e) => handleNumericInputChange(e.target.value, setAgeMin, 'ageMin')}
             min={0}
-            placeholder="0"
+            placeholder="Any"
             className="w-full"
           />
         </div>
@@ -438,14 +483,10 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
           <Label className="font-medium text-gray-700">Referring Domains (min)</Label>
           <Input
             type="number"
-            value={referringDomainsMin}
-            onChange={(e) => {
-              const value = Number(e.target.value)
-              setReferringDomainsMin(value)
-              applyFilters({ referringDomainsMin: value })
-            }}
+            value={referringDomainsMin === null ? '' : referringDomainsMin}
+            onChange={(e) => handleNumericInputChange(e.target.value, setReferringDomainsMin, 'referringDomainsMin')}
             min={0}
-            placeholder="0"
+            placeholder="Any"
             className="w-full"
           />
         </div>
@@ -455,14 +496,10 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
           <Label className="font-medium text-gray-700">Authority Links (min)</Label>
           <Input
             type="number"
-            value={authorityLinksMin}
-            onChange={(e) => {
-              const value = Number(e.target.value)
-              setAuthorityLinksMin(value)
-              applyFilters({ authorityLinksMin: value })
-            }}
+            value={authorityLinksMin === null ? '' : authorityLinksMin}
+            onChange={(e) => handleNumericInputChange(e.target.value, setAuthorityLinksMin, 'authorityLinksMin')}
             min={0}
-            placeholder="0"
+            placeholder="Any"
             className="w-full"
           />
         </div>
