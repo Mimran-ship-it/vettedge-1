@@ -75,7 +75,7 @@ export function AdminSidebar() {
         <div className="flex items-center space-x-2 px-4 py-2">
         <Link href="/">
   <Image
-    src="/logo.jpg"
+    src="/logo.png"
     alt="Vettedge Logo"
     width={55}
     height={55}

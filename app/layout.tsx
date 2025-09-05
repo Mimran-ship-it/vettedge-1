@@ -55,11 +55,9 @@ export default function RootLayout({
           <CartProvider>
             <ChatProvider>
               <StripeProvider>
-                <WishlistProvider>
-                  <Header />
+                <WishlistProvider> 
                   {children}
-                  <LiveChat/>
-                  <Footer />
+                  <LiveChat/> 
                 </WishlistProvider>
               </StripeProvider>
               <Script

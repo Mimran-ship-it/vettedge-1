@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useState } from "react"
 import { Facebook, Instagram, Mail, Phone, MapPin, Code2, Twitter } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Image from "next/image"
 
 export function Footer() {
   const [email, setEmail] = useState("")
@@ -43,11 +44,21 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* Logo & Social */}
           <div className="lg:col-span-2 flex flex-col gap-4 pb-0">
-            <Link href="/">
+
+
+            <Link href="/" className="flex items-center space-x-3">
+              <Image
+                src="/logo.png"
+                alt="Vettedge Logo"
+                width={40}
+                height={40}
+                className="rounded-lg"
+              />
               <h2 className="text-xl font-bold bg-gradient-to-r from-[#33BDC7] via-[#38C172] to-[#33BDC7] bg-clip-text text-transparent hover:from-[#38C172] hover:via-[#33BDC7] hover:to-[#38C172] transition-all duration-300 tracking-wide">
                 Vettedge.domains
               </h2>
             </Link>
+
             <p className="text-sm text-[#33BDC7] dark:text-[#33BDC7]/80">
               Vetting Process domains with proven SEO value.
             </p>
@@ -78,39 +89,39 @@ export function Footer() {
             </div>
           </div>
 
-         {/* Domains */}
-<div>
-  <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Domains</h4>
-  <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
-    <li><Link href="/domains" className="hover:text-[#33BDC7] hover:underline">Browse All</Link></li>
-    <li><Link href="/hot-deals" className="hover:text-[#33BDC7] hover:underline">Hot Deals</Link></li>
-    <li><Link href="/vetting-process" className="hover:text-[#33BDC7] hover:underline">Vetting Process</Link></li>
-  </ul>
-</div>
+          {/* Domains */}
+          <div>
+            <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Domains</h4>
+            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
+              <li><Link href="/domains" className="hover:text-[#33BDC7] hover:underline">Browse All</Link></li>
+              <li><Link href="/hot-deals" className="hover:text-[#33BDC7] hover:underline">Hot Deals</Link></li>
+              <li><Link href="/vetting-process" className="hover:text-[#33BDC7] hover:underline">Vetting Process</Link></li>
+            </ul>
+          </div>
 
-{/* Support */}
-<div>
-  <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Support</h4>
-  <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
-    
-    <li><Link href="/transfer-process" className="hover:text-[#33BDC7] hover:underline">Transfer Process</Link></li>
-    <li><Link href="/contact" className="hover:text-[#33BDC7] hover:underline">Help Center</Link></li>
-    <li><Link href="/contact#faq" className="hover:text-[#33BDC7] hover:underline">FAQ</Link></li>
-    <li><Link href="/contact" className="hover:text-[#33BDC7] hover:underline">Contact Us</Link></li>
-  </ul>
-</div>
+          {/* Support */}
+          <div>
+            <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Support</h4>
+            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
 
-{/* Company */}
-<div>
-  <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Company</h4>
-  <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
-  <li><Link href="/return-policy" className="hover:text-[#33BDC7] hover:underline">Return Policy</Link></li>
-    <li><Link href="/about" className="hover:text-[#33BDC7] hover:underline">About Us</Link></li>
-    <li><Link href="/blog" className="hover:text-[#33BDC7] hover:underline">Blog</Link></li>
-    <li><Link href="/terms" className="hover:text-[#33BDC7] hover:underline">Terms</Link></li>
-    <li><Link href="/privacy" className="hover:text-[#33BDC7] hover:underline">Privacy</Link></li>
-  </ul>
-</div>
+              <li><Link href="/transfer-process" className="hover:text-[#33BDC7] hover:underline">Transfer Process</Link></li>
+              <li><Link href="/contact" className="hover:text-[#33BDC7] hover:underline">Help Center</Link></li>
+              <li><Link href="/contact#faq" className="hover:text-[#33BDC7] hover:underline">FAQ</Link></li>
+              <li><Link href="/contact" className="hover:text-[#33BDC7] hover:underline">Contact Us</Link></li>
+            </ul>
+          </div>
+
+          {/* Company */}
+          <div>
+            <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Company</h4>
+            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
+              <li><Link href="/return-policy" className="hover:text-[#33BDC7] hover:underline">Return Policy</Link></li>
+              <li><Link href="/about" className="hover:text-[#33BDC7] hover:underline">About Us</Link></li>
+              <li><Link href="/blog" className="hover:text-[#33BDC7] hover:underline">Blog</Link></li>
+              <li><Link href="/terms" className="hover:text-[#33BDC7] hover:underline">Terms</Link></li>
+              <li><Link href="/privacy" className="hover:text-[#33BDC7] hover:underline">Privacy</Link></li>
+            </ul>
+          </div>
 
 
           {/* Contact Details */}
@@ -132,7 +143,7 @@ export function Footer() {
             </ul>
           </div>
         </div>
- 
+
         {/* Footer Bottom */}
         <div className="text-center mt-6  text-xs text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-2">
           <div className="flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-3">
@@ -140,7 +151,7 @@ export function Footer() {
               <Code2 className="w-3 h-3" />
               <span>© 2025 Vettedge.domains. All rights reserved.</span>
             </div>
-             
+
           </div>
         </div>
       </div>
