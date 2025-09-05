@@ -30,7 +30,6 @@ import { useWishlist } from "@/components/providers/wishlist-provider"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
-
 interface DomainCardProps {
   domain: {
     _id: string
@@ -62,7 +61,6 @@ interface DomainCardProps {
     updatedAt: string
   }
 }
-
 export function DomainCard({ domain }: DomainCardProps) {
   const { user } = useAuth()
   const router = useRouter()
@@ -208,11 +206,11 @@ View full details:`;
             fill
             className={cn(
               "object-cover transition duration-300",
-              !domain.isAvailable && !domain.isSold && "blur-sm"
+              domain.isSold ? "blur-[40px] brightness-50" : (!domain.isAvailable && !domain.isSold ? "blur-sm" : "")
             )}
           />
           {domain.isSold && (
-            <div className="absolute inset-0 bg-black/50 z-10 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/80 z-10 flex items-center justify-center">
               <Badge variant="destructive" className="text-xs px-2 py-1">
                 SOLD
               </Badge>
@@ -230,9 +228,18 @@ View full details:`;
         {/* Domain Name */}
         <CardHeader className="p-0 pb-2 sm:pb-3">
           <div className="flex items-start justify-between">
-            <CardTitle className="text-base sm:text-lg font-bold text-gray-900 truncate pr-2">
-              {domain.name}
-            </CardTitle>
+            <div className="flex-1 min-w-0">
+              {domain.isSold ? (
+                <div className="relative">
+                  <div className="absolute inset-0 blur-[30px] bg-gradient-to-r from-gray-300 to-gray-400 opacity-70"></div>
+                  <div className="relative text-transparent">███████████████████</div>
+                </div>
+              ) : (
+                <CardTitle className="text-base sm:text-lg font-bold text-gray-900 truncate pr-2">
+                  {domain.name}
+                </CardTitle>
+              )}
+            </div>
             <div className="flex gap-1 flex-shrink-0">
               <Button
                 variant="ghost"

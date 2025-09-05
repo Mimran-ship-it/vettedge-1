@@ -120,20 +120,6 @@ export function Header() {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-1">
-<<<<<<< HEAD
-              <div className="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center">
-                <Image
-                  src="/logo3.png"
-                  alt="Vettedge Logo"
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                />
-              </div>
-              <span className="text-lg sm:text-xl font-semibold text-gray-900">
-                Vettedge.domains
-              </span>
-=======
             <div className="w-60 rounded-lg overflow-hidden flex items-center ">
   <Image
     src="logo.png"
@@ -147,7 +133,6 @@ export function Header() {
   </span>
 </div>
               
->>>>>>> 3abd512bae5bfd57367483dad9dfee1171c680d8
             </Link>
             
             {/* Desktop Navigation - Hidden on mobile */}
