@@ -96,6 +96,8 @@ export function Footer() {
               <li><Link href="/domains" className="hover:text-[#33BDC7] hover:underline">Browse All</Link></li>
               <li><Link href="/hot-deals" className="hover:text-[#33BDC7] hover:underline">Hot Deals</Link></li>
               <li><Link href="/vetting-process" className="hover:text-[#33BDC7] hover:underline">Vetting Process</Link></li>
+              <li><Link href="/return-policy" className="hover:text-[#33BDC7] hover:underline">Return Policy</Link></li>
+
             </ul>
           </div>
 
@@ -115,7 +117,6 @@ export function Footer() {
           <div>
             <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Company</h4>
             <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
-              <li><Link href="/return-policy" className="hover:text-[#33BDC7] hover:underline">Return Policy</Link></li>
               <li><Link href="/about" className="hover:text-[#33BDC7] hover:underline">About Us</Link></li>
               <li><Link href="/blog" className="hover:text-[#33BDC7] hover:underline">Blog</Link></li>
               <li><Link href="/terms" className="hover:text-[#33BDC7] hover:underline">Terms</Link></li>
