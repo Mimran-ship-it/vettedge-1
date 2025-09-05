@@ -55,7 +55,9 @@ export default function RootLayout({
             <ChatProvider>
               <StripeProvider>
                 <WishlistProvider>
+                  <Header />
                   {children}
+                  <Footer />
                 </WishlistProvider>
               </StripeProvider>
               <Script
