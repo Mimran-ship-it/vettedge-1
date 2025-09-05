@@ -30,7 +30,9 @@ A new premium domain is now available in our marketplace:
 - Price: $${domain.price}
 - Age: ${domain.metrics.age} years
 - Domain Authority: ${domain.metrics.domainAuthority}
+- Domain Rank: ${domain.metrics.domainRank}
 - Referring Domains: ${domain.metrics.referringDomains}
+- Authority Links: ${domain.metrics.authorityLinks?.join(", ") || "N/A"}
 - Language: ${domain.metrics.language}
 
 👉 View it here: ${domainUrl}
@@ -38,15 +40,10 @@ A new premium domain is now available in our marketplace:
 Best regards,  
 The Vettedge Team
 
-(Unsubscribe: ${process.env.NEXT_PUBLIC_BASE_URL}/unsubscribe?email=${encodeURIComponent(user.email)})
+(You can unsubscribe anytime: ${process.env.NEXT_PUBLIC_BASE_URL}/unsubscribe?email=${encodeURIComponent(user.email)})
         `,
         html: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; color: #333; line-height: 1.6;">
-  <!-- Logo -->
-  <div style="text-align: center; margin-bottom: 20px;">
-    <img src="${process.env.NEXT_PUBLIC_SITE_URL}/logo.png" alt="Vettedge Domains" style="max-width: 180px;" />
-  </div>
-
   <h2 style="color: #0070f3;">🚀 New Domain Opportunity</h2>
   <p>Hi ${user.name || "there"},</p>
   <p>We’re excited to let you know that a new premium domain has just been listed:</p>
@@ -56,7 +53,9 @@ The Vettedge Team
     <tr><td><strong>Price:</strong></td><td>$${domain.price}</td></tr>
     <tr><td><strong>Age:</strong></td><td>${domain.metrics.age} years</td></tr>
     <tr><td><strong>Domain Authority (DA):</strong></td><td>${domain.metrics.domainAuthority}</td></tr>
+    <tr><td><strong>Domain Rank (DR):</strong></td><td>${domain.metrics.domainRank}</td></tr>
     <tr><td><strong>Referring Domains:</strong></td><td>${domain.metrics.referringDomains}</td></tr>
+    <tr><td><strong>Authority Links:</strong></td><td>${domain.metrics.authorityLinks?.map(link => `<a href="https://${link}" target="_blank">${link}</a>`).join(", ") || "N/A"}</td></tr>
     <tr><td><strong>Language:</strong></td><td>${domain.metrics.language}</td></tr>
   </table>
 
@@ -73,6 +72,10 @@ The Vettedge Team
     You’re receiving this update because you subscribed to Vettedge Domains.  
     If you’d prefer not to get these emails, you can  
     <a href="${process.env.NEXT_PUBLIC_BASE_URL}/unsubscribe?email=${encodeURIComponent(user.email)}">unsubscribe here</a>.
+  </p>
+
+  <p style="font-size: 13px; color: #777;">
+    Vettedge Domains, 123 Business Street, Karachi, Pakistan
   </p>
 </div>
         `,
