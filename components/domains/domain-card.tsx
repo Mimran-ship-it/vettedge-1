@@ -21,6 +21,7 @@ import {
   Tag,
   BarChart3,
   ShoppingBag,
+  CheckCircle ,
   Eye,
   Share2,
 } from "lucide-react"
@@ -403,7 +404,19 @@ View full details:`;
                 <span>Details</span>
               </Link>
             </Button>
+           
           </div>
+         
+<div className="flex  gap-3 pt-2 text-sm text-gray-600">
+  <div className="flex items-center gap-1.5">
+    <CheckCircle className="h-3 w-3 text-green-600 flex-shrink-0" />
+    <span>Search engine indexed</span>
+  </div>
+  <div className="flex items-center gap-1.5">
+    <CheckCircle className="h-3 w-3 text-green-600 flex-shrink-0" />
+    <span>Trademark Free</span>
+  </div>
+</div>
         </CardContent>
       </div>
     </Card>
