@@ -74,9 +74,6 @@ The Vettedge Team
     <a href="${process.env.NEXT_PUBLIC_BASE_URL}/unsubscribe?email=${encodeURIComponent(user.email)}">unsubscribe here</a>.
   </p>
 
-  <p style="font-size: 13px; color: #777;">
-    Vettedge Domains, 123 Business Street, Karachi, Pakistan
-  </p>
 </div>
         `,
       })
