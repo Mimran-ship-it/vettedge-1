@@ -14,41 +14,70 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "No users to notify" }, { status: 200 })
     }
 
+    const domainUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/domains`
+
     for (const user of users) {
-      const domainUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/domains`
-
       await resend.emails.send({
-        from: "Shoaib@vettedge.domains",
+        from: "Vettedge Domains <support@vettedge.domains>", // ✅ use support@
         to: user.email,
-        subject: `New Domain Available: ${domain.name}`,
-        text: `Hello ${user.name || "there"}, A new domain is available: ${domain.name} for $${domain.price} in our marketplace.`,
+        subject: `🔥 New Domain Just Dropped: ${domain.name}`,
+        text: `
+Hello ${user.name || "there"},
+
+A new premium domain is now available in our marketplace:
+
+- Name: ${domain.name}
+- Price: $${domain.price}
+- Age: ${domain.metrics.age} years
+- Domain Authority: ${domain.metrics.domainAuthority}
+- Trust Flow: ${domain.metrics.trustFlow}
+- Citation Flow: ${domain.metrics.citationFlow}
+- Referring Domains: ${domain.metrics.referringDomains}
+- Language: ${domain.metrics.language}
+
+👉 View it here: ${domainUrl}
+
+Best regards,  
+The Vettedge Team
+
+(You can unsubscribe anytime: ${process.env.NEXT_PUBLIC_BASE_URL}/unsubscribe?email=${encodeURIComponent(user.email)})
+        `,
         html: `
-          <div style="font-family: Arial, sans-serif; color: #333;">
-                       <table style="border-collapse: collapse; margin: 12px 0;">
-              <tr><td><strong>Name:</strong></td><td>${domain.name}</td></tr>
-              <tr><td><strong>Price:</strong></td><td>$${domain.price}</td></tr>
-              <tr><td><strong>Age:</strong></td><td>${domain.metrics.age} years</td></tr>
-              <tr><td><strong>Domain Authority (DA):</strong></td><td>${domain.metrics.domainAuthority}</td></tr>
-              <tr><td><strong>Trust Flow (TF):</strong></td><td>${domain.metrics.trustFlow}</td></tr>
-              <tr><td><strong>Citation Flow (CF):</strong></td><td>${domain.metrics.citationFlow}</td></tr>
-              <tr><td><strong>Referring Domains:</strong></td><td>${domain.metrics.referringDomains}</td></tr>
-              <tr><td><strong>Language:</strong></td><td>${domain.metrics.language}</td></tr>
-            </table>
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; color: #333; line-height: 1.6;">
+  <h2 style="color: #0070f3;">🚀 New Domain Opportunity</h2>
+  <p>Hi ${user.name || "there"},</p>
+  <p>We’re excited to let you know that a new premium domain has just been listed:</p>
 
-            <p>
-              <a href="${domainUrl}" 
-                 style="background: #0070f3; color: #fff; padding: 10px 16px; border-radius: 6px; text-decoration: none;">
-                🔗 View Domain
-              </a>
-            </p>
+  <table style="border-collapse: collapse; margin: 16px 0; width: 100%;">
+    <tr><td><strong>Name:</strong></td><td>${domain.name}</td></tr>
+    <tr><td><strong>Price:</strong></td><td>$${domain.price}</td></tr>
+    <tr><td><strong>Age:</strong></td><td>${domain.metrics.age} years</td></tr>
+    <tr><td><strong>Domain Authority (DA):</strong></td><td>${domain.metrics.domainAuthority}</td></tr>
+    <tr><td><strong>Trust Flow (TF):</strong></td><td>${domain.metrics.trustFlow}</td></tr>
+    <tr><td><strong>Citation Flow (CF):</strong></td><td>${domain.metrics.citationFlow}</td></tr>
+    <tr><td><strong>Referring Domains:</strong></td><td>${domain.metrics.referringDomains}</td></tr>
+    <tr><td><strong>Language:</strong></td><td>${domain.metrics.language}</td></tr>
+  </table>
 
-            <p style="font-size: 12px; color: #888;">
-              If you don’t want to receive these updates, you can 
-              <a href="${process.env.NEXT_PUBLIC_BASE_URL}/unsubscribe?email=${encodeURIComponent(user.email)}">
-                unsubscribe here
-              </a>.
-            </p>
-          </div>
+  <p>
+    <a href="${domainUrl}" 
+       style="display: inline-block; background: #0070f3; color: #fff; padding: 12px 18px; border-radius: 6px; text-decoration: none; font-weight: bold;">
+      🔗 View Domain
+    </a>
+  </p>
+
+  <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
+
+  <p style="font-size: 13px; color: #777;">
+    You’re receiving this update because you subscribed to Vettedge Domains.  
+    If you’d prefer not to get these emails, you can  
+    <a href="${process.env.NEXT_PUBLIC_BASE_URL}/unsubscribe?email=${encodeURIComponent(user.email)}">unsubscribe here</a>.
+  </p>
+
+  <p style="font-size: 13px; color: #777;">
+    Vettedge Domains, 123 Business Street, Karachi, Pakistan
+  </p>
+</div>
         `,
       })
     }

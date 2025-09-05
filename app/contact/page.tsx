@@ -120,7 +120,7 @@ export default function ContactPage() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}
-        variants={fadeUp}
+        variants={fadeUp} 
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
           <Badge variant="secondary" className="bg-white text-[#33BDC7] border-[#4DD184]">

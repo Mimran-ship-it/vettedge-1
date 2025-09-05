@@ -15,6 +15,7 @@ import { Elements } from "@stripe/react-stripe-js"
 import { loadStripe } from "@stripe/stripe-js"
 import { useEffect } from "react"
 import { WishlistProvider } from "@/components/providers/wishlist-provider"
+import { LiveChat } from "@/components/chat/live-chat"
 
 const inter = Inter({ subsets: ["latin"] })
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
@@ -57,6 +58,7 @@ export default function RootLayout({
                 <WishlistProvider>
                   <Header />
                   {children}
+                  <LiveChat/>
                   <Footer />
                 </WishlistProvider>
               </StripeProvider>
@@ -69,6 +71,7 @@ export default function RootLayout({
           </CartProvider>
         </AuthProvider>
       </body>
+      
     </html>
   )
 }

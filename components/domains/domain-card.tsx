@@ -1,4 +1,3 @@
-// Update the DomainCard component
 "use client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -97,7 +96,7 @@ export function DomainCard({ domain }: DomainCardProps) {
       description: `${domain.name} has been added to your cart.`,
     })
   }
-
+  
   const handleBuyNow = () => {
     if (domain.isSold || !domain.isAvailable) {
       toast({
@@ -125,7 +124,7 @@ export function DomainCard({ domain }: DomainCardProps) {
       router.push("/checkout")
     }
   }
-
+  
   const handleWishlistToggle = () => {
     if (isWishlisted) {
       removeFromWishlist(domain._id)
@@ -141,7 +140,7 @@ export function DomainCard({ domain }: DomainCardProps) {
       })
     }
   }
-
+  
   const handleShare = async () => {
     const url = `${window.location.origin}/domains/${domain._id}`;
     
@@ -194,7 +193,7 @@ View full details:`;
       }
     }
   };
-
+  
   return (
     <Card className={cn(
       "relative group hover:shadow-sm hover:rounded-xl transition-all duration-300 overflow-hidden flex flex-col w-full",
@@ -298,8 +297,8 @@ View full details:`;
             </Badge>
           </div>
           
-          {/* SEO & Domain Metrics - Responsive Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 text-[10px] sm:text-xs">
+          {/* SEO & Domain Metrics - Updated for Mobile */}
+          <div className="grid grid-cols-3 gap-1 sm:gap-3 text-[10px] sm:text-xs">
             {/* Column 1 */}
             <div className="space-y-1 sm:space-y-2">
               <div className="flex items-center gap-1 text-gray-600">
