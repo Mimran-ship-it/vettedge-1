@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useLayoutEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
@@ -94,17 +94,16 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
     }
   }
   
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      // Ensure body styles are restored if component unmounts while dropdown is open
-      document.body.style.overflow = originalBodyStyleRef.current.overflow
-      document.body.style.position = originalBodyStyleRef.current.position
-      document.body.style.top = originalBodyStyleRef.current.top
-      document.body.style.width = originalBodyStyleRef.current.width
-    }
-  }, [])
-  
+// Cleanup on unmount (useLayoutEffect prevents jumps in production)
+useLayoutEffect(() => {
+  return () => {
+    document.body.style.overflow = originalBodyStyleRef.current.overflow
+    document.body.style.position = originalBodyStyleRef.current.position
+    document.body.style.top = originalBodyStyleRef.current.top
+    document.body.style.width = originalBodyStyleRef.current.width
+  }
+}, [])
+
   // Update state when currentFilters prop changes
   useEffect(() => {
     setPriceRange(currentFilters.priceRange)
@@ -513,4 +512,4 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
       </div>
     </div>
   )
-}
+} 
