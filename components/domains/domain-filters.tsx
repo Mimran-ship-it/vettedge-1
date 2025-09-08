@@ -68,31 +68,24 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
   // Improved scroll prevention using Radix's onOpenChange
   const handleSelectOpenChange = (open: boolean) => {
     if (open) {
-      // Store current scroll position and body styles
       scrollPositionRef.current = window.scrollY
       originalBodyStyleRef.current = {
         overflow: document.body.style.overflow,
         position: document.body.style.position,
         top: document.body.style.top,
-        width: document.body.style.width
+        width: document.body.style.width,
       }
-       
-      // Lock scroll
-      document.body.style.overflow = 'hidden'
-      document.body.style.position = 'fixed'
-      document.body.style.top = `-${scrollPositionRef.current}px`
-      document.body.style.width = '100%'
+  
+      // ✅ Only hide overflow, don’t fix body
+      document.body.style.overflow = "hidden"
     } else {
-      // Restore original body styles and scroll position
       document.body.style.overflow = originalBodyStyleRef.current.overflow
-      document.body.style.position = originalBodyStyleRef.current.position
-      document.body.style.top = originalBodyStyleRef.current.top
-      document.body.style.width = originalBodyStyleRef.current.width
-      
-      // Restore scroll position
+  
+      // ✅ Restore scroll manually
       window.scrollTo(0, scrollPositionRef.current)
     }
   }
+  
   
 // Cleanup on unmount (useLayoutEffect prevents jumps in production)
 useLayoutEffect(() => {
