@@ -292,7 +292,11 @@ useLayoutEffect(() => {
             <SelectTrigger>
               <SelectValue placeholder="All domains" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent
+  position="popper"       // makes it use popper instead of fixed positioning
+  sideOffset={4}          // small gap between trigger and dropdown
+  avoidCollisions={false} // disables aggressive repositioning that can cause jumps
+>
               <SelectItem value="all">All domains</SelectItem>
               <SelectItem value="available">Available only</SelectItem>
               <SelectItem value="sold">Sold domains</SelectItem>
@@ -314,7 +318,11 @@ useLayoutEffect(() => {
             <SelectTrigger>
               <SelectValue placeholder="All types" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent
+  position="popper"       // makes it use popper instead of fixed positioning
+  sideOffset={4}          // small gap between trigger and dropdown
+  avoidCollisions={false} // disables aggressive repositioning that can cause jumps
+>
               <SelectItem value="all">All types</SelectItem>
               <SelectItem value="aged">Aged Domain</SelectItem>
               <SelectItem value="traffic">Traffic Domain</SelectItem>
@@ -339,7 +347,11 @@ useLayoutEffect(() => {
             <SelectTrigger>
               <SelectValue placeholder="All domains" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent
+  position="popper"       // makes it use popper instead of fixed positioning
+  sideOffset={4}          // small gap between trigger and dropdown
+  avoidCollisions={false} // disables aggressive repositioning that can cause jumps
+>
               <SelectItem value="all">All domains</SelectItem>
               <SelectItem value="yes">Hot deals only</SelectItem>
               <SelectItem value="no">Exclude hot deals</SelectItem>
