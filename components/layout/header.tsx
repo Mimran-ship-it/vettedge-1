@@ -122,7 +122,7 @@ export function Header() {
             <Link href="/" className="flex items-center space-x-1">
             <div className="w-60 rounded-lg overflow-hidden flex items-center ">
   <Image
-    src="logo.png"
+    src="/logo.png"
     alt="Vettedge Logo"
     width={80}   // increased size
     height={40}   // keep proportions

@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useLayoutEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
@@ -68,43 +68,35 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
   // Improved scroll prevention using Radix's onOpenChange
   const handleSelectOpenChange = (open: boolean) => {
     if (open) {
-      // Store current scroll position and body styles
       scrollPositionRef.current = window.scrollY
       originalBodyStyleRef.current = {
         overflow: document.body.style.overflow,
         position: document.body.style.position,
         top: document.body.style.top,
-        width: document.body.style.width
+        width: document.body.style.width,
       }
-       
-      // Lock scroll
-      document.body.style.overflow = 'hidden'
-      document.body.style.position = 'fixed'
-      document.body.style.top = `-${scrollPositionRef.current}px`
-      document.body.style.width = '100%'
+  
+      // ✅ Only hide overflow, don’t fix body
+      document.body.style.overflow = "hidden"
     } else {
-      // Restore original body styles and scroll position
       document.body.style.overflow = originalBodyStyleRef.current.overflow
-      document.body.style.position = originalBodyStyleRef.current.position
-      document.body.style.top = originalBodyStyleRef.current.top
-      document.body.style.width = originalBodyStyleRef.current.width
-      
-      // Restore scroll position
+  
+      // ✅ Restore scroll manually
       window.scrollTo(0, scrollPositionRef.current)
     }
   }
   
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      // Ensure body styles are restored if component unmounts while dropdown is open
-      document.body.style.overflow = originalBodyStyleRef.current.overflow
-      document.body.style.position = originalBodyStyleRef.current.position
-      document.body.style.top = originalBodyStyleRef.current.top
-      document.body.style.width = originalBodyStyleRef.current.width
-    }
-  }, [])
   
+// Cleanup on unmount (useLayoutEffect prevents jumps in production)
+useLayoutEffect(() => {
+  return () => {
+    document.body.style.overflow = originalBodyStyleRef.current.overflow
+    document.body.style.position = originalBodyStyleRef.current.position
+    document.body.style.top = originalBodyStyleRef.current.top
+    document.body.style.width = originalBodyStyleRef.current.width
+  }
+}, [])
+
   // Update state when currentFilters prop changes
   useEffect(() => {
     setPriceRange(currentFilters.priceRange)
@@ -300,7 +292,11 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
             <SelectTrigger>
               <SelectValue placeholder="All domains" />
             </SelectTrigger>
-            <SelectContent modal={false}>
+            <SelectContent
+  position="popper"       // makes it use popper instead of fixed positioning
+  sideOffset={4}          // small gap between trigger and dropdown
+  avoidCollisions={false} // disables aggressive repositioning that can cause jumps
+>
               <SelectItem value="all">All domains</SelectItem>
               <SelectItem value="available">Available only</SelectItem>
               <SelectItem value="sold">Sold domains</SelectItem>
@@ -322,7 +318,11 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
             <SelectTrigger>
               <SelectValue placeholder="All types" />
             </SelectTrigger>
-            <SelectContent modal={false}>
+            <SelectContent
+  position="popper"       // makes it use popper instead of fixed positioning
+  sideOffset={4}          // small gap between trigger and dropdown
+  avoidCollisions={false} // disables aggressive repositioning that can cause jumps
+>
               <SelectItem value="all">All types</SelectItem>
               <SelectItem value="aged">Aged Domain</SelectItem>
               <SelectItem value="traffic">Traffic Domain</SelectItem>
@@ -347,7 +347,11 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
             <SelectTrigger>
               <SelectValue placeholder="All domains" />
             </SelectTrigger>
-            <SelectContent modal={false}>
+            <SelectContent
+  position="popper"       // makes it use popper instead of fixed positioning
+  sideOffset={4}          // small gap between trigger and dropdown
+  avoidCollisions={false} // disables aggressive repositioning that can cause jumps
+>
               <SelectItem value="all">All domains</SelectItem>
               <SelectItem value="yes">Hot deals only</SelectItem>
               <SelectItem value="no">Exclude hot deals</SelectItem>
@@ -513,4 +517,4 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
       </div>
     </div>
   )
-}
+} 
