@@ -21,7 +21,7 @@ import {
   Tag,
   BarChart3,
   ShoppingBag,
-  CheckCircle ,
+  CheckCircle,
   Eye,
   Share2,
 } from "lucide-react"
@@ -31,6 +31,7 @@ import { useWishlist } from "@/components/providers/wishlist-provider"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
+
 interface DomainCardProps {
   domain: {
     _id: string
@@ -62,6 +63,7 @@ interface DomainCardProps {
     updatedAt: string
   }
 }
+
 export function DomainCard({ domain }: DomainCardProps) {
   const { user } = useAuth()
   const router = useRouter()
@@ -305,6 +307,57 @@ View full details:`;
             </Badge>
           </div>
           
+          {/* Enhanced Overall Score Section */}
+          <div className="mb-3 sm:mb-4 bg-blue-50 rounded-lg p-3 border border-blue-100">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="h-5 w-5 text-blue-600" />
+                <span className="text-sm font-semibold text-blue-800">Overall Score</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-bold text-blue-800">
+                  {domain.metrics.domainAuthority}
+                </span>
+                <div className="relative w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div 
+                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
+                    style={{ width: `${Math.min(100, domain.metrics.domainAuthority)}%` }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Desktop Score Description */}
+            <div className="  text-xs text-gray-600">
+              {domain.metrics.domainAuthority >= 80 ? (
+                <span className="text-green-600 font-medium">Exceptional domain authority</span>
+              ) : domain.metrics.domainAuthority >= 60 ? (
+                <span className="text-blue-600 font-medium">Strong domain authority</span>
+              ) : domain.metrics.domainAuthority >= 40 ? (
+                <span className="text-yellow-600 font-medium">Moderate domain authority</span>
+              ) : (
+                <span className="text-orange-600 font-medium">Developing domain authority</span>
+              )}
+            </div>
+            
+            {/* Mobile Score Indicator */}
+            {/* <div className="sm:hidden flex items-center justify-between mt-2">
+              <div className="flex-1 mr-2">
+                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
+                    style={{ width: `${Math.min(100, domain.metrics.domainAuthority)}%` }}
+                  ></div>
+                </div>
+              </div>
+              <span className="text-xs font-medium text-gray-600">
+                {domain.metrics.domainAuthority >= 80 ? 'Exceptional' : 
+                 domain.metrics.domainAuthority >= 60 ? 'Strong' :
+                 domain.metrics.domainAuthority >= 40 ? 'Moderate' : 'Developing'}
+              </span>
+            </div> */}
+          </div>
+          
           {/* SEO & Domain Metrics - Updated for Mobile */}
           <div className="grid grid-cols-3 gap-1 sm:gap-3 text-[10px] sm:text-xs">
             {/* Column 1 */}
@@ -341,10 +394,6 @@ View full details:`;
             
             {/* Column 3 */}
             <div className="space-y-1 sm:space-y-2">
-              <div className="flex items-center gap-1 text-gray-600">
-                <ShieldCheck className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                <span>DA: {domain.metrics.domainAuthority}</span>
-              </div>
               {domain.type === "traffic" && domain.metrics.monthlyTraffic && (
                 <div className="flex items-center gap-1 text-gray-600">
                   <Globe className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
@@ -404,19 +453,18 @@ View full details:`;
                 <span>Details</span>
               </Link>
             </Button>
-           
           </div>
          
-<div className="flex  gap-3 pt-2 text-sm text-gray-600">
-  <div className="flex items-center gap-1.5">
-    <CheckCircle className="h-3 w-3 text-green-600 flex-shrink-0" />
-    <span>Search engine indexed</span>
-  </div>
-  <div className="flex items-center gap-1.5">
-    <CheckCircle className="h-3 w-3 text-green-600 flex-shrink-0" />
-    <span>Trademark Free</span>
-  </div>
-</div>
+          <div className="flex gap-3 pt-2 text-sm text-gray-600">
+            <div className="flex items-center gap-1.5">
+              <CheckCircle className="h-3 w-3 text-green-600 flex-shrink-0" />
+              <span>Search engine indexed</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <CheckCircle className="h-3 w-3 text-green-600 flex-shrink-0" />
+              <span>Trademark Free</span>
+            </div>
+          </div>
         </CardContent>
       </div>
     </Card>

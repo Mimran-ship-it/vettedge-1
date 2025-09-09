@@ -394,7 +394,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
         
         {/* Domain Authority */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700">Domain Authority (0-100)</Label>
+          <Label className="font-medium text-gray-700">Overall Score (0-100)</Label>
           <Slider
             value={domainAuthorityRange}
             onValueChange={(value) => {

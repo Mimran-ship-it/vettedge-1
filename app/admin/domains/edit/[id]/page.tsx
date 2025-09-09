@@ -369,7 +369,7 @@ export default function EditDomainPage() {
                         ["Domain Rank", "domainRank"],
                         ["Authority DR", "avgAuthorityDR"],
                         ["Referring Domains", "referringDomains"],
-                        ["Domain Authority", "domainAuthority"],
+                        ["Overall Score", "domainAuthority"],
                         ["Trust Flow", "trustFlow"],
                         ["Citation Flow", "citationFlow"],
                         ["Monthly Traffic", "monthlyTraffic"],
