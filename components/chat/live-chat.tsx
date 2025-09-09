@@ -25,7 +25,7 @@ export function LiveChat() {
 
   // Auto-open chat when a new message arrives (only if closed)
   useEffect(() => {
-    if (messages.length > prevMessageCount.current && !isOpen&&(prevMessageCount.current!=0||messages.length==0)) {
+    if (messages.length > prevMessageCount.current && !isOpen&&(prevMessageCount.current!=0||messages.length==1)) {
       console.log('length',messages.length,prevMessageCount.current)
       setIsOpen(true)
       setIsMinimized(false)

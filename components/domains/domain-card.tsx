@@ -198,7 +198,7 @@ View full details:`;
   return (
     <Card className={cn(
       "relative group hover:shadow-sm hover:rounded-xl transition-all duration-300 overflow-hidden flex flex-col w-full",
-      domain.isSold && "opacity-60"
+      (domain.isSold||(!domain.isAvailable)) && "opacity-60"
     )}>
       {/* Top Image - Responsive Aspect Ratio */}
       {domain.image?.length > 0 && (
@@ -209,10 +209,10 @@ View full details:`;
             fill
             className={cn(
               "object-cover transition duration-300",
-              domain.isSold ? "blur-[40px] brightness-50" : (!domain.isAvailable && !domain.isSold ? "blur-sm" : "")
+              (domain.isSold||(!domain.isAvailable)) ? "blur-[40px] brightness-50" : (!domain.isAvailable && !domain.isSold ? "blur-sm" : "")
             )}
           />
-          {domain.isSold && (
+          {(domain.isSold||(!domain.isAvailable)) && (
             <div className="absolute inset-0 bg-black/80 z-10 flex items-center justify-center">
               <Badge variant="destructive" className="text-xs px-2 py-1">
                 SOLD
@@ -232,7 +232,7 @@ View full details:`;
         <CardHeader className="p-0 pb-2 sm:pb-3">
           <div className="flex items-start justify-between">
             <div className="flex-1 min-w-0">
-              {domain.isSold ? (
+              {(domain.isSold||(!domain.isAvailable)) ? (
                 <div className="relative">
                   <div className="absolute inset-0 blur-[30px] bg-gradient-to-r from-gray-300 to-gray-400 opacity-70"></div>
                   <div className="relative text-transparent">███████████████████</div>
