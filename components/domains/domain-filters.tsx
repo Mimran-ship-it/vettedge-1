@@ -65,38 +65,51 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
     width: ''
   })
   
-  // Improved scroll prevention using Radix's onOpenChange
+  // Simplified scroll prevention that works consistently across environments
   const handleSelectOpenChange = (open: boolean) => {
     if (open) {
+      // Store current scroll position
       scrollPositionRef.current = window.scrollY
+      
+      // Store original body styles
       originalBodyStyleRef.current = {
         overflow: document.body.style.overflow,
         position: document.body.style.position,
         top: document.body.style.top,
         width: document.body.style.width,
       }
-  
-      // ✅ Only hide overflow, don’t fix body
+      
+      // Apply scroll lock styles
       document.body.style.overflow = "hidden"
+      document.body.style.position = "fixed"
+      document.body.style.top = `-${scrollPositionRef.current}px`
+      document.body.style.width = "100%"
     } else {
+      // Restore original body styles
       document.body.style.overflow = originalBodyStyleRef.current.overflow
-  
-      // ✅ Restore scroll manually
+      document.body.style.position = originalBodyStyleRef.current.position
+      document.body.style.top = originalBodyStyleRef.current.top
+      document.body.style.width = originalBodyStyleRef.current.width
+      
+      // Restore scroll position
       window.scrollTo(0, scrollPositionRef.current)
     }
   }
   
+  // Cleanup on unmount
+  useLayoutEffect(() => {
+    return () => {
+      // Ensure body styles are restored when component unmounts
+      document.body.style.overflow = originalBodyStyleRef.current.overflow
+      document.body.style.position = originalBodyStyleRef.current.position
+      document.body.style.top = originalBodyStyleRef.current.top
+      document.body.style.width = originalBodyStyleRef.current.width
+      
+      // Ensure scroll position is restored
+      window.scrollTo(0, scrollPositionRef.current)
+    }
+  }, [])
   
-// Cleanup on unmount (useLayoutEffect prevents jumps in production)
-useLayoutEffect(() => {
-  return () => {
-    document.body.style.overflow = originalBodyStyleRef.current.overflow
-    document.body.style.position = originalBodyStyleRef.current.position
-    document.body.style.top = originalBodyStyleRef.current.top
-    document.body.style.width = originalBodyStyleRef.current.width
-  }
-}, [])
-
   // Update state when currentFilters prop changes
   useEffect(() => {
     setPriceRange(currentFilters.priceRange)
@@ -292,11 +305,7 @@ useLayoutEffect(() => {
             <SelectTrigger>
               <SelectValue placeholder="All domains" />
             </SelectTrigger>
-            <SelectContent
-  position="popper"       // makes it use popper instead of fixed positioning
-  sideOffset={4}          // small gap between trigger and dropdown
-  avoidCollisions={false} // disables aggressive repositioning that can cause jumps
->
+            <SelectContent>
               <SelectItem value="all">All domains</SelectItem>
               <SelectItem value="available">Available only</SelectItem>
               <SelectItem value="sold">Sold domains</SelectItem>
@@ -318,11 +327,7 @@ useLayoutEffect(() => {
             <SelectTrigger>
               <SelectValue placeholder="All types" />
             </SelectTrigger>
-            <SelectContent
-  position="popper"       // makes it use popper instead of fixed positioning
-  sideOffset={4}          // small gap between trigger and dropdown
-  avoidCollisions={false} // disables aggressive repositioning that can cause jumps
->
+            <SelectContent>
               <SelectItem value="all">All types</SelectItem>
               <SelectItem value="aged">Aged Domain</SelectItem>
               <SelectItem value="traffic">Traffic Domain</SelectItem>
@@ -347,11 +352,7 @@ useLayoutEffect(() => {
             <SelectTrigger>
               <SelectValue placeholder="All domains" />
             </SelectTrigger>
-            <SelectContent
-  position="popper"       // makes it use popper instead of fixed positioning
-  sideOffset={4}          // small gap between trigger and dropdown
-  avoidCollisions={false} // disables aggressive repositioning that can cause jumps
->
+            <SelectContent>
               <SelectItem value="all">All domains</SelectItem>
               <SelectItem value="yes">Hot deals only</SelectItem>
               <SelectItem value="no">Exclude hot deals</SelectItem>
@@ -517,4 +518,4 @@ useLayoutEffect(() => {
       </div>
     </div>
   )
-} 
+}
