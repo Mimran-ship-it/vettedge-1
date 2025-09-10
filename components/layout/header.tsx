@@ -64,9 +64,7 @@ export function Header() {
                 <Link href="/dashboard" className={linkClass("/dashboard")}>Dashboard</Link>
               </DropdownMenuItem>
             }
-            <DropdownMenuItem asChild>
-              <Link href="/orders" className={linkClass("/orders")}>My Orders</Link>
-            </DropdownMenuItem>
+        
             <DropdownMenuItem asChild>
               <Link href="/wishlist" className={linkClass("/wishlist")}>Wishlist</Link>
             </DropdownMenuItem>
@@ -288,7 +286,7 @@ export function Header() {
                     </div>
                     <div className="flex flex-col space-y-3">
                       <Link href="/dashboard" className={linkClass("/dashboard")} onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
-                      <Link href="/orders" className={linkClass("/orders")} onClick={() => setIsMenuOpen(false)}>My Orders</Link>
+                      
                       <Link href="/wishlist" className={linkClass("/wishlist")} onClick={() => setIsMenuOpen(false)}>Wishlist</Link>
                       {user?.role === "admin" && (
                         <Link href="/admin" className={linkClass("/admin")} onClick={() => setIsMenuOpen(false)}>Admin Panel</Link>
