@@ -1,17 +1,10 @@
 "use client"
-import { useState, useEffect, useLayoutEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Flame } from "lucide-react"
 
 interface ActiveFilters {
@@ -28,7 +21,7 @@ interface ActiveFilters {
   authorityLinksMin: number | null
   monthlyTrafficMin: number | null
   tags: string[]
-  isHot: "all" | "yes" | "no"
+  isHot: boolean // Changed from "all" | "yes" | "no" to boolean
 }
 
 interface DomainFiltersProps {
@@ -54,61 +47,9 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
   const [referringDomainsMin, setReferringDomainsMin] = useState<number | null>(currentFilters.referringDomainsMin)
   const [authorityLinksMin, setAuthorityLinksMin] = useState<number | null>(currentFilters.authorityLinksMin)
   
-  const [isHot, setIsHot] = useState<"all" | "yes" | "no">(currentFilters.isHot)
+  const [isHot, setIsHot] = useState<boolean>(currentFilters.isHot) // Changed to boolean
   
   const tlds = [".com", ".net", ".org", ".io", ".co", ".ai"]
-  const scrollPositionRef = useRef(0)
-  const originalBodyStyleRef = useRef({
-    overflow: '',
-    position: '',
-    top: '',
-    width: ''
-  })
-  
-  // Simplified scroll prevention that works consistently across environments
-  const handleSelectOpenChange = (open: boolean) => {
-    if (open) {
-      // Store current scroll position
-      scrollPositionRef.current = window.scrollY
-      
-      // Store original body styles
-      originalBodyStyleRef.current = {
-        overflow: document.body.style.overflow,
-        position: document.body.style.position,
-        top: document.body.style.top,
-        width: document.body.style.width,
-      }
-      
-      // Apply scroll lock styles
-      document.body.style.overflow = "hidden"
-      document.body.style.position = "fixed"
-      document.body.style.top = `-${scrollPositionRef.current}px`
-      document.body.style.width = "100%"
-    } else {
-      // Restore original body styles
-      document.body.style.overflow = originalBodyStyleRef.current.overflow
-      document.body.style.position = originalBodyStyleRef.current.position
-      document.body.style.top = originalBodyStyleRef.current.top
-      document.body.style.width = originalBodyStyleRef.current.width
-      
-      // Restore scroll position
-      window.scrollTo(0, scrollPositionRef.current)
-    }
-  }
-  
-  // Cleanup on unmount
-  useLayoutEffect(() => {
-    return () => {
-      // Ensure body styles are restored when component unmounts
-      document.body.style.overflow = originalBodyStyleRef.current.overflow
-      document.body.style.position = originalBodyStyleRef.current.position
-      document.body.style.top = originalBodyStyleRef.current.top
-      document.body.style.width = originalBodyStyleRef.current.width
-      
-      // Ensure scroll position is restored
-      window.scrollTo(0, scrollPositionRef.current)
-    }
-  }, [])
   
   // Update state when currentFilters prop changes
   useEffect(() => {
@@ -144,6 +85,30 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
     applyFilters({ tags: newTags })
   }
   
+  // Handle availability change with checkboxes
+  const handleAvailabilityChange = (value: "all" | "available" | "sold", checked: boolean) => {
+    if (checked) {
+      setAvailability(value)
+      applyFilters({ availability: value })
+    }
+  }
+  
+  // Handle type change with checkboxes
+  const handleTypeChange = (value: "all" | "aged" | "traffic", checked: boolean) => {
+    if (checked) {
+      setType(value)
+      applyFilters({ type: value })
+    }
+  }
+  
+  // Handle hot deal toggle - simplified to directly toggle state
+  const handleHotDealToggle = () => {
+    const newIsHot = !isHot
+    setIsHot(newIsHot)
+    applyFilters({ isHot: newIsHot }) // use newIsHot, not isHot
+  }
+  
+  
   const applyFilters = (overrides = {}) => {
     const filters: ActiveFilters = {
       priceRange,
@@ -160,7 +125,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
       referringDomainsMin,
       authorityLinksMin,
       isHot,
-      ...overrides,
+      ...overrides,   // 👈 moved to the bottom
     }
     onFilterChange(filters)
   }
@@ -180,7 +145,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
       ageMin: null,
       referringDomainsMin: null,
       authorityLinksMin: null,
-      isHot: "all"
+      isHot: false
     }
     
     setPriceRange(defaultFilterValues.priceRange)
@@ -291,73 +256,88 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
           </div>
         </div>
         
-        {/* Availability */}
+        {/* Availability - Converted to Checkboxes */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700">Availability</Label>
-          <Select
-            value={availability}
-            onValueChange={(value: "all" | "available" | "sold") => {
-              setAvailability(value)
-              applyFilters({ availability: value })
-            }}
-            onOpenChange={handleSelectOpenChange}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="All domains" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All domains</SelectItem>
-              <SelectItem value="available">Available only</SelectItem>
-              <SelectItem value="sold">Sold domains</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="availability-all"
+                checked={availability === "all"}
+                onCheckedChange={(checked) => handleAvailabilityChange("all", checked as boolean)}
+              />
+              <Label htmlFor="availability-all" className="text-sm text-gray-600">All domains</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="availability-available"
+                checked={availability === "available"}
+                onCheckedChange={(checked) => handleAvailabilityChange("available", checked as boolean)}
+              />
+              <Label htmlFor="availability-available" className="text-sm text-gray-600">Available only</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="availability-sold"
+                checked={availability === "sold"}
+                onCheckedChange={(checked) => handleAvailabilityChange("sold", checked as boolean)}
+              />
+              <Label htmlFor="availability-sold" className="text-sm text-gray-600">Sold domains</Label>
+            </div>
+          </div>
         </div>
         
-        {/* Type */}
+        {/* Type - Converted to Checkboxes */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700">Type</Label>
-          <Select
-            value={type}
-            onValueChange={(value: "all" | "aged" | "traffic") => {
-              setType(value)
-              applyFilters({ type: value })
-            }}
-            onOpenChange={handleSelectOpenChange}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="All types" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All types</SelectItem>
-              <SelectItem value="aged">Aged Domain</SelectItem>
-              <SelectItem value="traffic">Traffic Domain</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="type-all"
+                checked={type === "all"}
+                onCheckedChange={(checked) => handleTypeChange("all", checked as boolean)}
+              />
+              <Label htmlFor="type-all" className="text-sm text-gray-600">All types</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="type-aged"
+                checked={type === "aged"}
+                onCheckedChange={(checked) => handleTypeChange("aged", checked as boolean)}
+              />
+              <Label htmlFor="type-aged" className="text-sm text-gray-600">Aged Domain</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="type-traffic"
+                checked={type === "traffic"}
+                onCheckedChange={(checked) => handleTypeChange("traffic", checked as boolean)}
+              />
+              <Label htmlFor="type-traffic" className="text-sm text-gray-600">Traffic Domain</Label>
+            </div>
+          </div>
         </div>
         
-        {/* isHot Filter */}
+        {/* isHot Filter - Converted to Toggle Button */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700 flex items-center gap-1">
             <Flame className="h-4 w-4 text-orange-500" />
             Hot Deal
           </Label>
-          <Select
-            value={isHot}
-            onValueChange={(value: "all" | "yes" | "no") => {
-              setIsHot(value)
-              applyFilters({ isHot: value })
-            }}
-            onOpenChange={handleSelectOpenChange}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="All domains" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All domains</SelectItem>
-              <SelectItem value="yes">Hot deals only</SelectItem>
-              <SelectItem value="no">Exclude hot deals</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant={isHot ? "default" : "outline"}
+              size="sm"
+              onClick={handleHotDealToggle}
+              className={`flex items-center ${isHot ? "bg-orange-500 hover:bg-orange-600" : ""}`}
+            >
+              <Flame className="h-4 w-4 mr-1" />
+              {isHot ? "On" : "Off"}
+            </Button>
+            <span className="text-sm text-gray-500">
+              {isHot ? "Showing hot deals only" : "Hot deals hidden"}
+            </span>
+          </div>
         </div>
         
         {/* Tags Filter */}

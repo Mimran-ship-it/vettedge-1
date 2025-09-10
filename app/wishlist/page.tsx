@@ -1,6 +1,5 @@
 "use client"
-
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
 import { Header } from "@/components/layout/header"
@@ -10,45 +9,70 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, Heart, ShoppingBag } from "lucide-react"
 import Link from "next/link"
-import { LiveChat } from "@/components/chat/live-chat"
-import Cookies from "js-cookie"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
+import { useWishlist } from "@/components/providers/wishlist-provider"
+import type { Domain } from "@/types/domain"
 
 export default function WishlistPage() {
   const { user } = useAuth()
   const router = useRouter()
-
-  const [wishlist, setWishlist] = useState<any[]>([])
+  const { wishlist } = useWishlist()
+  const [domains, setDomains] = useState<Domain[]>([])
   const [searchQuery, setSearchQuery] = useState("")
-  const [filteredDomains, setFilteredDomains] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Load wishlist from cookies
+  // Get wishlist IDs for comparison
+  const wishlistIds = useMemo(() => wishlist.map(item => item._id), [wishlist])
+  
+  // Compute filtered domains based on search query
+  const filteredDomains = useMemo(() => {
+    if (!searchQuery) return domains
+    return domains.filter(domain => 
+      domain.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      domain.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  }, [domains, searchQuery])
+
   useEffect(() => {
-    const storedWishlist = Cookies.get("wishlist")
-    if (storedWishlist) {
+    async function fetchLatestDomains() {
+      setIsLoading(true)
+      
+      // Check if wishlist has items
+      if (wishlist.length === 0) {
+        setDomains([])
+        setIsLoading(false)
+        return
+      }
+      
       try {
-        const parsed = JSON.parse(storedWishlist)
-        setWishlist(parsed)
-        setFilteredDomains(parsed)
-      } catch {
-        console.error("Failed to parse wishlist from cookies")
+        const ids = wishlist.map(d => d._id)
+        const res = await fetch(`/api/domains?ids=${ids.join(",")}`)
+        
+        if (!res.ok) {
+          throw new Error('Failed to fetch domains')
+        }
+        
+        const freshDomains = await res.json()
+        
+        // Filter domains to only include those that are in the wishlist
+        // This ensures we only show domains that match the wishlist IDs
+        const domainsInWishlist = freshDomains.filter(domain => 
+          wishlistIds.includes(domain._id)
+        )
+        
+        setDomains(domainsInWishlist)
+      } catch (error) {
+        console.error('Error fetching wishlist domains:', error)
+        // Fallback to wishlist data if API fails
+        setDomains(wishlist)
+      } finally {
+        setIsLoading(false)
       }
     }
-  }, [])
+    
+    fetchLatestDomains()
+  }, [wishlist, wishlistIds])
 
-  // Filter wishlist
-  useEffect(() => {
-    const filtered = wishlist.filter(
-      (domain) =>
-        domain.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        domain.description.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    setFilteredDomains(filtered)
-  }, [searchQuery, wishlist])
-
-  
-
-  // Animation .s (same style as Cart page)
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -57,18 +81,10 @@ export default function WishlistPage() {
     },
   }
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  }
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 pt-24">
-
-        {/* Page Heading */}
         <motion.div
           className="mb-8"
           initial={{ opacity: 0, y: -20 }}
@@ -80,8 +96,7 @@ export default function WishlistPage() {
             Keep track of domains you're interested in ({wishlist.length} domains)
           </p>
         </motion.div>
-
-        {/* Search Bar */}
+        
         {wishlist.length > 0 && (
           <motion.div
             className="mb-8"
@@ -100,9 +115,13 @@ export default function WishlistPage() {
             </div>
           </motion.div>
         )}
-
-        {/* Wishlist Items */}
-        {filteredDomains.length > 0 ? (
+        
+        {isLoading ? (
+          <div className="text-center py-16">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading your wishlist...</p>
+          </div>
+        ) : filteredDomains.length > 0 ? (
           <motion.div
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
             initial="hidden"
@@ -110,32 +129,19 @@ export default function WishlistPage() {
             variants={containerVariants}
           >
             {filteredDomains.map((domain) => (
-              <motion.div
-                key={domain._id}
-                className="mb-6"
-              >
+              <motion.div key={domain._id} className="mb-6">
                 <DomainCard domain={domain} />
               </motion.div>
             ))}
           </motion.div>
         ) : wishlist.length > 0 ? (
-          <motion.div
-            className="text-center py-12"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="text-center py-12">
             <Search className="h-16 w-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No domains found</h3>
             <p className="text-gray-500">Try adjusting your search terms</p>
-          </motion.div>
+          </div>
         ) : (
-          <motion.div
-            className="text-center py-16"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="text-center py-16">
             <Heart className="h-24 w-24 text-gray-300 mx-auto mb-6" />
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">Your wishlist is empty</h2>
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
@@ -147,10 +153,10 @@ export default function WishlistPage() {
                 Browse Domains
               </Link>
             </Button>
-          </motion.div>
+          </div>
         )}
       </main>
-      <Footer/>
+      <Footer />
     </div>
   )
 }

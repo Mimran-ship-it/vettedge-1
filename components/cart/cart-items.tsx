@@ -2,19 +2,33 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Trash2, TrendingUp, LinkIcon, Globe, Calendar } from "lucide-react"
+import { Trash2, TrendingUp, LinkIcon, Globe, Calendar, AlertCircle } from "lucide-react"
 import { useCart } from "@/components/providers/cart-provider"
 import { useToast } from "@/hooks/use-toast"
-export function CartItems() {
-  const { items, removeItem, updateQuantity } = useCart()
+import type { CartItem } from "@/types/domain"
+
+interface CartItemsProps {
+  items: CartItem[]
+  onRemoveItem?: (id: string, name: string) => void
+}
+
+export function CartItems({ items, onRemoveItem }: CartItemsProps) {
+  const { removeItem, updateQuantity } = useCart()
   const { toast } = useToast()
+
   const handleRemoveItem = (id: string, name: string) => {
     removeItem(id)
     toast({
       title: "Removed from Cart",
       description: `${name} has been removed from your cart.`,
     })
+    
+    // Also call the parent's onRemoveItem if provided
+    if (onRemoveItem) {
+      onRemoveItem(id, name)
+    }
   }
+
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-semibold text-gray-900">Cart Items ({items.length})</h2>
@@ -28,7 +42,15 @@ export function CartItems() {
             <CardContent className="p-4 sm:p-6">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">{item.name}</h3>
+                  <div className="flex items-start gap-2">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">{item.name}</h3>
+                    {item.isSold && (
+                      <Badge variant="destructive" className="text-xs flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" />
+                        <span>Sold</span>
+                      </Badge>
+                    )}
+                  </div>
                   <Badge variant="secondary" className="text-xs mb-2">
                     {item.domain?.registrar}
                   </Badge>
@@ -47,6 +69,17 @@ export function CartItems() {
                   </Button>
                 </div>
               </div>
+              
+              {/* Sold Item Notice */}
+              {item.isSold && (
+                <div className="mb-4 p-3 bg-red-50 rounded-lg border border-red-200">
+                  <div className="flex items-center text-red-800">
+                    <AlertCircle className="h-4 w-4 mr-2 flex-shrink-0" />
+                    <span className="text-sm font-medium">This domain has been sold and is no longer available for purchase.</span>
+                  </div>
+                </div>
+              )}
+              
               {/* Domain Metrics */}
               {item.domain?.metrics && (
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 p-4 bg-gray-50 rounded-lg">

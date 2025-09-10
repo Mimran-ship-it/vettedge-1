@@ -62,7 +62,7 @@ export function HeroSection() {
                 variant="secondary"
                 className="bg-[#33BDC7]/10 text-[#33BDC7] border-[#33BDC7]/30 px-4 py-2 mx-auto lg:mx-0"
               >
-                🔥 Expired Domains Marketplace
+                🔥Premium Expired Domains
               </Badge>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight break-words">
@@ -117,28 +117,7 @@ export function HeroSection() {
             </motion.div>
 
             {/* Trust Indicators */}
-            <motion.div
-              className="flex flex-wrap justify-center lg:justify-start items-center gap-6 text-gray-600 text-sm sm:text-base"
-              variants={fadeUp}
-              custom={0.6}
-            >
-              {[
-                { icon: Globe, text: "50+ Domains Sold", color: "text-[#33BDC7]" },
-                { icon: ListChecks, text: "100+ Listings", color: "text-[#33BDC7]" },
-                { icon: Store, text: "5+ Years on Market", color: "text-[#33BDC7]" },
-                
-              ].map(({ icon: Icon, text, color }, i) => (
-                <motion.div
-                  key={i}
-                  className="flex items-center space-x-2"
-                  variants={fadeUp}
-                  custom={0.7 + i * 0.1}
-                >
-                  <Icon className={`h-5 w-5 ${color}`} />
-                  <span className="font-medium">{text}</span>
-                </motion.div>
-              ))}
-            </motion.div>
+        
           </motion.div>
 
           {/* Right Content */}
@@ -169,7 +148,7 @@ export function HeroSection() {
                     />
                   </div>
                   <div className="text-center sm:text-left">
-                    <p className="text-gray-500 text-sm font-bold sm:text-base">Expired Domains Marketplace</p>
+                    <p className="text-gray-500 text-sm font-bold sm:text-base">Premium Expired Domains</p>
                   </div>
                 </motion.div>
 

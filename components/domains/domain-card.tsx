@@ -91,6 +91,7 @@ export function DomainCard({ domain }: DomainCardProps) {
       name: parsedDomain.name,
       price: parsedDomain.price,
       domain: parsedDomain,
+      isSold: parsedDomain.isSold,
     })
     toast({
       title: "Added to Cart",
@@ -113,6 +114,7 @@ export function DomainCard({ domain }: DomainCardProps) {
       name: parsedDomain.name,
       price: parsedDomain.price,
       domain: parsedDomain,
+      isSold: parsedDomain.isSold,
     })
     toast({
       title: "Added to Cart",

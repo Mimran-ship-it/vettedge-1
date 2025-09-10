@@ -35,4 +35,5 @@ export interface CartItem {
   price: number
   quantity: number
   domain?: Domain
+  isSold: boolean
 }

@@ -17,7 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
 type ActiveFilters = {
   priceRange: [number, number]
   tlds: string[]
@@ -27,16 +26,14 @@ type ActiveFilters = {
   domainAuthorityRange: [number, number]
   trustFlowRange: [number, number]
   citationFlowRange: [number, number]
-  ageMin: number
-  referringDomainsMin: number
-  authorityLinksMin: number
-  monthlyTrafficMin: number
+  ageMin: number | null
+  referringDomainsMin: number | null
+  authorityLinksMin: number | null
+  monthlyTrafficMin: number | null
   tags: string[]
-  isHot: "all" | "yes" | "no"
+  isHot: boolean // Changed to boolean to match DomainFilters component
 }
-
 type SortOption = "price-asc" | "price-desc" | "domainRank-desc" | "domainAuthority-desc" | "age-desc" | "referringDomains-desc" | "monthlyTraffic-desc"
-
 const defaultFilters: ActiveFilters = {
   priceRange: [0, 100000],
   tlds: [],
@@ -46,14 +43,13 @@ const defaultFilters: ActiveFilters = {
   domainAuthorityRange: [0, 100],
   trustFlowRange: [0, 100],
   citationFlowRange: [0, 100],
-  ageMin: 0,
-  referringDomainsMin: 0,
-  authorityLinksMin: 0,
-  monthlyTrafficMin: 0,
+  ageMin: null,
+  referringDomainsMin: null,
+  authorityLinksMin: null,
+  monthlyTrafficMin: null,
   tags: [],
-  isHot: "all"
+  isHot: false // Changed to boolean
 }
-
 export default function DomainsPage() {
   const [domains, setDomains] = useState<Domain[]>([])
   const [filteredDomains, setFilteredDomains] = useState<Domain[]>([])
@@ -64,13 +60,11 @@ export default function DomainsPage() {
   const [availableTags, setAvailableTags] = useState<string[]>([])
   const [sortBy, setSortBy] = useState<SortOption>("price-desc")
   const searchParams = useSearchParams()
-
   useEffect(() => {
     const urlSearch = searchParams?.get("search")
     if (urlSearch) setSearchQuery(urlSearch)
     fetchDomains()
   }, [searchParams])
-
   const fetchDomains = async () => {
     try {
       const res = await fetch("/api/domains")
@@ -96,7 +90,6 @@ export default function DomainsPage() {
       setLoading(false)
     }
   }
-
   const sortDomains = useCallback((domainsToSort: Domain[], sortOption: SortOption) => {
     const sorted = [...domainsToSort]
     
@@ -141,7 +134,6 @@ export default function DomainsPage() {
         return sorted
     }
   }, [])
-
   const applyFilters = useCallback((filters: ActiveFilters) => {
     setActiveFilters(filters)
     let filtered = [...domains]
@@ -187,11 +179,9 @@ export default function DomainsPage() {
       )
     }
     
-    // isHot filter
-    if (filters.isHot === "yes") {
+    // isHot filter - Updated to handle boolean value
+    if (filters.isHot) {
       filtered = filtered.filter((d) => d.isHot)
-    } else if (filters.isHot === "no") {
-      filtered = filtered.filter((d) => !d.isHot)
     }
     
     // Domain Rank - be lenient with missing data
@@ -230,7 +220,7 @@ export default function DomainsPage() {
     filtered = filtered.filter(
       (d) => {
         if (d.metrics?.age === undefined) return true
-        return d.metrics.age >= filters.ageMin
+        return d.metrics.age >= (filters.ageMin || 0)
       }
     )
     
@@ -238,7 +228,7 @@ export default function DomainsPage() {
     filtered = filtered.filter(
       (d) => {
         if (d.metrics?.referringDomains === undefined) return true
-        return d.metrics.referringDomains >= filters.referringDomainsMin
+        return d.metrics.referringDomains >= (filters.referringDomainsMin || 0)
       }
     )
     
@@ -246,7 +236,7 @@ export default function DomainsPage() {
     filtered = filtered.filter(
       (d) => {
         if (d.metrics?.authorityLinks === undefined) return true
-        return (d.metrics.authorityLinks?.length || 0) >= filters.authorityLinksMin
+        return (d.metrics.authorityLinks?.length || 0) >= (filters.authorityLinksMin || 0)
       }
     )
     
@@ -254,7 +244,7 @@ export default function DomainsPage() {
     filtered = filtered.filter(
       (d) => {
         if (d.metrics?.monthlyTraffic === undefined || d.metrics.monthlyTraffic === null) return true
-        return d.metrics.monthlyTraffic >= filters.monthlyTrafficMin
+        return d.metrics.monthlyTraffic >= (filters.monthlyTrafficMin || 0)
       }
     )
     
@@ -262,31 +252,26 @@ export default function DomainsPage() {
     const sorted = sortDomains(filtered, sortBy)
     setFilteredDomains(sorted)
   }, [domains, searchQuery, sortBy, sortDomains])
-
   const applyFiltersWithSorting = (filters: ActiveFilters) => {
     setActiveFilters(filters)
     applyFilters(filters)
   }
-
   const handleSortChange = (newSortBy: SortOption) => {
     setSortBy(newSortBy)
     // Apply the new sort immediately
     const sorted = sortDomains(filteredDomains, newSortBy)
     setFilteredDomains(sorted)
   }
-
   const handleSearchChange = (value: string) => {
     setSearchQuery(value)
     applyFilters({ ...activeFilters })
   }
-
   const resetFilters = () => {
     setSearchQuery("")
     setActiveFilters(defaultFilters)
     setSortBy("price-desc")
     applyFiltersWithSorting(defaultFilters)
   }
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />

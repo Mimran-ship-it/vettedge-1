@@ -1,4 +1,3 @@
-// Update the Header component
 "use client"
 import { useState, useEffect } from "react"
 import Link from "next/link"
@@ -18,11 +17,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [showHeader, setShowHeader] = useState(true)
-  const [lastScrollY, setLastScrollY] = useState(0)
   const { user, loading, signOut } = useAuth()
   const { items } = useCart()
   const { wishlistCount } = useWishlist() // Use the wishlist count from the context
@@ -40,23 +36,6 @@ export function Header() {
       document.body.style.overflow = 'unset'
     }
   }, [isMenuOpen])
-  
-  // Detect scroll direction to show/hide header
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY
-      if (currentScrollY < lastScrollY) {
-        // Scrolling up
-        setShowHeader(true)
-      } else if (currentScrollY > lastScrollY && currentScrollY > 80) {
-        // Scrolling down past header height
-        setShowHeader(false)
-      }
-      setLastScrollY(currentScrollY)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [lastScrollY])
   
   const linkClass = (href: string) =>
     pathname === href
@@ -109,34 +88,28 @@ export function Header() {
   
   return (
     <>
-      {/* Animated Header */}
-      <motion.header
-        initial={{ y: 0 }}
-        animate={{ y: showHeader ? 0 : -100 }}
-        transition={{ duration: 0.3 }}
-        className="bg-white shadow-sm border-b w-full z-50 fixed top-0 left-0 will-change-transform [backface-visibility:hidden] [transform:translateZ(0)]"
-      >
-        <div className="max-w-8xl mx-auto ps-2 pe-4 sm:pe-6 lg:pe-8">
+      {/* Fixed Header */}
+      <header className="bg-white shadow-sm border-b w-full z-50 fixed top-0 left-0">
+        <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-1">
-            <div className="w-60 rounded-lg overflow-hidden flex items-center ">
-  <Image
-    src="/logo.png"
-    alt="Vettedge Logo"
-    width={80}   // increased size
-    height={40}   // keep proportions
-    className="object-contain  border-black"
-  />
-  <span className="text-md sm:text-lg text-gray-900">
-    Vettedge.domains
-  </span>
-</div>
-              
+              <div className="flex items-center">
+                <Image
+                  src="/logo.png"
+                  alt="Vettedge Logo"
+                  width={60}
+                  height={30}
+                  className="object-contain"
+                />
+                <span className="text-md sm:text-lg md:text-xl font-semibold text-gray-900 ml-2">
+                  Vettedge.domains
+                </span>
+              </div>
             </Link>
             
-            {/* Desktop Navigation - Hidden on mobile */}
-            <nav className="hidden md:flex items-center space-x-4 lg:space-x-6">
+            {/* Desktop Navigation - Hidden on mobile and tablet */}
+            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
               <Link href="/domains" className={linkClass("/domains")}>
                 Buy Domains
               </Link>
@@ -155,7 +128,7 @@ export function Header() {
             </nav>
             
             {/* Right Side Actions */}
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-1 sm:space-x-2">
               {/* Wishlist */}
               <Link href="/wishlist" className="relative">
                 <Button variant="ghost" size="sm">
@@ -209,11 +182,11 @@ export function Header() {
                 )}
               </div>
               
-              {/* Mobile Menu Toggle */}
+              {/* Mobile Menu Toggle - Visible on mobile and tablet */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="md:hidden"
+                className="lg:hidden"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -221,7 +194,7 @@ export function Header() {
             </div>
           </div>
         </div>
-      </motion.header>
+      </header>
       
       {/* Mobile Navigation */}
       <AnimatePresence>
@@ -232,7 +205,7 @@ export function Header() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+              className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
               onClick={() => setIsMenuOpen(false)}
             />
             {/* Menu Panel */}
@@ -241,7 +214,7 @@ export function Header() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 w-4/5 max-w-xs h-full bg-white z-50 shadow-lg md:hidden overflow-y-auto"
+              className="fixed top-0 right-0 w-full sm:w-4/5 max-w-md h-full bg-white z-50 shadow-lg lg:hidden overflow-y-auto"
             >
               <div className="p-5">
                 <div className="flex justify-between items-center mb-6">
@@ -268,7 +241,8 @@ export function Header() {
                   </Button>
                 </div>
                 
-                <nav className="flex flex-col space-y-4">
+                {/* Tablet Navigation - Visible only in tablet view */}
+                <nav className="hidden md:flex flex-col space-y-4 mb-6 p-4 bg-gray-50 rounded-lg">
                   <Link href="/domains" className={linkClass("/domains")} onClick={() => setIsMenuOpen(false)}>
                     Buy Domains
                   </Link>
@@ -284,37 +258,56 @@ export function Header() {
                   <Link href="/contact" className={linkClass("/contact")} onClick={() => setIsMenuOpen(false)}>
                     Contact Us
                   </Link>
-                  
-                  {/* User menu for mobile */}
-                  {user && (
-                    <div className="pt-4 border-t mt-4">
-                      <div className="flex items-center space-x-2 mb-4">
-                        <User className="h-5 w-5" />
-                        <span className="font-medium">{user.name}</span>
-                      </div>
-                      <div className="flex flex-col space-y-3">
-                        <Link href="/dashboard" className={linkClass("/dashboard")} onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
-                        <Link href="/orders" className={linkClass("/orders")} onClick={() => setIsMenuOpen(false)}>My Orders</Link>
-                        <Link href="/wishlist" className={linkClass("/wishlist")} onClick={() => setIsMenuOpen(false)}>Wishlist</Link>
-                        {user?.role === "admin" && (
-                          <Link href="/admin" className={linkClass("/admin")} onClick={() => setIsMenuOpen(false)}>Admin Panel</Link>
-                        )}
-                        <Button variant="ghost" className="justify-start p-0 h-auto" onClick={() => { signOut(); setIsMenuOpen(false); }}>Sign Out</Button>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {!loading && !user && (
-                    <div className="pt-4 flex flex-col space-y-3 border-t mt-4">
-                      <Link href="/auth/signin" className={linkClass("/auth/signin")} onClick={() => setIsMenuOpen(false)}>
-                        Sign In
-                      </Link>
-                      <Link href="/auth/signup" onClick={() => setIsMenuOpen(false)}>
-                        <Button size="sm" className="w-full">Sign Up</Button>
-                      </Link>
-                    </div>
-                  )}
                 </nav>
+                
+                {/* Mobile Navigation - Visible only in mobile view */}
+                <nav className="md:hidden flex flex-col space-y-4">
+                  <Link href="/domains" className={linkClass("/domains")} onClick={() => setIsMenuOpen(false)}>
+                    Buy Domains
+                  </Link>
+                  <Link href="/vetting-process" className={linkClass("/vetting-process")} onClick={() => setIsMenuOpen(false)}>
+                    Vetting Process
+                  </Link>
+                  <Link href="/blog" className={linkClass("/blog")} onClick={() => setIsMenuOpen(false)}>
+                    Blog
+                  </Link>
+                  <Link href="/about" className={linkClass("/about")} onClick={() => setIsMenuOpen(false)}>
+                    About Us
+                  </Link>
+                  <Link href="/contact" className={linkClass("/contact")} onClick={() => setIsMenuOpen(false)}>
+                    Contact Us
+                  </Link>
+                </nav>
+                
+                {/* User menu for mobile and tablet */}
+                {user && (
+                  <div className="pt-4 border-t mt-4">
+                    <div className="flex items-center space-x-2 mb-4">
+                      <User className="h-5 w-5" />
+                      <span className="font-medium">{user.name}</span>
+                    </div>
+                    <div className="flex flex-col space-y-3">
+                      <Link href="/dashboard" className={linkClass("/dashboard")} onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
+                      <Link href="/orders" className={linkClass("/orders")} onClick={() => setIsMenuOpen(false)}>My Orders</Link>
+                      <Link href="/wishlist" className={linkClass("/wishlist")} onClick={() => setIsMenuOpen(false)}>Wishlist</Link>
+                      {user?.role === "admin" && (
+                        <Link href="/admin" className={linkClass("/admin")} onClick={() => setIsMenuOpen(false)}>Admin Panel</Link>
+                      )}
+                      <Button variant="ghost" className="justify-start p-0 h-auto" onClick={() => { signOut(); setIsMenuOpen(false); }}>Sign Out</Button>
+                    </div>
+                  </div>
+                )}
+                
+                {!loading && !user && (
+                  <div className="pt-4 flex flex-col space-y-3 border-t mt-4">
+                    <Link href="/auth/signin" className={linkClass("/auth/signin")} onClick={() => setIsMenuOpen(false)}>
+                      Sign In
+                    </Link>
+                    <Link href="/auth/signup" onClick={() => setIsMenuOpen(false)}>
+                      <Button size="sm" className="w-full">Sign Up</Button>
+                    </Link>
+                  </div>
+                )}
               </div>
             </motion.div>
           </>
