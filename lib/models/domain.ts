@@ -17,6 +17,7 @@ const DomainSchema = new Schema(
       authorityLinks: [String], // now array of links
       avgAuthorityDR: Number,
       domainAuthority: Number,
+      score: Number,
       trustFlow: Number,
       citationFlow: Number,
       monthlyTraffic: Number,

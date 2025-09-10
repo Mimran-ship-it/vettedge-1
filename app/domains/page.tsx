@@ -24,6 +24,7 @@ type ActiveFilters = {
   type: "all" | "aged" | "traffic"
   domainRankRange: [number, number]
   domainAuthorityRange: [number, number]
+  scoresRange: [number, number]
   trustFlowRange: [number, number]
   citationFlowRange: [number, number]
   ageMin: number | null
@@ -33,7 +34,7 @@ type ActiveFilters = {
   tags: string[]
   isHot: boolean // Changed to boolean to match DomainFilters component
 }
-type SortOption = "price-asc" | "price-desc" | "domainRank-desc" | "domainAuthority-desc" | "age-desc" | "referringDomains-desc" | "monthlyTraffic-desc"
+type SortOption = "price-asc" | "price-desc" | "domainRank-desc" | "domainAuthority-desc" | "score-desc" | "age-desc" | "referringDomains-desc" | "monthlyTraffic-desc"
 const defaultFilters: ActiveFilters = {
   priceRange: [0, 100000],
   tlds: [],
@@ -41,6 +42,7 @@ const defaultFilters: ActiveFilters = {
   type: "all",
   domainRankRange: [0, 100],
   domainAuthorityRange: [0, 100],
+  scoresRange: [0, 100],
   trustFlowRange: [0, 100],
   citationFlowRange: [0, 100],
   ageMin: null,
@@ -111,6 +113,12 @@ export default function DomainsPage() {
           const aDA = a.metrics?.domainAuthority || 0
           const bDA = b.metrics?.domainAuthority || 0
           return bDA - aDA
+        })
+        case "score-desc":
+        return sorted.sort((a, b) => {
+          const aS = a.metrics?.score || 0
+          const bS = b.metrics?.score || 0
+          return bS - aS
         })
       case "age-desc":
         return sorted.sort((a, b) => {
@@ -199,7 +207,12 @@ export default function DomainsPage() {
         return d.metrics.domainAuthority >= filters.domainAuthorityRange[0] && d.metrics.domainAuthority <= filters.domainAuthorityRange[1]
       }
     )
-    
+    filtered = filtered.filter(
+      (d) => {
+        if (d.metrics?.score === undefined) return true
+        return d.metrics.score >= filters.scoresRange[0] && d.metrics.score <= filters.scoresRange[1]
+      }
+    )
     // Trust Flow - be lenient with missing data
     filtered = filtered.filter(
       (d) => {
@@ -309,6 +322,7 @@ export default function DomainsPage() {
       <SelectItem value="price-desc">Price: High to Low</SelectItem>
       <SelectItem value="domainRank-desc">Domain Rank: High to Low</SelectItem>
       <SelectItem value="domainAuthority-desc">Domain Authority: High to Low</SelectItem>
+      <SelectItem value="score-desc">Score: High to Low</SelectItem>
       <SelectItem value="age-desc">Age: Oldest First</SelectItem>
       <SelectItem value="referringDomains-desc">Referring Domains: High to Low</SelectItem>
       <SelectItem value="monthlyTraffic-desc">Monthly Traffic: High to Low</SelectItem>

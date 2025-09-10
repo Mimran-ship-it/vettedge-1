@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input" 
 import { Flame } from "lucide-react"
+import { set } from "mongoose"
 
 interface ActiveFilters {
   priceRange: [number, number]
@@ -14,6 +15,7 @@ interface ActiveFilters {
   type: "all" | "aged" | "traffic"
   domainRankRange: [number, number]
   domainAuthorityRange: [number, number]
+  scoresRange?: [number, number] // Optional, in case you want to add it later
   trustFlowRange: [number, number]
   citationFlowRange: [number, number]
   ageMin: number | null
@@ -38,6 +40,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
   const [selectedTags, setSelectedTags] = useState<string[]>(currentFilters.tags)
   const [domainRankRange, setDomainRankRange] = useState<[number, number]>(currentFilters.domainRankRange)
   const [domainAuthorityRange, setDomainAuthorityRange] = useState<[number, number]>(currentFilters.domainAuthorityRange)
+  const [scoresRange, setscoresRange] = useState<[number, number] | undefined>(currentFilters.scoresRange)
   const [trustFlowRange, setTrustFlowRange] = useState<[number, number]>(currentFilters.trustFlowRange)
   const [citationFlowRange, setCitationFlowRange] = useState<[number, number]>(currentFilters.citationFlowRange)
   
@@ -60,6 +63,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
     setSelectedTags(currentFilters.tags)
     setDomainRankRange(currentFilters.domainRankRange)
     setDomainAuthorityRange(currentFilters.domainAuthorityRange)
+    setscoresRange(currentFilters.scoresRange)
     setTrustFlowRange(currentFilters.trustFlowRange)
     setCitationFlowRange(currentFilters.citationFlowRange)
     setMonthlyTrafficMin(currentFilters.monthlyTrafficMin)
@@ -106,8 +110,8 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
     const newIsHot = !isHot
     setIsHot(newIsHot)
     applyFilters({ isHot: newIsHot }) // use newIsHot, not isHot
-  }
-  
+  } 
+   
   
   const applyFilters = (overrides = {}) => {
     const filters: ActiveFilters = {
@@ -118,6 +122,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
       tags: selectedTags,
       domainRankRange,
       domainAuthorityRange,
+      scoresRange,
       trustFlowRange,
       citationFlowRange,
       monthlyTrafficMin,
@@ -139,6 +144,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
       tags: [],
       domainRankRange: [0, 100],
       domainAuthorityRange: [0, 100],
+      scoresRange: [0,100],
       trustFlowRange: [0, 100],
       citationFlowRange: [0, 100],
       monthlyTrafficMin: null,
@@ -155,6 +161,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
     setSelectedTags(defaultFilterValues.tags)
     setDomainRankRange(defaultFilterValues.domainRankRange)
     setDomainAuthorityRange(defaultFilterValues.domainAuthorityRange)
+    setscoresRange(defaultFilterValues.scoresRange)
     setTrustFlowRange(defaultFilterValues.trustFlowRange)
     setCitationFlowRange(defaultFilterValues.citationFlowRange)
     setMonthlyTrafficMin(defaultFilterValues.monthlyTrafficMin)
@@ -379,7 +386,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
         
         {/* Domain Authority */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700">Overall Score (0-100)</Label>
+          <Label className="font-medium text-gray-700">Domain Authority (0-100)</Label>
           <Slider
             value={domainAuthorityRange}
             onValueChange={(value) => {
@@ -395,7 +402,28 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
             <span>{domainAuthorityRange[0]}</span>
             <span>{domainAuthorityRange[1]}</span>
           </div>
+          
         </div>
+        <div className="space-y-3">
+          <Label className="font-medium text-gray-700">Overall Score (0-100)</Label>
+          <Slider
+            value={scoresRange}
+            onValueChange={(value) => {
+              setscoresRange(value as [number, number])
+              applyFilters({ scoresRange: value })
+            }}
+            max={100}
+            min={0}
+            step={1}
+            className="w-full"
+          />
+          <div className="flex justify-between text-sm text-gray-500">
+            <span>{scoresRange[0]}</span>
+            <span>{scoresRange[1]}</span>
+          </div>
+         
+        </div>
+        
         
         {/* Trust Flow */}
         <div className="space-y-3">

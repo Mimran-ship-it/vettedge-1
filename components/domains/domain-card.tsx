@@ -52,6 +52,7 @@ interface DomainCardProps {
       authorityLinks: string[]
       avgAuthorityDR: number
       domainAuthority: number
+      score: number
       trustFlow: number
       citationFlow: number
       monthlyTraffic: number | null
@@ -152,6 +153,7 @@ export function DomainCard({ domain }: DomainCardProps) {
 Key Metrics:
 • Domain Rank (DR): ${domain.metrics.domainRank}
 • Domain Authority (DA): ${domain.metrics.domainAuthority}
+• Overall Score : ${domain.metrics.score}
 • Trust Flow (TF): ${domain.metrics.trustFlow}
 • Citation Flow (CF): ${domain.metrics.citationFlow}
 • Referring Domains: ${domain.metrics.referringDomains}
@@ -318,12 +320,12 @@ View full details:`;
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xl font-bold text-blue-800">
-                  {domain.metrics.domainAuthority}
+                  {domain.metrics.score}
                 </span>
                 <div className="relative w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
                   <div 
                     className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
-                    style={{ width: `${Math.min(100, domain.metrics.domainAuthority)}%` }}
+                    style={{ width: `${Math.min(100, domain.metrics.score)}%` }}
                   ></div>
                 </div>
               </div>
@@ -331,14 +333,14 @@ View full details:`;
             
             {/* Desktop Score Description */}
             <div className="  text-xs text-gray-600">
-              {domain.metrics.domainAuthority >= 80 ? (
-                <span className="text-green-600 font-medium">Exceptional domain authority</span>
-              ) : domain.metrics.domainAuthority >= 60 ? (
-                <span className="text-blue-600 font-medium">Strong domain authority</span>
-              ) : domain.metrics.domainAuthority >= 40 ? (
-                <span className="text-yellow-600 font-medium">Moderate domain authority</span>
+              {domain.metrics.score >= 80 ? (
+                <span className="text-green-600 font-medium">Exceptional domain score</span>
+              ) : domain.metrics.score >= 60 ? (
+                <span className="text-blue-600 font-medium">Strong domain score </span>
+              ) : domain.metrics.score >= 40 ? (
+                <span className="text-yellow-600 font-medium">Moderate domain score</span>
               ) : (
-                <span className="text-orange-600 font-medium">Developing domain authority</span>
+                <span className="text-orange-600 font-medium">Developing domain score</span>
               )}
             </div>
             
@@ -368,6 +370,7 @@ View full details:`;
                 <TrendingUp className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>DR: {domain.metrics.domainRank}</span>
               </div>
+             
               <div className="flex items-center gap-1 text-gray-600">
                 <Activity className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>TF: {domain.metrics.trustFlow}</span>
@@ -395,7 +398,12 @@ View full details:`;
             </div>
             
             {/* Column 3 */}
+            
             <div className="space-y-1 sm:space-y-2">
+            <div className="flex items-center gap-1 text-gray-600">
+                <Building className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                <span>DA: {domain.metrics.domainAuthority}</span>
+              </div>
               {domain.type === "traffic" && domain.metrics.monthlyTraffic && (
                 <div className="flex items-center gap-1 text-gray-600">
                   <Globe className="h-2.5 w-2.5 sm:h-3 sm:w-3" />

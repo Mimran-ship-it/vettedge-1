@@ -11,8 +11,12 @@ import { useChat } from "@/hooks/use-chat"
 import { formatDistanceToNow } from "date-fns"
 import { useToast } from "@/hooks/use-toast"
 
+import { motion, AnimatePresence } from "framer-motion"
+
 export function LiveChat() {
   const [isOpen, setIsOpen] = useState(false)
+  const [showPopup, setShowPopup] = useState(false)
+  const [popupShown, setPopupShown] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
   const [message, setMessage] = useState("")
   const { user } = useAuth()
@@ -104,15 +108,47 @@ export function LiveChat() {
     })
   }
 
+  useEffect(() => {
+    if (!popupShown) {
+      const timer = setTimeout(() => {
+        setShowPopup(true)
+        setPopupShown(true)
+        // auto hide popup after 4s
+        setTimeout(() => setShowPopup(false), 6000)
+      }, 8000) // 10 seconds
+      return () => clearTimeout(timer)
+    }
+  }, [popupShown])
+
   if (!isOpen) {
     return (
-      <div className="fixed bottom-4 right-4 z-50">
-        <Button onClick={() => setIsOpen(true)} className="rounded-full w-14 h-14 shadow-lg relative">
+      <div className="fixed bottom-4 right-4 z-50 flex items-end gap-2 overflow-hidden ">
+        {/* ✨ Popup Message */}
+        <AnimatePresence>
+          {showPopup && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.4 }}
+              className="bg-white  shadow-lg rounded-xl z-[999px] px-4 py-2 text-sm text-gray-700 "
+            >
+              💬 Need help? Chat with us!
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Chat Icon */}
+        <Button
+          onClick={() => setIsOpen(true)}
+          className="rounded-full w-14 h-14 shadow-lg relative"
+        >
           <MessageSquare className="h-6 w-6" />
         </Button>
       </div>
     )
   }
+
 
   return (
     <div className="fixed bottom-4 right-4 z-[999px] bg-white max-w-[calc(100vw-2rem)]">

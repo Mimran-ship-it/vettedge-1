@@ -17,6 +17,7 @@ export interface Domain {
     authorityLinks: string[] // Array of URLs
     avgAuthorityDR: number
     domainAuthority: number
+    score:number
     trustFlow: number
     citationFlow: number
     monthlyTraffic: number | null
