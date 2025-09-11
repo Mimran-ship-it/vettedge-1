@@ -5,6 +5,9 @@ import { Badge } from "@/components/ui/badge"
 import {
   Shield,
   CheckCircle,
+  SearchCheck,
+  TrendingUp,
+  Type,
   Award,
   Store,
   ListChecks,
@@ -32,24 +35,25 @@ export function TrustSection() {
         "Every domain transfer is protected with escrow service and money-back guarantee",
     },
     {
-      icon: CheckCircle,
-      title: "Verified Domain History",
+      icon: SearchCheck,
+      title: "Expert Vetting",
       description:
-        "All domains undergo rigorous vetting to ensure clean history and no penalties",
+        "Every domain is manually reviewed for SEO metrics, history, brandability, link quality, and niche relevance.",
     },
     {
-      icon: Award,
-      title: "Premium Quality Only",
+      icon: TrendingUp,
+      title: "SEO-Edge",
       description:
-        "Hand-picked domains with proven SEO value and established authority",
+        "Our domains have DA/DR metrics, aged backlinks, and historical traffic — ready for affiliate, lead-gen, SaaS, or e-commerce use.",
     },
     {
-      icon: Zap,
-      title: "Lightning Fast Setup",
+      icon: Type,
+      title: "Brand-Centric Selection",
       description:
-        "Complete domain transfer and setup within 24-48 hours guaranteed",
+        "We prioritize names that are memorable, niche-relevant, and investment-worthy — perfect for startups or agencies.",
     },
   ]
+  
 
   const trustIndicators = [
     { icon: Globe, label: "50+ Domains Sold", value: "50+" },

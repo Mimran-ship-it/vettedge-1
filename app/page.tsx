@@ -1,6 +1,8 @@
 import { HeroSection } from "@/components/sections/hero-section"
 import { StatsSection } from "@/components/sections/stats-section"
 import { IsHot } from "@/components/sections/isHot"
+import {TrafficDomains} from "@/components/sections/traffic-Domains"
+import  {AgedDomains}  from "@/components/sections/aged-Domain"
 import { TrustSection } from "@/components/sections/trust-section"
 import { TestimonialsSection } from "@/components/sections/testimonials-section"
 import { BlogPreview } from "@/components/sections/blog-preview"
@@ -15,9 +17,11 @@ export default function HomePage() {
       <Header />
       <main className="pt-16" >
         <HeroSection />
-        <IsHot />
         <TrustSection />
-        <TestimonialsSection />
+        <IsHot />
+        <AgedDomains />
+        <TrafficDomains/>
+        {/* <TestimonialsSection /> */}
         <BlogPreview />
         <ContactSection />
         <Footer/>
