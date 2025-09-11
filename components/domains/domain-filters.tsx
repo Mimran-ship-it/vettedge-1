@@ -1,5 +1,6 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
+import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
@@ -7,7 +8,6 @@ import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input" 
 import { Flame } from "lucide-react"
 import { set } from "mongoose"
-
 interface ActiveFilters {
   priceRange: [number, number]
   tlds: string[]
@@ -25,14 +25,16 @@ interface ActiveFilters {
   tags: string[]
   isHot: boolean // Changed from "all" | "yes" | "no" to boolean
 }
-
 interface DomainFiltersProps {
   onFilterChange: (filters: ActiveFilters) => void
   availableTags: string[]
   currentFilters: ActiveFilters
 } 
-
 export function DomainFilters({ onFilterChange, availableTags, currentFilters }: DomainFiltersProps) {
+  const searchParams = useSearchParams()
+  const firstMount = useRef(true)
+  const urlParamsSet = useRef<{ type?: boolean; isHot?: boolean }>({})
+  
   const [priceRange, setPriceRange] = useState<[number, number]>(currentFilters.priceRange)
   const [selectedTlds, setSelectedTlds] = useState<string[]>(currentFilters.tlds)
   const [availability, setAvailability] = useState<"all" | "available" | "sold">(currentFilters.availability)
@@ -54,12 +56,49 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
   
   const tlds = [".com", ".net", ".org", ".io", ".co", ".ai"]
   
+  // Handle URL parameters on first mount
+  useEffect(() => {
+    if (!firstMount.current) return
+    
+    const aged = searchParams?.get('aged') === 'true'
+    const traffic = searchParams?.get('traffic') === 'true'
+    const isHot = searchParams?.get('isHot') === 'true'
+    
+    let filtersToApply: Partial<ActiveFilters> = {}
+    
+    if (aged) {
+      setType("aged")
+      urlParamsSet.current.type = true
+      filtersToApply.type = "aged"
+    }
+    if (traffic) {
+      setType("traffic")
+      urlParamsSet.current.type = true
+      filtersToApply.type = "traffic"
+    }
+    if (isHot) {
+      setIsHot(true)
+      urlParamsSet.current.isHot = true
+      filtersToApply.isHot = true
+    }
+    
+    // Apply the filters if any URL parameters were set
+    if (Object.keys(filtersToApply).length > 0) {
+      applyFilters(filtersToApply)
+    }
+    
+    firstMount.current = false
+  }, [searchParams])
+  
   // Update state when currentFilters prop changes
   useEffect(() => {
     setPriceRange(currentFilters.priceRange)
     setSelectedTlds(currentFilters.tlds)
     setAvailability(currentFilters.availability)
-    setType(currentFilters.type)
+    // Only update type if not set by URL parameters
+    if (!urlParamsSet.current.type) {
+      setType(currentFilters.type)
+    }
     setSelectedTags(currentFilters.tags)
     setDomainRankRange(currentFilters.domainRankRange)
     setDomainAuthorityRange(currentFilters.domainAuthorityRange)
@@ -70,7 +109,10 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
     setAgeMin(currentFilters.ageMin)
     setReferringDomainsMin(currentFilters.referringDomainsMin)
     setAuthorityLinksMin(currentFilters.authorityLinksMin)
-    setIsHot(currentFilters.isHot)
+    // Only update isHot if not set by URL parameters
+    if (!urlParamsSet.current.isHot) {
+      setIsHot(currentFilters.isHot)
+    }
   }, [currentFilters])
   
   const handleTldChange = (tld: string, checked: boolean) => {
@@ -169,6 +211,9 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
     setReferringDomainsMin(defaultFilterValues.referringDomainsMin)
     setAuthorityLinksMin(defaultFilterValues.authorityLinksMin)
     setIsHot(defaultFilterValues.isHot)
+    
+    // Reset URL parameter flags
+    urlParamsSet.current = {}
     
     onFilterChange(defaultFilterValues)
   }

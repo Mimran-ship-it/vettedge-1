@@ -97,7 +97,7 @@ export function CartItems({ items, onRemoveItem }: CartItemsProps) {
                       <div className="text-gray-800">{item.domain.metrics.referringDomains}</div>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2 text-sm">
+                 {item.domain.metrics.monthlyTraffic&& <div className="flex items-center space-x-2 text-sm">
                     <Globe className="h-4 w-4 text-purple-500 flex-shrink-0" />
                     <div>
                       <div className="font-medium text-xs text-gray-500">Monthly Traffic</div>
@@ -107,7 +107,7 @@ export function CartItems({ items, onRemoveItem }: CartItemsProps) {
                         <div className="text-gray-800">N/A</div>
                       )}
                     </div>
-                  </div>
+                  </div>}
                   <div className="flex items-center space-x-2 text-sm">
                     <Calendar className="h-4 w-4 text-orange-500 flex-shrink-0" />
                     <div>

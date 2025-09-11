@@ -46,21 +46,21 @@ export function Footer() {
           <div className="lg:col-span-2 flex flex-col gap-4 pb-0">
 
 
-            <Link href="/" className="flex items-center space-x-3">
+            <Link href="/" className="flex items-center space-x-0">
               <Image
                 src="/logo.png"
                 alt="Vettedge Logo"
-                width={40}
-                height={40}
+                width={60}
+                height={60}
                 className="rounded-lg"
               />
-              <h2 className="text-xl font-bold bg-gradient-to-r from-[#33BDC7] via-[#38C172] to-[#33BDC7] bg-clip-text text-transparent hover:from-[#38C172] hover:via-[#33BDC7] hover:to-[#38C172] transition-all duration-300 tracking-wide">
+              <h2 className="text-xl font-semibold text-black  bg-clip-text transition-all duration-300 tracking-wide">
                 Vettedge.domains
               </h2>
             </Link>
 
             <p className="text-sm text-[#33BDC7] dark:text-[#33BDC7]/80">
-              Vetting Process domains with proven SEO value.
+            Vetted Age for SEO Edge.
             </p>
             <div className="border-l-4 border-[#38C172] pl-4 mt-2 text-sm italic text-gray-700 dark:text-gray-400">
               <p>

@@ -18,6 +18,10 @@ export default function HomePage() {
       <main className="pt-16" >
         <HeroSection />
         <TrustSection />
+        <p className="text-center text-2xl md:text-3xl font-bold text-gray-800 mt-10 mb-3 tracking-tight">
+  Shop by <span className="text-[#33BDC7]">Category</span>
+</p>
+
         <IsHot />
         <AgedDomains />
         <TrafficDomains/>

@@ -216,13 +216,13 @@ export function Header() {
             >
               <div className="p-5">
                 <div className="flex justify-between items-center mb-6">
-                  <Link href="/" className="flex items-center space-x-2">
-                    <div className="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center">
+                  <Link href="/" className="flex items-center ">
+                    <div className="w-16 h-16 rounded-lg overflow-hidden flex items-center justify-center">
                       <Image
                         src="/logo.png"
                         alt="Vettedge Logo"
-                        width={40}
-                        height={40}
+                        width={60}
+                        height={50}
                         className="object-contain"
                       />
                     </div>

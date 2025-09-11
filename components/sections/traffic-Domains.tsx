@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { DomainCard } from "@/components/domains/domain-card"
 import type { Domain } from "@/types/domain"
+import Link from "next/link"
 
 export function TrafficDomains() {
   const [domains, setDomains] = useState<Domain[]>([])
@@ -104,7 +105,7 @@ export function TrafficDomains() {
                 </Button>
               )}
               <Button size="lg" className="bg-[#3BD17A] text-white hover:bg-[rgb(59,209,122)]" asChild>
-                <a href="/domains">View All </a>
+                <Link href="/domains?traffic=true">View All </Link>
               </Button>
             </div>
           </>

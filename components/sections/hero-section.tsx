@@ -137,19 +137,8 @@ export function HeroSection() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6, duration: 0.5 }}
                 >
-                  <div className="flex items-center justify-center">
-                    <Image
-                      src="/logo.jpg"
-                      alt="Vettedge Logo"
-                      width={55}
-                      height={55}
-                      priority
-                      className="bg-[#FAFAFA]"
-                    />
-                  </div>
-                  <div className="text-center sm:text-left">
-                    <p className="text-gray-500 text-sm font-bold sm:text-base">Premium Expired Domains</p>
-                  </div>
+                  
+                 
                 </motion.div>
 
                 <motion.div
