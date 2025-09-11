@@ -131,7 +131,7 @@ export function LiveChat() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.4 }}
-              className="bg-white  shadow-lg rounded-xl z-[999px] px-4 py-2 text-sm text-gray-700 "
+              className="text-white  shadow-lg rounded-xl z-[999px] px-4 py-2 text-sm bg-gray-800 "
             >
               💬 Need help? Chat with us!
             </motion.div>

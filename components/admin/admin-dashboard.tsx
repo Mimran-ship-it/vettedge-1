@@ -1,5 +1,4 @@
 "use client"
-
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -62,7 +61,23 @@ export function AdminDashboard() {
       const response = await fetch("/api/admin/dashboard")
       if (response.ok) {
         const data = await response.json()
-        setDashboardData(data)
+        
+        // Transform recentSales data to match the expected interface
+        const transformedRecentSales = data.recentSales.map((sale: any) => ({
+          id: sale._id,
+          domain: sale.items[0]?.name || "Unknown Domain",
+          price: sale.totalAmount,
+          customer: sale.customerEmail,
+          date: sale.createdAt,
+          status: sale.paymentStatus === "complete" ? "completed" : 
+                 sale.paymentStatus === "pending" ? "pending" : 
+                 sale.paymentStatus
+        }))
+        
+        setDashboardData({
+          ...data,
+          recentSales: transformedRecentSales
+        })
       } else {
         throw new Error("Failed to fetch dashboard data")
       }
@@ -88,7 +103,6 @@ export function AdminDashboard() {
           </div>
           <Skeleton className="h-10 w-32" />
         </div>
-
         {/* Stats Cards Skeleton */}
         <div className="grid gap-4  md:grid-cols-2 lg:grid-cols-4">
           {[...Array(4)].map((_, index) => (
@@ -104,7 +118,6 @@ export function AdminDashboard() {
             </Card>
           ))}
         </div>
-
         {/* Content Skeleton */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
           <Card className="col-span-4">
@@ -128,7 +141,6 @@ export function AdminDashboard() {
               </div>
             </CardContent>
           </Card>
-
           <Card className="col-span-3">
             <CardHeader>
               <Skeleton className="h-6 w-32" />
@@ -183,6 +195,7 @@ export function AdminDashboard() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'completed':
+      case 'complete': // Added to handle API response
         return <CheckCircle className="h-4 w-4 text-green-600" />
       case 'pending':
         return <Clock className="h-4 w-4 text-yellow-600" />
@@ -207,7 +220,6 @@ export function AdminDashboard() {
           </Button>
         </div>
       </div>
-
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
@@ -222,7 +234,6 @@ export function AdminDashboard() {
             </p>
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
@@ -235,7 +246,6 @@ export function AdminDashboard() {
             </p>
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
@@ -248,7 +258,6 @@ export function AdminDashboard() {
             </p>
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Pending Chats</CardTitle>
@@ -262,7 +271,6 @@ export function AdminDashboard() {
           </CardContent>
         </Card>
       </div>
-
       {/* Additional Stats Row */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
@@ -275,7 +283,6 @@ export function AdminDashboard() {
             <p className="text-xs text-muted-foreground">Featured domains</p>
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
@@ -288,7 +295,6 @@ export function AdminDashboard() {
             </p>
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Active Sessions</CardTitle>
@@ -299,7 +305,6 @@ export function AdminDashboard() {
             <p className="text-xs text-muted-foreground">Live chat sessions</p>
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Admin Users</CardTitle>
@@ -311,7 +316,6 @@ export function AdminDashboard() {
           </CardContent>
         </Card>
       </div>
-
       {/* Recent Activity */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4">
@@ -344,7 +348,6 @@ export function AdminDashboard() {
             </div>
           </CardContent>
         </Card>
-
         <Card className="col-span-3">
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
