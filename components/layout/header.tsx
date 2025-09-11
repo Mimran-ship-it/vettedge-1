@@ -88,19 +88,19 @@ export function Header() {
     <>
       {/* Fixed Header */}
       <header className="bg-white shadow-sm border-b w-full z-50 fixed top-0 left-0">
-        <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-8xl mx-auto px-2 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-1">
               <div className="flex items-center">
                 <Image
-                  src="/logo.png"
+                  src="/shihlogo.png"
                   alt="Vettedge Logo"
-                  width={60}
+                  width={40}
                   height={30}
                   className="object-contain"
                 />
-                <span className="text-md sm:text-lg md:text-xl font-semibold text-gray-900 ml-2">
+                <span className="text-md sm:text-lg md:text-xl font-semibold text-gray-900 ml-">
                   Vettedge.domains
                 </span>
               </div>
@@ -184,7 +184,7 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="lg:hidden"
+                className="lg:hidden mr-2"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
