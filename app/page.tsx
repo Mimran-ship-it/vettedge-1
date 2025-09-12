@@ -10,6 +10,7 @@ import { ContactSection } from "@/components/sections/contact-section"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { LiveChat } from "@/components/chat/live-chat"
+import { Badge } from "@/components/ui/badge"
 
 export default function HomePage() {
   return (
@@ -18,9 +19,14 @@ export default function HomePage() {
       <main className="pt-16" >
         <HeroSection />
         <TrustSection />
-        <p className="text-center text-2xl md:text-3xl font-bold text-gray-800 mt-10 mb-3 tracking-tight">
-  Shop by <span className="text-[#33BDC7]">Category</span>
-</p>
+       <div className="text-center">
+        <Badge
+            variant="outline"
+            className="mb-4 px-4  py-2 border-[#38C172] text-[#38C172] font-medium"
+          >
+           Shop by Category
+          </Badge>
+          </div>
 
         <IsHot />
         <AgedDomains />

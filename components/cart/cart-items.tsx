@@ -111,8 +111,8 @@ export function CartItems({ items, onRemoveItem }: CartItemsProps) {
                   {!item.domain.metrics.monthlyTraffic&& <div className="flex items-center space-x-2 text-sm">
                     <History  className="h-4 w-4 text-purple-500 flex-shrink-0" />
                     <div>
-                      <div className="font-medium text-xs text-gray-500">Aged</div>
-                     
+                      <div className="font-medium text-xs text-gray-500">Age</div>
+                      <div className="text-gray-800">{item.domain.metrics.age}</div>
                     </div>
                   </div>}
                   <div className="flex items-center space-x-2 text-sm">
