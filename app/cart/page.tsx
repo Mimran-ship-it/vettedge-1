@@ -80,7 +80,7 @@ export default function CartPage() {
   const availableTotal = availableItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8">
         {/* Page Heading */}
@@ -90,14 +90,14 @@ export default function CartPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Shopping Cart</h1>
-          <p className="text-lg text-gray-600">Review your selected domains before checkout</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Shopping Cart</h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300">Review your selected domains before checkout</p>
         </motion.div>
         
         {/* Unavailable Items Alert */}
         {unavailableItems.length > 0 && (
           <motion.div
-            className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4"
+            className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -105,8 +105,8 @@ export default function CartPage() {
             <div className="flex items-start">
               <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" />
               <div className="flex-1">
-                <h3 className="text-sm font-medium text-red-800">Some items in your cart are no longer available</h3>
-                <div className="mt-2 text-sm text-red-700">
+                <h3 className="text-sm font-medium text-red-800 dark:text-red-200">Some items in your cart are no longer available</h3>
+                <div className="mt-2 text-sm text-red-700 dark:text-red-300">
                   <p>The following domains have been sold and cannot be purchased:</p>
                   <ul className="list-disc pl-5 mt-1 space-y-1">
                     {unavailableItems.map(item => (
@@ -127,7 +127,7 @@ export default function CartPage() {
                     size="sm" 
                     variant="outline"
                     onClick={handleRemoveUnavailable}
-                    className="text-red-700 border-red-300 hover:bg-red-50"
+                    className="text-red-700 dark:text-red-300 border-red-300 dark:border-red-600 hover:bg-red-50 dark:hover:bg-red-900/30"
                   >
                     Remove All Unavailable Items
                   </Button>
@@ -145,8 +145,8 @@ export default function CartPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-            <p className="text-gray-600">Checking cart items availability...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white mx-auto mb-4"></div>
+            <p className="text-gray-600 dark:text-gray-300">Checking cart items availability...</p>
           </motion.div>
         ) : (
           /* Cart Content */
@@ -160,8 +160,8 @@ export default function CartPage() {
                 transition={{ duration: 0.6 }}
               >
                 <ShoppingBag className="h-24 w-24 text-gray-300 mx-auto mb-6" />
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">Your cart is empty</h2>
-                <p className="text-gray-600 mb-8">
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Your cart is empty</h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-8">
                   Discover premium expired domains and add them to your cart
                 </p>
                 <Button size="lg" asChild>

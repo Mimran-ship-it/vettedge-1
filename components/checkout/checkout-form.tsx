@@ -254,8 +254,8 @@ export function CheckoutForm() {
               {items.map((item) => (
                 <div key={item.id} className="flex justify-between items-center">
                   <div>
-                    <p className="font-medium">{item.name}</p>
-                    <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
+                    <p className="font-medium text-gray-900 dark:text-white">{item.name}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">Qty: {item.quantity}</p>
                   </div>
                   <p className="font-medium">
                     ${(item.price * item.quantity).toFixed(2)}
@@ -264,16 +264,16 @@ export function CheckoutForm() {
               ))}
               <div className="border-t pt-4">
                 <div className="flex justify-between items-center text-base">
-                  <span>Subtotal</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span className="text-gray-900 dark:text-white">Subtotal</span>
+                  <span className="text-gray-900 dark:text-white">${total.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between items-center text-base">
-                  <span>Tax (8%)</span>
-                  <span>${(total * 0.08).toFixed(2)}</span>
+                  <span className="text-gray-900 dark:text-white">Tax (8%)</span>
+                  <span className="text-gray-900 dark:text-white">${(total * 0.08).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between items-center text-lg font-bold mt-2">
-                  <span>Total</span>
-                  <span>${(total * 1.08).toFixed(2)}</span>
+                  <span className="text-gray-900 dark:text-white">Total</span>
+                  <span className="text-gray-900 dark:text-white">${(total * 1.08).toFixed(2)}</span>
                 </div>
               </div>
               
@@ -282,7 +282,7 @@ export function CheckoutForm() {
                 <button
                   disabled={loading}
                   onClick={handlePaymentSubmit}
-                  className="w-full bg-black text-white py-3 rounded-lg mt-4 disabled:opacity-50"
+                  className="w-full bg-black dark:bg-white dark:text-black text-white py-3 rounded-lg mt-4 disabled:opacity-50"
                 >
                   {loading ? "Processing..." : "Pay Now"}
                 </button>
@@ -290,7 +290,7 @@ export function CheckoutForm() {
               
               {/* Show a message if form is not complete */}
               {!isFormValid && (
-                <div className="mt-4 p-3 bg-yellow-50 text-yellow-700 rounded-lg text-sm">
+                <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-200 rounded-lg text-sm">
                   Please complete all required fields to proceed with payment.
                 </div>
               )}

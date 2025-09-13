@@ -39,7 +39,7 @@ export function Footer() {
   }
 
   return (
-    <footer className=" mt-8 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+    <footer className=" pt-8 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
       <div className="relative z-0 w-11/12 sm:w-5/6 mx-auto px-4 pt-10  pb-2 rounded-xl">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* Logo & Social */}

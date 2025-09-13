@@ -110,7 +110,7 @@ export default function ContactPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
 
       {/* Hero Section */}
@@ -136,7 +136,7 @@ export default function ContactPage() {
       </motion.section>
 
       {/* Contact Methods */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             className="text-center mb-12"
@@ -145,8 +145,8 @@ export default function ContactPage() {
             viewport={{ once: true }}
             variants={fadeUp}
           >
-            <h2 className="text-2xl md:text-3xl font-bold text-[#33BDC7] mb-4">Choose Your Preferred Contact Method</h2>
-            <p className="text-base md:text-lg text-gray-600">We offer multiple ways to get in touch with our support team</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-[#33BDC7] dark:text-[#33BDC7] mb-4">Choose Your Preferred Contact Method</h2>
+            <p className="text-base md:text-lg text-gray-600 dark:text-gray-300">We offer multiple ways to get in touch with our support team</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
@@ -158,14 +158,14 @@ export default function ContactPage() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.2, duration: 0.5 }}
               >
-                <Card className="text-center hover:shadow-lg transition-all duration-300 border-2 hover:border-[#33BDC7]">
+                <Card className="text-center hover:shadow-lg transition-all duration-300 border-2 hover:border-[#33BDC7] dark:bg-gray-700 dark:border-gray-600">
                   <CardContent className="pt-8 pb-6">
                     <div className="w-16 h-16 border border-[#4DD184] rounded-2xl flex items-center justify-center mx-auto mb-4">
                       <method.icon className="h-8 w-8 text-[#4DD184]" />
                     </div>
-                    <h3 className="text-lg md:text-xl font-semibold text-[#33BDC7] mb-2">{method.title}</h3>
-                    <p className="text-gray-600 mb-3">{method.description}</p>
-                    <p className="font-medium text-gray-900 mb-4">{method.contact}</p>
+                    <h3 className="text-lg md:text-xl font-semibold text-[#33BDC7] dark:text-[#33BDC7] mb-2">{method.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300 mb-3">{method.description}</p>
+                    <p className="font-medium text-gray-900 dark:text-white mb-4">{method.contact}</p>
                     <Button className="bg-[#33BDC7] hover:from-[#33BDC7]">
                       {method.action}
                     </Button>
@@ -178,7 +178,7 @@ export default function ContactPage() {
       </section>
 
       {/* Contact Form & Can't Find Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-16">
             
@@ -268,7 +268,7 @@ export default function ContactPage() {
                     <Send className="h-6 w-6 mr-2 text-[#33BDC7]" />
                     Send us a Message
                   </CardTitle>
-                  <p className="text-gray-600">Fill out the form below and we'll get back to you within 24 hours.</p>
+                  <p className="text-gray-600 dark:text-gray-300">{contactMethods[0].description}</p>
                 </CardHeader>
                 <CardContent>
                 <ContactForm 
@@ -282,7 +282,7 @@ export default function ContactPage() {
         </div>
       </section>
       {/* FAQ Section */}
-      <section id="faq" className="py-16 bg-white">
+      <section id="faq" className="py-16 bg-white dark:bg-gray-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             className="text-center mb-12"
@@ -291,8 +291,8 @@ export default function ContactPage() {
             viewport={{ once: true }}
             variants={fadeUp}
           >
-            <h2 className="text-2xl md:text-3xl font-bold text-[#33BDC7] mb-4">Frequently Asked Questions</h2>
-            <p className="text-base md:text-lg text-gray-600">Quick answers to common questions</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-[#33BDC7] dark:text-[#33BDC7] mb-4">Frequently Asked Questions</h2>
+            <p className="text-base md:text-lg text-gray-600 dark:text-gray-300">Quick answers to common questions</p>
           </motion.div>
 
           <div className="space-y-6">
@@ -329,10 +329,10 @@ export default function ContactPage() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.15 }}
               >
-                <Card>
+                <Card className="dark:bg-gray-700 dark:border-gray-600">
                   <CardContent className="pt-6">
-                    <h3 className="text-base md:text-lg font-semibold text-[#33BDC7] mb-2">{question}</h3>
-                    <p className="text-gray-600">{answer}</p>
+                    <h3 className="text-base md:text-lg font-semibold text-[#33BDC7] dark:text-[#33BDC7] mb-2">{question}</h3>
+                    <p className="text-gray-600 dark:text-gray-300">{answer}</p>
                   </CardContent>
                 </Card>
               </motion.div>

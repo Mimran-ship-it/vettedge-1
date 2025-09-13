@@ -201,7 +201,7 @@ View full details:`;
   
   return (
     <Card className={cn(
-      "relative group hover:shadow-sm hover:rounded-xl transition-all duration-300 overflow-hidden flex flex-col w-full",
+      "relative group hover:shadow-sm hover:rounded-xl transition-all duration-300 overflow-hidden flex flex-col w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700",
       (domain.isSold||(!domain.isAvailable)) && "opacity-60"
     )}>
       {/* Top Image - Responsive Aspect Ratio */}
@@ -242,7 +242,7 @@ View full details:`;
                   <div className="relative text-transparent">███████████████████</div>
                 </div>
               ) : (
-                <CardTitle className="text-base sm:text-lg font-bold text-gray-900 truncate pr-2">
+                <CardTitle className="text-base sm:text-lg font-bold text-gray-900 dark:text-white truncate pr-2">
                   {domain.name}
                 </CardTitle>
               )}
@@ -252,7 +252,7 @@ View full details:`;
                 variant="ghost"
                 size="icon"
                 onClick={handleShare}
-                className="p-1 h-7 w-7 sm:h-8 sm:w-8"
+                className="p-1 h-7 w-7 sm:h-8 sm:w-8 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
               >
                 <Share2 className="h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
@@ -260,7 +260,7 @@ View full details:`;
                 variant="ghost"
                 size="icon"
                 onClick={handleWishlistToggle}
-                className={cn("p-1 h-7 w-7 sm:h-8 sm:w-8", isWishlisted && "text-red-500 hover:text-red-500")}
+                className={cn("p-1 h-7 w-7 sm:h-8 sm:w-8 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white", isWishlisted && "text-red-500 hover:text-red-500 dark:text-red-400 dark:hover:text-red-400")}
                 disabled={domain.isSold || !domain.isAvailable}
               >
                 <Heart className={cn("h-3 w-3 sm:h-4 sm:w-4", isWishlisted && "fill-current")} />
@@ -271,7 +271,7 @@ View full details:`;
         
         <CardContent className="p-0 space-y-2 sm:space-y-3 flex-1 flex flex-col">
           {/* Provider/Status Row */}
-          <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600">
+          <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600 dark:text-gray-300">
             <div className="flex items-center gap-1">
               {domain.type === "traffic" && domain.metrics.monthlyTraffic ? (
                 <>
@@ -294,11 +294,11 @@ View full details:`;
           {/* Price & Availability */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
             <div className="flex items-center gap-1">
-              <span className="text-lg sm:text-xl font-bold text-gray-900">
+              <span className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
                 ${domain.price.toLocaleString()}
               </span>
               {domain.Actualprice > domain.price && (
-                <span className="text-xs sm:text-sm text-gray-500 line-through">
+                <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 line-through">
                   ${domain.Actualprice.toLocaleString()}
                 </span>
               )}
@@ -312,19 +312,19 @@ View full details:`;
           </div>
           
           {/* Enhanced Overall Score Section */}
-          <div className="mb-3 sm:mb-4 bg-blue-50 rounded-lg p-3 border border-blue-100">
+          <div className="mb-3 sm:mb-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 border border-blue-100 dark:border-blue-800">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="h-5 w-5 text-blue-600" />
-                <span className="text-sm font-semibold text-blue-800">Overall Score</span>
+                <ShieldCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <span className="text-sm font-semibold text-blue-800 dark:text-blue-300">Overall Score</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xl font-bold text-blue-800">
+                <span className="text-xl font-bold text-blue-800 dark:text-blue-300">
                   {domain.metrics.score}
                 </span>
-                <div className="relative w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="relative w-16 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                   <div 
-                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
+                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 rounded-full"
                     style={{ width: `${Math.min(100, domain.metrics.score)}%` }}
                   ></div>
                 </div>
@@ -332,15 +332,15 @@ View full details:`;
             </div>
             
             {/* Desktop Score Description */}
-            <div className="  text-xs text-gray-600">
+            <div className="  text-xs text-gray-600 dark:text-gray-300">
               {domain.metrics.score >= 80 ? (
-                <span className="text-green-600 font-medium">Exceptional domain score</span>
+                <span className="text-green-600 dark:text-green-400 font-medium">Exceptional domain score</span>
               ) : domain.metrics.score >= 60 ? (
-                <span className="text-blue-600 font-medium">Strong domain score </span>
+                <span className="text-blue-600 dark:text-blue-400 font-medium">Strong domain score </span>
               ) : domain.metrics.score >= 40 ? (
-                <span className="text-yellow-600 font-medium">Moderate domain score</span>
+                <span className="text-yellow-600 dark:text-yellow-400 font-medium">Moderate domain score</span>
               ) : (
-                <span className="text-orange-600 font-medium">Developing domain score</span>
+                <span className="text-orange-600 dark:text-orange-400 font-medium">Developing domain score</span>
               )}
             </div>
             
@@ -366,16 +366,16 @@ View full details:`;
           <div className="grid grid-cols-3 gap-1 sm:gap-3 text-[10px] sm:text-xs">
             {/* Column 1 */}
             <div className="space-y-1 sm:space-y-2">
-              <div className="flex items-center gap-1 text-gray-600">
+              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
                 <TrendingUp className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>DR: {domain.metrics.domainRank}</span>
               </div>
              
-              <div className="flex items-center gap-1 text-gray-600">
+              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
                 <Activity className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>TF: {domain.metrics.trustFlow}</span>
               </div>
-              <div className="flex items-center gap-1 text-gray-600">
+              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
                 <LinkIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>{domain.metrics.authorityLinks.length} ALs</span>
               </div>
@@ -383,15 +383,15 @@ View full details:`;
             
             {/* Column 2 */}
             <div className="space-y-1 sm:space-y-2">
-              <div className="flex items-center gap-1 text-gray-600">
+              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
                 <LinkIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>{domain.metrics.referringDomains} RDs</span>
               </div>
-              <div className="flex items-center gap-1 text-gray-600">
+              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
                 <Flag className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>CF: {domain.metrics.citationFlow}</span>
               </div>
-              <div className="flex items-center gap-1 text-gray-600">
+              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
                 <Hourglass className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>{domain.metrics.age} yrs</span>
               </div>
@@ -400,17 +400,17 @@ View full details:`;
             {/* Column 3 */}
             
             <div className="space-y-1 sm:space-y-2">
-            <div className="flex items-center gap-1 text-gray-600">
+            <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
                 <Building className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>DA: {domain.metrics.domainAuthority}</span>
               </div>
               {domain.type === "traffic" && domain.metrics.monthlyTraffic && (
-                <div className="flex items-center gap-1 text-gray-600">
+                <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
                   <Globe className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                   <span>{domain.metrics.monthlyTraffic.toLocaleString()}</span>
                 </div>
               )}
-              <div className="flex items-center gap-1 text-gray-600">
+              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
                 <Languages className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 <span>{domain.metrics.language}</span>
               </div>
@@ -424,7 +424,7 @@ View full details:`;
                 <Badge
                   key={idx}
                   variant="outline"
-                  className="text-[10px] sm:text-xs px-1.5 py-0.5 text-gray-600 border-gray-300"
+                  className="text-[10px] sm:text-xs px-1.5 py-0.5 text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600"
                 >
                   {tag}
                 </Badge>
@@ -452,7 +452,7 @@ View full details:`;
             <Button
               variant="outline"
               size="sm"
-              className="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm"
+              className="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
               disabled={domain.isSold || !domain.isAvailable}
             >
               <Link
@@ -465,13 +465,13 @@ View full details:`;
             </Button>
           </div>
          
-          <div className="flex gap-3 pt-2 text-sm text-gray-600">
+          <div className="flex gap-3 pt-2 text-sm text-gray-600 dark:text-gray-300">
             <div className="flex items-center gap-1.5">
-              <CheckCircle className="h-3 w-3 text-green-600 flex-shrink-0" />
+              <CheckCircle className="h-3 w-3 text-green-600 dark:text-green-400 flex-shrink-0" />
               <span>Search engine indexed</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <CheckCircle className="h-3 w-3 text-green-600 flex-shrink-0" />
+              <CheckCircle className="h-3 w-3 text-green-600 dark:text-green-400 flex-shrink-0" />
               <span>Trademark Free</span>
             </div>
           </div>

@@ -59,7 +59,7 @@ export default function RefundPolicyPage() {
     show: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   }
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
       <Header />
       {/* Hero Section */}
       <motion.section
@@ -87,7 +87,7 @@ export default function RefundPolicyPage() {
       </motion.section>
       
       {/* Policy Sections */}
-      <section className="py-16 bg-white flex-1">
+      <section className="py-16 bg-white dark:bg-gray-800 flex-1">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {policySections.map((section, index) => (
             <motion.div
@@ -98,19 +98,19 @@ export default function RefundPolicyPage() {
               variants={fadeUp}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="h-full hover:shadow-lg transition-all duration-300 border-2 hover:border-[#33BDC7] rounded-2xl">
+              <Card className="h-full hover:shadow-lg transition-all duration-300 border-2 hover:border-[#33BDC7] rounded-2xl dark:bg-gray-700 dark:border-gray-600">
                 <CardContent className="pt-8 pb-6 px-6">
                   <div className="flex items-center mb-4">
-                    <div className="p-3 rounded-2xl bg-[#33BDC7]/10 text-[#33BDC7] mr-4">
+                    <div className="p-3 rounded-2xl bg-[#33BDC7]/10 dark:bg-[#33BDC7]/20 text-[#33BDC7] mr-4">
                       <section.icon className="h-6 w-6" />
                     </div>
-                    <h3 className="text-xl font-semibold text-[#33BDC7]">
+                    <h3 className="text-xl font-semibold text-[#33BDC7] dark:text-[#33BDC7]">
                       {section.title}
                     </h3>
                   </div>
                   
                   {section.description && (
-                    <p className="text-gray-600 mb-4">{section.description}</p>
+                    <p className="text-gray-600 dark:text-gray-300 mb-4">{section.description}</p>
                   )}
                   
                   {section.content && (
@@ -122,7 +122,7 @@ export default function RefundPolicyPage() {
                           ) : (
                             <XCircle className="h-5 w-5 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
                           )}
-                          <span className="text-gray-600">{item}</span>
+                          <span className="text-gray-600 dark:text-gray-300">{item}</span>
                         </li>
                       ))}
                     </ul>
@@ -135,7 +135,7 @@ export default function RefundPolicyPage() {
       </section>
       
       {/* Closing Note */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gray-50 dark:bg-gray-900">
         <motion.div
           initial="hidden"
           whileInView="show"
@@ -146,7 +146,7 @@ export default function RefundPolicyPage() {
           <h2 className="text-2xl md:text-3xl font-bold text-[#33BDC7] mb-4">
             Need Help With a Return?
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-600 dark:text-gray-300 mb-6">
             Our support team is here to guide you through the return process.
             Contact us for personalized assistance.
           </p>
@@ -159,9 +159,9 @@ export default function RefundPolicyPage() {
       </section>
       
       {/* Thank You Note */}
-      <section className="py-10 bg-white">
+      <section className="py-10 bg-white dark:bg-gray-800">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-300">
             Thank you for choosing Vettedge.Domains. We appreciate your trust and are committed to making your domain ownership experience secure and smooth.
           </p>
         </div>

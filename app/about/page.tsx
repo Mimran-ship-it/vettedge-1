@@ -41,7 +41,7 @@ export default function AboutPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
 
       {/* Hero Section */}
@@ -71,7 +71,7 @@ export default function AboutPage() {
 
       {/* Why Choose Section */}
       <motion.section
-        className="py-20 bg-gray-50"
+        className="py-20 bg-gray-50 dark:bg-gray-900"
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}
@@ -82,7 +82,7 @@ export default function AboutPage() {
             <Badge variant="outline" className="mb-4 border-[#33BDC7] text-[#33BDC7]">
               Why Choose VettEdge?
             </Badge>
-            <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+            <p className="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
               Unlike generic domain marketplaces, we focus exclusively on high-potential aged and expired domains vetted by real humans — not bots.
             </p>
           </div>
@@ -97,13 +97,13 @@ export default function AboutPage() {
                 transition={{ delay: index * 0.2 }}
                 className="h-full"
               >
-                <Card className="text-center p-6 hover:shadow-lg transition-shadow border border-[#33BDC7] h-full flex flex-col">
+                <Card className="text-center p-6 hover:shadow-lg transition-shadow border border-[#33BDC7] dark:bg-gray-800 dark:border-gray-600 h-full flex flex-col">
                   <CardContent className="pt-6 flex-1 flex flex-col">
                     <div className="w-16 h-16 border border-[#4dd184] rounded-2xl flex items-center justify-center mx-auto mb-4">
                       <value.icon className="h-8 w-8 text-[#4dd184]" />
                     </div>
                     <h3 className="text-xl font-semibold text-[#33BDC7] mb-3">{value.title}</h3>
-                    <p className="text-gray-700 flex-1">{value.description}</p>
+                    <p className="text-gray-700 dark:text-gray-300 flex-1">{value.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -112,7 +112,7 @@ export default function AboutPage() {
         </div>
       </motion.section>
          {/* Stats Section */}
-       <section className="py-16 bg-gray-50">
+       <section className="py-16 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
             {stats.map((stat, index) => (
@@ -128,7 +128,7 @@ export default function AboutPage() {
                   <stat.icon className="h-8 w-8 text-white" />
                 </div>
                 <div className="text-3xl font-bold text-[#33BDC7] mb-2">{stat.value}</div>
-                <div className="text-gray-600">{stat.label}</div>
+                <div className="text-gray-600 dark:text-gray-300">{stat.label}</div>
               </motion.div>
             ))}
           </div>
@@ -137,7 +137,7 @@ export default function AboutPage() {
 
       {/* Who We Serve */}
       <motion.section
-        className="py-20 bg-white"
+        className="py-20 bg-white dark:bg-gray-800"
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}
@@ -145,7 +145,7 @@ export default function AboutPage() {
       >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-[#33BDC7] mb-8 text-center">Who We Serve</h2>
-          <ul className="grid md:grid-cols-2 gap-6 text-lg text-gray-700">
+          <ul className="grid md:grid-cols-2 gap-6 text-lg text-gray-700 dark:text-gray-300">
             {[
               "Entrepreneurs looking for brandable names",
               "SEO specialists and agencies",
@@ -164,7 +164,7 @@ export default function AboutPage() {
 
       {/* Refund Policy */}
       <motion.section
-        className="py-20 bg-gray-50"
+        className="py-20 bg-gray-50 dark:bg-gray-900"
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}
@@ -172,10 +172,10 @@ export default function AboutPage() {
       >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <h2 className="text-3xl font-bold text-[#33BDC7]">Peace of Mind: Our Refund & Return Policy</h2>
-          <p className="text-lg text-gray-700">
-            If you’re not satisfied, we offer a 14-day refund window. Just let us know your reason, return the domain, and we’ll refund your purchase (minus a 5% handling fee and payment processor costs).
+          <p className="text-lg text-gray-700 dark:text-gray-300">
+            If you're not satisfied, we offer a 14-day refund window. Just let us know your reason, return the domain, and we'll refund your purchase (minus a 5% handling fee and payment processor costs).
           </p>
-          <p className="text-lg text-gray-700">
+          <p className="text-lg text-gray-700 dark:text-gray-300">
             Returning a domain is simple — either push it back to our registrar account or share the EPP/Auth code so we can transfer it back.
           </p>
           <Link href="/refund-policy" className="text-[#33BDC7] underline">

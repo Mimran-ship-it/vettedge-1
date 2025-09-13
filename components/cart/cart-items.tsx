@@ -31,19 +31,19 @@ export function CartItems({ items, onRemoveItem }: CartItemsProps) {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold text-gray-900">Cart Items ({items.length})</h2>
+      <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Cart Items ({items.length})</h2>
       {items.length === 0 ? (
-        <Card className="p-8 text-center">
-          <p className="text-gray-500">Your cart is empty</p>
+        <Card className="p-8 text-center dark:bg-gray-800 dark:border-gray-700">
+          <p className="text-gray-500 dark:text-gray-400">Your cart is empty</p>
         </Card>
       ) : (
         items.map((item) => (
-          <Card key={item.id} className="overflow-hidden">
+          <Card key={item.id} className="overflow-hidden dark:bg-gray-800 dark:border-gray-700">
             <CardContent className="p-4 sm:p-6">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
                 <div className="flex-1">
                   <div className="flex items-start gap-2">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">{item.name}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{item.name}</h3>
                     {item.isSold && (
                       <Badge variant="destructive" className="text-xs flex items-center gap-1">
                         <AlertCircle className="h-3 w-3" />
@@ -54,15 +54,15 @@ export function CartItems({ items, onRemoveItem }: CartItemsProps) {
                   <Badge variant="secondary" className="text-xs mb-2">
                     {item.domain?.registrar}
                   </Badge>
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">{item.domain?.description}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">{item.domain?.description}</p>
                 </div>
                 <div className="flex flex-col sm:items-end gap-2">
-                  <div className="text-xl sm:text-2xl font-bold text-gray-900">${item.price.toLocaleString()}</div>
+                  <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">${item.price.toLocaleString()}</div>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => handleRemoveItem(item.id, item.name)}
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50 self-start sm:self-auto"
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 self-start sm:self-auto"
                   >
                     <Trash2 className="h-4 w-4 mr-1" />
                     <span>Remove</span>
@@ -72,8 +72,8 @@ export function CartItems({ items, onRemoveItem }: CartItemsProps) {
               
               {/* Sold Item Notice */}
               {item.isSold && (
-                <div className="mb-4 p-3 bg-red-50 rounded-lg border border-red-200">
-                  <div className="flex items-center text-red-800">
+                <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                  <div className="flex items-center text-red-800 dark:text-red-200">
                     <AlertCircle className="h-4 w-4 mr-2 flex-shrink-0" />
                     <span className="text-sm font-medium">This domain has been sold and is no longer available for purchase.</span>
                   </div>
@@ -82,44 +82,44 @@ export function CartItems({ items, onRemoveItem }: CartItemsProps) {
               
               {/* Domain Metrics */}
               {item.domain?.metrics && (
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 p-4 bg-gray-50 rounded-lg">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <div className="flex items-center space-x-2 text-sm">
                     <TrendingUp className="h-4 w-4 text-green-500 flex-shrink-0" />
                     <div>
-                      <div className="font-medium text-xs text-gray-500">Domain Rank</div>
-                      <div className="text-gray-800">{item.domain.metrics.domainRank}</div>
+                      <div className="font-medium text-xs text-gray-500 dark:text-gray-400">Domain Rank</div>
+                      <div className="text-gray-800 dark:text-gray-200">{item.domain.metrics.domainRank}</div>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2 text-sm">
                     <LinkIcon className="h-4 w-4 text-blue-500 flex-shrink-0" />
                     <div>
-                      <div className="font-medium text-xs text-gray-500">Referring Domains</div>
-                      <div className="text-gray-800">{item.domain.metrics.referringDomains}</div>
+                      <div className="font-medium text-xs text-gray-500 dark:text-gray-400">Referring Domains</div>
+                      <div className="text-gray-800 dark:text-gray-200">{item.domain.metrics.referringDomains}</div>
                     </div>
                   </div>
                  {item.domain.metrics.monthlyTraffic&& <div className="flex items-center space-x-2 text-sm">
                     <Globe className="h-4 w-4 text-purple-500 flex-shrink-0" />
                     <div>
-                      <div className="font-medium text-xs text-gray-500">Monthly Traffic</div>
+                      <div className="font-medium text-xs text-gray-500 dark:text-gray-400">Monthly Traffic</div>
                       {item.domain.metrics.monthlyTraffic ? (
-                        <div className="text-gray-800">{item.domain.metrics.monthlyTraffic.toLocaleString()}</div>
+                        <div className="text-gray-800 dark:text-gray-200">{item.domain.metrics.monthlyTraffic.toLocaleString()}</div>
                       ) : (
-                        <div className="text-gray-800">N/A</div>
+                        <div className="text-gray-800 dark:text-gray-200">N/A</div>
                       )}
                     </div>
                   </div>}
                   {!item.domain.metrics.monthlyTraffic&& <div className="flex items-center space-x-2 text-sm">
                     <History  className="h-4 w-4 text-purple-500 flex-shrink-0" />
                     <div>
-                      <div className="font-medium text-xs text-gray-500">Age</div>
-                      <div className="text-gray-800">{item.domain.metrics.age}</div>
+                      <div className="font-medium text-xs text-gray-500 dark:text-gray-400">Age</div>
+                      <div className="text-gray-800 dark:text-gray-200">{item.domain.metrics.age}</div>
                     </div>
                   </div>}
                   <div className="flex items-center space-x-2 text-sm">
                     <Calendar className="h-4 w-4 text-orange-500 flex-shrink-0" />
                     <div>
-                      <div className="font-medium text-xs text-gray-500"> DA</div>
-                      <div className="text-gray-800">{item.domain.metrics.domainAuthority}</div>
+                      <div className="font-medium text-xs text-gray-500 dark:text-gray-400"> DA</div>
+                      <div className="text-gray-800 dark:text-gray-200">{item.domain.metrics.domainAuthority}</div>
                     </div>
                   </div>
                 </div>

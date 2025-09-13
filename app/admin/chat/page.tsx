@@ -19,7 +19,7 @@ export default function AdminChatPage() {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen">
+      <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
         <AdminSidebar />
         <SidebarInset className="flex-1">
           <AdminChatInterface />

@@ -19,15 +19,6 @@ export default function HomePage() {
       <main className="pt-16" >
         <HeroSection />
         <TrustSection />
-       <div className="text-center">
-        <Badge
-            variant="outline"
-            className="mb-4 px-4  py-2 border-[#38C172] text-[#38C172] font-medium"
-          >
-           Shop by Category
-          </Badge>
-          </div>
-
         <IsHot />
         <AgedDomains />
         <TrafficDomains/>

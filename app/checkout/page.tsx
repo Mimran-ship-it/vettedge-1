@@ -25,13 +25,13 @@ export default function CheckoutPage() {
   }
  
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Checkout</h1>
-          <p className="text-lg text-gray-600">Complete your purchase securely</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Checkout</h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300">Complete your purchase securely</p>
         </div>
 
         <div className="grid lg:grid-cols-1 gap-6">

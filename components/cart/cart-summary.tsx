@@ -33,7 +33,7 @@ export function CartSummary({ items, total, hasUnavailableItems = false }: CartS
   const availableItemsCount = items.filter(item => !item.isSold).length
 
   return (
-    <Card className="sticky top-8">
+    <Card className="sticky top-8 dark:bg-gray-800 dark:border-gray-700">
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <CreditCard className="h-5 w-5" />
@@ -42,8 +42,8 @@ export function CartSummary({ items, total, hasUnavailableItems = false }: CartS
       </CardHeader>
       <CardContent className="space-y-4">
         {hasUnavailableItems && (
-          <div className="p-3 bg-amber-50 rounded-lg border border-amber-200">
-            <div className="flex items-center text-amber-800">
+          <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-700">
+            <div className="flex items-center text-amber-800 dark:text-amber-200">
               <AlertTriangle className="h-4 w-4 mr-2 flex-shrink-0" />
               <span className="text-sm font-medium">Some items in your cart are no longer available</span>
             </div>
@@ -52,17 +52,17 @@ export function CartSummary({ items, total, hasUnavailableItems = false }: CartS
         
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span>Subtotal ({availableItemsCount} items)</span>
-            <span>${subtotal.toLocaleString()}</span>
+            <span className="text-gray-900 dark:text-gray-100">Subtotal ({availableItemsCount} items)</span>
+            <span className="text-gray-900 dark:text-gray-100">${subtotal.toLocaleString()}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span>Tax</span>
-            <span>${tax.toFixed(2)}</span>
+            <span className="text-gray-900 dark:text-gray-100">Tax</span>
+            <span className="text-gray-900 dark:text-gray-100">${tax.toFixed(2)}</span>
           </div>
           <Separator />
           <div className="flex justify-between font-semibold text-lg">
-            <span>Total</span>
-            <span>${finalTotal.toLocaleString()}</span>
+            <span className="text-gray-900 dark:text-white">Total</span>
+            <span className="text-gray-900 dark:text-white">${finalTotal.toLocaleString()}</span>
           </div>
         </div>
         
@@ -75,12 +75,12 @@ export function CartSummary({ items, total, hasUnavailableItems = false }: CartS
           {availableItemsCount === 0 ? "No Available Items" : "Proceed to Checkout"}
         </Button>
         
-        <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
+        <div className="flex items-center justify-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
           <Shield className="h-4 w-4" />
           <span>Secure checkout with SSL encryption</span>
         </div>
         
-        <div className="text-xs text-gray-500 text-center">
+        <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
           By proceeding to checkout, you agree to our Terms of Service and Privacy Policy.
         </div>
       </CardContent>

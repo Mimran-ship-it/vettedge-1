@@ -87,8 +87,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <article className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden mb-8">
               <div className="p-6 md:p-8">
                 <div className="flex flex-wrap gap-2 mb-4">
-                  <Badge variant="secondary" className="bg-blue-50 text-blue-700">{post.category}</Badge>
-                  {post.featured && <Badge className="bg-amber-500 hover:bg-amber-600">Featured</Badge>}
+                  <Badge variant="secondary" className="bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300">{post.category}</Badge>
+                  {post.featured && <Badge className="bg-amber-500 hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-700">Featured</Badge>}
                 </div>
                 
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">{post.title}</h1>
@@ -125,7 +125,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   </div>
                 </div>
                 
-                <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden mb-6">
+                <div className="aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden mb-6">
                   <Image 
                     src={post.image || "/placeholder.svg"} 
                     alt={post.title} 
@@ -144,15 +144,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </div>
                 
                 {/* Tags */}
-                <div className="mt-12 pt-8 border-t border-gray-200">
+                <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
                   <div className="flex items-center gap-2 mb-4">
-                    <Tag className="h-5 w-5 text-gray-500" />
+                    <Tag className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                     <span className="text-sm font-medium text-gray-900 dark:text-white">Tags:</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {post.tags.map((tag) => (
                       <Link key={tag} href={`/blog?tag=${encodeURIComponent(tag)}`}>
-                        <Badge variant="outline" className="text-sm hover:bg-gray-100">
+                        <Badge variant="outline" className="text-sm hover:bg-gray-100 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300">
                           {tag}
                         </Badge>
                       </Link>
@@ -161,7 +161,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </div>
                 
                 {/* Share Section */}
-                <div className="mt-8 pt-8 border-t border-gray-200">
+                <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
                       <span className="text-sm font-medium text-gray-900 dark:text-white">Share:</span>
@@ -178,15 +178,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             
             {/* Related Posts */}
             {relatedPosts.length > 0 && (
-              <section className="bg-white rounded-xl shadow-sm p-6 md:p-8">
+              <section className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 md:p-8">
                 <div className="flex items-center gap-2 mb-6">
                   <TrendingUp className="h-5 w-5 text-amber-500" />
-                  <h2 className="text-2xl font-bold text-gray-900">Related Articles</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Related Articles</h2>
                 </div>
                 <div className="grid md:grid-cols-3 gap-6">
                   {relatedPosts.map((relatedPost) => (
-                    <div key={relatedPost._id} className="group border border-gray-200 rounded-lg overflow-hidden transition-all duration-200 hover:shadow-md">
-                      <div className="aspect-video bg-gray-100 overflow-hidden">
+                    <div key={relatedPost._id} className="group border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden transition-all duration-200 hover:shadow-md dark:hover:shadow-lg">
+                      <div className="aspect-video bg-gray-100 dark:bg-gray-700 overflow-hidden">
                         <Image
                           src={relatedPost.image || "/placeholder.svg"}
                           alt={relatedPost.title}
@@ -196,14 +196,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                         />
                       </div>
                       <div className="p-4">
-                        <Badge variant="secondary" className="text-xs mb-2">
+                        <Badge variant="secondary" className="text-xs mb-2 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300">
                           {relatedPost.category}
                         </Badge>
-                        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-cyan-600 transition-colors">
+                        <h3 className="font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
                           <Link href={`/blog/${relatedPost.slug}`}>{relatedPost.title}</Link>
                         </h3>
-                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{relatedPost.excerpt}</p>
-                        <div className="flex items-center gap-3 text-xs text-gray-500">
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">{relatedPost.excerpt}</p>
+                        <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
                           <div className="flex items-center gap-1">
                             <User className="h-3 w-3" />
                             <span>{relatedPost.author.name}</span>
@@ -223,35 +223,35 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="lg:w-1/3">
             <div className="sticky top-28 space-y-6">
               {/* Author Card */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">About the Author</h3>
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">About the Author</h3>
                 <div className="flex items-center gap-4 mb-4">
                   <Image
                     src={post.author.avatar || "/placeholder.svg"}
                     alt={post.author.name}
                     width={60}
                     height={60}
-                    className="rounded-full border-2 border-gray-100"
+                    className="rounded-full border-2 border-gray-100 dark:border-gray-700"
                   />
                   <div>
-                    <h4 className="font-bold text-gray-900">{post.author.name}</h4>
-                    <p className="text-sm text-gray-600">{post.author.bio || "Domain Expert"}</p>
+                    <h4 className="font-bold text-gray-900 dark:text-white">{post.author.name}</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">{post.author.bio || "Domain Expert"}</p>
                   </div>
                 </div>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                   {post.author.bio || "Expert in domain valuation and digital assets with years of experience in the industry."}
                 </p> 
               </div>
               
               {/* Recent Posts */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Posts</h3>
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Recent Posts</h3>
                 <div className="space-y-4">
                   {recentPosts.map((recentPost) => (
-                    <div key={recentPost._id} className="group border-b border-gray-100 pb-4 last:border-0 last:pb-0">
+                    <div key={recentPost._id} className="group border-b border-gray-100 dark:border-gray-700 pb-4 last:border-0 last:pb-0">
                       <Link href={`/blog/${recentPost.slug}`} className="block">
                         <div className="flex gap-3">
-                          <div className="flex-shrink-0 w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
+                          <div className="flex-shrink-0 w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
                             <Image
                               src={recentPost.image || "/placeholder.svg"}
                               alt={recentPost.title}
@@ -261,10 +261,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                             />
                           </div>
                           <div>
-                            <h4 className="font-medium text-gray-900 group-hover:text-cyan-600 transition-colors line-clamp-2 text-sm">
+                            <h4 className="font-medium text-gray-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors line-clamp-2 text-sm">
                               {recentPost.title}
                             </h4>
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                               {new Date(recentPost.publishedAt).toLocaleDateString("en-US", {
                                 month: "short",
                                 day: "numeric",
@@ -281,15 +281,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                
               
               {/* Tags Cloud */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Popular Tags</h3>
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Popular Tags</h3>
                 <div className="flex flex-wrap gap-2">
                   {allTags.map((tag) => (
                     <Link
                       key={tag}
                       href={`/blog?tag=${encodeURIComponent(tag)}`}
                     >
-                      <Badge variant="outline" className="text-xs hover:bg-gray-100">
+                      <Badge variant="outline" className="text-xs hover:bg-gray-100 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300">
                         {tag}
                       </Badge>
                     </Link>
@@ -298,16 +298,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
               
               {/* Newsletter */}
-              <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl shadow-sm p-6 border border-cyan-100">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">Subscribe to Newsletter</h3>
-                <p className="text-sm text-gray-600 mb-4">Get the latest insights on domain investing and SEO.</p>
+              <div className="bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 rounded-xl shadow-sm p-6 border border-cyan-100 dark:border-gray-600">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Subscribe to Newsletter</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">Get the latest insights on domain investing and SEO.</p>
                 <div className="space-y-3">
                   <input 
                     type="email" 
                     placeholder="Your email address" 
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                   />
-                  <Button className="w-full bg-cyan-600 hover:bg-cyan-700">
+                  <Button className="w-full bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-600 dark:hover:bg-cyan-700">
                     Subscribe
                   </Button>
                 </div>
@@ -338,7 +338,7 @@ const parseBlogContent = (content: string) => {
       elements.push(
         <h1
           key={index}
-          className="text-3xl font-extrabold text-gray-900 tracking-tight mb-4 mt-6"
+          className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-4 mt-6"
         >
           {trimmedLine.substring(2)}
         </h1>
@@ -349,7 +349,7 @@ const parseBlogContent = (content: string) => {
       elements.push(
         <h2
           key={index}
-          className="text-2xl font-bold text-gray-800 tracking-tight mt-8 mb-4"
+          className="text-2xl font-bold text-gray-800 dark:text-gray-200 tracking-tight mt-8 mb-4"
         >
           {trimmedLine.substring(3)}
         </h2>
@@ -360,7 +360,7 @@ const parseBlogContent = (content: string) => {
       elements.push(
         <h3
           key={index}
-          className="text-xl font-semibold text-gray-700 mt-6 mb-3"
+          className="text-xl font-semibold text-gray-700 dark:text-gray-300 mt-6 mb-3"
         >
           {trimmedLine.substring(4)}
         </h3>
@@ -372,7 +372,7 @@ const parseBlogContent = (content: string) => {
       elements.push(
         <li
           key={index}
-          className="text-base text-gray-600 ml-6 list-disc marker:text-gray-500 mb-2"
+          className="text-base text-gray-600 dark:text-gray-300 ml-6 list-disc marker:text-gray-500 dark:marker:text-gray-400 mb-2"
         >
           {trimmedLine.substring(2)}
         </li>
@@ -384,7 +384,7 @@ const parseBlogContent = (content: string) => {
       elements.push(
         <blockquote
           key={index}
-          className="text-base text-gray-600 italic border-l-4 border-cyan-300 pl-4 bg-cyan-50 rounded-r-md py-2 mb-4"
+          className="text-base text-gray-600 dark:text-gray-300 italic border-l-4 border-cyan-300 dark:border-cyan-500 pl-4 bg-cyan-50 dark:bg-cyan-900/20 rounded-r-md py-2 mb-4"
         >
           {trimmedLine.substring(2)}
         </blockquote>
@@ -399,7 +399,7 @@ const parseBlogContent = (content: string) => {
       elements.push(
         <p
           key={index}
-          className="text-base leading-relaxed text-gray-700 mb-4"
+          className="text-base leading-relaxed text-gray-700 dark:text-gray-300 mb-4"
           dangerouslySetInnerHTML={{ __html: formattedText }}
         />
       );
@@ -409,7 +409,7 @@ const parseBlogContent = (content: string) => {
     elements.push(
       <p
         key={index}
-        className="text-base leading-relaxed text-gray-700 mb-4"
+        className="text-base leading-relaxed text-gray-700 dark:text-gray-300 mb-4"
       >
         {trimmedLine}
       </p>

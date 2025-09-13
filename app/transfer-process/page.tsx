@@ -42,7 +42,7 @@ export default function TransferProcessPage() {
     show: { opacity: 1, y: 0, transition: { duration: 0.6 } }
   }
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
       <Header />
       {/* Hero Section */}
       <motion.section
@@ -64,7 +64,7 @@ export default function TransferProcessPage() {
       </motion.section>
 
       {/* What Happens After Purchase */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -74,7 +74,7 @@ export default function TransferProcessPage() {
             className="text-center mb-12"
           >
             <h2 className="text-3xl font-bold text-[#33BDC7] mb-4">What Happens After You Buy a Domain?</h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               Once your payment is confirmed, we begin the process of transferring ownership of the domain to you. This can happen in two ways:
             </p>
           </motion.div>
@@ -87,7 +87,7 @@ export default function TransferProcessPage() {
               variants={fadeUp}
               transition={{ delay: 0.1 }}
             >
-              <Card className="h-full border-2 p-3 border-[#33BDC7]/20 hover:border-[#33BDC7] transition-all duration-300">
+              <Card className="h-full border-2 p-3 border-[#33BDC7]/20 hover:border-[#33BDC7] transition-all duration-300 dark:bg-gray-700 dark:border-gray-600">
                 <CardHeader>
                   <CardTitle className="text-xl text-[#33BDC7] flex items-center">
                     <Lock className="mr-2 h-5 w-5" />
@@ -95,7 +95,7 @@ export default function TransferProcessPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 dark:text-gray-300">
                     If the domain is registered at the same registrar where you have an account, we can transfer it directly to your account.
                   </p>
                 </CardContent>
@@ -109,7 +109,7 @@ export default function TransferProcessPage() {
               variants={fadeUp}
               transition={{ delay: 0.2 }}
             >
-              <Card className="h-full p-3 border-2 border-[#33BDC7]/20 hover:border-[#33BDC7] transition-all duration-300">
+              <Card className="h-full p-3 border-2 border-[#33BDC7]/20 hover:border-[#33BDC7] transition-all duration-300 dark:bg-gray-700 dark:border-gray-600">
                 <CardHeader>
                   <CardTitle className="text-xl text-[#33BDC7] flex items-center">
                     <Key className="mr-2 h-5 w-5" />
@@ -117,7 +117,7 @@ export default function TransferProcessPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 dark:text-gray-300">
                     If you want to move the domain to a different registrar, we will provide you with the necessary authorization code to initiate the transfer.
                   </p>
                 </CardContent>
@@ -128,7 +128,7 @@ export default function TransferProcessPage() {
       </section>
 
       {/* Contact Us Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -138,12 +138,12 @@ export default function TransferProcessPage() {
             className="text-center"
           >
             <h2 className="text-3xl font-bold text-[#33BDC7] mb-4">Please Contact Us After Payment</h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
               To begin the transfer process quickly, contact us via Live Chat or our Contact Form as soon as your payment is complete. Let us know:
             </p>
             
-            <div className="bg-white rounded-xl p-6 max-w-3xl mx-auto border border-gray-200 mb-8">
-              <ul className="space-y-3 text-left text-gray-600">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-3xl mx-auto border border-gray-200 dark:border-gray-600 mb-8">
+              <ul className="space-y-3 text-left text-gray-600 dark:text-gray-300">
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-[#33BDC7] mr-2 mt-0.5 flex-shrink-0" />
                   <span>Your order number</span>
@@ -167,7 +167,7 @@ export default function TransferProcessPage() {
               </Link>
             </div>
             
-            <p className="mt-6 text-gray-500 text-sm">
+            <p className="mt-6 text-gray-500 dark:text-gray-400 text-sm">
               ⚡ The sooner we hear from you, the faster we can start your transfer!
             </p>
           </motion.div>
@@ -175,7 +175,7 @@ export default function TransferProcessPage() {
       </section>
 
       {/* Steps Section */}
-      <section className="py-16 bg-white flex-1">
+      <section className="py-16 bg-white dark:bg-gray-800 flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -185,7 +185,7 @@ export default function TransferProcessPage() {
             className="text-center mb-12"
           >
             <h2 className="text-3xl font-bold text-[#33BDC7] mb-4">Step-by-Step: How the Transfer Works</h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               Follow these steps to complete your domain transfer smoothly and securely.
             </p>
           </motion.div>
@@ -200,15 +200,15 @@ export default function TransferProcessPage() {
                 variants={fadeUp}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="h-full hover:shadow-lg p-6 transition-all duration-300 border-2 hover:border-[#33BDC7] rounded-2xl flex flex-col">
+                <Card className="h-full hover:shadow-lg p-6 transition-all duration-300 border-2 hover:border-[#33BDC7] rounded-2xl flex flex-col dark:bg-gray-700 dark:border-gray-600">
                   <CardHeader className="flex items-center space-x-4 pb-4">
-                    <div className="p-3 rounded-2xl bg-[#33BDC7]/10 text-[#33BDC7]">
+                    <div className="p-3 rounded-2xl bg-[#33BDC7]/10 dark:bg-[#33BDC7]/20 text-[#33BDC7]">
                       <step.icon className="h-7 w-7" />
                     </div>
                     <CardTitle className="text-xl text-[#33BDC7]">{step.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="flex-1">
-                    <p className="text-gray-600">{step.description}</p>
+                    <p className="text-gray-600 dark:text-gray-300">{step.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>

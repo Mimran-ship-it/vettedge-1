@@ -63,14 +63,14 @@ export default function AdminBlogsPage() {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen">
+      <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
         <AdminSidebar />
         <SidebarInset>
           <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <SidebarTrigger />
-                <h2 className="text-3xl font-bold tracking-tight">Blog Management</h2>
+                <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Blog Management</h2>
               </div>
               <Button asChild>
                 <Link href="/admin/blogs/new">

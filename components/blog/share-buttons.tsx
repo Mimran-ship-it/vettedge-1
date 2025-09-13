@@ -62,7 +62,7 @@ export function ShareButtons({ title, excerpt, url }: ShareButtonsProps) {
       <Button 
         variant="outline" 
         size="sm" 
-        className="rounded-full"
+        className="rounded-full border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         onClick={handleGenericShare}
       >
         <Share2 className="h-4 w-4" />
@@ -72,7 +72,7 @@ export function ShareButtons({ title, excerpt, url }: ShareButtonsProps) {
       <Button 
         variant="outline" 
         size="sm" 
-        className="rounded-full"
+        className="rounded-full border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         onClick={handleTwitterShare}
       >
         Twitter
@@ -82,7 +82,7 @@ export function ShareButtons({ title, excerpt, url }: ShareButtonsProps) {
       <Button 
         variant="outline" 
         size="sm" 
-        className="rounded-full"
+        className="rounded-full border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         onClick={handleLinkedInShare}
       >
         LinkedIn
@@ -92,7 +92,7 @@ export function ShareButtons({ title, excerpt, url }: ShareButtonsProps) {
       <Button 
         variant="outline" 
         size="sm" 
-        className="rounded-full"
+        className="rounded-full border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         onClick={handleFacebookShare}
       >
         Facebook
@@ -102,7 +102,7 @@ export function ShareButtons({ title, excerpt, url }: ShareButtonsProps) {
       <Button 
         variant="outline" 
         size="sm" 
-        className="rounded-full"
+        className="rounded-full border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         onClick={handleCopyLink}
       >
         Copy Link

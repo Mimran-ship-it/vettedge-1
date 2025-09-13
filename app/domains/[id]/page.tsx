@@ -282,32 +282,32 @@ export default function DomainDetailsPage() {
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                           <Globe className="h-5 w-5 text-blue-500" />
                           <div>
-                            <p className="text-sm text-gray-500">Domain Type</p>
-                            <p className="font-medium">{domain.type === "traffic" ? "High Traffic Domain" : "Aged Domain"}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Domain Type</p>
+                            <p className="font-medium dark:text-white">{domain.type === "traffic" ? "High Traffic Domain" : "Aged Domain"}</p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                           <Calendar className="h-5 w-5 text-green-500" />
                           <div>
-                            <p className="text-sm text-gray-500">Domain Age</p>
-                            <p className="font-medium">{domain.metrics.age || 'N/A'} years</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Domain Age</p>
+                            <p className="font-medium dark:text-white">{domain.metrics.age || 'N/A'} years</p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                           <Clock className="h-5 w-5 text-purple-500" />
                           <div>
-                            <p className="text-sm text-gray-500">Industry</p>
-                            <p className="font-medium">{domain.tags || 'N/A'}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Industry</p>
+                            <p className="font-medium dark:text-white">{domain.tags || 'N/A'}</p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                           <Users className="h-5 w-5 text-orange-500" />
                           <div>
-                            <p className="text-sm text-gray-500">Language</p>
-                            <p className="font-medium">{domain.metrics.language || 'N/A'}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Language</p>
+                            <p className="font-medium dark:text-white">{domain.metrics.language || 'N/A'}</p>
                           </div>
                         </div>
                       </div>
@@ -417,11 +417,11 @@ export default function DomainDetailsPage() {
             <div className="space-y-6">
               <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 shadow-lg border border-blue-100">
                 <div className="text-center mb-6">
-                  <div className="text-sm text-gray-500 mb-1">Current Price</div>
-                  <div className="text-4xl font-bold text-gray-900 mb-2">${domain.price.toLocaleString()}</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Current Price</div>
+                  <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">${domain.price.toLocaleString()}</div>
                   {domain.Actualprice > domain.price && (
                     <div className="flex items-center justify-center gap-2">
-                      <span className="text-gray-500 line-through">${domain.Actualprice.toLocaleString()}</span>
+                      <span className="text-gray-500 dark:text-gray-400 line-through">${domain.Actualprice.toLocaleString()}</span>
                       <Badge className="bg-red-100 text-red-700 hover:bg-red-200">
                         Save {discountPercentage}%
                       </Badge>
@@ -465,7 +465,7 @@ export default function DomainDetailsPage() {
                 </div>
                 <Separator className="my-6" />
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-gray-900">Purchase Benefits</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">Purchase Benefits</h3>
                   <div className="space-y-3">
                     <TrustItem icon={<CheckCircle />} text="Secure transfer guaranteed" color="green" />
                     <TrustItem icon={<Clock />} text="Transfer within 24-48 hours" color="blue" />
@@ -483,18 +483,18 @@ export default function DomainDetailsPage() {
                 <CardContent>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Registrar</span>
-                      <span className="font-medium">{domain.registrar}</span>
+                      <span className="text-gray-600 dark:text-gray-400">Registrar</span>
+                      <span className="font-medium dark:text-white">{domain.registrar}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Status</span>
+                      <span className="text-gray-600 dark:text-gray-400">Status</span>
                       <Badge variant={domain.isAvailable ? "default" : "secondary"}>
                         {domain.isAvailable ? "Available" : "Unavailable"}
                       </Badge>
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Hot Deal</span>
+                      <span className="text-gray-600 dark:text-gray-400">Hot Deal</span>
                       <Badge variant={domain.isHot ? "default" : "outline"}>
                         {domain.isHot ? "Yes" : "No"}
                       </Badge>
@@ -509,24 +509,24 @@ export default function DomainDetailsPage() {
         {/* Additional Sections */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
           {domain?.metrics.monthlyTraffic && (
-            <Card className="border-blue-100 bg-blue-50">
+            <Card className="border-blue-100 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-blue-800"><Eye className="h-5 w-5" /> Traffic Insights</CardTitle>
+                <CardTitle className="flex items-center gap-2 text-blue-800 dark:text-blue-300"><Eye className="h-5 w-5" /> Traffic Insights</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                   This domain receives approximately {domain.metrics.monthlyTraffic?.toLocaleString() || 'N/A'} monthly visitors.
                 </p>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">Traffic Quality</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">Traffic Quality</span>
                   <Badge className="bg-blue-100 text-blue-700">High</Badge>
                 </div>
               </CardContent>
             </Card>
           )}
-          <Card className="border-purple-100 bg-purple-50">
+          <Card className="border-purple-100 bg-purple-50 dark:bg-purple-900/20 dark:border-purple-800">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-purple-800"><ThumbsUp className="h-5 w-5" /> Overall Score</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-purple-800 dark:text-purple-300"><ThumbsUp className="h-5 w-5" /> Overall Score</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-600 mb-4">
@@ -540,16 +540,16 @@ export default function DomainDetailsPage() {
               </div>
             </CardContent>
           </Card>
-         { domain.type=='aged' &&  <Card className="border-orange-100 bg-orange-50">
+         { domain.type=='aged' &&  <Card className="border-orange-100 bg-orange-50 dark:bg-orange-900/20 dark:border-orange-800">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-orange-800"><Calendar className="h-5 w-5" /> Age & History</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-orange-800 dark:text-orange-300"><Calendar className="h-5 w-5" /> Age & History</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-600 mb-4">
                 Registered in {domain.metrics.year} with {domain.metrics.age || 'N/A'} years of history.
               </p>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">Clean History</span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">Clean History</span>
                 <Badge className="bg-orange-100 text-orange-700">Verified</Badge>
               </div>
             </CardContent>
@@ -569,19 +569,19 @@ const MetricCard = ({ title, value, icon, color }: {
   color: string 
 }) => {
   const colorClasses = {
-    blue: "bg-blue-50 text-blue-700 border-blue-200",
-    green: "bg-green-50 text-green-700 border-green-200",
-    purple: "bg-purple-50 text-purple-700 border-purple-200",
-    yellow: "bg-yellow-50 text-yellow-700 border-yellow-200",
-    red: "bg-red-50 text-red-700 border-red-200",
-    indigo: "bg-indigo-50 text-indigo-700 border-indigo-200",
-  }[color] || "bg-gray-50 text-gray-700 border-gray-200"
+    blue: "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700",
+    green: "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700",
+    purple: "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700",
+    yellow: "bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700",
+    red: "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-700",
+    indigo: "bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700",
+  }[color] || "bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700"
   
   return (
-    <div className={`p-4 rounded-lg border ${colorClasses} transition-all hover:shadow-md`}>
+    <div className={`p-4 rounded-lg border ${colorClasses} transition-all hover:shadow-md dark:hover:shadow-lg`}>
       <div className="flex items-center justify-between mb-2">
-        <div className="text-gray-500">{icon}</div>
-        <div className="text-xs font-medium bg-white px-2 py-1 rounded">{title}</div>
+        <div className="text-gray-500 dark:text-gray-400">{icon}</div>
+        <div className="text-xs font-medium bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 rounded">{title}</div>
       </div>
       <div className="text-2xl font-bold">{value}</div>
     </div>
@@ -594,12 +594,12 @@ const TrustItem = ({ icon, text, color }: {
   color: string 
 }) => {
   const colorClasses = {
-    green: "text-green-600",
-    blue: "text-blue-600",
-    purple: "text-purple-600",
-    red: "text-red-600",
-    yellow: "text-yellow-600",
-  }[color] || "text-gray-600"
+    green: "text-green-600 dark:text-green-400",
+    blue: "text-blue-600 dark:text-blue-400",
+    purple: "text-purple-600 dark:text-purple-400",
+    red: "text-red-600 dark:text-red-400",
+    yellow: "text-yellow-600 dark:text-yellow-400",
+  }[color] || "text-gray-600 dark:text-gray-400"
   
   return (
     <div className={`flex items-center gap-3 ${colorClasses}`}>

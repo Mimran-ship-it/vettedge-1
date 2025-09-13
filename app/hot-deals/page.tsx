@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { DomainCard } from "@/components/domains/domain-card"
 import type { Domain } from "@/types/domain"
+import { Footer } from "@/components/layout/footer"
+import { Header } from "@/components/layout/header"
 
 export default function IsHot() {
   const [domains, setDomains] = useState<Domain[]>([])
@@ -37,7 +39,9 @@ export default function IsHot() {
   }
 
   return (
-    <section className="py-28 bg-white dark:bg-gray-900">
+   
+    <section className="pt-28 bg-white dark:bg-gray-900">
+       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">🔥 Hot Deals</h2>
@@ -102,6 +106,7 @@ export default function IsHot() {
           </>
         )}
       </div>
+      <Footer />
     </section>
   )
 }
