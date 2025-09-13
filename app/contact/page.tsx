@@ -99,8 +99,7 @@ export default function ContactPage() {
   }
 
   const contactMethods = [
-    { icon: Mail, title: "Email Support", description: "Get help via email", contact: "support@vettedge.domains", action: "Send Email" },
-    { icon: Phone, title: "Phone Support", description: "Speak with our experts", contact: "+1 (555) 123-4567", action: "Call Now" },
+    { icon: Mail, title: "Email Support", description: "Get help via email", contact: "support@vettedge.domains", action: "Send Email" }, 
     { icon: MessageSquare, title: "Live Chat", description: "Instant support available", contact: "Available 24/7", action: "Start Chat" },
   ]
 

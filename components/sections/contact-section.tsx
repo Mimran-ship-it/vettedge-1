@@ -32,8 +32,7 @@ const fadeInRight = {
 export function ContactSection() {
 
   const contactMethods = [
-    { icon: Mail, title: "Email Support", description: "support@vettedge.domains" },
-    { icon: Phone, title: "Phone Support", description: "+1 (555) 123-4567" },
+    { icon: Mail, title: "Email Support", description: "support@vettedge.domains" }, 
     { icon: MessageSquare, title: "Live Chat", description: "Available 24/7" },
   ]
 
