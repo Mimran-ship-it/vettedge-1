@@ -45,7 +45,7 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative bg-white min-h-screen flex flex-col overflow-hidden text-gray-800">
+    <section className="relative bg-white dark:bg-gray-900 min-h-screen flex flex-col overflow-hidden text-gray-800 dark:text-gray-100">
       <div className="relative flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
         <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-y-16 gap-x-10 items-center">
           
@@ -70,7 +70,7 @@ export function HeroSection() {
                 <span className="block text-[#33BDC7]">Real Authority</span>
               </h1>
 
-              <p className="text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+              <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl mx-auto lg:mx-0">
                 Get the edge with VettEdge — where expired domains mean business.
                 Supercharge your brand with SEO-rich domains.
               </p>
@@ -78,18 +78,18 @@ export function HeroSection() {
 
             {/* Search Bar */}
             <motion.div
-              className="bg-gray-100 rounded-2xl p-6 border border-gray-200 max-w-2xl mx-auto lg:mx-0"
+              className="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 max-w-2xl mx-auto lg:mx-0"
               variants={fadeUp}
               custom={0.4}
             >
               <form onSubmit={handleSearch} className="space-y-4">
                 <div className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-6 w-6" />
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 h-6 w-6" />
                   <Input
                     placeholder="Search for your perfect domain... (e.g., tech, marketing, health)"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-12 h-14 text-lg bg-white border border-gray-300 text-gray-800 placeholder:text-gray-400 focus:ring-2 focus:ring-[#33BDC7]"
+                    className="pl-12 h-14 text-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#33BDC7]"
                   />
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -104,7 +104,7 @@ export function HeroSection() {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="w-full sm:w-auto border-gray-300 text-[#33BDC7] hover:bg-[#33BDC7]/10 h-12 px-8 font-semibold"
+                    className="w-full sm:w-auto border-gray-300 dark:border-gray-600 text-[#33BDC7] hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20 h-12 px-8 font-semibold"
                     asChild
                   >
                     <Link href="/domains">
@@ -127,7 +127,7 @@ export function HeroSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
           >
-            <Card className="bg-white text-gray-800 border border-gray-200 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02]">
+            <Card className="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02]">
               <CardContent className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8">
                 
                 {/* Features */}
@@ -181,33 +181,33 @@ export function HeroSection() {
                         <Icon className={`h-5 w-5 sm:h-8 sm:w-8 ${color}`} />
                       </div>
                       <h4 className="font-semibold text-sm sm:text-base">{title}</h4>
-                      <p className="text-xs text-gray-500">{desc}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{desc}</p>
                     </motion.div>
                   ))}
                 </motion.div>
 
                 {/* Live Metrics */}
                 <motion.div
-                  className="bg-gray-50 rounded-xl p-4 border border-gray-200 text-xs sm:text-sm"
+                  className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 border border-gray-200 dark:border-gray-600 text-xs sm:text-sm"
                   variants={fadeUp}
                   custom={0.8}
                 >
-                  <h4 className="font-medium text-gray-600 mb-3">Live Domain Metrics Preview</h4>
+                  <h4 className="font-medium text-gray-600 dark:text-gray-300 mb-3">Live Domain Metrics Preview</h4>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Domain Authority:</span>
+                      <span className="text-gray-500 dark:text-gray-400">Domain Authority:</span>
                       <span className="text-green-600 font-medium">65+</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Backlinks:</span>
+                      <span className="text-gray-500 dark:text-gray-400">Backlinks:</span>
                       <span className="text-[#33BDC7] font-medium">1,250+</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Monthly Traffic:</span>
+                      <span className="text-gray-500 dark:text-gray-400">Monthly Traffic:</span>
                       <span className="text-purple-500 font-medium">15K+</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Domain Age:</span>
+                      <span className="text-gray-500 dark:text-gray-400">Domain Age:</span>
                       <span className="text-orange-500 font-medium">5+ years</span>
                     </div>
                   </div>

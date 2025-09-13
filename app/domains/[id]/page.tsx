@@ -168,13 +168,13 @@ export default function DomainDetailsPage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <Header />
         <main className="max-w-7xl mx-auto px-4 pb-8 pt-24 animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
+          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-6"></div>
           <div className="grid lg:grid-cols-2 gap-8">
-            <div className="h-64 bg-gray-200 rounded"></div>
+            <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded"></div>
             <div className="space-y-4">
-              <div className="h-8 bg-gray-200 rounded w-3/4"></div>
-              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-              <div className="h-32 bg-gray-200 rounded"></div>
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+              <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
             </div>
           </div>
         </main>
@@ -188,12 +188,12 @@ export default function DomainDetailsPage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <Header />
         <main className="max-w-7xl mx-auto px-4 pb-8 pt-24 text-center">
-          <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl mx-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 max-w-2xl mx-auto">
             <div className="text-red-500 mx-auto w-16 h-16 mb-4">
               <Info size={64} />
             </div>
-            <h1 className="text-2xl font-bold mb-4">Domain Not Found</h1>
-            <p className="text-gray-600 mb-6">The domain you're looking for doesn't exist or has been removed.</p>
+            <h1 className="text-2xl font-bold mb-4 dark:text-white">Domain Not Found</h1>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">The domain you're looking for doesn't exist or has been removed.</p>
             <Button asChild className="px-6 py-3">
               <a href="/domains">Browse All Domains</a>
             </Button>
@@ -213,11 +213,11 @@ export default function DomainDetailsPage() {
       <Header />
       <main className="max-w-7xl mx-auto px-2 sm:px-16 pb-8 pt-24">
         {/* Hero Section */}
-        <div className="bg-white rounded-2xl shadow-xl p-6 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-1xl md:text-4xl font-bold text-gray-900">{domain.name}</h1>
+                <h1 className="text-1xl md:text-4xl font-bold text-gray-900 dark:text-white">{domain.name}</h1>
                 {domain.isHot && (
                   <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white border-0">
                     <Zap className="h-3 w-3 mr-1" /> HOT
@@ -234,7 +234,7 @@ export default function DomainDetailsPage() {
                   </Badge>
                 )}
               </div>
-              <p className="text-gray-600">Registered with {domain.registrar}</p>
+              <p className="text-gray-600 dark:text-gray-300">Registered with {domain.registrar}</p>
             </div>
             <div className="flex flex-wrap gap-2">
               <Badge variant={domain.isAvailable ? "default" : "secondary"} className="px-3 py-1">
@@ -263,8 +263,8 @@ export default function DomainDetailsPage() {
                 />
               </div>
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-gray-900">Domain Overview</h2>
-                <p className="text-gray-700 leading-relaxed">{domain.description}</p>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Domain Overview</h2>
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{domain.description}</p>
               </div>
               
               {/* Tabs for additional information */}
@@ -530,7 +530,7 @@ export default function DomainDetailsPage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-600 mb-4">
-                Domain Score: {domain.metrics.domainAuthority || 'N/A'}/100
+                Domain Score: {domain.metrics.score || 'N/A'}/100
               </p>
               <div className="w-full bg-gray-200 rounded-full h-2.5">
                 <div 

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ShoppingCart, User, Menu, X, Heart } from "lucide-react"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { useAuth } from "@/hooks/use-auth"
 import { useCart } from "@/components/providers/cart-provider"
 import { useWishlist } from "@/components/providers/wishlist-provider"
@@ -40,7 +41,7 @@ export function Header() {
   const linkClass = (href: string) =>
     pathname === href
       ? "text-[#33BDC7] font-medium transition-colors"
-      : "text-gray-700 hover:text-[#33BDC7] transition-colors"
+      : "text-gray-700 dark:text-gray-300 hover:text-[#33BDC7] transition-colors"
       
   const renderUserMenu = () => (
     <DropdownMenu>
@@ -87,7 +88,7 @@ export function Header() {
   return (
     <>
       {/* Fixed Header */}
-      <header className="bg-white shadow-sm border-b w-full z-50 fixed top-0 left-0">
+      <header className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700 w-full z-50 fixed top-0 left-0">
         <div className="max-w-8xl mx-auto px-2 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
@@ -100,7 +101,7 @@ export function Header() {
                   height={30}
                   className="object-contain"
                 />
-                <span className="text-md sm:text-lg md:text-xl font-semibold text-gray-900 ml-">
+                <span className="text-md sm:text-lg md:text-xl font-semibold text-gray-900 dark:text-white ml-">
                   Vettedge.domains
                 </span>
               </div>
@@ -127,6 +128,9 @@ export function Header() {
             
             {/* Right Side Actions */}
             <div className="flex items-center space-x-1 sm:space-x-2">
+              {/* Theme Toggle */}
+              <ThemeToggle />
+              
               {/* Wishlist */}
               <Link href="/wishlist" className="relative">
                 <Button variant="ghost" size="sm">
@@ -154,12 +158,12 @@ export function Header() {
               {/* Desktop Profile or Auth Buttons - Hidden on mobile */}
               <div className="hidden md:flex items-center space-x-2">
                 {loading ? (
-                  <span className="flex items-center text-gray-500 text-sm ms-4">
+                  <span className="flex items-center text-gray-500 dark:text-gray-400 text-sm ms-4">
                     Loading
                     <span className="ml-1 flex space-x-1">
-                      <span className="w-1 h-1 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                      <span className="w-1 h-1 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                      <span className="w-1 h-1 bg-gray-500 rounded-full animate-bounce"></span>
+                      <span className="w-1 h-1 bg-gray-500 dark:bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                      <span className="w-1 h-1 bg-gray-500 dark:bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                      <span className="w-1 h-1 bg-gray-500 dark:bg-gray-400 rounded-full animate-bounce"></span>
                     </span>
                   </span>
                 ) : user ? (
@@ -212,7 +216,7 @@ export function Header() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 w-full sm:w-4/5 max-w-md h-full bg-white z-50 shadow-lg lg:hidden overflow-y-auto"
+              className="fixed top-0 right-0 w-full sm:w-4/5 max-w-md h-full bg-white dark:bg-gray-900 z-50 shadow-lg lg:hidden overflow-y-auto"
             >
               <div className="p-5">
                 <div className="flex justify-between items-center mb-6">
@@ -226,7 +230,7 @@ export function Header() {
                         className="object-contain"
                       />
                     </div>
-                    <span className="text-lg font-semibold text-gray-900">
+                    <span className="text-lg font-semibold text-gray-900 dark:text-white">
                       Vettedge.domains
                     </span>
                   </Link>
@@ -240,7 +244,7 @@ export function Header() {
                 </div>
                 
                 {/* Tablet Navigation - Visible only in tablet view */}
-                <nav className="hidden md:flex flex-col space-y-4 mb-6 p-4 bg-gray-50 rounded-lg">
+                <nav className="hidden md:flex flex-col space-y-4 mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                   <Link href="/domains" className={linkClass("/domains")} onClick={() => setIsMenuOpen(false)}>
                     Buy Domains
                   </Link>

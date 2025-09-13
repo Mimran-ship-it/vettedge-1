@@ -19,14 +19,14 @@ export default async function BlogPage() {
   const regularPosts = blogPosts.filter((post) => post)
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-12">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4" style={{ color: "#33BDC7" }}>
+          <h1 className="text-4xl font-bold mb-4 text-[#33BDC7] dark:text-[#33BDC7]">
             Domain Investment Blog
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             Expert insights on domain investing, SEO strategies, and digital marketing trends to help you make informed
             decisions in the domain marketplace.
           </p>

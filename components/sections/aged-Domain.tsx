@@ -42,11 +42,11 @@ export function AgedDomains() {
   }
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">⏳ Aged Domains</h2>
-          <p className="text-lg text-gray-600">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">⏳ Aged Domains</h2>
+          <p className="text-lg text-gray-600 dark:text-gray-300">
             Discover domains with history, authority, and SEO value
           </p>
         </div>
@@ -55,15 +55,15 @@ export function AgedDomains() {
         {loading && (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <Card key={i} className="animate-pulse">
+              <Card key={i} className="animate-pulse bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                 <CardHeader>
-                  <div className="h-6 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2 mt-2"></div>
+                  <div className="h-6 bg-gray-200 dark:bg-gray-600 rounded w-3/4"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-1/2 mt-2"></div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <div className="h-4 bg-gray-200 rounded"></div>
-                    <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                    <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded"></div>
+                    <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-2/3"></div>
                   </div>
                 </CardContent>
               </Card>
@@ -74,7 +74,7 @@ export function AgedDomains() {
         {/* Error or No Data */}
         {!loading && (error || domains.length === 0) && (
           <div className="text-center py-12">
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
               {error ? error : "No aged domains available at the moment."}
             </p>
             <Button size="lg" asChild>
@@ -99,7 +99,7 @@ export function AgedDomains() {
                   variant="outline"
                   size="lg"
                   onClick={handleShowMore}
-                  className="transition-all duration-200 hover:bg-gray-100"
+                  className="transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                 >
                   Show More
                 </Button>

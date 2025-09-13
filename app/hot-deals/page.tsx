@@ -37,11 +37,11 @@ export default function IsHot() {
   }
 
   return (
-    <section className="py-28 bg-white">
+    <section className="py-28 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">🔥 Hot Deals</h2>
-          <p className="text-lg text-gray-600">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">🔥 Hot Deals</h2>
+          <p className="text-lg text-gray-600 dark:text-gray-300">
             Discover premium expired domains with proven authority
           </p>
         </div>
@@ -49,15 +49,15 @@ export default function IsHot() {
         {loading && (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <Card key={i} className="animate-pulse">
+              <Card key={i} className="animate-pulse dark:bg-gray-800">
                 <CardHeader>
-                  <div className="h-6 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2 mt-2"></div>
+                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mt-2"></div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <div className="h-4 bg-gray-200 rounded"></div>
-                    <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
                   </div>
                 </CardContent>
               </Card>
@@ -67,7 +67,7 @@ export default function IsHot() {
 
         {!loading && (error || domains.length === 0) && (
           <div className="text-center py-12">
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
               {error ? error : "No hot deals available at the moment."}
             </p>
             <Button size="lg" asChild>

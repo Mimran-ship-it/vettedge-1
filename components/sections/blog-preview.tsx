@@ -52,7 +52,7 @@ export function BlogPreview() {
     .slice(0, 3)
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-gray-50 dark:bg-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Animation */}
         <motion.div
@@ -62,10 +62,10 @@ export function BlogPreview() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <h2 className="text-3xl font-bold mb-4" style={{ color: "#33BDC7" }}>
+          <h2 className="text-4xl lg:text-5xl font-bold text-[#33BDC7] dark:text-[#33BDC7] mb-6">
             Latest Insights & Expert Tips
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
             Stay ahead of the curve with our expert analysis on domain
             investing, SEO strategies, and digital marketing trends.
           </p>
@@ -73,7 +73,7 @@ export function BlogPreview() {
 
         {loading ? (
           <motion.p
-            className="text-center text-gray-500"
+            className="text-center text-gray-500 dark:text-gray-400"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}
@@ -82,7 +82,7 @@ export function BlogPreview() {
           </motion.p>
         ) : featuredPosts.length === 0 ? (
           <motion.p
-            className="text-center text-gray-500"
+            className="text-center text-gray-500 dark:text-gray-400"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}
@@ -114,35 +114,35 @@ export function BlogPreview() {
                 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
               >
-               <Card className="overflow-hidden bg-white rounded-lg shadow-none border-none flex flex-col h-full">
+                <Card className="overflow-hidden bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 flex flex-col h-full">
                   {/* Blog Image */}
                   <div className="w-full h-48 flex items-center justify-center overflow-hidden">
                     <motion.img
                       src={post.image || "/domaininvesting.png"}
                       alt={post.title}
-                      className="w-full h-full object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
+                      className="w-full h-full object-cover"
                       whileHover={{ scale: 1.05 }}
                     />
                   </div>
 
                   {/* Blog Content */}
                   <CardContent className="p-5 flex flex-col flex-1">
-                    <h3 className="text-lg font-semibold mb-2 hover:text-[#33BDC7] transition-colors">
+                    <h3 className="text-lg font-semibold mb-2 hover:text-[#33BDC7] transition-colors text-gray-900 dark:text-white">
                       <Link href={`/blog/${post.slug}`}>{post.title}</Link>
                     </h3>
 
-                    <p className="text-gray-600 text-sm mb-3 line-clamp-3">
+                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 line-clamp-3">
                       {post.excerpt}
                     </p>
 
-                    <div className="flex items-center justify-between mt-auto">
+                    <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
                       <Link
                         href={`/blog/${post.slug}`}
-                        className="text-[#33BDC7] font-medium text-sm hover:underline"
+                        className="text-[#33BDC7] dark:text-[#33BDC7] font-medium"
                       >
                         Read More
                       </Link>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
                         {post.category}
                       </div>
                     </div>

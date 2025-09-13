@@ -16,6 +16,7 @@ import { loadStripe } from "@stripe/stripe-js"
 import { useEffect } from "react"
 import { WishlistProvider } from "@/components/providers/wishlist-provider"
 import { LiveChat } from "@/components/chat/live-chat"
+import { ThemeProvider } from "@/components/theme-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
@@ -51,16 +52,22 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <SocketInitializer />
-        <AuthProvider>
-          <CartProvider>
-            <ChatProvider>
-              <StripeProvider>
-                <WishlistProvider>
-                
-                  {children}
-                  <LiveChat/>
-                </WishlistProvider>
-              </StripeProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <CartProvider>
+              <ChatProvider>
+                <StripeProvider>
+                  <WishlistProvider>
+                  
+                    {children}
+                    <LiveChat/>
+                  </WishlistProvider>
+                </StripeProvider>
               <Script
                 src="https://accounts.google.com/gsi/client"
                 strategy="afterInteractive"
@@ -69,6 +76,7 @@ export default function RootLayout({
             </ChatProvider>
           </CartProvider>
         </AuthProvider>
+        </ThemeProvider>
       </body>
       
     </html>

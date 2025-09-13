@@ -39,7 +39,7 @@ export function Footer() {
   }
 
   return (
-    <footer className=" mt-8 bg-white text-gray-800 dark:text-gray-200">
+    <footer className=" mt-8 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
       <div className="relative z-0 w-11/12 sm:w-5/6 mx-auto px-4 pt-10  pb-2 rounded-xl">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* Logo & Social */}
@@ -54,7 +54,7 @@ export function Footer() {
                 height={60}
                 className="rounded-lg"
               />
-              <h2 className="text-xl font-semibold text-black  bg-clip-text transition-all duration-300 tracking-wide">
+              <h2 className="text-xl font-semibold text-black dark:text-white bg-clip-text transition-all duration-300 tracking-wide">
                 Vettedge.domains
               </h2>
             </Link>
@@ -92,7 +92,7 @@ export function Footer() {
           {/* Domains */}
           <div>
             <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Domains</h4>
-            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
+            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
               <li><Link href="/domains" className="hover:text-[#33BDC7] hover:underline">Browse All</Link></li>
               <li><Link href="/hot-deals" className="hover:text-[#33BDC7] hover:underline">Hot Deals</Link></li>
               <li><Link href="/vetting-process" className="hover:text-[#33BDC7] hover:underline">Vetting Process</Link></li>
@@ -104,7 +104,7 @@ export function Footer() {
           {/* Support */}
           <div>
             <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Support</h4>
-            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
+            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
 
               <li><Link href="/transfer-process" className="hover:text-[#33BDC7] hover:underline">Transfer Process</Link></li>
               <li><Link href="/contact" className="hover:text-[#33BDC7] hover:underline">Help Center</Link></li>
@@ -116,7 +116,7 @@ export function Footer() {
           {/* Company */}
           <div>
             <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Company</h4>
-            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
+            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
               <li><Link href="/about" className="hover:text-[#33BDC7] hover:underline">About Us</Link></li>
               <li><Link href="/blog" className="hover:text-[#33BDC7] hover:underline">Blog</Link></li>
               <li><Link href="/terms" className="hover:text-[#33BDC7] hover:underline">Terms</Link></li>
@@ -128,7 +128,7 @@ export function Footer() {
           {/* Contact Details */}
           <div>
             <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Contact Details</h4>
-            <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-400">
+            <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-[#38C172]" />
                 <span>+1 (555) 123-4567</span>
@@ -146,7 +146,7 @@ export function Footer() {
         </div>
 
         {/* Footer Bottom */}
-        <div className="text-center mt-6  text-xs text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-2">
+        <div className="text-center mt-6  text-xs text-gray-600 dark:text-gray-300 border-t border-gray-200 dark:border-gray-700 pt-2">
           <div className="flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-3">
             <div className="flex items-center gap-1">
               <Code2 className="w-3 h-3" />

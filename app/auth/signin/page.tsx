@@ -62,8 +62,8 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#e0f7f9] via-white to-[#c8f3f6] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md shadow-xl border-0">
+    <div className="min-h-screen bg-gradient-to-br from-[#e0f7f9] via-white to-[#c8f3f6] dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-md shadow-xl border-0 dark:bg-gray-800 dark:border-gray-700">
         <CardHeader className="space-y-1 text-center">
           <div className="flex items-center justify-center mb-4">
             <Image
@@ -75,13 +75,13 @@ export default function SignInPage() {
               priority
             />
           </div>
-          <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
-          <p className="text-sm text-gray-600">Sign in to your Vettedge account</p>
+          <CardTitle className="text-2xl font-bold dark:text-white">Welcome back</CardTitle>
+          <p className="text-sm text-gray-600 dark:text-gray-300">Sign in to your Vettedge account</p>
         </CardHeader>
         <CardContent className="space-y-4">
           <Button
             variant="outline"
-            className="w-full bg-white hover:bg-gray-50 border-gray-200"
+            className="w-full bg-white hover:bg-gray-50 border-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 dark:text-white"
             onClick={async () => {
               setLoading(true)
               try {
@@ -128,12 +128,12 @@ export default function SignInPage() {
               <Separator />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-gray-500">Or continue with email</span>
+              <span className="bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400">Or continue with email</span>
             </div>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="dark:text-gray-200">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -144,7 +144,7 @@ export default function SignInPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="dark:text-gray-200">Password</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -171,7 +171,7 @@ export default function SignInPage() {
             </div>
             <div className="flex items-center justify-between">
               <div className="text-sm">
-                <Link href="/auth/forgot-password" className="text-[#33BDC7] hover:underline">
+                <Link href="/auth/forgot-password" className="text-[#33BDC7] hover:underline dark:text-[#33BDC7]">
                   Forgot your password?
                 </Link>
               </div>
@@ -192,8 +192,8 @@ export default function SignInPage() {
             </Button>
           </form>
           <div className="text-center text-sm">
-            <span className="text-gray-600">Don't have an account? </span>
-            <Link href="/auth/signup" className="text-[#33BDC7] hover:underline font-medium">
+            <span className="text-gray-600 dark:text-gray-300">Don't have an account? </span>
+            <Link href="/auth/signup" className="text-[#33BDC7] hover:underline font-medium dark:text-[#33BDC7]">
               Sign up
             </Link>
           </div>

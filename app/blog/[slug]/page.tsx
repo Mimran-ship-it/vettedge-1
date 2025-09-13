@@ -67,7 +67,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const fullUrl = `${protocol}://${host}/blog/${post.slug}`
   
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-12">
         <div className="flex flex-col lg:flex-row gap-8">
@@ -75,7 +75,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="lg:w-2/3">
             {/* Back Button */}
             <div className="mb-6">
-              <Button variant="ghost" asChild className="pl-0 text-gray-600 hover:text-gray-900">
+              <Button variant="ghost" asChild className="pl-0 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
                 <Link href="/blog">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Blog
@@ -84,16 +84,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
             
             {/* Article Header */}
-            <article className="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
+            <article className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden mb-8">
               <div className="p-6 md:p-8">
                 <div className="flex flex-wrap gap-2 mb-4">
                   <Badge variant="secondary" className="bg-blue-50 text-blue-700">{post.category}</Badge>
                   {post.featured && <Badge className="bg-amber-500 hover:bg-amber-600">Featured</Badge>}
                 </div>
                 
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight">{post.title}</h1>
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">{post.title}</h1>
                 
-                <div className="flex flex-wrap items-center gap-6 text-gray-600 mb-6 pb-6 border-b border-gray-100">
+                <div className="flex flex-wrap items-center gap-6 text-gray-600 dark:text-gray-300 mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
                   <div className="flex items-center gap-3">
                     <div className="relative">
                       <Image
@@ -105,8 +105,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                       />
                     </div>
                     <div>
-                      <div className="font-medium text-gray-900">{post.author.name}</div>
-                      <div className="text-xs text-gray-500">Author</div>
+                      <div className="font-medium text-gray-900 dark:text-white">{post.author.name}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Author</div>
                     </div>
                   </div>
                   
@@ -137,7 +137,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 
                 {/* Article Content */}
                 <div className="prose prose-lg max-w-none">
-                  <div className="text-xl text-gray-600 mb-8 font-medium leading-relaxed">{post.excerpt}</div>
+                  <div className="text-xl text-gray-600 dark:text-gray-300 mb-8 font-medium leading-relaxed">{post.excerpt}</div>
                   <div className="blog-content space-y-6">
                     {parseBlogContent(post.content)}
                   </div>
@@ -147,7 +147,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 <div className="mt-12 pt-8 border-t border-gray-200">
                   <div className="flex items-center gap-2 mb-4">
                     <Tag className="h-5 w-5 text-gray-500" />
-                    <span className="text-sm font-medium text-gray-900">Tags:</span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">Tags:</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {post.tags.map((tag) => (
@@ -164,7 +164,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 <div className="mt-8 pt-8 border-t border-gray-200">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
-                      <span className="text-sm font-medium text-gray-900">Share:</span>
+                      <span className="text-sm font-medium text-gray-900 dark:text-white">Share:</span>
                       <ShareButtons 
                         title={post.title}
                         excerpt={post.excerpt}

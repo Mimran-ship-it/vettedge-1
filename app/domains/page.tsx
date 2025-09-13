@@ -325,19 +325,19 @@ export default function DomainsPage() {
   }
   
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
       <main className="max-w-8xl mx-auto ps-3 pe-6 sm:px-6 lg:px-16 pt-24 pb-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
             Premium Expired Domains
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-600 dark:text-gray-300">
             Discover high-authority domains with proven SEO value and traffic history
           </p>
         </div>
         
-        <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6 mb-8">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
@@ -411,10 +411,10 @@ export default function DomainsPage() {
           </div>
         </div>
         
-        <div className="mb-6 text-gray-600">
+        <div className="mb-6 text-gray-600 dark:text-gray-300">
           Showing {filteredDomains.length} of {domains.length} domains
           {filteredDomains.length !== domains.length && (
-            <span className="ml-2 text-sm text-blue-600">
+            <span className="ml-2 text-sm text-blue-600 dark:text-blue-400">
               (Filtered from {domains.length} total)
             </span>
           )}
@@ -423,12 +423,12 @@ export default function DomainsPage() {
         {loading ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white p-6 rounded-lg animate-pulse">
-                <div className="h-6 bg-gray-200 w-3/4 mb-4 rounded"></div>
-                <div className="h-4 bg-gray-200 w-1/2 mb-4 rounded"></div>
+              <div key={i} className="bg-white dark:bg-gray-800 p-6 rounded-lg animate-pulse">
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 w-3/4 mb-4 rounded"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 w-1/2 mb-4 rounded"></div>
                 <div className="space-y-2">
-                  <div className="h-4 bg-gray-200 rounded"></div>
-                  <div className="h-4 bg-gray-200 w-2/3 rounded"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 w-2/3 rounded"></div>
                 </div>
               </div>
             ))}
@@ -441,7 +441,7 @@ export default function DomainsPage() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">
+            <p className="text-gray-500 dark:text-gray-400 text-lg">
               No domains found matching your criteria.
             </p>
             <Button
