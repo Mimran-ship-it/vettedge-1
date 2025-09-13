@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { DomainCard } from "@/components/domains/domain-card"
 import type { Domain } from "@/types/domain"
+import Link from "next/link"
 
 export function IsHot() {
   const [domains, setDomains] = useState<Domain[]>([])
@@ -46,7 +47,7 @@ export function IsHot() {
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">🔥 Hot Deals</h2>
           <p className="text-lg text-gray-600">
-            Discover premium expired domains with proven authority
+          Discover premium expired domains with proven authority — now available at 20–80% off
           </p>
         </div>
 
@@ -104,7 +105,7 @@ export function IsHot() {
                 </Button>
               )}
               <Button size="lg" className="bg-[#3BD17A] text-white hover:bg-[rgb(59,209,122)]" asChild>
-                <a href="/domains">View All </a>
+                <Link href="/domains?isHot=true">View All </Link>
               </Button>
             </div>
           </>

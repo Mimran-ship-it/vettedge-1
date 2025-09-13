@@ -2,7 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Trash2, TrendingUp, LinkIcon, Globe, Calendar, AlertCircle } from "lucide-react"
+import { Trash2, TrendingUp, LinkIcon, Globe, Calendar, AlertCircle,History  } from "lucide-react"
 import { useCart } from "@/components/providers/cart-provider"
 import { useToast } from "@/hooks/use-toast"
 import type { CartItem } from "@/types/domain"
@@ -97,7 +97,7 @@ export function CartItems({ items, onRemoveItem }: CartItemsProps) {
                       <div className="text-gray-800">{item.domain.metrics.referringDomains}</div>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2 text-sm">
+                 {item.domain.metrics.monthlyTraffic&& <div className="flex items-center space-x-2 text-sm">
                     <Globe className="h-4 w-4 text-purple-500 flex-shrink-0" />
                     <div>
                       <div className="font-medium text-xs text-gray-500">Monthly Traffic</div>
@@ -107,12 +107,19 @@ export function CartItems({ items, onRemoveItem }: CartItemsProps) {
                         <div className="text-gray-800">N/A</div>
                       )}
                     </div>
-                  </div>
+                  </div>}
+                  {!item.domain.metrics.monthlyTraffic&& <div className="flex items-center space-x-2 text-sm">
+                    <History  className="h-4 w-4 text-purple-500 flex-shrink-0" />
+                    <div>
+                      <div className="font-medium text-xs text-gray-500">Age</div>
+                      <div className="text-gray-800">{item.domain.metrics.age}</div>
+                    </div>
+                  </div>}
                   <div className="flex items-center space-x-2 text-sm">
                     <Calendar className="h-4 w-4 text-orange-500 flex-shrink-0" />
                     <div>
-                      <div className="font-medium text-xs text-gray-500">Authority DR</div>
-                      <div className="text-gray-800">{item.domain.metrics.avgAuthorityDR}</div>
+                      <div className="font-medium text-xs text-gray-500"> DA</div>
+                      <div className="text-gray-800">{item.domain.metrics.domainAuthority}</div>
                     </div>
                   </div>
                 </div>

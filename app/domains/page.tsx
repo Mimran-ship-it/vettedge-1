@@ -62,11 +62,41 @@ export default function DomainsPage() {
   const [availableTags, setAvailableTags] = useState<string[]>([])
   const [sortBy, setSortBy] = useState<SortOption>("price-desc")
   const searchParams = useSearchParams()
+  
+  // Initialize filters from URL parameters
+  useEffect(() => {
+    const aged = searchParams?.get('aged') === 'true'
+    const traffic = searchParams?.get('traffic') === 'true'
+    const isHot = searchParams?.get('isHot') === 'true'
+    
+    let newFilters = { ...defaultFilters }
+    let shouldShowFilters = false
+    
+    if (aged) {
+      newFilters.type = 'aged'
+      shouldShowFilters = true
+    }
+    if (traffic) {
+      newFilters.type = 'traffic'
+      shouldShowFilters = true
+    }
+    if (isHot) {
+      newFilters.isHot = true
+      shouldShowFilters = true
+    }
+    
+    if (shouldShowFilters) {
+      setActiveFilters(newFilters)
+      setShowFilters(true)
+    }
+  }, [searchParams])
+  
   useEffect(() => {
     const urlSearch = searchParams?.get("search")
     if (urlSearch) setSearchQuery(urlSearch)
     fetchDomains()
   }, [searchParams])
+  
   const fetchDomains = async () => {
     try {
       const res = await fetch("/api/domains")
@@ -92,6 +122,12 @@ export default function DomainsPage() {
       setLoading(false)
     }
   }
+  
+  // Apply filters whenever activeFilters, domains, searchQuery, or sortBy changes
+  useEffect(() => {
+    applyFilters(activeFilters)
+  }, [activeFilters, domains, searchQuery, sortBy])
+  
   const sortDomains = useCallback((domainsToSort: Domain[], sortOption: SortOption) => {
     const sorted = [...domainsToSort]
     
@@ -142,8 +178,8 @@ export default function DomainsPage() {
         return sorted
     }
   }, [])
+  
   const applyFilters = useCallback((filters: ActiveFilters) => {
-    setActiveFilters(filters)
     let filtered = [...domains]
     
     // Search query filter
@@ -265,26 +301,29 @@ export default function DomainsPage() {
     const sorted = sortDomains(filtered, sortBy)
     setFilteredDomains(sorted)
   }, [domains, searchQuery, sortBy, sortDomains])
+  
   const applyFiltersWithSorting = (filters: ActiveFilters) => {
     setActiveFilters(filters)
-    applyFilters(filters)
+    // applyFilters will be called automatically by the useEffect
   }
+  
   const handleSortChange = (newSortBy: SortOption) => {
     setSortBy(newSortBy)
-    // Apply the new sort immediately
-    const sorted = sortDomains(filteredDomains, newSortBy)
-    setFilteredDomains(sorted)
+    // Sorting will be applied automatically by the useEffect
   }
+  
   const handleSearchChange = (value: string) => {
     setSearchQuery(value)
-    applyFilters({ ...activeFilters })
+    // Filtering will be applied automatically by the useEffect
   }
+  
   const resetFilters = () => {
     setSearchQuery("")
     setActiveFilters(defaultFilters)
     setSortBy("price-desc")
-    applyFiltersWithSorting(defaultFilters)
+    // applyFilters will be called automatically by the useEffect
   }
+  
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -312,48 +351,64 @@ export default function DomainsPage() {
             
             {/* Sort By Option */}
             <div className="flex flex-col sm:flex-row gap-2 sm:w-auto w-full">
-  <Select value={sortBy} onValueChange={handleSortChange}>
-    <SelectTrigger className="w-full sm:w-40 h-10 px-4 py-2 inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-      <ArrowUpDown className="h-4 w-4 mr-2" />
-      <SelectValue placeholder="Sort by" />
-    </SelectTrigger>
-    <SelectContent>
-      <SelectItem value="price-asc">Price: Low to High</SelectItem>
-      <SelectItem value="price-desc">Price: High to Low</SelectItem>
-      <SelectItem value="domainRank-desc">Domain Rank: High to Low</SelectItem>
-      <SelectItem value="domainAuthority-desc">Domain Authority: High to Low</SelectItem>
-      <SelectItem value="score-desc">Score: High to Low</SelectItem>
-      <SelectItem value="age-desc">Age: Oldest First</SelectItem>
-      <SelectItem value="referringDomains-desc">Referring Domains: High to Low</SelectItem>
-      <SelectItem value="monthlyTraffic-desc">Monthly Traffic: High to Low</SelectItem>
-    </SelectContent>
-  </Select>
-  
-  <Button 
-    variant="outline" 
-    onClick={() => setShowFilters(!showFilters)}
-    className="w-full sm:w-auto h-10 px-4 py-2 inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-  >
-    <Filter className="h-4 w-4 mr-2" />
-    Filters
-  </Button>
-</div>
-          </div>
-          
-          {/* Debug Info */}
-          <div className="mt-4 text-xs text-gray-500">
-            Current sort: {sortBy} | Showing {filteredDomains.length} domains
-          </div>
-          
-          {showFilters && (
-            <div className="mt-6 pt-6 border-t">
-              <DomainFilters 
-                onFilterChange={applyFiltersWithSorting} 
-                availableTags={availableTags} 
-                currentFilters={activeFilters}
-              />
+              <Select value={sortBy} onValueChange={handleSortChange}>
+                <SelectTrigger className="w-full sm:w-40 h-10 px-4 py-2 inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                  <ArrowUpDown className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                  <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                  <SelectItem value="domainRank-desc">Domain Rank: High to Low</SelectItem>
+                  <SelectItem value="domainAuthority-desc">Domain Authority: High to Low</SelectItem>
+                  <SelectItem value="score-desc">Score: High to Low</SelectItem>
+                  <SelectItem value="age-desc">Age: Oldest First</SelectItem>
+                  <SelectItem value="referringDomains-desc">Referring Domains: High to Low</SelectItem>
+                  <SelectItem value="monthlyTraffic-desc">Monthly Traffic: High to Low</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              <Button 
+                variant="outline" 
+                onClick={() => setShowFilters(!showFilters)}
+                className="w-full sm:w-auto h-10 px-4 py-2 inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <Filter className="h-4 w-4 mr-2" />
+                Filters
+                {showFilters ? (
+                  <span className="ml-2 bg-blue-500 text-white text-xs rounded-full px-2 py-0.5">On</span>
+                ) : (
+                  <span className="ml-2 bg-gray-200 text-gray-700 text-xs rounded-full px-2 py-0.5">Off</span>
+                )}
+              </Button>
             </div>
-          )}
+          </div>
+          
+          {/* Active Filters Display */}
+          <div className="mt-4 flex flex-wrap gap-2">
+            {(activeFilters.type !== "all" || activeFilters.isHot) && (
+              <span className="text-sm text-gray-600 mr-2">Active filters:</span>
+            )}
+            {activeFilters.type !== "all" && (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                {activeFilters.type === "aged" ? "Aged Domains" : "Traffic Domains"}
+              </span>
+            )}
+            {activeFilters.isHot && (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                <Flame className="h-3 w-3 mr-1" /> Hot Deals
+              </span>
+            )}
+          </div>
+          
+          {/* Always render DomainFilters but hide it when showFilters is false */}
+          <div className={`${showFilters ? 'block' : 'hidden'} mt-6 pt-6 border-t`}>
+            <DomainFilters 
+              onFilterChange={applyFiltersWithSorting} 
+              availableTags={availableTags} 
+              currentFilters={activeFilters}
+            />
+          </div>
         </div>
         
         <div className="mb-6 text-gray-600">

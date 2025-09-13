@@ -30,10 +30,11 @@ export function TrustSection() {
   const features = [
     {
       icon: Shield,
-      title: "100% Secure Transfers",
+      title: "Competitive Pricing",
       description:
-        "Every domain transfer is protected with escrow service and money-back guarantee",
+        "Get the best value with transparent and fair domain prices, no hidden costs",
     },
+    
     {
       icon: SearchCheck,
       title: "Expert Vetting",
@@ -90,7 +91,7 @@ export function TrustSection() {
         </motion.div>
 
         {/* Trust Indicators */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {trustIndicators.map((indicator, index) => (
             <motion.div
               key={index}
