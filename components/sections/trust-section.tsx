@@ -112,34 +112,33 @@ export function TrustSection() {
           ))}
         </div>
 
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {features.map((feature, index) => (
-            <motion.div
-              key={index}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              custom={index * 0.15}
-              variants={fadeUp}
-            >
-              <Card className="text-center hover:shadow-md transition-all duration-200 border border-gray-200">
-                <CardContent className="pt-8 pb-6">
-                  <div className="w-16 h-16 border border-[#38C172] rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <feature.icon className="h-8 w-8 text-[#38C172]" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-[#33BDC7] mb-3">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-
+       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+  {features.map((feature, index) => (
+    <motion.div
+      key={index}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true }}
+      custom={index * 0.15}
+      variants={fadeUp}
+      className="h-full" // Add this to make the motion.div take full height
+    >
+      <Card className="text-center hover:shadow-md transition-all duration-200 border border-gray-200 h-full flex flex-col">
+        <CardContent className="pt-8 pb-6 flex flex-col flex-grow">
+          <div className="w-16 h-16 border border-[#38C172] rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <feature.icon className="h-8 w-8 text-[#38C172]" />
+          </div>
+          <h3 className="text-xl font-semibold text-[#33BDC7] mb-3">
+            {feature.title}
+          </h3>
+          <p className="text-gray-600 leading-relaxed flex-grow">
+            {feature.description}
+          </p>
+        </CardContent>
+      </Card>
+    </motion.div>
+  ))}
+</div>
         {/* Security Badge */}
         <motion.div
           className="mt-16 text-center"
