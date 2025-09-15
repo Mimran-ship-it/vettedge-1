@@ -149,7 +149,7 @@ export default function ContactPage() {
             <p className="text-base md:text-lg text-gray-600 dark:text-gray-300">We offer multiple ways to get in touch with our support team</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {contactMethods.map((method, index) => (
               <motion.div
                 key={index}
@@ -250,7 +250,7 @@ export default function ContactPage() {
       </div>
     </div>
   </CardContent>
-</Card>
+</Card>  
 
             </motion.div>
 

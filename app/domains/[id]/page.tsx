@@ -49,7 +49,7 @@ export default function DomainDetailsPage() {
   const [isWishlisted, setIsWishlisted] = useState(false)
   const { addItem } = useCart()
   const { toast } = useToast()
-  
+
   useEffect(() => {
     const fetchDomain = async () => {
       try {
@@ -57,7 +57,7 @@ export default function DomainDetailsPage() {
         const data: Domain[] = await res.json()
         const matchedDomain = data.find((d) => d._id === params?.id)
         setDomain(matchedDomain || null)
-        
+
         // Check if domain is already in wishlist
         if (matchedDomain) {
           const wishlist = JSON.parse(Cookies.get("wishlist") || "[]")
@@ -72,7 +72,7 @@ export default function DomainDetailsPage() {
     }
     fetchDomain()
   }, [params?.id])
-  
+
   const handleAddToCart = () => {
     if (!domain || domain.isSold || !domain.isAvailable) {
       toast({
@@ -82,45 +82,45 @@ export default function DomainDetailsPage() {
       })
       return
     }
-    addItem({ id: domain._id, name: domain.name, price: domain.price, domain,isSold:domain.isSold })
+    addItem({ id: domain._id, name: domain.name, price: domain.price, domain, isSold: domain.isSold })
     toast({
       title: "Added to Cart",
       description: `${domain.name} has been added to your cart.`,
     })
   }
-  
+
   const handleWishlistToggle = () => {
     if (!domain) return
-    
+
     let wishlist: Domain[] = JSON.parse(Cookies.get("wishlist") || "[]")
-    
+
     if (isWishlisted) {
       // Remove from wishlist
       wishlist = wishlist.filter((item) => item._id !== domain._id)
       setIsWishlisted(false)
-      toast({ 
-        title: "Removed", 
-        description: `${domain.name} removed from wishlist.` 
+      toast({
+        title: "Removed",
+        description: `${domain.name} removed from wishlist.`
       })
     } else {
       // Add to wishlist
       wishlist.push(domain)
       setIsWishlisted(true)
-      toast({ 
-        title: "Wishlisted", 
-        description: `${domain.name} added to wishlist.` 
+      toast({
+        title: "Wishlisted",
+        description: `${domain.name} added to wishlist.`
       })
     }
-    
+
     Cookies.set("wishlist", JSON.stringify(wishlist), { expires: 30 })
   }
-  
+
   const handleShare = async () => {
     if (!domain) return
-    
+
     const url = window.location.href
     const title = `Check out this domain: ${domain.name}`
-    
+
     // Check if Web Share API is available
     if (navigator.share) {
       try {
@@ -162,7 +162,7 @@ export default function DomainDetailsPage() {
       }
     }
   }
-  
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -182,12 +182,12 @@ export default function DomainDetailsPage() {
       </div>
     )
   }
-  
+
   if (!domain) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <Header />
-        <main className="max-w-7xl mx-auto px-4 pb-8 pt-24 text-center">
+        <main className="max-w-7xl mx-auto px-4 pb-8  pt-24 text-center">
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 max-w-2xl mx-auto">
             <div className="text-red-500 mx-auto w-16 h-16 mb-4">
               <Info size={64} />
@@ -203,15 +203,15 @@ export default function DomainDetailsPage() {
       </div>
     )
   }
-  
-  const discountPercentage = domain.Actualprice > domain.price 
-    ? Math.round(((domain.Actualprice - domain.price) / domain.Actualprice) * 100) 
+
+  const discountPercentage = domain.Actualprice > domain.price
+    ? Math.round(((domain.Actualprice - domain.price) / domain.Actualprice) * 100)
     : 0
-    
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Header />
-      <main className="max-w-7xl mx-auto px-2 sm:px-16 pb-8 pt-24">
+      <main className="max-w-7xl mx-auto px-2 sm:px-16 pb-8 pt-24 dark:bg-gray-800">
         {/* Hero Section */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
@@ -254,19 +254,19 @@ export default function DomainDetailsPage() {
                     <Badge variant="destructive" className="text-lg px-6 py-3">SOLD</Badge>
                   </div>
                 )}
-                <Image 
-                  src={domain.image?.[0] || "/placeholder.png"} 
-                  alt={domain.name} 
-                  width={800} 
-                  height={400} 
-                  className="w-full h-64 md:h-80 object-cover" 
+                <Image
+                  src={domain.image?.[0] || "/placeholder.png"}
+                  alt={domain.name}
+                  width={800}
+                  height={400}
+                  className="w-full h-64 md:h-80 object-cover"
                 />
               </div>
               <div className="space-y-4">
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Domain Overview</h2>
                 <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{domain.description}</p>
               </div>
-              
+
               {/* Tabs for additional information */}
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-3">
@@ -274,7 +274,7 @@ export default function DomainDetailsPage() {
                   <TabsTrigger value="metrics">SEO Metrics</TabsTrigger>
                   <TabsTrigger value="history">History</TabsTrigger>
                 </TabsList>
-                
+
                 <TabsContent value="overview" className="mt-4">
                   <Card>
                     <CardHeader>
@@ -314,7 +314,7 @@ export default function DomainDetailsPage() {
                     </CardContent>
                   </Card>
                 </TabsContent>
-                
+
                 <TabsContent value="metrics" className="mt-4">
                   <Card>
                     <CardHeader>
@@ -322,47 +322,47 @@ export default function DomainDetailsPage() {
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <MetricCard 
-                          title="Domain Rank" 
-                          value={domain.metrics.domainRank} 
-                          icon={<TrendingUp className="h-5 w-5" />} 
+                        <MetricCard
+                          title="Domain Rank"
+                          value={domain.metrics.domainRank}
+                          icon={<TrendingUp className="h-5 w-5" />}
                           color="blue"
                         />
-                        <MetricCard 
-                          title="Referring Domains" 
-                          value={domain.metrics.referringDomains} 
-                          icon={<LinkIcon className="h-5 w-5" />} 
+                        <MetricCard
+                          title="Referring Domains"
+                          value={domain.metrics.referringDomains}
+                          icon={<LinkIcon className="h-5 w-5" />}
                           color="green"
                         />
-                       { domain?.metrics.monthlyTraffic&&<MetricCard 
-                          title="Monthly Traffic" 
-                          value={domain.metrics.monthlyTraffic?.toLocaleString() || "N/A"} 
-                          icon={<Users className="h-5 w-5" />} 
+                        {domain?.metrics.monthlyTraffic && <MetricCard
+                          title="Monthly Traffic"
+                          value={domain.metrics.monthlyTraffic?.toLocaleString() || "N/A"}
+                          icon={<Users className="h-5 w-5" />}
                           color="purple"
                         />}
-                        <MetricCard 
-                          title="Domain Authority" 
-                          value={domain.metrics.domainAuthority} 
-                          icon={<Award className="h-5 w-5" />} 
+                        <MetricCard
+                          title="Domain Authority"
+                          value={domain.metrics.domainAuthority}
+                          icon={<Award className="h-5 w-5" />}
                           color="yellow"
                         />
-                        <MetricCard 
-                          title="Trust Flow" 
-                          value={domain.metrics.trustFlow} 
-                          icon={<Shield className="h-5 w-5" />} 
+                        <MetricCard
+                          title="Trust Flow"
+                          value={domain.metrics.trustFlow}
+                          icon={<Shield className="h-5 w-5" />}
                           color="red"
                         />
-                        <MetricCard 
-                          title="Citation Flow" 
-                          value={domain.metrics.citationFlow} 
-                          icon={<Search className="h-5 w-5" />} 
+                        <MetricCard
+                          title="Citation Flow"
+                          value={domain.metrics.citationFlow}
+                          icon={<Search className="h-5 w-5" />}
                           color="indigo"
                         />
                       </div>
                     </CardContent>
                   </Card>
                 </TabsContent>
-                
+
                 <TabsContent value="history" className="mt-4">
                   <Card>
                     <CardHeader>
@@ -374,7 +374,7 @@ export default function DomainDetailsPage() {
                           <h3 className="font-medium text-gray-900 mb-2">Registration Details</h3>
                           <p className="text-sm text-gray-600">This domain was first registered in {domain.metrics.year} and has been maintained for {domain.metrics.age} years.</p>
                         </div>
-                        
+
                         {domain.metrics.authorityLinks?.length > 0 && (
                           <div className="p-4 bg-gray-50 rounded-lg">
                             <h3 className="font-medium text-gray-900 mb-2">Authority Backlinks</h3>
@@ -401,7 +401,7 @@ export default function DomainDetailsPage() {
                             </div>
                           </div>
                         )}
-                        
+
                         <div className="p-4 bg-gray-50 rounded-lg">
                           <h3 className="font-medium text-gray-900 mb-2">Domain Value</h3>
                           <p className="text-sm text-gray-600">Based on its age, authority metrics, and traffic, this domain represents a valuable digital asset with strong SEO potential.</p>
@@ -412,58 +412,58 @@ export default function DomainDetailsPage() {
                 </TabsContent>
               </Tabs>
             </div>
-            
+
             {/* Right Column - Pricing and Actions */}
             <div className="space-y-6">
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 shadow-lg border border-blue-100">
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 shadow-lg border border-blue-100 dark:from-gray-800 dark:to-gray-900 dark:border-gray-700">
                 <div className="text-center mb-6">
                   <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Current Price</div>
                   <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">${domain.price.toLocaleString()}</div>
                   {domain.Actualprice > domain.price && (
                     <div className="flex items-center justify-center gap-2">
                       <span className="text-gray-500 dark:text-gray-400 line-through">${domain.Actualprice.toLocaleString()}</span>
-                      <Badge className="bg-red-100 text-red-700 hover:bg-red-200">
+                      <Badge className="bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/50">
                         Save {discountPercentage}%
                       </Badge>
                     </div>
                   )}
                 </div>
                 <div className="space-y-4">
-                  <Button 
-                    className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md" 
-                    onClick={handleAddToCart} 
+                  <Button
+                    className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md"
+                    onClick={handleAddToCart}
                     disabled={!domain.isAvailable || domain.isSold}
                   >
-                    <ShoppingCart className="h-4 w-4 mr-2" /> 
+                    <ShoppingCart className="h-4 w-4 mr-2" />
                     {domain.isSold ? "Sold Out" : domain.isAvailable ? "Add to Cart" : "Unavailable"}
                   </Button>
-                  
+
                   <div className="flex gap-3">
-                    <Button 
-                      variant="outline" 
-                      onClick={handleWishlistToggle} 
+                    <Button
+                      variant="outline"
+                      onClick={handleWishlistToggle}
                       className={cn(
-                        "flex-1 py-3 border-2", 
+                        "flex-1 py-3 border-2",
                         isWishlisted
-                          ? "border-red-300 text-red-500 hover:bg-red-50" 
-                          : "border-gray-300 hover:bg-gray-50"
+                          ? "border-red-300 text-red-500 hover:bg-red-50 dark:border-red-700 dark:hover:bg-red-900/20"
+                          : "border-gray-300 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800"
                       )}
                     >
                       <Heart className={cn("h-4 w-4 mr-2", isWishlisted && "fill-current")} />
                       {isWishlisted ? "Remove" : "Wishlist"}
                     </Button>
-                    
-                    <Button 
-                      variant="outline" 
+
+                    <Button
+                      variant="outline"
                       onClick={handleShare}
-                      className="flex-1 py-3 border-2 border-gray-300 hover:bg-gray-50"
+                      className="flex-1 py-3 border-2 border-gray-300 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800"
                     >
                       <Share className="h-4 w-4 mr-2" />
                       Share
                     </Button>
                   </div>
                 </div>
-                <Separator className="my-6" />
+                <Separator className="my-6 dark:bg-gray-700" />
                 <div className="space-y-4">
                   <h3 className="font-semibold text-gray-900 dark:text-white">Purchase Benefits</h3>
                   <div className="space-y-3">
@@ -474,11 +474,11 @@ export default function DomainDetailsPage() {
                   </div>
                 </div>
               </div>
-              
+
               {/* Additional Information */}
-              <Card>
+              <Card className="dark:bg-gray-800 dark:border-gray-700">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5" /> Additional Information</CardTitle>
+                  <CardTitle className="flex items-center gap-2 dark:text-white"><FileText className="h-5 w-5" /> Additional Information</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
@@ -488,14 +488,14 @@ export default function DomainDetailsPage() {
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-gray-600 dark:text-gray-400">Status</span>
-                      <Badge variant={domain.isAvailable ? "default" : "secondary"}>
+                      <Badge variant={domain.isAvailable ? "default" : "secondary"} className={domain.isAvailable ? "dark:bg-green-900/30 dark:text-green-300" : "dark:bg-gray-700 dark:text-gray-300"}>
                         {domain.isAvailable ? "Available" : "Unavailable"}
                       </Badge>
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <span className="text-gray-600 dark:text-gray-400">Hot Deal</span>
-                      <Badge variant={domain.isHot ? "default" : "outline"}>
+                      <Badge variant={domain.isHot ? "default" : "outline"} className={domain.isHot ? "dark:bg-orange-900/30 dark:text-orange-300" : "dark:bg-gray-700 dark:text-gray-300"}>
                         {domain.isHot ? "Yes" : "No"}
                       </Badge>
                     </div>
@@ -505,11 +505,11 @@ export default function DomainDetailsPage() {
             </div>
           </div>
         </div>
-        
+
         {/* Additional Sections */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
           {domain?.metrics.monthlyTraffic && (
-            <Card className="border-blue-100 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800">
+            <Card className="border-blue-100 bg-blue-50 dark:bg-blue-900/20 rounded-lg dark:border-blue-800">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-blue-800 dark:text-blue-300"><Eye className="h-5 w-5" /> Traffic Insights</CardTitle>
               </CardHeader>
@@ -524,25 +524,25 @@ export default function DomainDetailsPage() {
               </CardContent>
             </Card>
           )}
-          <Card className="border-purple-100 bg-purple-50 dark:bg-purple-900/20 dark:border-purple-800">
+          <Card className="border-purple-100 bg-purple-50 dark:bg-purple-900/20 rounded-lg dark:border-purple-800">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-purple-800 dark:text-purple-300"><ThumbsUp className="h-5 w-5" /> Overall Score</CardTitle>
+              <CardTitle className="flex items-center gap-2 p-2 text-purple-800 dark:text-purple-300"><ThumbsUp className="h-5 w-5" /> Overall Score</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-600 mb-4">
                 Domain Score: {domain.metrics.score || 'N/A'}/100
               </p>
               <div className="w-full bg-gray-200 rounded-full h-2.5">
-                <div 
-                  className="bg-purple-600 h-2.5 rounded-full" 
+                <div
+                  className="bg-purple-600 h-2.5 rounded-full"
                   style={{ width: `${(domain.metrics.score || 0) / 100 * 100}%` }}
                 ></div>
               </div>
             </CardContent>
           </Card>
-         { domain.type=='aged' &&  <Card className="border-orange-100 bg-orange-50 dark:bg-orange-900/20 dark:border-orange-800">
+          {domain.type == 'aged' && <Card className="border-orange-100 bg-orange-50 rounded-lg dark:bg-orange-900/20 dark:border-orange-800">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-orange-800 dark:text-orange-300"><Calendar className="h-5 w-5" /> Age & History</CardTitle>
+              <CardTitle className="flex items-center gap-2 p-2 text-orange-800 dark:text-orange-300"><Calendar className="h-5 w-5" /> Age & History</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-600 mb-4">
@@ -562,11 +562,11 @@ export default function DomainDetailsPage() {
   )
 }
 
-const MetricCard = ({ title, value, icon, color }: { 
-  title: string; 
-  value: string | number; 
-  icon: React.ReactNode; 
-  color: string 
+const MetricCard = ({ title, value, icon, color }: {
+  title: string;
+  value: string | number;
+  icon: React.ReactNode;
+  color: string
 }) => {
   const colorClasses = {
     blue: "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700",
@@ -576,7 +576,7 @@ const MetricCard = ({ title, value, icon, color }: {
     red: "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-700",
     indigo: "bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700",
   }[color] || "bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700"
-  
+
   return (
     <div className={`p-4 rounded-lg border ${colorClasses} transition-all hover:shadow-md dark:hover:shadow-lg`}>
       <div className="flex items-center justify-between mb-2">
@@ -588,10 +588,10 @@ const MetricCard = ({ title, value, icon, color }: {
   )
 }
 
-const TrustItem = ({ icon, text, color }: { 
-  icon: React.ReactNode; 
-  text: string; 
-  color: string 
+const TrustItem = ({ icon, text, color }: {
+  icon: React.ReactNode;
+  text: string;
+  color: string
 }) => {
   const colorClasses = {
     green: "text-green-600 dark:text-green-400",
@@ -600,7 +600,7 @@ const TrustItem = ({ icon, text, color }: {
     red: "text-red-600 dark:text-red-400",
     yellow: "text-yellow-600 dark:text-yellow-400",
   }[color] || "text-gray-600 dark:text-gray-400"
-  
+
   return (
     <div className={`flex items-center gap-3 ${colorClasses}`}>
       <div className="flex-shrink-0">{icon}</div>

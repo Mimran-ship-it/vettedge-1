@@ -8,6 +8,7 @@ import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input" 
 import { Flame } from "lucide-react"
 import { set } from "mongoose"
+
 interface ActiveFilters {
   priceRange: [number, number]
   tlds: string[]
@@ -15,7 +16,7 @@ interface ActiveFilters {
   type: "all" | "aged" | "traffic"
   domainRankRange: [number, number]
   domainAuthorityRange: [number, number]
-  scoresRange?: [number, number] // Optional, in case you want to add it later
+  scoresRange?: [number, number]
   trustFlowRange: [number, number]
   citationFlowRange: [number, number]
   ageMin: number | null
@@ -23,13 +24,15 @@ interface ActiveFilters {
   authorityLinksMin: number | null
   monthlyTrafficMin: number | null
   tags: string[]
-  isHot: boolean // Changed from "all" | "yes" | "no" to boolean
+  isHot: boolean
 }
+
 interface DomainFiltersProps {
   onFilterChange: (filters: ActiveFilters) => void
   availableTags: string[]
   currentFilters: ActiveFilters
 } 
+
 export function DomainFilters({ onFilterChange, availableTags, currentFilters }: DomainFiltersProps) {
   const searchParams = useSearchParams()
   const firstMount = useRef(true)
@@ -46,13 +49,12 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
   const [trustFlowRange, setTrustFlowRange] = useState<[number, number]>(currentFilters.trustFlowRange)
   const [citationFlowRange, setCitationFlowRange] = useState<[number, number]>(currentFilters.citationFlowRange)
   
-  // Changed to allow null values for empty inputs
   const [monthlyTrafficMin, setMonthlyTrafficMin] = useState<number | null>(currentFilters.monthlyTrafficMin)
   const [ageMin, setAgeMin] = useState<number | null>(currentFilters.ageMin)
   const [referringDomainsMin, setReferringDomainsMin] = useState<number | null>(currentFilters.referringDomainsMin)
   const [authorityLinksMin, setAuthorityLinksMin] = useState<number | null>(currentFilters.authorityLinksMin)
   
-  const [isHot, setIsHot] = useState<boolean>(currentFilters.isHot) // Changed to boolean
+  const [isHot, setIsHot] = useState<boolean>(currentFilters.isHot)
   
   const tlds = [".com", ".net", ".org", ".io", ".co", ".ai"]
   
@@ -82,7 +84,6 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
       filtersToApply.isHot = true
     }
     
-    // Apply the filters if any URL parameters were set
     if (Object.keys(filtersToApply).length > 0) {
       applyFilters(filtersToApply)
     }
@@ -95,7 +96,6 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
     setPriceRange(currentFilters.priceRange)
     setSelectedTlds(currentFilters.tlds)
     setAvailability(currentFilters.availability)
-    // Only update type if not set by URL parameters
     if (!urlParamsSet.current.type) {
       setType(currentFilters.type)
     }
@@ -109,7 +109,6 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
     setAgeMin(currentFilters.ageMin)
     setReferringDomainsMin(currentFilters.referringDomainsMin)
     setAuthorityLinksMin(currentFilters.authorityLinksMin)
-    // Only update isHot if not set by URL parameters
     if (!urlParamsSet.current.isHot) {
       setIsHot(currentFilters.isHot)
     }
@@ -131,7 +130,6 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
     applyFilters({ tags: newTags })
   }
   
-  // Handle availability change with checkboxes
   const handleAvailabilityChange = (value: "all" | "available" | "sold", checked: boolean) => {
     if (checked) {
       setAvailability(value)
@@ -139,7 +137,6 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
     }
   }
   
-  // Handle type change with checkboxes
   const handleTypeChange = (value: "all" | "aged" | "traffic", checked: boolean) => {
     if (checked) {
       setType(value)
@@ -147,13 +144,11 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
     }
   }
   
-  // Handle hot deal toggle - simplified to directly toggle state
   const handleHotDealToggle = () => {
     const newIsHot = !isHot
     setIsHot(newIsHot)
-    applyFilters({ isHot: newIsHot }) // use newIsHot, not isHot
+    applyFilters({ isHot: newIsHot })
   } 
-   
   
   const applyFilters = (overrides = {}) => {
     const filters: ActiveFilters = {
@@ -172,7 +167,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
       referringDomainsMin,
       authorityLinksMin,
       isHot,
-      ...overrides,   // 👈 moved to the bottom
+      ...overrides,
     }
     onFilterChange(filters)
   }
@@ -212,13 +207,11 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
     setAuthorityLinksMin(defaultFilterValues.authorityLinksMin)
     setIsHot(defaultFilterValues.isHot)
     
-    // Reset URL parameter flags
     urlParamsSet.current = {}
     
     onFilterChange(defaultFilterValues)
   }
   
-  // Helper function to handle numeric input changes
   const handleNumericInputChange = (
     value: string, 
     setter: (value: number | null) => void,
@@ -236,11 +229,9 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
     }
   }
    
-  // Special handler for monthly traffic that also affects domain type
   const handleMonthlyTrafficChange = (value: string) => {
     if (value === '') {
       setMonthlyTrafficMin(null)
-      // When null, show all domains (including aged)
       if (type === "traffic") {
         setType("all")
         applyFilters({ monthlyTrafficMin: null, type: "all" })
@@ -251,12 +242,10 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
       const numValue = Number(value)
       if (!isNaN(numValue)) {
         setMonthlyTrafficMin(numValue)
-        // If value is greater than 0, filter out aged domains
         if (numValue > 0) {
           setType("traffic")
           applyFilters({ monthlyTrafficMin: numValue, type: "traffic" })
         } else {
-          // If value is 0, show all domains (including aged)
           if (type === "traffic") {
             setType("all")
             applyFilters({ monthlyTrafficMin: numValue, type: "all" })
@@ -269,11 +258,11 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
   }
    
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 dark:bg-gray-900 dark:text-gray-100 p-4 rounded-lg">
       <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6">
         {/* Price Range */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700">Price Range</Label>
+          <Label className="font-medium text-gray-700 dark:text-gray-300">Price Range</Label>
           <Slider
             value={priceRange}
             onValueChange={(value) => {
@@ -285,7 +274,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
             step={10}
             className="w-full"
           />
-          <div className="flex justify-between text-sm text-gray-500">
+          <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
             <span>${priceRange[0].toLocaleString()}</span>
             <span>${priceRange[1].toLocaleString()}</span>
           </div>
@@ -293,100 +282,107 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
         
         {/* TLD Filter */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700">Domain Extension</Label>
-          <div className="grid grid-cols-2 gap-2">
+          <Label className="font-medium text-gray-700 dark:text-gray-300">Domain Extension</Label>
+          <div className="grid grid-cols-2 gap-2 dark:bg-gray-800 p-2 rounded-md">
             {tlds.map((tld) => (
               <div key={tld} className="flex items-center space-x-2">
                 <Checkbox
                   id={tld}
                   checked={selectedTlds.includes(tld)}
                   onCheckedChange={(checked) => handleTldChange(tld, checked as boolean)}
+                  className="dark:border-gray-600 dark:bg-gray-700"
                 />
-                <Label htmlFor={tld} className="text-sm text-gray-600">{tld}</Label>
+                <Label htmlFor={tld} className="text-sm text-gray-600 dark:text-gray-300">{tld}</Label>
               </div>
             ))}
           </div>
         </div>
         
-        {/* Availability - Converted to Checkboxes */}
+        {/* Availability */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700">Availability</Label>
-          <div className="space-y-2">
+          <Label className="font-medium text-gray-700 dark:text-gray-300">Availability</Label>
+          <div className="space-y-2 dark:bg-gray-800 p-2 rounded-md">
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="availability-all"
                 checked={availability === "all"}
                 onCheckedChange={(checked) => handleAvailabilityChange("all", checked as boolean)}
+                className="dark:border-gray-600 dark:bg-gray-700"
               />
-              <Label htmlFor="availability-all" className="text-sm text-gray-600">All domains</Label>
+              <Label htmlFor="availability-all" className="text-sm text-gray-600 dark:text-gray-300">All domains</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="availability-available"
                 checked={availability === "available"}
                 onCheckedChange={(checked) => handleAvailabilityChange("available", checked as boolean)}
+                className="dark:border-gray-600 dark:bg-gray-700"
               />
-              <Label htmlFor="availability-available" className="text-sm text-gray-600">Available only</Label>
+              <Label htmlFor="availability-available" className="text-sm text-gray-600 dark:text-gray-300">Available only</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="availability-sold"
                 checked={availability === "sold"}
                 onCheckedChange={(checked) => handleAvailabilityChange("sold", checked as boolean)}
+                className="dark:border-gray-600 dark:bg-gray-700"
               />
-              <Label htmlFor="availability-sold" className="text-sm text-gray-600">Sold domains</Label>
+              <Label htmlFor="availability-sold" className="text-sm text-gray-600 dark:text-gray-300">Sold domains</Label>
             </div>
           </div>
         </div>
         
-        {/* Type - Converted to Checkboxes */}
+        {/* Type */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700">Type</Label>
-          <div className="space-y-2">
+          <Label className="font-medium text-gray-700 dark:text-gray-300">Type</Label>
+          <div className="space-y-2 dark:bg-gray-800 p-2 rounded-md">
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="type-all"
                 checked={type === "all"}
                 onCheckedChange={(checked) => handleTypeChange("all", checked as boolean)}
+                className="dark:border-gray-600 dark:bg-gray-700"
               />
-              <Label htmlFor="type-all" className="text-sm text-gray-600">All types</Label>
+              <Label htmlFor="type-all" className="text-sm text-gray-600 dark:text-gray-300">All types</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="type-aged"
                 checked={type === "aged"}
                 onCheckedChange={(checked) => handleTypeChange("aged", checked as boolean)}
+                className="dark:border-gray-600 dark:bg-gray-700"
               />
-              <Label htmlFor="type-aged" className="text-sm text-gray-600">Aged Domain</Label>
+              <Label htmlFor="type-aged" className="text-sm text-gray-600 dark:text-gray-300">Aged Domain</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="type-traffic"
                 checked={type === "traffic"}
                 onCheckedChange={(checked) => handleTypeChange("traffic", checked as boolean)}
+                className="dark:border-gray-600 dark:bg-gray-700"
               />
-              <Label htmlFor="type-traffic" className="text-sm text-gray-600">Traffic Domain</Label>
+              <Label htmlFor="type-traffic" className="text-sm text-gray-600 dark:text-gray-300">Traffic Domain</Label>
             </div>
           </div>
         </div>
         
-        {/* isHot Filter - Converted to Toggle Button */}
+        {/* isHot Filter */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700 flex items-center gap-1">
+          <Label className="font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
             <Flame className="h-4 w-4 text-orange-500" />
             Hot Deal
           </Label>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 dark:bg-gray-800 p-2 rounded-md">
             <Button
               variant={isHot ? "default" : "outline"}
               size="sm"
               onClick={handleHotDealToggle}
-              className={`flex items-center ${isHot ? "bg-orange-500 hover:bg-orange-600" : ""}`}
+              className={`flex items-center ${isHot ? "bg-orange-500 hover:bg-orange-600" : "dark:border-gray-600 dark:text-gray-300"}`}
             >
               <Flame className="h-4 w-4 mr-1" />
               {isHot ? "On" : "Off"}
             </Button>
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-gray-500 dark:text-gray-400">
               {isHot ? "Showing hot deals only" : "Hot deals hidden"}
             </span>
           </div>
@@ -394,16 +390,17 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
         
         {/* Tags Filter */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700">Industry</Label>
-          <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto border rounded p-2">
+          <Label className="font-medium text-gray-700 dark:text-gray-300">Industry</Label>
+          <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto border rounded p-2 dark:bg-gray-800 dark:border-gray-700">
             {availableTags.map((tag) => (
               <div key={tag} className="flex items-center space-x-2">
                 <Checkbox
                   id={tag}
                   checked={selectedTags.includes(tag)}
                   onCheckedChange={(checked) => handleTagChange(tag, checked as boolean)}
+                  className="dark:border-gray-600 dark:bg-gray-700"
                 />
-                <Label htmlFor={tag} className="text-sm text-gray-600 capitalize">{tag}</Label>
+                <Label htmlFor={tag} className="text-sm text-gray-600 dark:text-gray-300 capitalize">{tag}</Label>
               </div>
             ))}
           </div>
@@ -411,7 +408,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
         
         {/* Domain Rank */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700">Domain Rank (0-100)</Label>
+          <Label className="font-medium text-gray-700 dark:text-gray-300">Domain Rank (0-100)</Label>
           <Slider
             value={domainRankRange}
             onValueChange={(value) => {
@@ -423,7 +420,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
             step={1}
             className="w-full"
           />
-          <div className="flex justify-between text-sm text-gray-500">
+          <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
             <span>{domainRankRange[0]}</span>
             <span>{domainRankRange[1]}</span>
           </div>
@@ -431,7 +428,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
         
         {/* Domain Authority */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700">Domain Authority (0-100)</Label>
+          <Label className="font-medium text-gray-700 dark:text-gray-300">Domain Authority (0-100)</Label>
           <Slider
             value={domainAuthorityRange}
             onValueChange={(value) => {
@@ -443,14 +440,15 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
             step={1}
             className="w-full"
           />
-          <div className="flex justify-between text-sm text-gray-500">
+          <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
             <span>{domainAuthorityRange[0]}</span>
             <span>{domainAuthorityRange[1]}</span>
           </div>
-          
         </div>
+        
+        {/* Overall Score */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700">Overall Score (0-100)</Label>
+          <Label className="font-medium text-gray-700 dark:text-gray-300">Overall Score (0-100)</Label>
           <Slider
             value={scoresRange}
             onValueChange={(value) => {
@@ -462,17 +460,15 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
             step={1}
             className="w-full"
           />
-          <div className="flex justify-between text-sm text-gray-500">
-            <span>{scoresRange[0]}</span>
-            <span>{scoresRange[1]}</span>
+          <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
+            <span>{scoresRange?.[0]}</span>
+            <span>{scoresRange?.[1]}</span>
           </div>
-         
         </div>
-        
         
         {/* Trust Flow */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700">Trust Flow (0-100)</Label>
+          <Label className="font-medium text-gray-700 dark:text-gray-300">Trust Flow (0-100)</Label>
           <Slider
             value={trustFlowRange}
             onValueChange={(value) => {
@@ -484,7 +480,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
             step={1}
             className="w-full"
           />
-          <div className="flex justify-between text-sm text-gray-500">
+          <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
             <span>{trustFlowRange[0]}</span>
             <span>{trustFlowRange[1]}</span>
           </div>
@@ -492,7 +488,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
         
         {/* Citation Flow */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700">Citation Flow (0-100)</Label>
+          <Label className="font-medium text-gray-700 dark:text-gray-300">Citation Flow (0-100)</Label>
           <Slider
             value={citationFlowRange}
             onValueChange={(value) => {
@@ -504,7 +500,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
             step={1}
             className="w-full"
           />
-          <div className="flex justify-between text-sm text-gray-500">
+          <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
             <span>{citationFlowRange[0]}</span>
             <span>{citationFlowRange[1]}</span>
           </div>
@@ -512,60 +508,60 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
         
         {/* Monthly Traffic */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700">Monthly Traffic (min)</Label>
+          <Label className="font-medium text-gray-700 dark:text-gray-300">Monthly Traffic (min)</Label>
           <Input
             type="number"
             value={monthlyTrafficMin === null ? '' : monthlyTrafficMin}
             onChange={(e) => handleMonthlyTrafficChange(e.target.value)}
             min={0}
             placeholder="Any"
-            className="w-full"
+            className="w-full dark:bg-gray-800 dark:border-gray-700 dark:text-white"
           />
         </div>
         
         {/* Age */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700">Age (min, years)</Label>
+          <Label className="font-medium text-gray-700 dark:text-gray-300">Age (min, years)</Label>
           <Input
             type="number"
             value={ageMin === null ? '' : ageMin}
             onChange={(e) => handleNumericInputChange(e.target.value, setAgeMin, 'ageMin')}
             min={0}
             placeholder="Any"
-            className="w-full"
+            className="w-full dark:bg-gray-800 dark:border-gray-700 dark:text-white"
           />
         </div>
         
         {/* Referring Domains */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700">Referring Domains (min)</Label>
+          <Label className="font-medium text-gray-700 dark:text-gray-300">Referring Domains (min)</Label>
           <Input
             type="number"
             value={referringDomainsMin === null ? '' : referringDomainsMin}
             onChange={(e) => handleNumericInputChange(e.target.value, setReferringDomainsMin, 'referringDomainsMin')}
             min={0}
             placeholder="Any"
-            className="w-full"
+            className="w-full dark:bg-gray-800 dark:border-gray-700 dark:text-white"
           />
         </div>
         
         {/* Authority Links */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700">Authority Links (min)</Label>
+          <Label className="font-medium text-gray-700 dark:text-gray-300">Authority Links (min)</Label>
           <Input
             type="number"
             value={authorityLinksMin === null ? '' : authorityLinksMin}
             onChange={(e) => handleNumericInputChange(e.target.value, setAuthorityLinksMin, 'authorityLinksMin')}
             min={0}
             placeholder="Any"
-            className="w-full"
+            className="w-full dark:bg-gray-800 dark:border-gray-700 dark:text-white"
           />
         </div>
       </div>
       
       {/* Clear Filters Button */}
       <div className="flex justify-end">
-        <Button variant="outline" onClick={clearFilters} className="px-6">
+        <Button variant="outline" onClick={clearFilters} className="px-6 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800">
           Clear All Filters
         </Button>
       </div>
