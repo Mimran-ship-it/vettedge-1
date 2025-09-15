@@ -46,16 +46,16 @@ export function Footer() {
           <div className="lg:col-span-2 flex flex-col gap-4 pb-0">
 
 
-            <Link href="/" className="flex items-center space-x-0">
+            <Link href="/" className="flex items-center space-x-">
               <Image
                 src="/logo.png"
                 alt="Vettedge Logo"
-                width={60}
-                height={60}
-                className="rounded-lg"
+                width={80}
+                height={80}
+                className="rounded-lg scale-125"
               />
               <h2 className="text-xl font-semibold text-black dark:text-white bg-clip-text transition-all duration-300 tracking-wide">
-                Vettedge.domains
+                Vetted Age for SEO Edge.
               </h2>
             </Link>
 

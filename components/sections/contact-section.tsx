@@ -159,7 +159,7 @@ export function ContactSection() {
               </motion.div>
 
               {/* Office Hours */}
-              <motion.div
+              {/* <motion.div
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
@@ -188,7 +188,7 @@ export function ContactSection() {
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </motion.div> */}
             </div>
           </motion.div>
         </div>
@@ -203,8 +203,8 @@ export function ContactSection() {
           variants={fadeInUp}
         >
 
-          <div className="max-w-4xl my-6 mx-auto">
-            <Card style={{ backgroundColor: "#f8f9fa", border: "1px solid #e9ecef" }} className="dark:bg-gray-700 dark:border-gray-600">
+          {/* <div className="max-w-4xl my-6 mx-auto">
+            <Card style={{   border: "1px solid #e9ecef" }} className="dark:bg-gray-700 dark:border-gray-600">
               <CardContent className="pt-8 pb-8">
                 <h3 className="text-2xl md:text-3xl font-bold mb-6 text-center" style={{ color: "#33BDC7" }}>
                   Can't find what you're looking for?
@@ -225,7 +225,7 @@ export function ContactSection() {
                 </div>
               </CardContent>
             </Card>
-          </div>
+          </div> */}
         </motion.div>
       </div>
     </section>

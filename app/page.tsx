@@ -21,8 +21,7 @@ export default function HomePage() {
         <TrustSection />
         <IsHot />
         <AgedDomains />
-        <TrafficDomains/>
-        {/* <TestimonialsSection /> */}
+        <TrafficDomains/> 
         <BlogPreview />
         <ContactSection />
         <Footer/>
