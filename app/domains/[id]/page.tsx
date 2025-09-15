@@ -535,7 +535,7 @@ export default function DomainDetailsPage() {
               <div className="w-full bg-gray-200 rounded-full h-2.5">
                 <div 
                   className="bg-purple-600 h-2.5 rounded-full" 
-                  style={{ width: `${(domain.metrics.domainAuthority || 0) / 100 * 100}%` }}
+                  style={{ width: `${(domain.metrics.score || 0) / 100 * 100}%` }}
                 ></div>
               </div>
             </CardContent>
