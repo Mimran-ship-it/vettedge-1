@@ -45,7 +45,7 @@ export function TrafficDomains() {
     <section className="py-16 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">🚦 Traffic Domains</h2>
+          <h2 className="text-4xl lg:text-5xl font-bold text-[#33BDC7] mb-4">🚦 Traffic Domains</h2>
           <p className="text-lg text-gray-600 dark:text-gray-300">
             Explore domains with existing traffic and strong growth potential
           </p>
@@ -77,7 +77,7 @@ export function TrafficDomains() {
             <p className="text-gray-600 dark:text-gray-300 mb-4">
               {error ? error : "No traffic domains available at the moment."}
             </p>
-            <Button size="lg" asChild>
+            <Button size="lg" className="bg-[#3BD17A] text-white hover:bg-[rgb(59,209,122)]" asChild>
               <a href="/domains">Browse All Domains</a>
             </Button>
           </div>
@@ -99,12 +99,12 @@ export function TrafficDomains() {
                   variant="outline"
                   size="lg"
                   onClick={handleShowMore}
-                  className="transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                  className="bg-[#3BD17A] text-white hover:bg-[rgb(59,209,122)]"
                 >
                   Show More
                 </Button>
               )}
-              <Button size="lg" className="bg-[#3BD17A] text-white hover:bg-[rgb(59,209,122)]" asChild>
+              <Button size="lg" className="bg-[#3BD17A] text-white hover:bg-[rgb(59,209,122)]"  asChild>
                 <Link href="/domains?traffic=true">View All </Link>
               </Button>
             </div>

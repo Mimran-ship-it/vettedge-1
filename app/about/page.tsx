@@ -54,9 +54,9 @@ export default function AboutPage() {
         variants={fadeUp}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          <Badge variant="secondary" className="bg-white text-[#33BDC7] border-[#4DD184]">
+          {/* <Badge variant="secondary" className="bg-white text-[#33BDC7] border-[#4DD184]">
             About Vettedge.domains
-          </Badge>
+          </Badge> */}
           <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
             Premium Vetted Aged Domains
             <span className="block text-[#3BD17A]">Curated for Your Success</span>
@@ -67,7 +67,7 @@ export default function AboutPage() {
         </div>
       </motion.section>
 
-   
+
 
       {/* Why Choose Section */}
       <motion.section
@@ -111,8 +111,8 @@ export default function AboutPage() {
           </div>
         </div>
       </motion.section>
-         {/* Stats Section */}
-       <section className="py-16 bg-gray-50 dark:bg-gray-900">
+      {/* Stats Section */}
+      <section className="py-16 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
             {stats.map((stat, index) => (
@@ -133,7 +133,7 @@ export default function AboutPage() {
             ))}
           </div>
         </div>
-      </section> 
+      </section>
 
       {/* Who We Serve */}
       <motion.section
@@ -186,7 +186,7 @@ export default function AboutPage() {
 
       {/* CTA */}
       <motion.section
-        className="py-20 bg-[#33BDC7] text-white"
+        className="py-20 bg-white dark:bg-gray-800 text-white"
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}
@@ -198,10 +198,10 @@ export default function AboutPage() {
             Whether you’re launching a new brand or growing an SEO empire, your next opportunity starts with the right domain name.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="outline" className="border-white text-[#33BDC7] hover:text-[#33BDC7]" asChild>
+            <Button size="lg" className="bg-[#33BDC7] text-white hover:bg-[rgb(59,209,122)]" asChild>
               <Link href="/domains">Browse Our Live Portfolio</Link>
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-[#33BDC7] hover:text-[#33BDC7]" asChild>
+            <Button size="lg" className="bg-[#33BDC7] text-white hover:bg-[rgb(59,209,122)]" asChild>
               <Link href="/contact">Contact Us for Bulk Deals</Link>
             </Button>
           </div>

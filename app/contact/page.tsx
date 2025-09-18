@@ -183,76 +183,59 @@ export default function ContactPage() {
           <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-16">
             
             {/* Can't find what you're looking for? - appears first on mobile, second on desktop */}
-            <motion.div
-              className="order-1 lg:order-2"
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              variants={fadeUp}
-            >
-              <Card
-  style={{
-    backgroundColor: "#ffffff",
-    border: "1px solid #e9ecef",
-  }}
+            {/* Can't find what you're looking for? - appears first on mobile, second on desktop */}
+<motion.div
+  className="order-1 lg:order-2"
+  initial="hidden"
+  whileInView="show"
+  viewport={{ once: true }}
+  variants={fadeUp}
 >
-  <CardContent className="pt-10 pb-10 px-6 md:px-12">
-    {/* Section Title */}
-    <h3
-      className="text-2xl md:text-3xl font-bold mb-10 text-center"
-      style={{ color: "#33BDC7" }}
-    >
-      Can't find what you're looking for?
-    </h3>
+  <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-none">
+    <CardContent className="pt-10 pb-10 px-6 md:px-12">
+      {/* Section Title */}
+      <h3 className="text-2xl md:text-3xl font-bold mb-10 text-center text-[#33BDC7] dark:text-[#4dd9e2]">
+        Can't find what you're looking for?
+      </h3>
 
-    {/* Grid Items */}
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-      {/* Item 1 */}
-      <div className="text-center space-y-2">
-        <h4
-          className="font-semibold text-lg"
-          style={{ color: "#33BDC7" }}
-        >
-          Pre-Sales Assistance
-        </h4>
-        <p className="text-gray-600 text-sm leading-relaxed">
-          Need help choosing the right domain? Looking for niche-specific
-          names or bulk deals?
-        </p>
+      {/* Grid Items */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* Item 1 */}
+        <div className="text-center space-y-2">
+          <h4 className="font-semibold text-lg text-[#33BDC7] dark:text-[#4dd9e2]">
+            Pre-Sales Assistance
+          </h4>
+          <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+            Need help choosing the right domain? Looking for niche-specific
+            names or bulk deals?
+          </p>
+        </div>
+
+        {/* Item 2 */}
+        <div className="text-center space-y-2">
+          <h4 className="font-semibold text-lg text-[#33BDC7] dark:text-[#4dd9e2]">
+            Post-Purchase Help
+          </h4>
+          <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+            Get help with domain access, transfer guidance, and account-related
+            questions.
+          </p>
+        </div>
+
+        {/* Item 3 */}
+        <div className="text-center space-y-2">
+          <h4 className="font-semibold text-lg text-[#33BDC7] dark:text-[#4dd9e2]">
+            Response Time
+          </h4>
+          <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+            We aim to respond to all support and sales inquiries within 1
+            business day.
+          </p>
+        </div>
       </div>
-
-      {/* Item 2 */}
-      <div className="text-center space-y-2">
-        <h4
-          className="font-semibold text-lg"
-          style={{ color: "#33BDC7" }}
-        >
-          Post-Purchase Help
-        </h4>
-        <p className="text-gray-600 text-sm leading-relaxed">
-          Get help with domain access, transfer guidance, and account-related
-          questions.
-        </p>
-      </div>
-
-      {/* Item 3 */}
-      <div className="text-center space-y-2">
-        <h4
-          className="font-semibold text-lg"
-          style={{ color: "#33BDC7" }}
-        >
-          Response Time
-        </h4>
-        <p className="text-gray-600 text-sm leading-relaxed">
-          We aim to respond to all support and sales inquiries within 1
-          business day.
-        </p>
-      </div>
-    </div>
-  </CardContent>
-</Card>  
-
-            </motion.div>
+    </CardContent>
+  </Card>
+</motion.div>
 
             {/* Contact Form - appears second on mobile, first on desktop */}
             <motion.div

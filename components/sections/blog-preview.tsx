@@ -136,12 +136,15 @@ export function BlogPreview() {
                     </p>
 
                     <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-                      <Link
-                        href={`/blog/${post.slug}`}
-                        className="text-[#33BDC7] dark:text-[#33BDC7] font-medium"
+                      <Button
+                        asChild
+                        variant="default"
+                        className="bg-[#33BDC7] hover:bg-[#2da9b2] text-white font-medium"
                       >
-                        Read More
-                      </Link>
+                        <Link href={`/blog/${post.slug}`}>
+                          Read More
+                        </Link>
+                      </Button>
                       <div className="text-xs text-gray-500 dark:text-gray-400">
                         {post.category}
                       </div>

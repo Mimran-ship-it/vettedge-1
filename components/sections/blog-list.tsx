@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Clock, User } from "lucide-react"
 import { motion } from "framer-motion"
 import type { BlogPost } from "@/types/blog"
+import { Button } from "../ui/button"
 
 export default function BlogList({ posts }: { posts: BlogPost[] }) {
   return (
@@ -28,39 +29,42 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
           transition={{ duration: 0.4, ease: "easeOut" }}
         >
           <Card className="overflow-hidden bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col h-full hover:shadow-md dark:hover:shadow-lg transition-shadow">
-                  {/* Blog Image */}
-                  <div className="w-full h-48 flex items-center justify-center overflow-hidden">
-                    <motion.img
-                      src={post.image || "/domaininvesting.png"}
-                      alt={post.title}
-                      className="w-full h-full object-cover rounded-t-lg transition-transform duration-300 group-hover:scale-105"
-                      whileHover={{ scale: 1.05 }}
-                    />
-                  </div>
+            {/* Blog Image */}
+            <div className="w-full h-48 flex items-center justify-center overflow-hidden">
+              <motion.img
+                src={post.image || "/domaininvesting.png"}
+                alt={post.title}
+                className="w-full h-full object-cover rounded-t-lg transition-transform duration-300 group-hover:scale-105"
+                whileHover={{ scale: 1.05 }}
+              />
+            </div>
 
-                  {/* Blog Content */}
-                  <CardContent className="p-5 flex flex-col flex-1">
-                    <h3 className="text-lg font-semibold mb-2 hover:text-[#33BDC7] transition-colors text-gray-900 dark:text-white">
-                      <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-                    </h3>
+            {/* Blog Content */}
+            <CardContent className="p-5 flex flex-col flex-1">
+              <h3 className="text-lg font-semibold mb-2 hover:text-[#33BDC7] transition-colors text-gray-900 dark:text-white">
+                <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+              </h3>
 
-                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 line-clamp-3">
-                      {post.excerpt}
-                    </p>
+              <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 line-clamp-3">
+                {post.excerpt}
+              </p>
 
-                    <div className="flex items-center justify-between mt-auto">
-                      <Link
-                        href={`/blog/${post.slug}`}
-                        className="text-[#33BDC7] dark:text-[#33BDC7] font-medium text-sm hover:underline"
-                      >
-                        Read More
-                      </Link>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
-                        {post.category}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+              <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+                <Button
+                  asChild
+                  variant="default"
+                  className="bg-[#33BDC7] hover:bg-[#2da9b2] text-white font-medium"
+                >
+                  <Link href={`/blog/${post.slug}`}>
+                    Read More
+                  </Link>
+                </Button>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  {post.category}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </motion.div>
       ))}
     </motion.div>

@@ -337,7 +337,7 @@ export default function VettingProcessPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-[#4dd184] text-white">
+      <section className="py-16 bg-white dark:bg-gray-900 text-white">
         <motion.div
           variants={fadeUp}
           initial="hidden"
@@ -375,7 +375,7 @@ export default function VettingProcessPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-900">
+      <section className="py-20 bg-gray-50 dark:bg-gray-800">
         <motion.div
           variants={fadeUp}
           initial="hidden"
