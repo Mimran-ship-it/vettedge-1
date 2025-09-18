@@ -29,8 +29,8 @@ export function LiveChat() {
 
   // Auto-open chat when a new message arrives (only if closed)
   useEffect(() => {
-    if (messages.length > prevMessageCount.current && !isOpen&&(prevMessageCount.current!=0||messages.length==1)) {
-      console.log('length',messages.length,prevMessageCount.current)
+    if (messages.length > prevMessageCount.current && !isOpen && (prevMessageCount.current != 0 || messages.length == 1)) {
+      console.log('length', messages.length, prevMessageCount.current)
       setIsOpen(true)
       setIsMinimized(false)
     }
@@ -122,7 +122,7 @@ export function LiveChat() {
 
   if (!isOpen) {
     return (
-      <div className="fixed bottom-4 right-4 z-50 flex items-end gap-2 overflow-hidden ">
+      <div className="fixed bottom-4 right-4 z-50 flex items-end gap-2 overflow-hidden">
         {/* ✨ Popup Message */}
         <AnimatePresence>
           {showPopup && (
@@ -131,7 +131,7 @@ export function LiveChat() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.4 }}
-              className="text-white  shadow-lg rounded-xl z-[999px] px-4 py-2 text-sm bg-gray-800 "
+              className="text-white shadow-lg rounded-xl z-[999px] px-4 py-2 text-sm bg-[#33BDC7] backdrop-blur-sm"
             >
               💬 Need help? Chat with us!
             </motion.div>
@@ -141,31 +141,30 @@ export function LiveChat() {
         {/* Chat Icon */}
         <Button
           onClick={() => setIsOpen(true)}
-          className="rounded-full w-14 h-14 shadow-lg relative"
+          className="rounded-full w-14 h-14 shadow-lg relative bg-[#33BDC7] hover:bg-[#2A9CA3] border-0"
         >
-          <MessageSquare className="h-6 w-6" />
+          <MessageSquare className="h-6 w-6 text-white" />
         </Button>
       </div>
     )
   }
 
-
   return (
-    <div className="fixed bottom-4 right-4 z-[999px] bg-white max-w-[calc(100vw-2rem)]">
+    <div className="fixed bottom-4 right-4 z-[999px] max-w-[calc(100vw-2rem)]">
       <Card
         className={`w-80 max-w-full shadow-xl transition-all duration-300 ${
           isMinimized ? "h-14" : "h-96"
-        } sm:w-80`}
+        } sm:w-80 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700`}
       >
         <CardHeader
-          className="flex flex-row items-center justify-between space-y-0 pb-2 cursor-pointer"
+          className="flex flex-row items-center justify-between space-y-0 pb-2 cursor-pointer bg-[#33BDC7] text-white rounded-t-lg"
           onClick={() => setIsMinimized(!isMinimized)}
         >
           <CardTitle className="text-sm font-medium flex items-center space-x-2">
             <MessageSquare className="h-4 w-4" />
             <span>Live Support</span>
             {!isConnected && (
-              <Badge variant="destructive" className="text-xs">
+              <Badge variant="destructive" className="text-xs bg-red-500 hover:bg-red-600">
                 Offline
               </Badge>
             )}
@@ -179,6 +178,7 @@ export function LiveChat() {
                 handleRefresh()
               }}
               disabled={!isConnected}
+              className="text-white hover:bg-[#2A9CA3]"
             >
               <RefreshCw className="h-4 w-4" />
             </Button>
@@ -189,6 +189,7 @@ export function LiveChat() {
                 e.stopPropagation()
                 setIsMinimized(!isMinimized)
               }}
+              className="text-white hover:bg-[#2A9CA3]"
             >
               <Minimize2 className="h-4 w-4" />
             </Button>
@@ -199,18 +200,19 @@ export function LiveChat() {
                 e.stopPropagation()
                 setIsOpen(false)
               }}
+              className="text-white hover:bg-[#2A9CA3]"
             >
               <X className="h-4 w-4" />
             </Button>
           </div>
         </CardHeader>
         {!isMinimized && (
-          <CardContent className="flex flex-col h-80 p-3 sm:p-6">
+          <CardContent className="flex flex-col h-80 p-3 sm:p-6 bg-white dark:bg-gray-800">
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto space-y-3 mb-3">
+            <div className="flex-1 overflow-y-auto space-y-3 mb-3 pr-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
               {messages.length === 0 ? (
-                <div className="text-center text-gray-500 text-sm py-8">
-                  <MessageSquare className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+                <div className="text-center text-gray-500 dark:text-gray-400 text-sm py-8">
+                  <MessageSquare className="h-8 w-8 mx-auto mb-2 text-gray-300 dark:text-gray-600" />
                   <p>Start a conversation with our support team!</p>
                 </div>
               ) : (
@@ -222,14 +224,16 @@ export function LiveChat() {
                     <div
                       className={`max-w-[75%] sm:max-w-xs px-3 py-2 rounded-lg text-sm ${
                         msg.senderRole === "customer"
-                          ? "bg-cyan-500 text-white"
-                          : "bg-gray-100 text-gray-900"
-                      }`}
+                          ? "bg-[#33BDC7] text-white"
+                          : "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                      } shadow-sm`}
                     >
                       <p className="break-words">{msg.content}</p>
                       <p
                         className={`text-xs mt-1 ${
-                          msg.senderRole === "customer" ? "text-cyan-100" : "text-gray-500"
+                          msg.senderRole === "customer" 
+                            ? "text-[#E0F7F9]" 
+                            : "text-gray-500 dark:text-gray-400"
                         }`}
                       >
                         {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
@@ -248,22 +252,22 @@ export function LiveChat() {
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
                 disabled={!user}
-                className="flex-1 text-sm"
+                className="flex-1 text-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:border-[#33BDC7] focus:ring-[#33BDC7] text-gray-900 dark:text-gray-100"
               />
               <Button
                 type="button"
                 onClick={handleSendMessage}
                 disabled={!user || !message.trim()}
                 size="sm"
-                className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 min-w-[40px] flex items-center justify-center border-0 shrink-0"
+                className="bg-[#33BDC7] hover:bg-[#2A9CA3] active:bg-[#1E6B70] text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 min-w-[40px] flex items-center justify-center border-0 shrink-0 shadow-md"
               >
                 <Send className="h-4 w-4" />
               </Button>
             </div>
             {!user && (
-              <p className="text-xs text-gray-500 mt-2 text-center">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
                 Please{" "}
-                <a href="/auth/signin" className="text-cyan-500 hover:underline">
+                <a href="/auth/signin" className="text-[#33BDC7] hover:underline font-medium">
                   sign in
                 </a>{" "}
                 to start chatting
