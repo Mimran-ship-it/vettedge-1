@@ -1,6 +1,8 @@
 "use client"
+
 import Image from "next/image"
-import Link from "next/link"; 
+import Link from "next/link"
+import { useTheme } from "next-themes"
 import {
   Sidebar,
   SidebarContent,
@@ -14,77 +16,46 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { Home, Users, Package, ShoppingCart, BarChart3, Settings, Mail, MessageSquare, LayoutDashboard, Globe, Newspaper, CreditCard, LogOut } from "lucide-react"
+import {
+  Users,
+  MessageSquare,
+  LayoutDashboard,
+  Globe,
+  Newspaper,
+  CreditCard,
+  Mail,
+  LogOut,
+} from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 
-
 const menuItems = [
-  {
-    title: "Dashboard",
-    url: "/admin",
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Domains",
-    url: "/admin/domains",
-    icon: Globe,
-  },
-  {
-    title: "Blogs",
-    url: "/admin/blogs",
-    icon: Newspaper,
-  },
-  {
-    title: "Customers",
-    url: "/admin/customers",
-    icon: Users,
-  },
-  {
-    title: "Orders",
-    url: "/admin/orders",
-    icon: CreditCard,
-  },
-  {
-    title: "Live Chat",
-    url: "/admin/chat",
-    icon: MessageSquare,
-  },
-  {
-    title: "Contacts",
-    url: "/admin/contacts",
-    icon: Mail,
-  },
-  // {
-  //   title: "Analytics",
-  //   url: "/admin/analytics",
-  //   icon: BarChart3,
-  // },
-  // {
-  //   title: "Settings",
-  //   url: "/admin/settings",
-  //   icon: Settings,
-  // },
+  { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
+  { title: "Domains", url: "/admin/domains", icon: Globe },
+  { title: "Blogs", url: "/admin/blogs", icon: Newspaper },
+  { title: "Customers", url: "/admin/customers", icon: Users },
+  { title: "Orders", url: "/admin/orders", icon: CreditCard },
+  { title: "Live Chat", url: "/admin/chat", icon: MessageSquare },
+  { title: "Contacts", url: "/admin/contacts", icon: Mail },
 ]
 
 export function AdminSidebar() {
   const { user, signOut } = useAuth()
+  const { theme } = useTheme()
 
   return (
     <Sidebar variant="inset">
       <SidebarHeader>
         <div className="flex items-center space-x-2 px-4 py-2">
-        <Link href="/">
-  <Image
-    src="/logo.png"
-    alt="Vettedge Logo"
-    width={55}
-    height={55}
-    priority
-    className="bg-[#FAFAFA]"
-  />
-</Link>
-
-         
+          <Link href="/">
+            <Image
+              src={"/logo.png"}
+              alt="Vettedge Logo"
+              width={75}
+              height={75}
+              priority
+              className="scale-125"
+            />
+          </Link>
         </div>
       </SidebarHeader>
 

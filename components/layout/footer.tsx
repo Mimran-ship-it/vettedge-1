@@ -58,10 +58,7 @@ export function Footer() {
                 Vetted Age for SEO Edge.
               </h2>
             </Link>
-
-            <p className="text-sm text-[#33BDC7] dark:text-[#33BDC7]/80">
-            Vetted Age for SEO Edge.
-            </p>
+ 
             <div className="border-l-4 border-[#38C172] pl-4 mt-2 text-sm italic text-gray-700 dark:text-gray-400">
               <p>
                 "We're passionate about providing high-quality expired domains to help your business succeed online."
@@ -128,11 +125,7 @@ export function Footer() {
           {/* Contact Details */}
           <div>
             <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Contact Details</h4>
-            <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
-              <li className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-[#38C172]" />
-                <span>+1 (555) 123-4567</span>
-              </li>
+            <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300"> 
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-[#38C172]" />
                 <span>support@vettedge.domains</span>
