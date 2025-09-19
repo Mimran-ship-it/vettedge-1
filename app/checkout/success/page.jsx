@@ -107,7 +107,7 @@ export default async function Success({ searchParams }) {
   
   if (status === "complete") {
     // Get the full URL for API
-    const origin = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+    const origin = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
     
     // Save the order
     await fetch(`${origin}/api/orders`, {
