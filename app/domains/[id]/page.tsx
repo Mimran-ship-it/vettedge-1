@@ -35,19 +35,19 @@ import {
 } from "lucide-react"
 import type { Domain } from "@/types/domain"
 import { useCart } from "@/components/providers/cart-provider"
+import { useWishlist } from "@/components/providers/wishlist-provider"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import { LiveChat } from "@/components/chat/live-chat"
 import Image from "next/image"
-import Cookies from "js-cookie"
 
 export default function DomainDetailsPage() {
   const params = useParams()
   const [domain, setDomain] = useState<Domain | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("overview")
-  const [isWishlisted, setIsWishlisted] = useState(false)
   const { addItem } = useCart()
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
   const { toast } = useToast()
 
   useEffect(() => {
@@ -57,12 +57,6 @@ export default function DomainDetailsPage() {
         const data: Domain[] = await res.json()
         const matchedDomain = data.find((d) => d._id === params?.id)
         setDomain(matchedDomain || null)
-
-        // Check if domain is already in wishlist
-        if (matchedDomain) {
-          const wishlist = JSON.parse(Cookies.get("wishlist") || "[]")
-          setIsWishlisted(wishlist.some((item: Domain) => item._id === matchedDomain._id))
-        }
       } catch (error) {
         console.error("Failed to fetch domain data:", error)
         setDomain(null)
@@ -92,27 +86,21 @@ export default function DomainDetailsPage() {
   const handleWishlistToggle = () => {
     if (!domain) return
 
-    let wishlist: Domain[] = JSON.parse(Cookies.get("wishlist") || "[]")
-
-    if (isWishlisted) {
-      // Remove from wishlist
-      wishlist = wishlist.filter((item) => item._id !== domain._id)
-      setIsWishlisted(false)
+    const isCurrentlyWishlisted = isInWishlist(domain._id)
+    
+    if (isCurrentlyWishlisted) {
+      removeFromWishlist(domain._id)
       toast({
         title: "Removed",
         description: `${domain.name} removed from wishlist.`
       })
     } else {
-      // Add to wishlist
-      wishlist.push(domain)
-      setIsWishlisted(true)
+      addToWishlist(domain)
       toast({
         title: "Wishlisted",
         description: `${domain.name} added to wishlist.`
       })
     }
-
-    Cookies.set("wishlist", JSON.stringify(wishlist), { expires: 30 })
   }
 
   const handleShare = async () => {
@@ -204,6 +192,7 @@ export default function DomainDetailsPage() {
     )
   }
 
+  const isWishlisted = isInWishlist(domain._id)
   const discountPercentage = domain.Actualprice > domain.price
     ? Math.round(((domain.Actualprice - domain.price) / domain.Actualprice) * 100)
     : 0
@@ -223,11 +212,7 @@ export default function DomainDetailsPage() {
                     <Zap className="h-3 w-3 mr-1" /> HOT
                   </Badge>
                 )}
-                {domain.featured && (
-                  <Badge className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white border-0">
-                    <Star className="h-3 w-3 mr-1" /> FEATURED
-                  </Badge>
-                )}
+              
                 {domain.isSold && (
                   <Badge variant="destructive" className="text-white">
                     SOLD
