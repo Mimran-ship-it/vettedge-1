@@ -105,7 +105,7 @@ export default async function Success({ searchParams }) {
     return redirect("/")
   }
   
-  if (status === "complete") {
+  if (status === "complete") { 
     // Get the full URL for API
     const origin = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
     
@@ -129,6 +129,26 @@ export default async function Success({ searchParams }) {
         billingInfo: session.metadata?.billingInfo,
       }),
     })
+        // 🔔 Notify user
+       const check=await fetch(`${origin}/api/orderMail`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+           body: JSON.stringify({
+            sessionId: session_id,
+            customerEmail,
+            items: line_items.data.map((li) => ({
+              name: li.description,
+              price: li.price.unit_amount / 100,
+              quantity: li.quantity,
+            })),
+            totalAmount: line_items.data.reduce(
+              (acc, li) => acc + li.amount_total / 100,
+              0
+            ),
+            paymentStatus: status,
+            billingInfo: session.metadata?.billingInfo,
+          }),
+        })
     
     // ✅ Mark purchased domains as sold
     for (const li of line_items.data) {

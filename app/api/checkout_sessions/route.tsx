@@ -33,7 +33,7 @@ export async function POST(req: Request) {
         metadata: {
           userId: userId || "guest",
           billingInfo: JSON.stringify(billingInfo), }
-    })
+    }) 
 
     if (!session.url) {
       throw new Error("Failed to create Stripe session.")

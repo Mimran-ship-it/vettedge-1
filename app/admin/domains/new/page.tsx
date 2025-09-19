@@ -144,7 +144,6 @@ export default function NewDomainPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ domain: domainData }), 
         })
-  console.log('check',check)
         router.push("/admin/domains")
       } else throw new Error()
     } catch {
