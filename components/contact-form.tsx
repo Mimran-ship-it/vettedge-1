@@ -192,7 +192,7 @@ export default function ContactForm({
   const getButtonStyles = () => {
     switch (variant) {
       case "contact":
-        return "w-full bg-gradient-to-r from-[#38C172] to-[#33BDC7] hover:from-[#33BDC7] hover:to-[#38C172]"
+        return "w-full bg-[#33BDC7] hover:bg-[#38C172] text-white font-semibold h-12"
       case "home":
         return "w-full h-12 text-lg font-semibold text-white bg-[#38C172] hover:bg-[#33BDC7]"
       default:

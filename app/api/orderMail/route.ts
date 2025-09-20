@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server"
-import User from "@/lib/models/User"
 import { Resend } from "resend"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -12,7 +11,8 @@ export async function POST(req: Request) {
       items,
       totalAmount,
       paymentStatus,
-      billingInfo
+      billingInfo,
+      orderNumber, // ✅ order number from Success.tsx
     } = await req.json()
 
     // Use billingInfo.email if available, otherwise fallback to customerEmail
@@ -26,11 +26,13 @@ export async function POST(req: Request) {
     await resend.emails.send({
       from: "Vettedge Domains <support@vettedge.domains>",
       to: userEmail,
-      subject: `🎉 Thank You for Your Purchase! Order Confirmation`,
+      subject: `🎉 Order #${orderNumber} Confirmed – Thank You for Your Purchase!`,
       text: `
 Hello,
 
 Thank you for your purchase from Vettedge Domains! We're excited to help you get started with your new domain.
+
+Order Number: ${orderNumber}
 
 Order Details:
 ${items.map((item, index) => `
@@ -41,26 +43,29 @@ ${index + 1}. ${item.name}
 
 Total Amount: $${totalAmount}
 Payment Status: ${paymentStatus}
+     
+Please Contact Us After Payment:
+To begin the transfer process quickly, contact us via Live Chat or our Contact Form as soon as your payment is complete. Provide us with:
+1. Your order number (#${orderNumber})
+2. The domain name you purchased
+3. Your preferred registrar and account details (if known)
 
-What happens next?
-1. You'll receive a separate email with transfer instructions for your domain(s)
-2. Our team will verify your payment and initiate the domain transfer process
-3. You'll receive updates throughout the transfer process
-
-If you have any questions about your order, please reply to this email or contact our support team at support@vettedge.domains.
+⚡ The sooner we hear from you, the faster we can start your transfer!
 
 Thank you for choosing Vettedge Domains!
 
 Best regards,  
 The Vettedge Team
-        `,
+      `,
       html: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; color: #333; line-height: 1.6;">
   <h2 style="color: #0070f3;">🎉 Thank You for Your Purchase!</h2>
-  <p>Thank you for your purchase from Vettedge Domains! We're excited to help you get started with your new domain.</p>
+  <p>We're excited to help you get started with your new domain.</p>
+
+  <h3 style="margin-top: 16px;">Order Number: <span style="color:#0070f3;">#${orderNumber}</span></h3>
 
   <h3 style="margin-top: 24px; margin-bottom: 16px;">Order Details</h3>
-  <table style="border-collapse: collapse; margin: 16px 0; width: 100%;">
+  <table style="border-collapse: collapse; margin: 16px 0; width: 100%; font-size: 14px;">
     <thead>
       <tr style="background-color: #f8f9fa;">
         <th style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd;">Item</th>
@@ -89,21 +94,18 @@ The Vettedge Team
     </tfoot>
   </table>
 
-  <h3 style="margin-top: 24px; margin-bottom: 16px;">What happens next?</h3>
-  <ol style="padding-left: 20px;">
-    <li>You'll receive a separate email with transfer instructions for your domain(s)</li>
-    <li>Our team will verify your payment and initiate the domain transfer process</li>
-    <li>You'll receive updates throughout the transfer process</li>
-  </ol>
+  <h3 style="margin-top: 24px; margin-bottom: 16px;">Please Contact Us After Payment</h3>
+  <p>To begin the transfer process quickly, please contact us via <strong>Live Chat</strong> or our 
+  <a href="https://vettedge.domains/contact" style="color: #0070f3;">Contact Form</a> as soon as your payment is complete. Let us know:</p>
+  <ul style="padding-left: 20px;">
+    <li>Your order number (<strong>#${orderNumber}</strong>)</li>
+    <li>The domain name you purchased</li>
+    <li>Your preferred registrar and account details (if known)</li>
+  </ul>
 
-  <p style="margin-top: 24px;">
-    If you have any questions about your order, please reply to this email or contact our support team at 
-    <a href="mailto:support@vettedge.domains" style="color: #0070f3;">support@vettedge.domains</a>.
-  </p>
+  <p style="margin-top: 16px; font-weight: bold;">⚡ The sooner we hear from you, the faster we can start your transfer!</p>
 
-  <p style="margin-top: 24px;">
-    Thank you for choosing Vettedge Domains!
-  </p>
+  <p style="margin-top: 24px;">Thank you for choosing Vettedge Domains!</p>
 
   <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
 

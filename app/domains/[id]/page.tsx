@@ -282,12 +282,27 @@ export default function DomainDetailsPage() {
                           </div>
                         </div>
                         <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 rounded-lg">
-                          <Clock className="h-5 w-5 text-purple-500" />
-                          <div>
-                            <p className="text-sm text-gray-500 dark:text-gray-300">Industry</p>
-                            <p className="font-medium dark:text-white">{domain.tags || 'N/A'}</p>
-                          </div>
-                        </div>
+  <Clock className="h-5 w-5 text-purple-500" />
+  <div>
+    <p className="text-sm text-gray-500 dark:text-gray-300">Industry</p>
+    <div className="flex flex-wrap gap-2 mt-1">
+      {domain.tags && domain.tags.length > 0 ? (
+        domain.tags.map((tag, index) => (
+          <Badge
+            key={index}
+            variant="outline"
+            className="px-2 py-1 text-xs dark:border-gray-500 dark:text-gray-200"
+          >
+            {tag}
+          </Badge>
+        ))
+      ) : (
+        <p className="font-medium dark:text-white">N/A</p>
+      )}
+    </div>
+  </div>
+</div>
+
                         <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 rounded-lg">
                           <Users className="h-5 w-5 text-orange-500" />
                           <div>

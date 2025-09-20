@@ -207,7 +207,7 @@ View full details:`;
       {/* Top Image - Responsive Aspect Ratio */}
       {domain.image?.length > 0 && (
         <div className="relative w-full aspect-video">
-          <Image
+          <Link href={`/domains/${domain._id}`}><Image
             src={domain.image[0]}
             alt={domain.name}
             fill
@@ -215,7 +215,7 @@ View full details:`;
               "object-cover transition duration-300",
               (domain.isSold||(!domain.isAvailable)) ? "blur-[40px] brightness-50" : (!domain.isAvailable && !domain.isSold ? "blur-sm" : "")
             )}
-          />
+          /></Link>
           {(domain.isSold||(!domain.isAvailable)) && (
             <div className="absolute inset-0 bg-black/80 z-10 flex items-center justify-center">
               <Badge variant="destructive" className="text-xs px-2 py-1">
