@@ -337,42 +337,50 @@ export default function VettingProcessPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-white dark:bg-gray-900 text-white">
+   {/* Stats Section */}
+<section className="py-16 bg-gray-50 dark:bg-gray-900">
+  <motion.div
+    variants={fadeUp}
+    initial="hidden"
+    whileInView="visible"
+    viewport={{ once: true }}
+    custom={0}
+    className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+  >
+    <div className="text-center mb-12">
+      <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+        Vetting Results
+      </h2>
+      <p className="text-xl text-gray-600 dark:text-gray-300">
+        Our rigorous process ensures only the best domains make it to market
+      </p>
+    </div>
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+      {[
+        { num: "50,000+", label: "Domains Analyzed" },
+        { num: "15%", label: "Approval Rate" },
+        { num: "98%", label: "Customer Satisfaction" },
+        { num: "0%", label: "Penalty History" },
+      ].map((stat, index) => (
         <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
+          key={index}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          custom={0}
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          transition={{ delay: index * 0.2, duration: 0.5 }}
         >
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Vetting Results</h2>
-            <p className="text-xl text-blue-100 dark:text-gray-300">
-              Our rigorous process ensures only the best domains make it to market
-            </p>
+          <div className="text-4xl font-bold text-[#33BDC7] dark:text-[#3BD17A] mb-2">
+            {stat.num}
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { num: "50,000+", label: "Domains Analyzed" },
-              { num: "15%", label: "Approval Rate" },
-              { num: "98%", label: "Customer Satisfaction" },
-              { num: "0%", label: "Penalty History" },
-            ].map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.2, duration: 0.5 }}
-              >
-                <div className="text-4xl font-bold mb-2">{stat.num}</div>
-                <div className="text-blue-100 dark:text-gray-300">{stat.label}</div>
-              </motion.div>
-            ))}
+          <div className="text-gray-700 dark:text-gray-300">
+            {stat.label}
           </div>
         </motion.div>
-      </section>
+      ))}
+    </div>
+  </motion.div>
+</section>
+
 
       {/* CTA Section */}
       <section className="py-20 bg-gray-50 dark:bg-gray-800">

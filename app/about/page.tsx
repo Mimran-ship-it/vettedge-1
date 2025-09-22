@@ -54,9 +54,9 @@ export default function AboutPage() {
         variants={fadeUp}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          {/* <Badge variant="secondary" className="bg-white text-[#33BDC7] border-[#4DD184]">
+        <Badge variant="secondary" className="bg-[#33BDC7]/10 text-[#33BDC7] border-[#33BDC7]/30 px-4 py-2 mx-auto lg:mx-0">
             About Vettedge.domains
-          </Badge> */}
+          </Badge> 
           <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
             Premium Vetted Aged Domains
             <span className="block text-[#3BD17A]">Curated for Your Success</span>
@@ -185,28 +185,41 @@ export default function AboutPage() {
       </motion.section>
 
       {/* CTA */}
-      <motion.section
-        className="py-20 bg-white dark:bg-gray-800 text-white"
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true }}
-        variants={fadeUp}
+  {/* CTA Section */}
+<motion.section
+  className="py-20 bg-white dark:bg-gray-800"
+  initial="hidden"
+  whileInView="show"
+  viewport={{ once: true }}
+  variants={fadeUp}
+>
+  <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-[#33BDC7]">
+      Let’s Get You a Winning Domain
+    </h2>
+    <p className="text-xl mb-8 leading-relaxed text-gray-700 dark:text-gray-300">
+      Whether you’re launching a new brand or growing an SEO empire, your next
+      opportunity starts with the right domain name.
+    </p>
+    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+      <Button
+        size="lg"
+        className="bg-[#33BDC7] text-white hover:bg-[rgb(59,209,122)]"
+        asChild
       >
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-6">Let’s Get You a Winning Domain</h2>
-          <p className="text-xl mb-8 leading-relaxed">
-            Whether you’re launching a new brand or growing an SEO empire, your next opportunity starts with the right domain name.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-[#33BDC7] text-white hover:bg-[rgb(59,209,122)]" asChild>
-              <Link href="/domains">Browse Our Live Portfolio</Link>
-            </Button>
-            <Button size="lg" className="bg-[#33BDC7] text-white hover:bg-[rgb(59,209,122)]" asChild>
-              <Link href="/contact">Contact Us for Bulk Deals</Link>
-            </Button>
-          </div>
-        </div>
-      </motion.section>
+        <Link href="/domains">Browse Our Live Portfolio</Link>
+      </Button>
+      <Button
+        size="lg"
+        className="bg-[#33BDC7] text-white hover:bg-[rgb(59,209,122)]"
+        asChild
+      >
+        <Link href="/contact">Contact Us for Bulk Deals</Link>
+      </Button>
+    </div>
+  </div>
+</motion.section>
+
 
       <Footer />
       <LiveChat />

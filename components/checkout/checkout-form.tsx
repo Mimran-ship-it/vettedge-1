@@ -267,13 +267,13 @@ export function CheckoutForm() {
                   <span className="text-gray-900 dark:text-white">Subtotal</span>
                   <span className="text-gray-900 dark:text-white">${total.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between items-center text-base">
+                {/* <div className="flex justify-between items-center text-base">
                   <span className="text-gray-900 dark:text-white">Tax (8%)</span>
                   <span className="text-gray-900 dark:text-white">${(total * 0.08).toFixed(2)}</span>
-                </div>
+                </div> */}
                 <div className="flex justify-between items-center text-lg font-bold mt-2">
                   <span className="text-gray-900 dark:text-white">Total</span>
-                  <span className="text-gray-900 dark:text-white">${(total * 1.08).toFixed(2)}</span>
+                  <span className="text-gray-900 dark:text-white">${(total ).toFixed(2)}</span>
                 </div>
               </div>
               

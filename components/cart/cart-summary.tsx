@@ -19,7 +19,7 @@ export function CartSummary({ items, total, hasUnavailableItems = false }: CartS
   
   const subtotal = total
   const tax = subtotal * 0.08 // 8% tax
-  const finalTotal = subtotal + tax
+  const finalTotal = subtotal 
   
   const handleCheckout = () => {
     if (!user) {
@@ -55,10 +55,10 @@ export function CartSummary({ items, total, hasUnavailableItems = false }: CartS
             <span className="text-gray-900 dark:text-gray-100">Subtotal ({availableItemsCount} items)</span>
             <span className="text-gray-900 dark:text-gray-100">${subtotal.toLocaleString()}</span>
           </div>
-          <div className="flex justify-between text-sm">
+          {/* <div className="flex justify-between text-sm">
             <span className="text-gray-900 dark:text-gray-100">Tax</span>
             <span className="text-gray-900 dark:text-gray-100">${tax.toFixed(2)}</span>
-          </div>
+          </div> */}
           <Separator />
           <div className="flex justify-between font-semibold text-lg">
             <span className="text-gray-900 dark:text-white">Total</span>
