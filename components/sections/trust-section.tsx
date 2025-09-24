@@ -32,7 +32,7 @@ export function TrustSection() {
       icon: Shield,
       title: "Competitive Pricing",
       description:
-        "We offer premium domains at prices lower than many competitors, without compromising on quality",
+        "We offer premium domains at prices lower than many competitors, without compromising on quality.",
     },
     
     {

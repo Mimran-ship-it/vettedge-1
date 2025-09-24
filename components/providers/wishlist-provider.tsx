@@ -2,28 +2,34 @@
 "use client"
 
 import React, { createContext, useContext, useEffect, useState } from "react"
-import type { Domain } from "@/types/domain"
 import Cookies from "js-cookie"
 
 type WishlistContextType = {
-  wishlist: Domain[]
-  addToWishlist: (domain: Domain) => void
+  wishlistIds: string[]
+  addToWishlist: (domainId: string) => void
   removeFromWishlist: (domainId: string) => void
   isInWishlist: (domainId: string) => boolean
+  clearWishlist: () => void
   wishlistCount: number
 }
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined)
 
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
-  const [wishlist, setWishlist] = useState<Domain[]>([])
+  // Store only IDs to keep cookie size small
+  const [wishlistIds, setWishlistIds] = useState<string[]>([])
 
   // Load wishlist from cookies on mount
   useEffect(() => {
     const savedWishlist = Cookies.get("wishlist")
     if (savedWishlist) {
       try {
-        setWishlist(JSON.parse(savedWishlist))
+        const parsed = JSON.parse(savedWishlist)
+        // Backward compatibility: if we previously stored full domain objects, map to IDs
+        const ids = Array.isArray(parsed)
+          ? parsed.map((item: any) => (typeof item === "string" ? item : item?._id)).filter(Boolean)
+          : []
+        setWishlistIds(ids)
       } catch (error) {
         console.error("Failed to parse wishlist from cookies:", error)
       }
@@ -32,34 +38,35 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
 
   // Save wishlist to cookies whenever it changes
   useEffect(() => {
-    Cookies.set("wishlist", JSON.stringify(wishlist), { expires: 30 })
-  }, [wishlist])
+    Cookies.set("wishlist", JSON.stringify(wishlistIds), { expires: 30 })
+  }, [wishlistIds])
 
-  const addToWishlist = (domain: Domain) => {
-    setWishlist(prev => {
-      if (prev.some(item => item._id === domain._id)) {
-        return prev
-      }
-      return [...prev, domain]
+  const addToWishlist = (domainId: string) => {
+    setWishlistIds(prev => {
+      if (prev.includes(domainId)) return prev
+      return [...prev, domainId]
     })
   }
 
   const removeFromWishlist = (domainId: string) => {
-    setWishlist(prev => prev.filter(item => item._id !== domainId))
+    setWishlistIds(prev => prev.filter(id => id !== domainId))
   }
 
   const isInWishlist = (domainId: string) => {
-    return wishlist.some(item => item._id === domainId)
+    return wishlistIds.includes(domainId)
   }
 
-  const wishlistCount = wishlist.length
+  const clearWishlist = () => setWishlistIds([])
+
+  const wishlistCount = wishlistIds.length
 
   return (
     <WishlistContext.Provider value={{
-      wishlist,
+      wishlistIds,
       addToWishlist,
       removeFromWishlist,
       isInWishlist,
+      clearWishlist,
       wishlistCount
     }}>
       {children}

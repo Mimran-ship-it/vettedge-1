@@ -50,12 +50,12 @@ export function Footer() {
               <Image
                 src="/logo.png"
                 alt="Vettedge Logo"
-                width={80}
-                height={80}
+                width={60}
+                height={60}
                 className="rounded-lg scale-125"
               />
-              <h2 className="text-xl font-semibold text-black dark:text-white bg-clip-text transition-all duration-300 tracking-wide">
-                Vetted Age for SEO Edge.
+              <h2 className="text-2xl font-semibold text-black dark:text-white bg-clip-text transition-all duration-300 tracking-wide">
+                Vettedge.domains
               </h2>
             </Link>
  

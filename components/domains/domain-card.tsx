@@ -137,7 +137,7 @@ export function DomainCard({ domain }: DomainCardProps) {
         description: `${domain.name} removed from wishlist.`,
       })
     } else {
-      addToWishlist(parsedDomain)
+      addToWishlist(domain._id)
       toast({
         title: "Wishlisted",
         description: `${domain.name} added to wishlist.`,
