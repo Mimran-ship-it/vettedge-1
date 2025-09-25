@@ -35,7 +35,6 @@ import {
 } from "lucide-react"
 import type { Domain } from "@/types/domain"
 import { useCart } from "@/components/providers/cart-provider"
-import { useWishlist } from "@/components/providers/wishlist-provider"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import { LiveChat } from "@/components/chat/live-chat"
@@ -49,7 +48,6 @@ export default function DomainDetailsPage() {
   const [activeTab, setActiveTab] = useState("overview")
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
   const { addItem } = useCart()
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
   const { toast } = useToast()
 
   useEffect(() => {
