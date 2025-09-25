@@ -336,6 +336,7 @@ export default function VettingProcessPage() {
         </motion.div>
       </section>
 
+
     {/* Stats Section */}
 <section className="py-16 bg-white dark:bg-gray-900">
   <motion.div
@@ -368,6 +369,7 @@ export default function VettingProcessPage() {
           viewport={{ once: true }}
           transition={{ delay: index * 0.2, duration: 0.5 }}
         >
+
           <div className="text-4xl font-bold mb-2 text-gray-900 dark:text-white">
             {stat.num}
           </div>
@@ -379,6 +381,7 @@ export default function VettingProcessPage() {
     </div>
   </motion.div>
 </section>
+
 
       {/* CTA Section */}
       <section className="py-20 bg-gray-50 dark:bg-gray-800">

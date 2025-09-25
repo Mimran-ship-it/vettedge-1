@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Search, MoreHorizontal, Eye, DollarSign, Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react"
+import { Search, MoreHorizontal, Eye, DollarSign, Clock, CheckCircle, XCircle, AlertCircle, Hash } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
 interface Order {
@@ -27,6 +27,7 @@ interface Order {
   paymentStatus: "complete" | "pending" | "cancelled" | "failed"
   createdAt: string
   updatedAt: string
+  orderNumber?: number // Added orderNumber field
 }
 
 export default function AdminOrdersPage() {
@@ -39,6 +40,7 @@ export default function AdminOrdersPage() {
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([])
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
+  const [nextOrderNumber, setNextOrderNumber] = useState(1) // Track next order number
 
   useEffect(() => {
     fetchOrders()
@@ -49,8 +51,19 @@ export default function AdminOrdersPage() {
       const response = await fetch("/api/orders")
       if (response.ok) {
         const data = await response.json()
-        setOrders(data.orders)
-        setFilteredOrders(data.orders)
+        // Assign order numbers based on creation date
+        const sortedOrders = [...data.orders].sort((a, b) => 
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        )
+        
+        const ordersWithNumbers = sortedOrders.map((order, index) => ({
+          ...order,
+          orderNumber: index + 1
+        }))
+        
+        setOrders(ordersWithNumbers)
+        setFilteredOrders(ordersWithNumbers)
+        setNextOrderNumber(ordersWithNumbers.length + 1) // Set next order number
       } else {
         throw new Error("Failed to fetch orders")
       }
@@ -73,7 +86,8 @@ export default function AdminOrdersPage() {
       filtered = filtered.filter(
         (order) =>
           order.customerEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          order.items.some(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
+          order.items.some(item => item.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+          (order.orderNumber && order.orderNumber.toString().includes(searchQuery))
       )
     }
     // Apply status filter
@@ -208,7 +222,7 @@ export default function AdminOrdersPage() {
                   <div className="relative flex-1">
                     <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
-                      placeholder="Search orders by customer email or domain..."
+                      placeholder="Search orders by customer email, domain, or order number..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="pl-8"
@@ -237,8 +251,8 @@ export default function AdminOrdersPage() {
                   {loading ? (
                     <div className="min-w-[800px] w-full space-y-2 p-4">
                       {[...Array(5)].map((_, index) => (
-                        <div key={index} className="grid grid-cols-7 gap-4 bg-muted rounded-md p-4 animate-pulse">
-                          {Array.from({ length: 7 }).map((_, i) => (
+                        <div key={index} className="grid grid-cols-8 gap-4 bg-muted rounded-md p-4 animate-pulse">
+                          {Array.from({ length: 8 }).map((_, i) => (
                             <div key={i} className="h-4 bg-gray-300 rounded w-full" />
                           ))}
                         </div>
@@ -251,6 +265,7 @@ export default function AdminOrdersPage() {
                         <Table>
                           <TableHeader>
                             <TableRow>
+                              <TableHead className="w-[10%]">Order #</TableHead>
                               <TableHead className="w-[20%] max-w-xs truncate">Customer</TableHead>
                               <TableHead className="w-[20%] max-w-xs truncate">Domains</TableHead>
                               <TableHead className="w-[10%]">Amount</TableHead>
@@ -263,6 +278,12 @@ export default function AdminOrdersPage() {
                           <TableBody>
                             {filteredOrders.map((order) => (
                               <TableRow key={order._id}>
+                                <TableCell>
+                                  <div className="flex items-center space-x-2">
+                                    <Hash className="h-4 w-4 text-muted-foreground" />
+                                    <span className="font-medium">{order.orderNumber}</span>
+                                  </div>
+                                </TableCell>
                                 <TableCell className="max-w-xs truncate">
                                   <div className="font-medium truncate">{order.customerEmail}</div>
                                 </TableCell>
@@ -321,6 +342,13 @@ export default function AdminOrdersPage() {
                                             <p className="text-sm">{order._id}</p>
                                           </div>
                                           <div>
+                                            <h3 className="text-sm font-medium text-muted-foreground">Order Number</h3>
+                                            <p className="text-sm flex items-center">
+                                              <Hash className="h-4 w-4 mr-1" />
+                                              {order.orderNumber}
+                                            </p>
+                                          </div>
+                                          <div>
                                             <h3 className="text-sm font-medium text-muted-foreground">Session ID</h3>
                                             <p className="text-sm">{order.sessionId.slice(-8)}</p>
                                           </div>
@@ -354,7 +382,6 @@ export default function AdminOrdersPage() {
                                                     <p className="font-medium">{item.name}</p>
                                                     <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
                                                   </div>
-                                                  <p className="font-medium">${item.price.toLocaleString()}</p>
                                                 </div>
                                               ))}
                                             </div>
@@ -379,10 +406,9 @@ export default function AdminOrdersPage() {
                           <Card key={order._id}>
                             <CardHeader>
                               <div className="flex items-center justify-between">
-                                <CardTitle className="text-lg truncate">
-                                  {order.items.length > 1 
-                                    ? `${order.items[0].name} +${order.items.length - 1} more` 
-                                    : order.items[0].name}
+                                <CardTitle className="text-lg truncate flex items-center">
+                                  <Hash className="h-4 w-4 mr-1" />
+                                  {order.orderNumber}
                                 </CardTitle>
                                 {getStatusBadge(order.paymentStatus)}
                               </div>
@@ -438,6 +464,13 @@ export default function AdminOrdersPage() {
                                           <p className="text-sm">{order._id}</p>
                                         </div>
                                         <div>
+                                          <h3 className="text-sm font-medium text-muted-foreground">Order Number</h3>
+                                          <p className="text-sm flex items-center">
+                                            <Hash className="h-4 w-4 mr-1" />
+                                            {order.orderNumber}
+                                          </p>
+                                        </div>
+                                        <div>
                                           <h3 className="text-sm font-medium text-muted-foreground">Session ID</h3>
                                           <p className="text-sm">{order.sessionId}</p>
                                         </div>
@@ -471,7 +504,6 @@ export default function AdminOrdersPage() {
                                                   <p className="font-medium">{item.name}</p>
                                                   <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
                                                 </div>
-                                                <p className="font-medium">${item.price.toLocaleString()}</p>
                                               </div>
                                             ))}
                                           </div>

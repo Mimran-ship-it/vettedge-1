@@ -202,7 +202,7 @@ export default function AdminDomainsPage() {
                                 </TableCell>
                                 <TableCell>
                                   <div className="text-sm">
-                                    <div>DR: {domain.metrics.avgAuthorityDR}</div>
+                                    <div>DR: {domain.metrics.domainRank}</div>
                          {domain.metrics?.monthlyTraffic&& <div>Traffic: {domain.metrics?.monthlyTraffic.toLocaleString()}</div>}
                                   </div>
                                 </TableCell>
@@ -267,7 +267,7 @@ export default function AdminDomainsPage() {
                                 {domain.isHot && <Badge variant="outline">Hot</Badge>}
                               </div>
                               <div className="text-sm">
-                                <div>DR: {domain.metrics.avgAuthorityDR}</div>
+                                <div>DR: {domain.metrics.domainRank}</div>
                            { domain.metrics?.monthlyTraffic&&    <div>Traffic: {domain.metrics?.monthlyTraffic.toLocaleString()}</div>}
                               </div>
                               <div className="text-sm text-muted-foreground">

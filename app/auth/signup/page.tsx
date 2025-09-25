@@ -111,7 +111,7 @@ export default function SignUpPage() {
         <CardHeader className="space-y-1 text-center">
           <div className="flex items-center justify-center mb-4">
             <Image
-              src="/logo.jpg" // your logo path in /public
+              src="/logo.png" // your logo path in /public
               alt="Vettedge Logo"
               width={55}
               height={55}

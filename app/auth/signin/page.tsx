@@ -67,7 +67,7 @@ export default function SignInPage() {
         <CardHeader className="space-y-1 text-center">
           <div className="flex items-center justify-center mb-4">
             <Image
-              src="/logo.jpg"
+              src="/logo.png"
               alt="Vettedge Logo"
               width={55}
               height={55}

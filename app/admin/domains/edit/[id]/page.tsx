@@ -370,7 +370,7 @@ export default function EditDomainPage() {
                     <div className="grid grid-cols-2 gap-4">
                       {[
                         ["Domain Rank", "domainRank"],
-                        ["Authority DR", "avgAuthorityDR"],
+                       // ["Authority DR", "avgAuthorityDR"],
                         ["Referring Domains", "referringDomains"],
                         ["Domain Authority", "domainAuthority"], 
                         ["Overall Score", "score"],

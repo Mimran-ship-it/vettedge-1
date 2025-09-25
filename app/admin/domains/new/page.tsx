@@ -144,7 +144,6 @@ export default function NewDomainPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ domain: domainData }), 
         })
-  console.log('check',check)
         router.push("/admin/domains")
       } else throw new Error()
     } catch {
@@ -249,7 +248,7 @@ export default function NewDomainPage() {
                     <div className="grid grid-cols-2 gap-4">
                       {[
                         ["Domain Rank", "domainRank"],
-                        // ["Authority DR", "avgAuthorityDR"],
+                        //["Authority DR", "avgAuthorityDR"],
                         ["Referring Domains", "referringDomains"],
                         ["Domain Authority", "domainAuthority"],
                         ["Overall Score", "score"],

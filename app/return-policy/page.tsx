@@ -42,7 +42,7 @@ const policySections = [
     ],
   },
   {
-    icon: CreditCard,
+    icon: CheckCircle,
     title: "Refund Process",
     content: [
       "We will reverse the domain ownership or re-initiate a transfer back",
@@ -117,7 +117,7 @@ export default function RefundPolicyPage() {
                     <ul className="space-y-3">
                       {section.content.map((item, idx) => (
                         <li key={idx} className="flex items-start">
-                          {section.title === "Eligible Return Conditions" ? (
+                          { (section.title ==="Eligible Return Conditions"||section.title ==="Refund Process") ? (
                             <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
                           ) : (
                             <XCircle className="h-5 w-5 text-red-500 mr-2 mt-0.5 flex-shrink-0" />

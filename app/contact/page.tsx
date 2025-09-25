@@ -122,7 +122,7 @@ export default function ContactPage() {
         variants={fadeUp} 
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          <Badge variant="secondary" className="bg-white text-[#33BDC7] border-[#4DD184]">
+          <Badge variant="secondary" className="bg-[#33BDC7]/10 text-[#33BDC7] border-[#33BDC7]/30 px-4 py-2 mx-auto lg:mx-0">
             Contact Us
           </Badge>
           <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold leading-tight">

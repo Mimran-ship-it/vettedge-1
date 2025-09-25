@@ -207,15 +207,15 @@ View full details:`;
       {/* Top Image - Responsive Aspect Ratio */}
       {domain.image?.length > 0 && (
         <div className="relative w-full aspect-video">
-          <Image
+          <Link href={`/domains/${domain._id}`}><Image
             src={domain.image[0]}
             alt={domain.name}
             fill
             className={cn(
-              "object-cover transition duration-300",
+              "object-cover transition duration-300 bg-white",
               (domain.isSold||(!domain.isAvailable)) ? "blur-[40px] brightness-50" : (!domain.isAvailable && !domain.isSold ? "blur-sm" : "")
             )}
-          />
+          /></Link>
           {(domain.isSold||(!domain.isAvailable)) && (
             <div className="absolute inset-0 bg-black/80 z-10 flex items-center justify-center">
               <Badge variant="destructive" className="text-xs px-2 py-1">
@@ -465,7 +465,7 @@ View full details:`;
             </Button>
           </div>
          
-          <div className="flex gap-3 pt-2 text-sm text-gray-600 dark:text-gray-300">
+          <div className="flex gap-5 pt-2 text-sm text-gray-600 dark:text-gray-300">
             <div className="flex items-center gap-1.5">
               <CheckCircle className="h-3 w-3 text-green-600 dark:text-green-400 flex-shrink-0" />
               <span>Search engine indexed</span>
