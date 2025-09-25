@@ -183,18 +183,16 @@ export default function PrivacyPolicy() {
           </CardContent>
         </Card> */}
 
-        {/* Contact Information */}
-        <Card className="mt-12 bg-gradient-to-r from-[#33BDC7]/10 to-[#38C172]/10 border-[#33BDC7]/20">
-          <CardContent className="p-8 text-center">
-            <h3 className="text-2xl font-bold mb-4 text-[#33BDC7]">Questions About Your Privacy?</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              If you have questions about this Privacy Policy or want to exercise your rights, please contact our privacy team.
-            </p>
-            
-            <ContactSection/>
-          </CardContent>
-        </Card>
-      </div>
+               {/* Contact Information */}
+               <div className="p-8 text-center">
+          <h3 className="text-2xl font-bold mb-4 text-[#33BDC7]">Questions About Your Privacy?</h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            If you have questions about this Privacy Policy or want to exercise your rights, please contact our privacy team.
+          </p>
+
+        </div>
+          <ContactSection />
+      </div> 
       <Footer/>
     </div>
   )

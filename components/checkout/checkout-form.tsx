@@ -124,6 +124,38 @@ export function CheckoutForm() {
     }
   }
 
+  // PayPal flow: create order on server and redirect to approval URL
+  const handlePayPalSubmit = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch("/api/paypal/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map((item) => ({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+          })),
+          billingInfo,
+          userId: user?.id,
+          currency: "USD",
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.approveUrl) {
+        throw new Error(data?.error || "Failed to create PayPal order")
+      }
+      window.location.href = data.approveUrl
+    } catch (err) {
+      console.error("PayPal create order error:", err)
+      alert("PayPal initialization failed. Please try again.")
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Billing Info */}
@@ -284,7 +316,18 @@ export function CheckoutForm() {
                   onClick={handlePaymentSubmit}
                   className="w-full bg-black dark:bg-white dark:text-black text-white py-3 rounded-lg mt-4 disabled:opacity-50"
                 >
-                  {loading ? "Processing..." : "Pay Now"}
+                  {loading ? "Processing..." : "Pay Now (Stripe)"}
+                </button>
+              )}
+
+              {/* Pay with PayPal */}
+              {isFormValid && (
+                <button
+                  disabled={loading}
+                  onClick={handlePayPalSubmit}
+                  className="w-full bg-[#ffc439] text-black py-3 rounded-lg mt-3 disabled:opacity-50"
+                >
+                  {loading ? "Processing..." : "Pay with PayPal"}
                 </button>
               )}
               

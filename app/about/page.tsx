@@ -178,7 +178,7 @@ export default function AboutPage() {
           <p className="text-lg text-gray-700 dark:text-gray-300">
             Returning a domain is simple — either push it back to our registrar account or share the EPP/Auth code so we can transfer it back.
           </p>
-          <Link href="/refund-policy" className="text-[#33BDC7] underline">
+          <Link href="/return-policy" className="text-[#33BDC7] underline">
             Learn more about our Refund Policy »
           </Link>
         </div>

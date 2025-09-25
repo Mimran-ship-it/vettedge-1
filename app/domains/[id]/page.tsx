@@ -35,6 +35,7 @@ import {
 } from "lucide-react"
 import type { Domain } from "@/types/domain"
 import { useCart } from "@/components/providers/cart-provider"
+import { useWishlist } from "@/components/providers/wishlist-provider"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import { LiveChat } from "@/components/chat/live-chat"
@@ -48,6 +49,7 @@ export default function DomainDetailsPage() {
   const [activeTab, setActiveTab] = useState("overview")
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
   const { addItem } = useCart()
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
   const { toast } = useToast()
 
   useEffect(() => {
@@ -57,7 +59,6 @@ export default function DomainDetailsPage() {
         const data: Domain[] = await res.json()
         const matchedDomain = data.find((d) => d._id === params?.id)
         setDomain(matchedDomain || null)
-
       } catch (error) {
         console.error("Failed to fetch domain data:", error)
         setDomain(null)
@@ -152,7 +153,7 @@ export default function DomainDetailsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <Header />
         <main className="max-w-7xl mx-auto px-4 pb-8 pt-24 animate-pulse">
           <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-6"></div>
@@ -172,7 +173,7 @@ export default function DomainDetailsPage() {
 
   if (!domain) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <Header />
         <main className="max-w-7xl mx-auto px-4 pb-8  pt-24 text-center">
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 max-w-2xl mx-auto">
@@ -191,16 +192,17 @@ export default function DomainDetailsPage() {
     )
   }
 
+  const isWishlisted = isInWishlist(domain._id)
   const discountPercentage = domain.Actualprice > domain.price
     ? Math.round(((domain.Actualprice - domain.price) / domain.Actualprice) * 100)
     : 0
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <Header />
-      <main className="max-w-7xl mx-auto px-2 sm:px-16 pb-8 pt-24 dark:bg-gray-800">
+      <main className="max-w-7xl mx-auto px-2 sm:px-16 pb-8 pt-24">
         {/* Hero Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mb-8 border border-gray-200 dark:border-gray-700">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
@@ -227,7 +229,7 @@ export default function DomainDetailsPage() {
               <Badge variant={domain.isAvailable ? "default" : "secondary"} className="px-3 py-1">
                 {domain.isAvailable ? "Available Now" : "Unavailable"}
               </Badge>
-              <Badge variant="outline" className="px-3 py-1">
+              <Badge variant="outline" className="px-3 py-1 dark:border-gray-600">
                 {domain.type === "traffic" ? "High Traffic" : "Aged Domain"}
               </Badge>
             </div>
@@ -235,7 +237,7 @@ export default function DomainDetailsPage() {
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Column - Image and Description */}
             <div className="lg:col-span-2 space-y-6">
-              <div className="relative rounded-xl overflow-hidden border border-gray-200 shadow-md">
+              <div className="relative rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-md">
                 {domain.isSold && (
                   <div className="absolute inset-0 bg-black/70 flex items-center justify-center z-10">
                     <Badge variant="destructive" className="text-lg px-6 py-3">SOLD</Badge>
@@ -256,44 +258,59 @@ export default function DomainDetailsPage() {
 
               {/* Tabs for additional information */}
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="overview">Overview</TabsTrigger>
-                  <TabsTrigger value="metrics">SEO Metrics</TabsTrigger>
-                  <TabsTrigger value="history">History</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-3 bg-gray-100 dark:bg-gray-700">
+                  <TabsTrigger value="overview" className="dark:data-[state=active]:bg-gray-600 dark:text-white">Overview</TabsTrigger>
+                  <TabsTrigger value="metrics" className="dark:data-[state=active]:bg-gray-600 dark:text-white">SEO Metrics</TabsTrigger>
+                  <TabsTrigger value="history" className="dark:data-[state=active]:bg-gray-600 dark:text-white">History</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="overview" className="mt-4">
-                  <Card>
+                  <Card className="dark:bg-gray-700 dark:border-gray-600">
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2"><Info className="h-5 w-5" /> Domain Information</CardTitle>
+                      <CardTitle className="flex items-center gap-2 dark:text-white"><Info className="h-5 w-5" /> Domain Information</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 rounded-lg">
                           <Globe className="h-5 w-5 text-blue-500" />
                           <div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Domain Type</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-300">Domain Type</p>
                             <p className="font-medium dark:text-white">{domain.type === "traffic" ? "High Traffic Domain" : "Aged Domain"}</p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 rounded-lg">
                           <Calendar className="h-5 w-5 text-green-500" />
                           <div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Domain Age</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-300">Domain Age</p>
                             <p className="font-medium dark:text-white">{domain.metrics.age || 'N/A'} years</p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                          <Clock className="h-5 w-5 text-purple-500" />
-                          <div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Industry</p>
-                            <p className="font-medium dark:text-white">{domain.tags || 'N/A'}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 rounded-lg">
+  <Clock className="h-5 w-5 text-purple-500" />
+  <div>
+    <p className="text-sm text-gray-500 dark:text-gray-300">Industry</p>
+    <div className="flex flex-wrap gap-2 mt-1">
+      {domain.tags && domain.tags.length > 0 ? (
+        domain.tags.map((tag, index) => (
+          <Badge
+            key={index}
+            variant="outline"
+            className="px-2 py-1 text-xs dark:border-gray-500 dark:text-gray-200"
+          >
+            {tag}
+          </Badge>
+        ))
+      ) : (
+        <p className="font-medium dark:text-white">N/A</p>
+      )}
+    </div>
+  </div>
+</div>
+
+                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 rounded-lg">
                           <Users className="h-5 w-5 text-orange-500" />
                           <div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Language</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-300">Language</p>
                             <p className="font-medium dark:text-white">{domain.metrics.language || 'N/A'}</p>
                           </div>
                         </div>
@@ -303,9 +320,9 @@ export default function DomainDetailsPage() {
                 </TabsContent>
 
                 <TabsContent value="metrics" className="mt-4">
-                  <Card>
+                  <Card className="dark:bg-gray-700 dark:border-gray-600">
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2"><BarChart3 className="h-5 w-5" /> SEO Metrics</CardTitle>
+                      <CardTitle className="flex items-center gap-2 dark:text-white"><BarChart3 className="h-5 w-5" /> SEO Metrics</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -351,47 +368,73 @@ export default function DomainDetailsPage() {
                 </TabsContent>
 
                 <TabsContent value="history" className="mt-4">
-                  <Card>
+                  <Card className="dark:bg-gray-700 dark:border-gray-600">
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2"><Clock className="h-5 w-5" /> Domain History</CardTitle>
+                      <CardTitle className="flex items-center gap-2 dark:text-white"><Clock className="h-5 w-5" /> Domain History</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        <div className="p-4 bg-gray-50 rounded-lg">
-                          <h3 className="font-medium text-gray-900 mb-2">Registration Details</h3>
-                          <p className="text-sm text-gray-600">This domain was first registered in {domain.metrics.year} and has been maintained for {domain.metrics.age} years.</p>
+                        <div className="p-4 bg-gray-50 dark:bg-gray-600 rounded-lg">
+                          <h3 className="font-medium text-gray-900 dark:text-white mb-2">Registration Details</h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">This domain was first registered in {domain.metrics.year} and has been maintained for {domain.metrics.age} years.</p>
                         </div>
 
                         {domain.metrics.authorityLinks?.length > 0 && (
-                          <div className="p-4 bg-gray-50 rounded-lg">
-                            <h3 className="font-medium text-gray-900 mb-2">Authority Backlinks</h3>
-                            <p className="text-sm text-gray-600 mb-3">This domain has backlinks from the following authoritative sources:</p>
-                            <div className="flex flex-wrap gap-2">
-                              {domain.metrics.authorityLinks?.map((link, idx) => {
-                                try {
-                                  const url = new URL(link.trim())
-                                  return (
-                                    <a
-                                      key={idx}
-                                      href={url.href}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="px-3 py-1 rounded-full bg-white border border-gray-200 text-blue-600 hover:bg-blue-50 transition-colors"
-                                    >
-                                      {url.hostname}
-                                    </a>
-                                  )
-                                } catch {
-                                  return null
+                          <div className="p-4 bg-gray-50 dark:bg-gray-600 rounded-lg">
+                            <h3 className="font-medium text-gray-900 dark:text-white mb-2">Authority Backlinks</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">This domain has backlinks from the following authoritative sources:</p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              {domain.metrics.authorityLinks.map((link, idx) => {
+                                const trimmedLink = link.trim();
+                                let href = trimmedLink;
+                                let displayText = trimmedLink;
+
+                                // If the link doesn't start with a protocol, add https://
+                                if (!trimmedLink.startsWith('http://') && !trimmedLink.startsWith('https://')) {
+                                  href = `https://${trimmedLink}`;
                                 }
+
+                                // Try to extract the hostname for display
+                                try {
+                                  const url = new URL(href);
+                                  displayText = url.hostname;
+                                } catch (e) {
+                                  // If parsing fails, use the original trimmed link
+                                  displayText = trimmedLink;
+                                }
+
+                                return (
+                                  <a
+                                    key={idx}
+                                    href={href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-600 hover:border-blue-300 dark:hover:border-blue-500 transition-colors group"
+                                  >
+                                    <div className="flex items-center">
+                                      <div className="flex-shrink-0 w-10 h-10 rounded-md bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/50 transition-colors">
+                                        <ExternalLink className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                                      </div>
+                                      <div>
+                                        <div className="font-medium text-gray-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
+                                          {displayText}
+                                        </div>
+                                        <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px]">
+                                          {href}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <ArrowRight className="h-4 w-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+                                  </a>
+                                );
                               })}
                             </div>
                           </div>
                         )}
 
-                        <div className="p-4 bg-gray-50 rounded-lg">
-                          <h3 className="font-medium text-gray-900 mb-2">Domain Value</h3>
-                          <p className="text-sm text-gray-600">Based on its age, authority metrics, and traffic, this domain represents a valuable digital asset with strong SEO potential.</p>
+                        <div className="p-4 bg-gray-50 dark:bg-gray-600 rounded-lg">
+                          <h3 className="font-medium text-gray-900 dark:text-white mb-2">Domain Value</h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">Based on its age, authority metrics, and traffic, this domain represents a valuable digital asset with strong SEO potential.</p>
                         </div>
                       </div>
                     </CardContent>
@@ -402,9 +445,9 @@ export default function DomainDetailsPage() {
 
             {/* Right Column - Pricing and Actions */}
             <div className="space-y-6">
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 shadow-lg border border-blue-100 dark:from-gray-800 dark:to-gray-900 dark:border-gray-700">
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 rounded-2xl p-6 shadow-lg border border-blue-100 dark:border-gray-600">
                 <div className="text-center mb-6">
-                  <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Current Price</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-300 mb-1">Current Price</div>
                   <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">${domain.price.toLocaleString()}</div>
                   {domain.Actualprice > domain.price && (
                     <div className="flex items-center justify-center gap-2">
@@ -433,7 +476,7 @@ export default function DomainDetailsPage() {
                         "flex-1 py-3 border-2",
                         domain && isInWishlist(domain._id)
                           ? "border-red-300 text-red-500 hover:bg-red-50 dark:border-red-700 dark:hover:bg-red-900/20"
-                          : "border-gray-300 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800"
+                          : "border-gray-300 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700"
                       )}
                     >
                       <Heart className={cn("h-4 w-4 mr-2", domain && isInWishlist(domain._id) && "fill-current")} />
@@ -443,14 +486,14 @@ export default function DomainDetailsPage() {
                     <Button
                       variant="outline"
                       onClick={handleShare}
-                      className="flex-1 py-3 border-2 border-gray-300 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800"
+                      className="flex-1 py-3 border-2 border-gray-300 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700"
                     >
                       <Share className="h-4 w-4 mr-2" />
                       Share
                     </Button>
                   </div>
                 </div>
-                <Separator className="my-6 dark:bg-gray-700" />
+                <Separator className="my-6 dark:bg-gray-600" />
                 <div className="space-y-4">
                   <h3 className="font-semibold text-gray-900 dark:text-white">Purchase Benefits</h3>
                   <div className="space-y-3">
@@ -463,26 +506,26 @@ export default function DomainDetailsPage() {
               </div>
 
               {/* Additional Information */}
-              <Card className="dark:bg-gray-800 dark:border-gray-700">
+              <Card className="dark:bg-gray-700 dark:border-gray-600">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 dark:text-white"><FileText className="h-5 w-5" /> Additional Information</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Registrar</span>
+                      <span className="text-gray-600 dark:text-gray-300">Registrar</span>
                       <span className="font-medium dark:text-white">{domain.registrar}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Status</span>
-                      <Badge variant={domain.isAvailable ? "default" : "secondary"} className={domain.isAvailable ? "dark:bg-green-900/30 dark:text-green-300" : "dark:bg-gray-700 dark:text-gray-300"}>
+                      <span className="text-gray-600 dark:text-gray-300">Status</span>
+                      <Badge variant={domain.isAvailable ? "default" : "secondary"} className={domain.isAvailable ? "dark:bg-green-900/30 dark:text-green-300" : "dark:bg-gray-600 dark:text-gray-300"}>
                         {domain.isAvailable ? "Available" : "Unavailable"}
                       </Badge>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Hot Deal</span>
-                      <Badge variant={domain.isHot ? "default" : "outline"} className={domain.isHot ? "dark:bg-orange-900/30 dark:text-orange-300" : "dark:bg-gray-700 dark:text-gray-300"}>
+                      <span className="text-gray-600 dark:text-gray-300">Hot Deal</span>
+                      <Badge variant={domain.isHot ? "default" : "outline"} className={domain.isHot ? "dark:bg-orange-900/30 dark:text-orange-300" : "dark:bg-gray-600 dark:text-gray-300"}>
                         {domain.isHot ? "Yes" : "No"}
                       </Badge>
                     </div>
@@ -496,7 +539,7 @@ export default function DomainDetailsPage() {
         {/* Additional Sections */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
           {domain?.metrics.monthlyTraffic && (
-            <Card className="border-blue-100 bg-blue-50 dark:bg-blue-900/20 rounded-lg dark:border-blue-800">
+            <Card className="border-blue-100 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20 rounded-lg">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-blue-800 dark:text-blue-300"><Eye className="h-5 w-5" /> Traffic Insights</CardTitle>
               </CardHeader>
@@ -506,20 +549,20 @@ export default function DomainDetailsPage() {
                 </p>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-500 dark:text-gray-400">Traffic Quality</span>
-                  <Badge className="bg-blue-100 text-blue-700">High</Badge>
+                  <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">High</Badge>
                 </div>
               </CardContent>
             </Card>
           )}
-          <Card className="border-purple-100 bg-purple-50 dark:bg-purple-900/20 rounded-lg dark:border-purple-800">
+          <Card className="border-purple-100 bg-purple-50 dark:border-purple-800 dark:bg-purple-900/20 rounded-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 p-2 text-purple-800 dark:text-purple-300"><ThumbsUp className="h-5 w-5" /> Overall Score</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                 Domain Score: {domain.metrics.score || 'N/A'}/100
               </p>
-              <div className="w-full bg-gray-200 rounded-full h-2.5">
+              <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5">
                 <div
                   className="bg-purple-600 h-2.5 rounded-full"
                   style={{ width: `${(domain.metrics.score || 0) / 100 * 100}%` }}
@@ -527,17 +570,17 @@ export default function DomainDetailsPage() {
               </div>
             </CardContent>
           </Card>
-          {domain.type == 'aged' && <Card className="border-orange-100 bg-orange-50 rounded-lg dark:bg-orange-900/20 dark:border-orange-800">
+          {domain.type == 'aged' && <Card className="border-orange-100 bg-orange-50 dark:border-orange-800 dark:bg-orange-900/20 rounded-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 p-2 text-orange-800 dark:text-orange-300"><Calendar className="h-5 w-5" /> Age & History</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                 Registered in {domain.metrics.year} with {domain.metrics.age || 'N/A'} years of history.
               </p>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-500 dark:text-gray-400">Clean History</span>
-                <Badge className="bg-orange-100 text-orange-700">Verified</Badge>
+                <Badge className="bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">Verified</Badge>
               </div>
             </CardContent>
           </Card>}
@@ -562,15 +605,15 @@ const MetricCard = ({ title, value, icon, color }: {
     yellow: "bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700",
     red: "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-700",
     indigo: "bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700",
-  }[color] || "bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700"
+  }[color] || "bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600"
 
   return (
     <div className={`p-4 rounded-lg border ${colorClasses} transition-all hover:shadow-md dark:hover:shadow-lg`}>
       <div className="flex items-center justify-between mb-2">
         <div className="text-gray-500 dark:text-gray-400">{icon}</div>
-        <div className="text-xs font-medium bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 rounded">{title}</div>
+        <div className="text-xs font-medium bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 px-2 py-1 rounded">{title}</div>
       </div>
-      <div className="text-2xl font-bold">{value}</div>
+      <div className="text-2xl font-bold dark:text-white">{value}</div>
     </div>
   )
 }
@@ -591,7 +634,7 @@ const TrustItem = ({ icon, text, color }: {
   return (
     <div className={`flex items-center gap-3 ${colorClasses}`}>
       <div className="flex-shrink-0">{icon}</div>
-      <span className="text-sm">{text}</span>
+      <span className="text-sm dark:text-gray-300">{text}</span>
     </div>
   )
 }
