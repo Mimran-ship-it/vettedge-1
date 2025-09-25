@@ -54,9 +54,9 @@ export default function AboutPage() {
         variants={fadeUp}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          {/* <Badge variant="secondary" className="bg-white text-[#33BDC7] border-[#4DD184]">
-            About Vettedge.domains
-          </Badge> */}
+            <Badge variant="outline" className="mb-4 border-[#33BDC7] text-[#33BDC7]">
+              About Vettedge.domains
+            </Badge>
           <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
             Premium Vetted Aged Domains
             <span className="block text-[#3BD17A]">Curated for Your Success</span>

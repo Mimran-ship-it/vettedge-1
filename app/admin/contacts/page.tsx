@@ -129,15 +129,15 @@ export default function ContactsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "new":
-        return "bg-blue-100 text-blue-800 border-blue-200"
+        return "bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/50 dark:text-blue-300 dark:border-blue-700"
       case "read":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200"
+        return "bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/50 dark:text-yellow-300 dark:border-yellow-700"
       case "replied":
-        return "bg-green-100 text-green-800 border-green-200"
+        return "bg-green-100 text-green-800 border-green-200 dark:bg-green-900/50 dark:text-green-300 dark:border-green-700"
       case "resolved":
-        return "bg-gray-100 text-gray-800 border-gray-200"
+        return "bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700"
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200"
+        return "bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700"
     }
   }
 
@@ -168,7 +168,7 @@ export default function ContactsPage() {
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center space-x-2">
                 <SidebarTrigger />
-                <h2 className="text-3xl font-bold tracking-tight">Contact Management</h2>
+                <h2 className="text-3xl font-bold tracking-tight text-foreground">Contact Management</h2>
               </div>
               <Button
                 onClick={() => fetchContacts(pagination.page, searchTerm, statusFilter)}
@@ -185,8 +185,8 @@ export default function ContactsPage() {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600">Total Contacts</p>
-                      <p className="text-2xl font-bold text-gray-900">{pagination.total}</p>
+                      <p className="text-sm font-medium text-muted-foreground">Total Contacts</p>
+                      <p className="text-2xl font-bold text-foreground">{pagination.total}</p>
                     </div>
                     <Mail className="w-8 h-8 text-blue-600" />
                   </div>
@@ -196,7 +196,7 @@ export default function ContactsPage() {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600">New</p>
+                      <p className="text-sm font-medium text-muted-foreground">New</p>
                       <p className="text-2xl font-bold text-blue-600">
                         {contacts.filter(c => c.status === "new").length}
                       </p>
@@ -209,7 +209,7 @@ export default function ContactsPage() {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600">In Progress</p>
+                      <p className="text-sm font-medium text-muted-foreground">In Progress</p>
                       <p className="text-2xl font-bold text-yellow-600">
                         {contacts.filter(c => c.status === "read" || c.status === "replied").length}
                       </p>
@@ -222,7 +222,7 @@ export default function ContactsPage() {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600">Resolved</p>
+                      <p className="text-sm font-medium text-muted-foreground">Resolved</p>
                       <p className="text-2xl font-bold text-green-600">
                         {contacts.filter(c => c.status === "resolved").length}
                       </p>
@@ -239,7 +239,7 @@ export default function ContactsPage() {
                 <div className="flex flex-col md:flex-row gap-4">
                   <div className="flex-1">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                       <Input
                         placeholder="Search by name, email, or subject..."
                         value={searchTerm}
@@ -270,35 +270,35 @@ export default function ContactsPage() {
             {/* Contacts List */}
             <Card className="w-full">
               <CardHeader>
-                <CardTitle>Contact Submissions ({pagination.total})</CardTitle>
+                <CardTitle className="text-foreground">Contact Submissions ({pagination.total})</CardTitle>
               </CardHeader>
               <CardContent>
                 {loading ? (
                   <div className="flex justify-center items-center py-8">
-                    <RefreshCw className="w-6 h-6 animate-spin text-gray-400" />
-                    <span className="ml-2 text-gray-600">Loading contacts...</span>
+                    <RefreshCw className="w-6 h-6 animate-spin text-muted-foreground" />
+                    <span className="ml-2 text-muted-foreground">Loading contacts...</span>
                   </div>
                 ) : contacts.length === 0 ? (
                   <div className="text-center py-8">
-                    <Mail className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-600">No contacts found</p>
+                    <Mail className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">No contacts found</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {contacts.map((contact) => (
                       <div
                         key={contact._id}
-                        className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                        className="border rounded-lg p-4 hover:bg-muted/50 transition-colors"
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
-                              <h3 className="font-semibold text-gray-900">{contact.name}</h3>
+                              <h3 className="font-semibold text-foreground">{contact.name}</h3>
                               <Badge className={getStatusColor(contact.status)}>
                                 {contact.status.charAt(0).toUpperCase() + contact.status.slice(1)}
                               </Badge>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600 mb-2">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-muted-foreground mb-2">
                               <div className="flex items-center gap-2">
                                 <Mail className="w-4 h-4" />
                                 {contact.email}
@@ -314,8 +314,8 @@ export default function ContactsPage() {
                                 {format(new Date(contact.createdAt), "MMM dd, yyyy 'at' HH:mm")}
                               </div>
                             </div>
-                            <p className="font-medium text-gray-800 mb-1">{contact.subject}</p>
-                            <p className="text-gray-600 text-sm line-clamp-2">
+                            <p className="font-medium text-foreground mb-1">{contact.subject}</p>
+                            <p className="text-muted-foreground text-sm line-clamp-2">
                               {contact.message.length > 100
                                 ? `${contact.message.substring(0, 100)}...`
                                 : contact.message}
@@ -335,36 +335,36 @@ export default function ContactsPage() {
                                   <Eye className="w-4 h-4" />
                                 </Button>
                               </DialogTrigger>
-                              <DialogContent className="max-w-2xl">
+                              <DialogContent className="max-w-2xl dark:bg-card">
                                 <DialogHeader>
-                                  <DialogTitle>Contact Details</DialogTitle>
+                                  <DialogTitle className="text-foreground">Contact Details</DialogTitle>
                                 </DialogHeader>
                                 {selectedContact && (
                                   <div className="space-y-4">
                                     <div className="grid grid-cols-2 gap-4">
                                       <div>
-                                        <Label className="text-sm font-medium">Name</Label>
-                                        <p className="text-sm text-gray-600">{selectedContact.name}</p>
+                                        <Label className="text-sm font-medium text-foreground">Name</Label>
+                                        <p className="text-sm text-muted-foreground mt-1">{selectedContact.name}</p>
                                       </div>
                                       <div>
-                                        <Label className="text-sm font-medium">Email</Label>
-                                        <p className="text-sm text-gray-600">{selectedContact.email}</p>
+                                        <Label className="text-sm font-medium text-foreground">Email</Label>
+                                        <p className="text-sm text-muted-foreground mt-1">{selectedContact.email}</p>
                                       </div>
                                       {selectedContact.phone && (
                                         <div>
-                                          <Label className="text-sm font-medium">Phone</Label>
-                                          <p className="text-sm text-gray-600">{selectedContact.phone}</p>
+                                          <Label className="text-sm font-medium text-foreground">Phone</Label>
+                                          <p className="text-sm text-muted-foreground mt-1">{selectedContact.phone}</p>
                                         </div>
                                       )}
                                       <div>
-                                        <Label className="text-sm font-medium">Status</Label>
+                                        <Label className="text-sm font-medium text-foreground">Status</Label>
                                         <Select
                                           value={selectedContact.status}
                                           onValueChange={(value) =>
                                             updateContactStatus(selectedContact._id, value)
                                           }
                                         >
-                                          <SelectTrigger className="w-full">
+                                          <SelectTrigger className="w-full mt-1">
                                             <SelectValue />
                                           </SelectTrigger>
                                           <SelectContent>
@@ -377,19 +377,19 @@ export default function ContactsPage() {
                                       </div>
                                     </div>
                                     <div>
-                                      <Label className="text-sm font-medium">Subject</Label>
-                                      <p className="text-sm text-gray-600 mt-1">{selectedContact.subject}</p>
+                                      <Label className="text-sm font-medium text-foreground">Subject</Label>
+                                      <p className="text-sm text-muted-foreground mt-1">{selectedContact.subject}</p>
                                     </div>
                                     <div>
-                                      <Label className="text-sm font-medium">Message</Label>
+                                      <Label className="text-sm font-medium text-foreground">Message</Label>
                                       <Textarea
                                         value={selectedContact.message}
                                         readOnly
-                                        className="mt-1 min-h-32"
+                                        className="mt-1 min-h-32 dark:bg-input dark:text-foreground"
                                       />
                                     </div>
-                                    <div className="flex justify-between items-center pt-4 border-t">
-                                      <div className="text-sm text-gray-500">
+                                    <div className="flex justify-between items-center pt-4 border-t border-border">
+                                      <div className="text-sm text-muted-foreground">
                                         Submitted:{" "}
                                         {format(
                                           new Date(selectedContact.createdAt),
@@ -427,7 +427,7 @@ export default function ContactsPage() {
                     >
                       Previous
                     </Button>
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-muted-foreground">
                       Page {pagination.page} of {pagination.pages}
                     </span>
                     <Button
