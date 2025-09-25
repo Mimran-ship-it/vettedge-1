@@ -40,12 +40,14 @@ import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import { LiveChat } from "@/components/chat/live-chat"
 import Image from "next/image"
+import { useWishlist } from "@/components/providers/wishlist-provider"
 
 export default function DomainDetailsPage() {
   const params = useParams()
   const [domain, setDomain] = useState<Domain | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("overview")
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
   const { addItem } = useCart()
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
   const { toast } = useToast()
@@ -85,17 +87,15 @@ export default function DomainDetailsPage() {
 
   const handleWishlistToggle = () => {
     if (!domain) return
-
-    const isCurrentlyWishlisted = isInWishlist(domain._id)
-    
-    if (isCurrentlyWishlisted) {
+    const wishlisted = isInWishlist(domain._id)
+    if (wishlisted) {
       removeFromWishlist(domain._id)
       toast({
         title: "Removed",
         description: `${domain.name} removed from wishlist.`
       })
     } else {
-      addToWishlist(domain)
+      addToWishlist(domain._id)
       toast({
         title: "Wishlisted",
         description: `${domain.name} added to wishlist.`
@@ -212,7 +212,11 @@ export default function DomainDetailsPage() {
                     <Zap className="h-3 w-3 mr-1" /> HOT
                   </Badge>
                 )}
-              
+                {(domain as any).featured && (
+                  <Badge className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white border-0">
+                    <Star className="h-3 w-3 mr-1" /> FEATURED
+                  </Badge>
+                )}
                 {domain.isSold && (
                   <Badge variant="destructive" className="text-white">
                     SOLD
@@ -470,13 +474,13 @@ export default function DomainDetailsPage() {
                       onClick={handleWishlistToggle}
                       className={cn(
                         "flex-1 py-3 border-2",
-                        isWishlisted
+                        domain && isInWishlist(domain._id)
                           ? "border-red-300 text-red-500 hover:bg-red-50 dark:border-red-700 dark:hover:bg-red-900/20"
                           : "border-gray-300 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700"
                       )}
                     >
-                      <Heart className={cn("h-4 w-4 mr-2", isWishlisted && "fill-current")} />
-                      {isWishlisted ? "Remove" : "Wishlist"}
+                      <Heart className={cn("h-4 w-4 mr-2", domain && isInWishlist(domain._id) && "fill-current")} />
+                      {domain && isInWishlist(domain._id) ? "Remove" : "Wishlist"}
                     </Button>
 
                     <Button

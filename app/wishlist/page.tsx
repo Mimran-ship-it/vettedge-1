@@ -11,23 +11,25 @@ import { Search, Heart, ShoppingBag, AlertCircle, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { useWishlist } from "@/components/providers/wishlist-provider"
+
 import type { Domain } from "@/types/domain"
 
 export default function WishlistPage() {
   const { user } = useAuth()
   const router = useRouter()
-  const { wishlist, removeFromWishlist, clearWishlist } = useWishlist()
+  const { wishlistIds, removeFromWishlist } = useWishlist()
   const [domains, setDomains] = useState<Domain[]>([])
   const [unavailableDomains, setUnavailableDomains] = useState<Domain[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [isLoading, setIsLoading] = useState(true)
 
   // Get wishlist IDs for comparison
-  const wishlistIds = useMemo(() => wishlist.map(item => item._id), [wishlist])
+  const wishlistIdsMemo = useMemo(() => wishlistIds, [wishlistIds])
 
   // Compute filtered domains based on search query
   const filteredDomains = useMemo(() => {
     if (!searchQuery) return domains
+
     return domains.filter(domain =>
       domain.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       domain.description?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -39,7 +41,7 @@ export default function WishlistPage() {
       setIsLoading(true)
 
       // Check if wishlist has items
-      if (wishlist.length === 0) {
+      if (!wishlistIds || wishlistIds.length === 0) {
         setDomains([])
         setUnavailableDomains([])
         setIsLoading(false)
@@ -47,7 +49,7 @@ export default function WishlistPage() {
       }
 
       try {
-        const ids = wishlist.map(d => d._id)
+        const ids = wishlistIds
         const res = await fetch(`/api/domains?ids=${ids.join(",")}`)
 
         if (!res.ok) {
@@ -57,21 +59,49 @@ export default function WishlistPage() {
         const freshDomains = await res.json()
 
         // Filter domains to only include those that are in the wishlist
-        const domainsInWishlist = freshDomains.filter(domain =>
-          wishlistIds.includes(domain._id)
+        const domainsInWishlist = freshDomains.filter((domain: Domain) =>
+          ids.includes(domain._id)
         )
 
-        // Find domains that are in the wishlist but not in the fetched domains (deleted or sold)
-        const unavailable = wishlist.filter(domain =>
-          !domainsInWishlist.some(fetched => fetched._id === domain._id)
-        )
+        // Find IDs that didn't return a domain (deleted or sold)
+        const unavailableIds = ids.filter(id => !domainsInWishlist.some((fetched: Domain) => fetched._id === id))
+        const unavailable: Domain[] = unavailableIds.map((id: string) => ({
+          _id: id,
+          name: "Unavailable domain",
+          description: "This domain is no longer available.",
+          price: 0,
+          Actualprice: 0,
+          type: "",
+          registrar: "",
+          tags: [],
+          image: [],
+          isAvailable: false,
+          isSold: true,
+          isHot: false,
+          metrics: {
+            domainRank: 0,
+            referringDomains: 0,
+            authorityLinks: [],
+            avgAuthorityDR: 0,
+            domainAuthority: 0,
+            score: 0,
+            trustFlow: 0,
+            citationFlow: 0,
+            monthlyTraffic: null,
+            year: 0,
+            age: 0,
+            language: ""
+          },
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        } as Domain))
 
         setDomains(domainsInWishlist)
         setUnavailableDomains(unavailable)
       } catch (error) {
         console.error('Error fetching wishlist domains:', error)
-        // Fallback to wishlist data if API fails
-        setDomains(wishlist)
+        // Fallback: show nothing but keep count
+        setDomains([])
         setUnavailableDomains([])
       } finally {
         setIsLoading(false)
@@ -79,7 +109,7 @@ export default function WishlistPage() {
     }
 
     fetchLatestDomains()
-  }, [wishlist, wishlistIds])
+  }, [wishlistIdsMemo])
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -97,8 +127,6 @@ export default function WishlistPage() {
     }
   }
 
- 
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
@@ -113,7 +141,7 @@ export default function WishlistPage() {
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">My Wishlist</h1>
               <p className="text-lg text-gray-600 dark:text-gray-300">
-                Keep track of domains you're interested in ({wishlist.length} domains)
+                Keep track of domains you're interested in ({wishlistIds?.length || 0} domains)
                 {unavailableDomains.length > 0 && (
                   <span className="text-sm text-orange-500 ml-2">
                     ({unavailableDomains.length} no longer available)
@@ -121,11 +149,10 @@ export default function WishlistPage() {
                 )}
               </p>
             </div>
-             
           </div>
         </motion.div>
 
-        {wishlist.length > 0 && (
+        {wishlistIds && wishlistIds.length > 0 && (
           <motion.div
             className="mb-8"
             initial={{ opacity: 0, y: 10 }}
@@ -200,7 +227,7 @@ export default function WishlistPage() {
                   </motion.div>
                 ))}
               </motion.div>
-            ) : wishlist.length > 0 ? (
+            ) : (wishlistIds && wishlistIds.length > 0) ? (
               // Only show "no domains found" if there are no unavailable domains
               unavailableDomains.length === 0 && (
                 <div className="text-center py-12">

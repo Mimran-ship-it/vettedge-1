@@ -137,7 +137,7 @@ export function DomainCard({ domain }: DomainCardProps) {
         description: `${domain.name} removed from wishlist.`,
       })
     } else {
-      addToWishlist(parsedDomain)
+      addToWishlist(domain._id)
       toast({
         title: "Wishlisted",
         description: `${domain.name} added to wishlist.`,
@@ -471,7 +471,7 @@ View full details:`;
               <span>Search engine indexed</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <CheckCircle className="h-3 w-3 text-green-600 dark:text-green-400 flex-shrink-0" />
+              <CheckCircle className="h-3 w-3 ml-13 text-green-600 dark:text-green-400 flex-shrink-0" />
               <span>Trademark Free</span>
             </div>
           </div>

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { FileText, Shield, CreditCard, Users, AlertTriangle, CheckCircle } from "lucide-react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
+import { ContactSection } from "@/components/sections/contact-section"
 
 export default function TermsOfService() {
   const sections = [
@@ -153,26 +154,25 @@ export default function TermsOfService() {
           </Card>
         </div>
 
-        {/* Contact Information */}
-        <Card className="mt-12 bg-gradient-to-r from-[#33BDC7]/10 to-[#38C172]/10 border-[#33BDC7]/20">
-          <CardContent className="p-8 text-center">
-            <h3 className="text-2xl font-bold mb-4 text-[#33BDC7]">Questions About These Terms?</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              If you have any questions about these Terms of Service, please contact our legal team.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center text-sm">
-              <div className="text-gray-600 dark:text-gray-400">
-                <strong>Email:</strong> legal@vettedge.domains
-              </div>
-              <div className="text-gray-600 dark:text-gray-400">
-                <strong>Phone:</strong> +1 (555) 123-4567
-              </div>
-              <div className="text-gray-600 dark:text-gray-400">
-                <strong>Address:</strong> VettEdge Legal Dept, USA
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {/* International Transfers */}
+               <Card className="mt-8 border-[#33BDC7]/20 hover:shadow-lg transition-shadow">
+                 <CardHeader>
+                   <CardTitle className="text-[#33BDC7]">International Data Transfers</CardTitle>
+                 </CardHeader>
+                 <CardContent>
+                   <p className="text-gray-600 dark:text-gray-400 mb-4">
+                     Your information may be transferred to and processed in countries other than your own. We ensure appropriate
+                     safeguards are in place to protect your data in accordance with this privacy policy.
+                   </p>
+                   <p className="text-gray-600 dark:text-gray-400">
+                     We comply with applicable data protection laws including GDPR, CCPA, and other regional privacy regulations.
+                   </p>
+                 </CardContent>
+               </Card>
+       
+               {/* Contact Section */}
+               <ContactSection />
+             
       </div>
       <Footer/>
     </div>

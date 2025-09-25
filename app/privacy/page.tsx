@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Shield, Eye, Database, Lock, Users, Globe, Mail, AlertCircle } from "lucide-react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
+import { ContactSection } from "@/components/sections/contact-section"
 
 export default function PrivacyPolicy() {
   const sections = [
@@ -167,7 +168,7 @@ export default function PrivacyPolicy() {
         </div>
 
         {/* International Transfers */}
-        <Card className="mt-8 border-[#33BDC7]/20">
+        {/* <Card className="mt-8 border-[#33BDC7]/20">
           <CardHeader>
             <CardTitle className="text-[#33BDC7]">International Data Transfers</CardTitle>
           </CardHeader>
@@ -180,7 +181,7 @@ export default function PrivacyPolicy() {
               We comply with applicable data protection laws including GDPR, CCPA, and other regional privacy regulations.
             </p>
           </CardContent>
-        </Card>
+        </Card> */}
 
         {/* Contact Information */}
         <Card className="mt-12 bg-gradient-to-r from-[#33BDC7]/10 to-[#38C172]/10 border-[#33BDC7]/20">
@@ -189,17 +190,8 @@ export default function PrivacyPolicy() {
             <p className="text-gray-600 dark:text-gray-400 mb-6">
               If you have questions about this Privacy Policy or want to exercise your rights, please contact our privacy team.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center text-sm">
-              <div className="text-gray-600 dark:text-gray-400">
-                <strong>Email:</strong> privacy@vettedge.domains
-              </div>
-              <div className="text-gray-600 dark:text-gray-400">
-                <strong>Phone:</strong> +1 (555) 123-4567
-              </div>
-              <div className="text-gray-600 dark:text-gray-400">
-                <strong>Response Time:</strong> Within 30 days
-              </div>
-            </div>
+            
+            <ContactSection/>
           </CardContent>
         </Card>
       </div>

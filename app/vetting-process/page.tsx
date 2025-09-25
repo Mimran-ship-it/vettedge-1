@@ -336,9 +336,9 @@ export default function VettingProcessPage() {
         </motion.div>
       </section>
 
-      {/* Stats Section */}
-   {/* Stats Section */}
-<section className="py-16 bg-gray-50 dark:bg-gray-900">
+
+    {/* Stats Section */}
+<section className="py-16 bg-white dark:bg-gray-900">
   <motion.div
     variants={fadeUp}
     initial="hidden"
@@ -348,7 +348,7 @@ export default function VettingProcessPage() {
     className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
   >
     <div className="text-center mb-12">
-      <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+      <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
         Vetting Results
       </h2>
       <p className="text-xl text-gray-600 dark:text-gray-300">
@@ -369,10 +369,11 @@ export default function VettingProcessPage() {
           viewport={{ once: true }}
           transition={{ delay: index * 0.2, duration: 0.5 }}
         >
-          <div className="text-4xl font-bold text-[#33BDC7] dark:text-[#3BD17A] mb-2">
+
+          <div className="text-4xl font-bold mb-2 text-gray-900 dark:text-white">
             {stat.num}
           </div>
-          <div className="text-gray-700 dark:text-gray-300">
+          <div className="text-gray-600 dark:text-gray-300">
             {stat.label}
           </div>
         </motion.div>
