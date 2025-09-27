@@ -42,6 +42,7 @@ export default async function Success({ searchParams }) {
         ),
         paymentStatus: status,
         billingInfo: session.metadata?.billingInfo,
+        domainTransfer: 'pending', // Added domainTransfer field
       }),
     })
 
@@ -69,6 +70,7 @@ export default async function Success({ searchParams }) {
         paymentStatus: status,
         billingInfo: session.metadata?.billingInfo,
         orderNumber, // ✅ added
+        domainTransfer: 'pending', // Added domainTransfer field
       }),
     })
 

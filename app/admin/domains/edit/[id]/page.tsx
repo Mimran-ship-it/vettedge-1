@@ -47,6 +47,7 @@ export default function EditDomainPage() {
     tags: "",
     isAvailable: true,
     isHot: false,
+    isSold: false, // Added isSold field
     metrics: {
       domainRank: "",
       referringDomains: "",
@@ -79,6 +80,7 @@ export default function EditDomainPage() {
           tags: data.tags?.join(", ") || "",
           isAvailable: data.isAvailable ?? true,
           isHot: data.isHot ?? false,
+          isSold: data.isSold ?? false, // Added isSold field
           metrics: {
             domainRank: data.metrics?.domainRank?.toString() || "",
             referringDomains: data.metrics?.referringDomains?.toString() || "",
@@ -272,6 +274,10 @@ export default function EditDomainPage() {
                     <div className="flex items-center space-x-2">
                       <Switch checked={formData.isHot} onCheckedChange={(val) => setFormData({ ...formData, isHot: val })} />
                       <Label>Is Hot deal</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Switch checked={formData.isSold} onCheckedChange={(val) => setFormData({ ...formData, isSold: val })} />
+                      <Label>Is Sold</Label>
                     </div>
                     
                     {/* === Image Upload Section === */}

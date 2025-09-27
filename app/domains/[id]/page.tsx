@@ -40,7 +40,6 @@ import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import { LiveChat } from "@/components/chat/live-chat"
 import Image from "next/image"
-import { useWishlist } from "@/components/providers/wishlist-provider"
 
 export default function DomainDetailsPage() {
   const params = useParams()
@@ -49,7 +48,6 @@ export default function DomainDetailsPage() {
   const [activeTab, setActiveTab] = useState("overview")
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
   const { addItem } = useCart()
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
   const { toast } = useToast()
 
   useEffect(() => {

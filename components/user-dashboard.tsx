@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { Globe, Users, DollarSign, TrendingUp, Plus, MessageSquare, Clock, CheckCircle, AlertCircle, Star, Heart, ShoppingCart } from "lucide-react"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useRouter } from "next/navigation"
@@ -23,6 +24,7 @@ interface Order {
   }>
   totalAmount: number
   paymentStatus: string
+  domainTransfer: "pending" | "completed" // Added domainTransfer field
   billingInfo: {
     firstName: string
     lastName: string
@@ -43,15 +45,27 @@ export function UserDashboard() {
   const router = useRouter()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
+  const [authLoading, setAuthLoading] = useState(true) // Track auth loading state
   const { toast } = useToast()
   const { user } = useAuth()
   
   useEffect(() => {
-    fetchOrders()
-  }, [])
+    // Check if auth state is loaded
+    if (user !== undefined) {
+      setAuthLoading(false)
+      fetchOrders()
+    }
+  }, [user]) // Add user as dependency
   
   const fetchOrders = async () => {
+    // Don't fetch if user is not available
+    if (!user) {
+      setLoading(false)
+      return
+    }
+    
     try {
+      setLoading(true)
       // Fetch orders data
       const ordersResponse = await fetch("/api/orders")
       if (ordersResponse.ok) {
@@ -78,7 +92,6 @@ export function UserDashboard() {
   
   // Add a function to handle retry
   const handleRetry = () => {
-    setLoading(true)
     fetchOrders()
   }
   
@@ -87,6 +100,8 @@ export function UserDashboard() {
     total: orders.length,
     completed: orders.filter(order => order.paymentStatus === 'complete').length,
     pending: orders.filter(order => order.paymentStatus === 'pending').length,
+    domainTransferCompleted: orders.filter(order => order.domainTransfer === 'completed').length,
+    domainTransferPending: orders.filter(order => order.domainTransfer === 'pending').length,
   }
   
   // Calculate total spending from orders
@@ -99,9 +114,11 @@ export function UserDashboard() {
     price: order.totalAmount,
     date: order.createdAt,
     status: order.paymentStatus,
+    domainTransfer: order.domainTransfer,
   }))
   
-  if (loading) {
+  // Show loading state if either auth or orders are loading
+  if (loading || authLoading) {
     return (
       <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
         <div className="flex items-center justify-between space-y-2">
@@ -169,6 +186,38 @@ export function UserDashboard() {
     )
   }
   
+  // Check if user is authenticated
+  if (!user) {
+    return (
+      <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => router.back()}
+            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <ArrowLeft className="h-6 w-6 text-gray-700" />
+          </button>
+          <h2 className="text-3xl font-bold tracking-tight">Authentication Required</h2>
+        </div>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex flex-col items-center justify-center space-y-4 py-4">
+              <h3 className="text-xl font-semibold">Please sign in to view your dashboard</h3>
+              <p className="text-muted-foreground text-center max-w-md">
+                You need to be signed in to view your orders and account information.
+              </p>
+              <Button asChild size="lg">
+                <Link href="/signin">
+                  Sign In
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+  
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -198,6 +247,25 @@ export function UserDashboard() {
     }
   }
   
+  const getDomainTransferIcon = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return <CheckCircle className="h-4 w-4 text-green-600" />
+      case 'pending':
+        return <Clock className="h-4 w-4 text-yellow-600" />
+      default:
+        return <AlertCircle className="h-4 w-4 text-gray-600" />
+    }
+  }
+  
+  const getDomainTransferBadge = (status: string) => {
+    return (
+      <Badge variant={status === "completed" ? "default" : "secondary"}>
+        {status.charAt(0).toUpperCase() + status.slice(1)}
+      </Badge>
+    )
+  }
+  
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
@@ -210,7 +278,6 @@ export function UserDashboard() {
           </button>
           <h2 className="text-3xl font-bold tracking-tight">Welcome back, {user?.name || 'User'}</h2>
         </div>
-     
       </div>
       
       {/* Stats Cards */}
@@ -243,23 +310,25 @@ export function UserDashboard() {
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Domain Transfers</CardTitle>
+            <Globe className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{orderStats.domainTransferCompleted}</div>
+            <p className="text-xs text-muted-foreground">
+              {orderStats.domainTransferPending} pending transfers
+            </p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Completed Orders</CardTitle>
             <CheckCircle className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{orderStats.completed}</div>
             <p className="text-xs text-muted-foreground">Successfully purchased</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Orders</CardTitle>
-            <Clock className="h-4 w-4 text-yellow-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{orderStats.pending}</div>
-            <p className="text-xs text-muted-foreground">Awaiting completion</p>
           </CardContent>
         </Card>
       </div>
@@ -274,13 +343,18 @@ export function UserDashboard() {
             <div className="space-y-4">
               {recentPurchases.length > 0 ? (
                 recentPurchases.map((purchase) => (
-                  <div key={purchase.id} className="flex items-center justify-between">
-                    <div className="space-y-1">
+                  <div key={purchase.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border rounded-lg">
+                    <div className="space-y-2 mb-2 sm:mb-0">
                       <div className="flex items-center space-x-2">
                         <p className="text-sm font-medium leading-none">{purchase.domain}</p>
                         {getStatusIcon(purchase.status)}
                       </div>
                       <p className="text-sm text-muted-foreground">{formatDate(purchase.date)}</p>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs text-muted-foreground">Domain Transfer:</span>
+                        {getDomainTransferIcon(purchase.domainTransfer)}
+                        {getDomainTransferBadge(purchase.domainTransfer)}
+                      </div>
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-medium">{formatCurrency(purchase.price)}</p>
@@ -294,7 +368,12 @@ export function UserDashboard() {
                   <h3 className="text-lg font-medium text-gray-900 mb-2">No orders yet</h3>
                   <p className="text-gray-500 mb-6">You haven't placed any orders yet. Start exploring our domain marketplace.</p>
                   <div className="flex flex-col sm:flex-row justify-center gap-4">
-                    
+                    <Button asChild>
+                      <Link href="/domains">
+                        <Globe className="h-4 w-4 mr-2" />
+                        Browse Domains
+                      </Link>
+                    </Button>
                     <Button variant="outline" onClick={handleRetry}>
                       Refresh Orders
                     </Button>

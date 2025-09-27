@@ -36,8 +36,9 @@ export interface IOrder extends Document {
   }[];
   totalAmount: number;
   paymentStatus: string;
-  createdAt: Date;
+  createdAt: Date; 
   billingInfo: IBillingInfo;
+  domainTransfer: string; // Added domainTransfer field
 }
 
 // Helper function to parse billingInfo string
@@ -102,7 +103,8 @@ const OrderSchema = new Schema<IOrder>(
         }
         return value;
       }
-    }
+    },
+    domainTransfer: { type: String, enum: ["pending", "completed"], default: "pending" } // Added domainTransfer field
   },
   { timestamps: true }
 );

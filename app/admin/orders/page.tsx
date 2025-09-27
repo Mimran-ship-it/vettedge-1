@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Search, MoreHorizontal, Eye, DollarSign, Clock, CheckCircle, XCircle, AlertCircle, Hash } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface Order {
   _id: string
@@ -25,9 +26,10 @@ interface Order {
   }[]
   totalAmount: number
   paymentStatus: "complete" | "pending" | "cancelled" | "failed"
+  domainTransfer: "pending" | "completed" // Added domainTransfer field
   createdAt: string
   updatedAt: string
-  orderNumber?: number // Added orderNumber field
+  orderNumber?: number
 }
 
 export default function AdminOrdersPage() {
@@ -39,8 +41,9 @@ export default function AdminOrdersPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([])
   const [statusFilter, setStatusFilter] = useState<string>("all")
+  const [domainTransferFilter, setDomainTransferFilter] = useState<string>("all")
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
-  const [nextOrderNumber, setNextOrderNumber] = useState(1) // Track next order number
+  const [nextOrderNumber, setNextOrderNumber] = useState(1)
 
   useEffect(() => {
     fetchOrders()
@@ -51,7 +54,6 @@ export default function AdminOrdersPage() {
       const response = await fetch("/api/orders")
       if (response.ok) {
         const data = await response.json()
-        // Assign order numbers based on creation date
         const sortedOrders = [...data.orders].sort((a, b) => 
           new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
         )
@@ -63,7 +65,7 @@ export default function AdminOrdersPage() {
         
         setOrders(ordersWithNumbers)
         setFilteredOrders(ordersWithNumbers)
-        setNextOrderNumber(ordersWithNumbers.length + 1) // Set next order number
+        setNextOrderNumber(ordersWithNumbers.length + 1)
       } else {
         throw new Error("Failed to fetch orders")
       }
@@ -81,7 +83,6 @@ export default function AdminOrdersPage() {
 
   useEffect(() => {
     let filtered = orders
-    // Apply search filter
     if (searchQuery) {
       filtered = filtered.filter(
         (order) =>
@@ -90,16 +91,18 @@ export default function AdminOrdersPage() {
           (order.orderNumber && order.orderNumber.toString().includes(searchQuery))
       )
     }
-    // Apply status filter
     if (statusFilter !== "all") {
       filtered = filtered.filter((order) => order.paymentStatus === statusFilter)
     }
+    if (domainTransferFilter !== "all") {
+      filtered = filtered.filter((order) => order.domainTransfer === domainTransferFilter)
+    }
     setFilteredOrders(filtered)
-  }, [searchQuery, statusFilter, orders])
+  }, [searchQuery, statusFilter, domainTransferFilter, orders])
 
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
-      const response = await fetch(`/api/orders/${orderId}`, {
+      const response = await fetch(`/api/orders`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ paymentStatus: newStatus }),
@@ -124,6 +127,36 @@ export default function AdminOrdersPage() {
     }
   }
 
+  const updateDomainTransferStatus = async (orderId: string, newStatus: "pending" | "completed") => {
+    try {
+      const response = await fetch(`/api/orders`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          orderId, // Add this line
+          domainTransfer: newStatus 
+        }),
+      })
+      if (response.ok) {
+        setOrders(orders.map(order => 
+          order._id === orderId ? { ...order, domainTransfer: newStatus } : order
+        ))
+        toast({
+          title: "Success",
+          description: `Domain transfer status updated to ${newStatus}`,
+        })
+      } else {
+        throw new Error("Failed to update domain transfer status")
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update domain transfer status",
+        variant: "destructive",
+      })
+    }
+  }
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "complete":
@@ -139,6 +172,17 @@ export default function AdminOrdersPage() {
     }
   }
 
+  const getDomainTransferIcon = (status: string) => {
+    switch (status) {
+      case "completed":
+        return <CheckCircle className="h-4 w-4 text-green-600" />
+      case "pending":
+        return <Clock className="h-4 w-4 text-yellow-600" />
+      default:
+        return <Clock className="h-4 w-4 text-gray-600" />
+    }
+  }
+
   const getStatusBadge = (status: string) => {
     const variants = {
       complete: "default",
@@ -148,6 +192,14 @@ export default function AdminOrdersPage() {
     } as const
     return (
       <Badge variant={variants[status as keyof typeof variants] || "secondary"}>
+        {status.charAt(0).toUpperCase() + status.slice(1)}
+      </Badge>
+    )
+  }
+
+  const getDomainTransferBadge = (status: string) => {
+    return (
+      <Badge variant={status === "completed" ? "default" : "secondary"}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </Badge>
     )
@@ -172,8 +224,7 @@ export default function AdminOrdersPage() {
                 <h2 className="text-3xl font-bold tracking-tight">Order Management</h2>
               </div>
             </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {/* Stat Cards */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
               {[
                 { 
                   title: "Total Orders", 
@@ -194,15 +245,18 @@ export default function AdminOrdersPage() {
                   color: "text-yellow-600" 
                 },
                 { 
-                  title: "Total Revenue", 
-                  count: orders
-                    .filter((o) => o.paymentStatus === "complete")
-                    .reduce((sum, o) => sum + o.totalAmount, 0), 
-                  icon: DollarSign,
-                  color: "text-blue-600",
-                  isCurrency: true
+                  title: "Domain Transfers Completed", 
+                  count: orders.filter((o) => o.domainTransfer === "completed").length, 
+                  icon: CheckCircle,
+                  color: "text-green-600" 
                 },
-              ].map(({ title, count, icon: Icon, color, isCurrency }, idx) => (
+                { 
+                  title: "Domain Transfers Pending", 
+                  count: orders.filter((o) => o.domainTransfer === "pending").length, 
+                  icon: Clock,
+                  color: "text-yellow-600" 
+                },
+              ].map(({ title, count, icon: Icon, color }, idx) => (
                 <Card key={idx}>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">{title}</CardTitle>
@@ -210,7 +264,7 @@ export default function AdminOrdersPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">
-                      {isCurrency ? `$${count.toLocaleString()}` : count.toLocaleString()}
+                      {count.toLocaleString()}
                     </div>
                   </CardContent>
                 </Card>
@@ -233,11 +287,20 @@ export default function AdminOrdersPage() {
                     onChange={(e) => setStatusFilter(e.target.value)}
                     className="px-3 py-2 border border-input bg-background rounded-md text-sm"
                   >
-                    <option value="all">All Statuses</option>
+                    <option value="all">All Payment </option>
                     <option value="pending">Pending</option>
                     <option value="complete">Complete</option>
                     <option value="cancelled">Cancelled</option>
                     <option value="failed">Failed</option>
+                  </select>
+                  <select
+                    value={domainTransferFilter}
+                    onChange={(e) => setDomainTransferFilter(e.target.value)}
+                    className="px-3 py-2 border border-input bg-background rounded-md text-sm"
+                  >
+                    <option value="all">All Domain Transfers</option>
+                    <option value="pending">Pending</option>
+                    <option value="completed">Completed</option>
                   </select>
                 </div>
               </CardContent>
@@ -251,8 +314,8 @@ export default function AdminOrdersPage() {
                   {loading ? (
                     <div className="min-w-[800px] w-full space-y-2 p-4">
                       {[...Array(5)].map((_, index) => (
-                        <div key={index} className="grid grid-cols-8 gap-4 bg-muted rounded-md p-4 animate-pulse">
-                          {Array.from({ length: 8 }).map((_, i) => (
+                        <div key={index} className="grid grid-cols-9 gap-4 bg-muted rounded-md p-4 animate-pulse">
+                          {Array.from({ length: 9 }).map((_, i) => (
                             <div key={i} className="h-4 bg-gray-300 rounded w-full" />
                           ))}
                         </div>
@@ -261,17 +324,18 @@ export default function AdminOrdersPage() {
                   ) : (
                     <>
                       {/* Desktop Table */}
-                      <div className="hidden md:block min-w-[800px] w-full">
+                      <div className="hidden md:block min-w-[900px] w-full">
                         <Table>
                           <TableHeader>
                             <TableRow>
                               <TableHead className="w-[10%]">Order #</TableHead>
-                              <TableHead className="w-[20%] max-w-xs truncate">Customer</TableHead>
-                              <TableHead className="w-[20%] max-w-xs truncate">Domains</TableHead>
+                              <TableHead className="w-[15%] max-w-xs truncate">Customer</TableHead>
+                              <TableHead className="w-[15%] max-w-xs truncate">Domains</TableHead>
                               <TableHead className="w-[10%]">Amount</TableHead>
-                              <TableHead className="w-[10%]">Status</TableHead>
-                              <TableHead className="w-[15%]">Session ID</TableHead>
-                              <TableHead className="w-[15%]">Date</TableHead>
+                              <TableHead className="w-[10%]">Payment </TableHead>
+                              <TableHead className="w-[15%]">DomainTransfer</TableHead>
+                              <TableHead className="w-[10%]">Session ID</TableHead>
+                              <TableHead className="w-[10%]">Date</TableHead>
                               <TableHead className="w-[10%]">Actions</TableHead>
                             </TableRow>
                           </TableHeader>
@@ -303,6 +367,12 @@ export default function AdminOrdersPage() {
                                   <div className="flex items-center space-x-2">
                                     {getStatusIcon(order.paymentStatus)}
                                     {getStatusBadge(order.paymentStatus)}
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="flex items-center space-x-2">
+                                    {getDomainTransferIcon(order.domainTransfer)}
+                                    {getDomainTransferBadge(order.domainTransfer)}
                                   </div>
                                 </TableCell>
                                 <TableCell>
@@ -364,6 +434,24 @@ export default function AdminOrdersPage() {
                                             </div>
                                           </div>
                                           <div>
+                                            <h3 className="text-sm font-medium text-muted-foreground">Domain Transfer Status</h3>
+                                            <div className="flex items-center space-x-2 mt-1">
+                                              {getDomainTransferIcon(order.domainTransfer)}
+                                              <Select
+                                                value={order.domainTransfer}
+                                                onValueChange={(value) => updateDomainTransferStatus(order._id, value as "pending" | "completed")}
+                                              >
+                                                <SelectTrigger className="w-32">
+                                                  <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                  <SelectItem value="pending">Pending</SelectItem>
+                                                  <SelectItem value="completed">Completed</SelectItem>
+                                                </SelectContent>
+                                              </Select>
+                                            </div>
+                                          </div>
+                                          <div>
                                             <h3 className="text-sm font-medium text-muted-foreground">Order Date</h3>
                                             <p className="text-sm">{formatDate(order.createdAt)}</p>
                                           </div>
@@ -418,6 +506,13 @@ export default function AdminOrdersPage() {
                               <div className="flex items-center justify-between">
                                 <span className="text-sm font-medium">Amount:</span>
                                 <span className="text-sm font-medium">${order.totalAmount.toLocaleString()}</span>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium">Domain Transfer:</span>
+                                <div className="flex items-center space-x-1">
+                                  {getDomainTransferIcon(order.domainTransfer)}
+                                  {getDomainTransferBadge(order.domainTransfer)}
+                                </div>
                               </div>
                               <div className="flex items-center justify-between">
                                 <span className="text-sm font-medium">Session ID:</span>
@@ -479,10 +574,28 @@ export default function AdminOrdersPage() {
                                           <p className="text-sm">{order.customerEmail}</p>
                                         </div>
                                         <div>
-                                          <h3 className="text-sm font-medium text-muted-foreground">Payment Status</h3>
+                                          <h3 className="text-sm font-medium text-muted-foreground">Payment </h3>
                                           <div className="flex items-center space-x-2 mt-1">
                                             {getStatusIcon(order.paymentStatus)}
                                             {getStatusBadge(order.paymentStatus)}
+                                          </div>
+                                        </div>
+                                        <div>
+                                          <h3 className="text-sm font-medium text-muted-foreground">Domain Transfer Status</h3>
+                                          <div className="flex items-center space-x-2 mt-1">
+                                            {getDomainTransferIcon(order.domainTransfer)}
+                                            <Select
+                                              value={order.domainTransfer}
+                                              onValueChange={(value) => updateDomainTransferStatus(order._id, value as "pending" | "completed")}
+                                            >
+                                              <SelectTrigger className="w-32">
+                                                <SelectValue />
+                                              </SelectTrigger>
+                                              <SelectContent>
+                                                <SelectItem value="pending">Pending</SelectItem>
+                                                <SelectItem value="completed">Completed</SelectItem>
+                                              </SelectContent>
+                                            </Select>
                                           </div>
                                         </div>
                                         <div>
