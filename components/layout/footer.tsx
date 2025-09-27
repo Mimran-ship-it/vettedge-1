@@ -51,11 +51,11 @@ export function Footer() {
                 src="/logo.png"
                 alt="Vettedge Logo"
 
-                width={60}
+                width={55}
                 height={60}
                 className="rounded-lg scale-125"
               />
-              <h2 className="text-2xl font-semibold text-black dark:text-white bg-clip-text transition-all duration-300 tracking-wide">
+              <h2 className="text-xl  text-black dark:text-white  transition-all duration-300 tracking-wide">
                 Vettedge.domains
 
               </h2>
