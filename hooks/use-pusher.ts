@@ -34,6 +34,8 @@ export function useRealtime() {
 
     if (!key) {
       console.warn("NEXT_PUBLIC_PUSHER_KEY is not set. Realtime will not initialize.");
+      // Set connected to true for basic functionality without real-time updates
+      setIsConnected(true);
       return;
     }
 

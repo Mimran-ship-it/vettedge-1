@@ -40,6 +40,7 @@ interface ChatContextType {
   unreadCount: number;
   isConnected: boolean;
   sendMessage: (content: string) => Promise<void>;
+  sendAttachment: (file: File) => Promise<void>;
   createSession: () => Promise<void>;
   joinSession: (sessionId: string) => Promise<void>;
   refreshMessages: () => Promise<void>;
@@ -116,7 +117,13 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
   // Subscribe to session channel (and update messages) when pusher + session are available
   useEffect(() => {
-    if (!pusher || !currentSession) return;
+    if (!currentSession) return;
+    
+    // If no pusher, just return early (basic functionality without real-time)
+    if (!pusher) {
+      console.log("No Pusher connection, using basic chat mode");
+      return;
+    }
 
     const channelName = `session-${currentSession._id}`;
     const channel = pusher.subscribe(channelName) as any;
@@ -173,7 +180,13 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
   // Admins: subscribe to admins channel for notifications about new customer messages
   useEffect(() => {
-    if (!pusher || !user || user.role !== "admin") return;
+    if (!user || user.role !== "admin") return;
+    
+    // If no pusher, skip real-time admin notifications
+    if (!pusher) {
+      console.log("No Pusher connection, admin notifications disabled");
+      return;
+    }
 
     const adminChannel = pusher.subscribe("admins") as any;
 
@@ -227,22 +240,27 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
   /* -------------------------- Actions -------------------------- */
   const createSession = async (): Promise<void> => {
+    console.log("createSession called:", { user: !!user, isCreatingSession });
     if (!user || isCreatingSession) return;
     setIsCreatingSession(true);
     try {
+      console.log("Creating session via API...");
       const res = await fetch("/api/chat/sessions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
+      console.log("Create session response status:", res.status);
       if (!res.ok) {
         console.error("Failed to create session:", res.status, await res.text());
+        setIsCreatingSession(false);
         return;
       }
       const data = await res.json();
+      console.log("Create session response data:", data);
       const session: ChatSession = data.session;
       if (session && session._id) {
-        // set session and fetch messages
+        console.log("Joining session:", session._id);
         await joinSession(session._id);
       } else {
         console.error("createSession: server did not return session");
@@ -280,17 +298,35 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   };
 
   const sendMessage = async (content: string): Promise<void> => {
+    console.log("sendMessage called with:", { content, user: !!user, currentSession: !!currentSession });
+    
     if (!user) {
       console.warn("sendMessage: user not signed in");
       return;
     }
     if (!currentSession) {
-      console.warn("sendMessage: no current session");
-      console.log("user is", user);
+      console.warn("sendMessage: no current session, attempting to create one...");
+      console.log("Available data:", { user: user?.email, isConnected, isCreatingSession });
+      
+      // Try to create a session first
+      if (!isCreatingSession && user.role === "customer") {
+        try {
+          await createSession();
+          // Wait a moment for the session to be set
+          await new Promise(resolve => setTimeout(resolve, 100));
+          
+          // Try again after session creation
+          if (currentSession) {
+            return sendMessage(content);
+          }
+        } catch (err) {
+          console.error("Failed to create session for message:", err);
+        }
+      }
       return;
     }
 
-    // Create a temp (optimistic) message
+    console.log("Creating optimistic message for session:", currentSession._id);
     const tempId = `temp-${Date.now()}`;
     const optimisticMessage: ChatMessage = {
       _id: tempId,
@@ -303,55 +339,144 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       isRead: true,
       createdAt: new Date().toISOString(),
     };
-
-    // Push immediately to UI
+    console.log("Adding optimistic message:", optimisticMessage);
     setMessages((prev) => [...prev, optimisticMessage]);
 
     try {
+      console.log("Sending message to API...");
       const res = await fetch("/api/chat/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content, sessionId: currentSession._id }),
         credentials: "include",
       });
-
+      console.log("API response status:", res.status);
       if (!res.ok) {
         console.error("Failed to send message:", res.status, await res.text());
-        // Optionally mark optimistic message as failed
         setMessages((prev) => prev.filter((m) => m._id !== tempId));
+      } else {
+        // If no Pusher, manually refresh messages after sending
+        if (!pusher) {
+          setTimeout(() => fetchMessages(currentSession._id), 500);
+        }
       }
-      // Otherwise we rely on Pusher to replace this optimistic message with the real one
     } catch (err) {
       console.error("Failed to send message (network):", err);
-      // Rollback optimistic message on error
       setMessages((prev) => prev.filter((m) => m._id !== tempId));
     }
   };
 
-  // Function to manually refresh messages
+  const sendAttachment = async (file: File): Promise<void> => {
+    console.log("sendAttachment called with:", { fileName: file.name, user: !!user, currentSession: !!currentSession });
+    
+    if (!user) {
+      console.warn("sendAttachment: user not signed in");
+      return;
+    }
+    if (!currentSession) {
+      console.warn("sendAttachment: no current session, attempting to create one...");
+      
+      // Try to create a session first
+      if (!isCreatingSession && user.role === "customer") {
+        try {
+          await createSession();
+          // Wait a moment for the session to be set
+          await new Promise(resolve => setTimeout(resolve, 100));
+          
+          // Try again after session creation
+          if (currentSession) {
+            return sendAttachment(file);
+          }
+        } catch (err) {
+          console.error("Failed to create session for attachment:", err);
+        }
+      }
+      return;
+    }
+
+    try {
+      console.log("Uploading file to /api/chat/upload...");
+      const fd = new FormData();
+      fd.append("file", file);
+      const uploadRes = await fetch("/api/chat/upload", {
+        method: "POST",
+        body: fd,
+        credentials: "include",
+      });
+      console.log("Upload response status:", uploadRes.status);
+      if (!uploadRes.ok) {
+        console.error("Failed to upload file:", uploadRes.status, await uploadRes.text());
+        return;
+      }
+      const { url, messageType } = await uploadRes.json();
+      console.log("Upload successful:", { url, messageType });
+      const type: ChatMessage["messageType"] = messageType === "image" ? "image" : "file";
+
+      const tempId = `temp-${Date.now()}`;
+      const optimisticMessage: ChatMessage = {
+        _id: tempId,
+        sessionId: currentSession._id,
+        senderId: user.id,
+        senderName: user.name || "You",
+        senderRole: user.role,
+        content: url,
+        messageType: type,
+        isRead: true,
+        createdAt: new Date().toISOString(),
+      };
+      console.log("Adding attachment message:", optimisticMessage);
+      setMessages((prev) => [...prev, optimisticMessage]);
+
+      console.log("Sending attachment message to API...");
+      const res = await fetch("/api/chat/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: url, sessionId: currentSession._id, messageType: type }),
+        credentials: "include",
+      });
+      console.log("Message API response status:", res.status);
+      if (!res.ok) {
+        console.error("Failed to send attachment message:", res.status, await res.text());
+        setMessages((prev) => prev.filter((m) => m._id !== tempId));
+      } else {
+        // If no Pusher, manually refresh messages after sending
+        if (!pusher) {
+          setTimeout(() => fetchMessages(currentSession._id), 500);
+        }
+      }
+    } catch (err) {
+      console.error("sendAttachment error:", err);
+    }
+  };
+
   const refreshMessages = async (): Promise<void> => {
     if (currentSession) {
-      console.log('unread',unreadCount)
       await fetchMessages(currentSession._id);
     }
   };
 
   /* ----------------------- Auto-create for customers ----------------------- */
   useEffect(() => {
+    console.log("Auto-create session effect:", { 
+      user: !!user, 
+      userRole: user?.role, 
+      currentSession: !!currentSession, 
+      pusher: !!pusher, 
+      isConnected, 
+      isCreatingSession 
+    });
+    
     if (
       user &&
       user.role === "customer" &&
       !currentSession &&
-      pusher &&
-      isConnected &&
       !isCreatingSession
     ) {
-      // auto-create session if none
+      console.log("Auto-creating session for customer...");
       createSession().catch((e) => console.error("auto create session error:", e));
     }
-    // we intentionally don't want createSession as dependency (it is stable here)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, currentSession, pusher, isConnected, isCreatingSession]);
+  }, [user, currentSession, isCreatingSession]);
 
   /* ------------------------- Context value ------------------------- */
   const contextValue: ChatContextType = {
@@ -360,6 +485,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     unreadCount,
     isConnected,
     sendMessage,
+    sendAttachment,
     createSession,
     joinSession,
     refreshMessages,
