@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Pusher, { Channel } from "pusher-js"
 import { useAuth } from "@/hooks/use-auth"
+import { useRealtime } from "@/hooks/use-pusher"
 
 interface AdminNotification {
   id: string
@@ -16,19 +16,21 @@ interface AdminNotification {
 
 export function useAdminNotifications() {
   const { user } = useAuth()
+  const { pusher } = useRealtime()
   const [notifications, setNotifications] = useState<AdminNotification[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
 
   useEffect(() => {
     if (!user || user.role !== "admin") return
 
-    // ✅ Initialize Pusher
-    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
-      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
-    })
+    // If no pusher, skip real-time notifications
+    if (!pusher) {
+      console.log("No Pusher connection, admin notifications disabled")
+      return
+    }
 
     // ✅ Subscribe to admin channel
-    const channel: Channel = pusher.subscribe("admin-channel")
+    const channel = pusher.subscribe("admin-channel")
 
     // ✅ Listen for new customer messages
     channel.bind("new_customer_message", (data: {
@@ -60,11 +62,14 @@ export function useAdminNotifications() {
 
     // ✅ Cleanup on unmount
     return () => {
-      channel.unbind_all()
-      channel.unsubscribe()
-      pusher.disconnect()
+      try {
+        channel.unbind("new_customer_message")
+        pusher.unsubscribe("admin-channel")
+      } catch (e) {
+        // ignore cleanup errors
+      }
     }
-  }, [user])
+  }, [user, pusher])
 
   // ✅ Request browser notification permission
   useEffect(() => {
