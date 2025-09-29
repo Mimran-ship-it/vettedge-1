@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 
-const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID!
+const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID! 
 const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET!
 const PAYPAL_ENV = process.env.PAYPAL_ENV || "sandbox" // or "live"
 const BASE = PAYPAL_ENV === "live" ? "https://api-m.paypal.com" : "https://api-m.sandbox.paypal.com"
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     const { access_token } = await getAccessToken()
 
     // Infer origin for return/cancel URLs
-    const origin = process.env.NEXT_PUBLIC_BASE_URL || req.headers.get("origin") || "http://localhost:3000"
+    const origin = process.env.NEXT_PUBLIC_SITE_URL || req.headers.get("origin") || "http://localhost:3000"
 
     const orderRes = await fetch(`${BASE}/v2/checkout/orders`, {
       method: "POST",
