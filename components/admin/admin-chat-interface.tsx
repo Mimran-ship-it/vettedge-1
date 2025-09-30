@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { MessageSquare, Send, Users, Clock, RefreshCw, Paperclip } from "lucide-react"
+import { MessageSquare, Send, Users, Clock, RefreshCw, Paperclip, ArrowLeft } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { AdminNotificationBell } from "@/components/admin/admin-notification-bell"
 import { formatDistanceToNow } from "date-fns"
@@ -46,6 +46,7 @@ export function AdminChatInterface() {
   const [loading, setLoading] = useState(true)
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [showSidebar, setShowSidebar] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   
@@ -311,6 +312,10 @@ export function AdminChatInterface() {
     setSessions(prev =>
       prev.map(s => (s._id === session._id ? { ...s, unreadCount: 0 } : s))
     )
+    // On mobile, hide sidebar when selecting a session
+    if (window.innerWidth < 768) {
+      setShowSidebar(false)
+    }
   }
   
   const getStatusColor = (status: string) => {
@@ -338,10 +343,11 @@ export function AdminChatInterface() {
   }
   
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Sidebar */}
-      <div className="w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+    <div className="flex flex-col md:flex-row h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">
+      {/* Sidebar - Full width on mobile, fixed width on larger screens */}
+      <div className={`w-full md:w-100 h-full flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 
+                      ${showSidebar ? 'flex' : 'hidden'} md:flex`}>
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between flex-shrink-0">
           <h2 className="text-lg font-semibold flex items-center gap-2 text-gray-900 dark:text-gray-100">
             <Users className="h-5 w-5" />
             Chat Sessions
@@ -360,74 +366,85 @@ export function AdminChatInterface() {
         </div>
         
         {lastRefreshed && (
-          <div className="px-4 py-2 text-xs text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
+          <div className="px-4 py-2 text-xs text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700 flex-shrink-0">
             Last refreshed: {lastRefreshed.toLocaleTimeString()}
           </div>
         )}
         
-        <ScrollArea className="flex-1">
-          <div className="p-2">
-            {sessions.length === 0 ? (
-              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
-                <p>No chat sessions yet</p>
-              </div>
-            ) : (
-              sessions.map(session => (
-                <Card
-                  key={session._id}
-                  className={`mb-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 ${
-                    selectedSession?._id === session._id ? "ring-2 ring-blue-500 dark:ring-blue-400" : ""
-                  }`}
-                  onClick={() => handleSessionSelect(session)}
-                >
-                  <CardContent className="p-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-8 w-8">
-                          <AvatarFallback className="text-xs">
-                            {session.userName.charAt(0).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-medium text-sm text-gray-900 dark:text-gray-100">{session.userName}</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">{session.userEmail}</p>
+        <div className="flex-1 min-h-0 overflow-hidden">
+          <ScrollArea className="h-full">
+            <div className="p-2">
+              {sessions.length === 0 ? (
+                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                  <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
+                  <p>No chat sessions yet</p>
+                </div>
+              ) : (
+                sessions.map(session => (
+                  <Card
+                    key={session._id}
+                    className={`mb-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 ${
+                      selectedSession?._id === session._id ? "ring-2 ring-blue-500 dark:ring-blue-400" : ""
+                    }`}
+                    onClick={() => handleSessionSelect(session)}
+                  >
+                    <CardContent className="p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-8 w-8">
+                            <AvatarFallback className="text-xs">
+                              {session.userName.charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium text-sm text-gray-900 dark:text-gray-100">{session.userName}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">{session.userEmail}</p>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end gap-1">
+                          <Badge className={`text-xs ${getStatusColor(session.status)}`}>
+                            {session.status}
+                          </Badge>
+                          {session.unreadCount > 0 && (
+                            <Badge variant="destructive" className="text-xs">
+                              {session.unreadCount}
+                            </Badge>
+                          )}
                         </div>
                       </div>
-                      <div className="flex flex-col items-end gap-1">
-                        <Badge className={`text-xs ${getStatusColor(session.status)}`}>
-                          {session.status}
-                        </Badge>
-                        {session.unreadCount > 0 && (
-                          <Badge variant="destructive" className="text-xs">
-                            {session.unreadCount}
-                          </Badge>
-                        )}
+                      <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                        <Clock className="h-3 w-3" />
+                        <span>
+                          {formatDistanceToNow(new Date(session.lastMessageAt), {
+                            addSuffix: true,
+                          })}
+                        </span>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-                      <Clock className="h-3 w-3" />
-                      <span>
-                        {formatDistanceToNow(new Date(session.lastMessageAt), {
-                          addSuffix: true,
-                        })}
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </div>
-        </ScrollArea>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </div>
+          </ScrollArea>
+        </div>
       </div>
       
-      {/* Chat Area */}
-      <div className="flex-1 flex flex-col">
+      {/* Chat Area - Hidden on mobile when sidebar is shown */}
+      <div className={`flex-1 flex flex-col h-full ${showSidebar ? 'hidden' : 'flex'} md:flex`}>
         {selectedSession ? (
           <>
             {/* Header - Sticky */}
-            <div className="sticky top-0 z-10 p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+            <div className="sticky top-0 z-10 p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-3">
+                {/* Back button for mobile */}
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="md:hidden"
+                  onClick={() => setShowSidebar(true)}
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
                 <Avatar>
                   <AvatarFallback>
                     {selectedSession.userName.charAt(0).toUpperCase()}
@@ -454,74 +471,76 @@ export function AdminChatInterface() {
             </div>
             
             {/* Messages */}
-            <ScrollArea className="flex-1 p-4 bg-gray-50 dark:bg-gray-900">
-              <div className="space-y-4">
-                {messages.map(message => (
-                  <div
-                    key={message._id}
-                    className={`flex ${
-                      message.senderRole === "admin" ? "justify-end" : "justify-start"
-                    }`}
-                  >
+            <div className="flex-1 min-h-0 overflow-hidden">
+              <ScrollArea className="h-full p-4 bg-gray-50 dark:bg-gray-900">
+                <div className="space-y-4">
+                  {messages.map(message => (
                     <div
-                      className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                        message.senderRole === "admin"
-                          ? "bg-blue-600 dark:bg-blue-700 text-white"
-                          : "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700"
+                      key={message._id}
+                      className={`flex ${
+                        message.senderRole === "admin" ? "justify-end" : "justify-start"
                       }`}
                     >
-                      {message.messageType === "image" ? (
-                        <div className="space-y-2">
-                          <img 
-                            src={message.content} 
-                            alt="Shared image" 
-                            className="max-w-48 max-h-48 h-auto rounded-md cursor-pointer object-cover"
-                            onClick={() => window.open(message.content, '_blank')}
-                          />
-                        </div>
-                      ) : message.messageType === "file" ? (
-                        <div className="space-y-2">
-                          <div className={`flex items-center gap-2 p-2 rounded-md ${
-                            message.senderRole === "admin" 
-                              ? "bg-white/10" 
-                              : "bg-gray-100 dark:bg-gray-700"
-                          }`}>
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-                            </svg>
-                            <a 
-                              href={message.content} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-sm underline hover:no-underline"
-                            >
-                              {message.content.split('/').pop() || 'Download File'}
-                            </a>
-                          </div>
-                        </div>
-                      ) : (
-                        <p className="text-sm">{message.content}</p>
-                      )}
-                      <p
-                        className={`text-xs mt-1 ${
+                      <div
+                        className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
                           message.senderRole === "admin"
-                            ? "text-blue-100 dark:text-blue-200"
-                            : "text-gray-500 dark:text-gray-400"
+                            ? "bg-blue-600 dark:bg-blue-700 text-white"
+                            : "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700"
                         }`}
                       >
-                        {formatDistanceToNow(new Date(message.createdAt), {
-                          addSuffix: true,
-                        })}
-                      </p>
+                        {message.messageType === "image" ? (
+                          <div className="space-y-2">
+                            <img 
+                              src={message.content} 
+                              alt="Shared image" 
+                              className="max-w-48 max-h-48 h-auto rounded-md cursor-pointer object-cover"
+                              onClick={() => window.open(message.content, '_blank')}
+                            />
+                          </div>
+                        ) : message.messageType === "file" ? (
+                          <div className="space-y-2">
+                            <div className={`flex items-center gap-2 p-2 rounded-md ${
+                              message.senderRole === "admin" 
+                                ? "bg-white/10" 
+                                : "bg-gray-100 dark:bg-gray-700"
+                            }`}>
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                              </svg>
+                              <a 
+                                href={message.content} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-sm underline hover:no-underline"
+                              >
+                                {message.content.split('/').pop() || 'Download File'}
+                              </a>
+                            </div>
+                          </div>
+                        ) : (
+                          <p className="text-sm">{message.content}</p>
+                        )}
+                        <p
+                          className={`text-xs mt-1 ${
+                            message.senderRole === "admin"
+                              ? "text-blue-100 dark:text-blue-200"
+                              : "text-gray-500 dark:text-gray-400"
+                          }`}
+                        >
+                          {formatDistanceToNow(new Date(message.createdAt), {
+                            addSuffix: true,
+                          })}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
-                <div ref={messagesEndRef} />
-              </div>
-            </ScrollArea>
+                  ))}
+                  <div ref={messagesEndRef} />
+                </div>
+              </ScrollArea>
+            </div>
             
             {/* Input */}
-            <div className="sticky bottom-0 p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex gap-2">
+            <div className="sticky bottom-0 p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex gap-2 flex-shrink-0">
               <input
                 ref={fileInputRef}
                 type="file"
@@ -558,7 +577,7 @@ export function AdminChatInterface() {
             </div>
             
             {!isConnected && (
-              <div className="px-4 pb-2 bg-white dark:bg-gray-800">
+              <div className="px-4 pb-2 bg-white dark:bg-gray-800 flex-shrink-0">
                 <p className="text-xs text-red-500 dark:text-red-400">
                   Disconnected from chat server
                 </p>

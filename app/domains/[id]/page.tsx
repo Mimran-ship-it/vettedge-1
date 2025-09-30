@@ -246,7 +246,7 @@ export default function DomainDetailsPage() {
                   alt={domain.name}
                   width={800}
                   height={400}
-                  className="w-full h-64 md:h-80 object-cover"
+                  className="w-full bg-white h-64 md:h-80 object-cover"
                 />
               </div>
               <div className="space-y-4">
