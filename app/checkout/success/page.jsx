@@ -1,5 +1,7 @@
+// /checkout/success page
 import { redirect } from "next/navigation"
 import { stripe } from "../../../lib/stripe"
+
 export default async function Success({ searchParams }) {
   const { session_id } = searchParams
 
@@ -8,8 +10,6 @@ export default async function Success({ searchParams }) {
   }
 
   const origin = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-
-  // 🧠 Detect payment method
   const isStripeSession = session_id.startsWith("cs_") // Stripe sessions start with 'cs_'
 
   let customerEmail = ""
@@ -19,7 +19,7 @@ export default async function Success({ searchParams }) {
   let billingInfo = null
 
   if (isStripeSession) {
-    // ✅ STRIPE LOGIC
+    // ✅ STRIPE LOGIC (unchanged)
     const session = await stripe.checkout.sessions.retrieve(session_id, {
       expand: ["line_items", "payment_intent"],
     })
@@ -31,13 +31,11 @@ export default async function Success({ searchParams }) {
     } = session
     const line_items = session.line_items
 
-    // 🚨 Ensure payment is completed
     if (payment_status !== "paid") {
       console.error("❌ Payment not completed. Current status:", payment_status)
       throw new Error(`Stripe payment not completed. Current status: ${payment_status}`)
     }
 
-    // ✅ Populate data once payment is confirmed
     customerEmail = email
     billingInfo = metadata?.billingInfo || {}
     items = line_items.data.map((li) => ({
@@ -48,7 +46,7 @@ export default async function Success({ searchParams }) {
     totalAmount = line_items.data.reduce((acc, li) => acc + li.amount_total / 100, 0)
     status = "COMPLETED"
   } else {
-    // ✅ PAYPAL LOGIC
+    // ✅ PAYPAL LOGIC (updated)
     const capRes = await fetch(`${origin}/api/paypal/capture-order`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -63,35 +61,43 @@ export default async function Success({ searchParams }) {
     }
 
     const capture = capData.capture
-    customerEmail =
-      capture?.payer?.email_address ||
-      capture?.payment_source?.paypal?.email_address ||
-      ""
-
-    const firstUnit = Array.isArray(capture?.purchase_units)
-      ? capture.purchase_units[0]
-      : null
-
-    items = Array.isArray(firstUnit?.items)
-      ? firstUnit.items.map((it) => ({
-          name: it.name,
-          price: parseFloat(it.unit_amount?.value || "0"),
-          quantity: parseInt(it.quantity || "1", 10),
-        }))
-      : []
-
-    totalAmount = firstUnit?.amount?.value
-      ? parseFloat(firstUnit.amount.value)
-      : items.reduce((s, it) => s + it.price * it.quantity, 0)
-
-    status = capture?.status || "COMPLETED"
+    
+    // Extract payer information from the correct location
+    const payer = capture?.payer || {}
+    const payerName = payer.name || {}
+    const payerAddress = payer.address || {}
+    
+    customerEmail = payer.email_address || ""
+    
+    // Extract purchase units and items
+    const purchaseUnits = capture?.purchase_units || []
+    const firstUnit = purchaseUnits[0] || {}
+    
+    items = firstUnit.items?.map((it) => ({
+      name: it.name,
+      price: parseFloat(it.unit_amount?.value || "0"),
+      quantity: parseInt(it.quantity || "1", 10),
+    })) || []
+    
+    totalAmount = parseFloat(firstUnit.amount?.value || "0")
+    status = capture.status || "COMPLETED"
+    
+    // Construct billing info with all available details
     billingInfo = {
       email: customerEmail,
-      name: capture?.payer?.name?.given_name + " " + capture?.payer?.name?.surname,
-      payerId: capture?.payer?.payer_id,
-      country: capture?.payer?.address?.country_code,
+      name: `${payerName.given_name || ""} ${payerName.surname || ""}`.trim(),
+      payerId: payer.payer_id,
+      address: {
+        country_code: payerAddress.country_code,
+        address_line_1: payerAddress.address_line_1,
+        address_line_2: payerAddress.address_line_2,
+        admin_area_1: payerAddress.admin_area_1,
+        admin_area_2: payerAddress.admin_area_2,
+        postal_code: payerAddress.postal_code,
+      },
+      phone: payer.phone?.phone_number?.national_number,
+      birth_date: payer.birth_date,
     }
-    
   }
 
   // ✅ Save order in DB
