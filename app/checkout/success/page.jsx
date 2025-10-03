@@ -46,58 +46,69 @@ export default async function Success({ searchParams }) {
     totalAmount = line_items.data.reduce((acc, li) => acc + li.amount_total / 100, 0)
     status = "COMPLETED"
   } else {
-    // ✅ PAYPAL LOGIC (updated)
-    const capRes = await fetch(`${origin}/api/paypal/capture-order`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ orderId: session_id }),
-      cache: "no-store",
-    })
+   // ✅ PAYPAL LOGIC
+const capRes = await fetch(`${origin}/api/paypal/capture-order`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ orderId: session_id }),
+  cache: "no-store",
+})
 
-    const capData = await capRes.json()
-    if (!capRes.ok) {
-      console.error("PayPal capture fetch failed:", capData)
-      throw new Error("Failed to retrieve PayPal order details")
-    }
+const capData = await capRes.json()
+if (!capRes.ok) {
+  console.error("PayPal capture fetch failed:", capData)
+  throw new Error("Failed to retrieve PayPal order details")
+}
 
-    const capture = capData.capture
-    
-    // Extract payer information from the correct location
-    const payer = capture?.payer || {}
-    const payerName = payer.name || {}
-    const payerAddress = payer.address || {}
-    
-    customerEmail = payer.email_address || ""
-    
-    // Extract purchase units and items
-    const purchaseUnits = capture?.purchase_units || []
-    const firstUnit = purchaseUnits[0] || {}
-    
-    items = firstUnit.items?.map((it) => ({
+const capture = capData.capture
+
+// 🧠 Parse custom metadata (billing info & userId)
+let metadata = {}
+try {
+  const rawMeta = capture?.purchase_units?.[0]?.custom_id
+  if (rawMeta) metadata = JSON.parse(rawMeta)
+} catch (e) {
+  console.error("Failed to parse custom_id metadata:", e)
+}
+
+const metaBilling = metadata?.billingInfo || {}
+
+customerEmail =
+  metaBilling.email ||
+  capture?.payer?.email_address ||
+  capture?.payment_source?.paypal?.email_address ||
+  ""
+
+const firstUnit = Array.isArray(capture?.purchase_units)
+  ? capture.purchase_units[0]
+  : null
+
+items = Array.isArray(firstUnit?.items)
+  ? firstUnit.items.map((it) => ({
       name: it.name,
       price: parseFloat(it.unit_amount?.value || "0"),
       quantity: parseInt(it.quantity || "1", 10),
-    })) || []
-    
-    totalAmount = parseFloat(firstUnit.amount?.value || "0")
-    status = capture.status || "COMPLETED"
-    
-    // Construct billing info with all available details
-    billingInfo = {
-      email: customerEmail,
-      name: `${payerName.given_name || ""} ${payerName.surname || ""}`.trim(),
-      payerId: payer.payer_id,
-      address: {
-        country_code: payerAddress.country_code,
-        address_line_1: payerAddress.address_line_1,
-        address_line_2: payerAddress.address_line_2,
-        admin_area_1: payerAddress.admin_area_1,
-        admin_area_2: payerAddress.admin_area_2,
-        postal_code: payerAddress.postal_code,
-      },
-      phone: payer.phone?.phone_number?.national_number,
-      birth_date: payer.birth_date,
-    }
+    }))
+  : []
+
+totalAmount = firstUnit?.amount?.value
+  ? parseFloat(firstUnit.amount.value)
+  : items.reduce((s, it) => s + it.price * it.quantity, 0)
+
+status = capture?.status || "COMPLETED"
+
+// ✅ Use metadata billing info if present, fallback to PayPal data
+billingInfo = {
+  email: metaBilling.email || customerEmail,
+  name:
+    metaBilling.name ||
+    `${capture?.payer?.name?.given_name || ""} ${capture?.payer?.name?.surname || ""}`,
+  address: metaBilling.address || capture?.payer?.address?.address_line_1,
+  city: metaBilling.city || capture?.payer?.address?.admin_area_2,
+  country:
+    metaBilling.country || capture?.payer?.address?.country_code || "Unknown",
+  payerId: capture?.payer?.payer_id,
+}
   }
 
   // ✅ Save order in DB

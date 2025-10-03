@@ -59,9 +59,13 @@ export async function POST(req: NextRequest) {
               quantity: String(it.quantity),
               unit_amount: { currency_code: currency, value: Number(it.price).toFixed(2) },
             })),
-            custom_id: userId || "guest",
+            custom_id: JSON.stringify({
+              userId: userId || "guest",
+              billingInfo,
+            }),
           },
         ],
+        
         application_context: {
           brand_name: "Vettedge Domains",
           shipping_preference: "NO_SHIPPING",
