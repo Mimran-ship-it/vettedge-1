@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 // Define a sub-schema for billing information
 const billingInfoSchema = new Schema({
-  firstName: { type: String, required: true },
+  firstName: { type: String, required: false },
   lastName: { type: String, default: "" },
   email: { type: String, required: true },
   phone: { type: String, default: "" },
@@ -92,7 +92,7 @@ const OrderSchema = new Schema<IOrder>(
       },
     ],
     totalAmount: { type: Number, required: true },
-    paymentStatus: { type: String, enum: ["open", "complete"], required: true },
+    paymentStatus: { type: String, enum: ["open", "COMPLETED"], required: true },
     billingInfo: {
       type: billingInfoSchema,
       required: true,
