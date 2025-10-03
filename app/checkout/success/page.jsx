@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation"
 import { stripe } from "../../../lib/stripe"
-
 export default async function Success({ searchParams }) {
-  const { session_id } = await searchParams
+  const { session_id } = searchParams
 
   if (!session_id) {
     throw new Error("Please provide a valid session_id.")
@@ -10,8 +9,8 @@ export default async function Success({ searchParams }) {
 
   const origin = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
 
-  // 🧠 Detect payment method based on session_id format
-  const isStripeSession = session_id.startsWith("cs_") // Stripe checkout sessions always start with 'cs_'
+  // 🧠 Detect payment method
+  const isStripeSession = session_id.startsWith("cs_") // Stripe sessions start with 'cs_'
 
   let customerEmail = ""
   let items = []
@@ -26,31 +25,28 @@ export default async function Success({ searchParams }) {
     })
 
     const {
-      status: stripeStatus,
+      payment_status,
       customer_details: { email },
+      metadata,
     } = session
     const line_items = session.line_items
 
-    if (stripeStatus === "open") {
-      return redirect("/")
+    // 🚨 Ensure payment is completed
+    if (payment_status !== "paid") {
+      console.error("❌ Payment not completed. Current status:", payment_status)
+      throw new Error(`Stripe payment not completed. Current status: ${payment_status}`)
     }
 
-    if (stripeStatus === "complete") {
-      customerEmail = email
-      billingInfo = session.metadata?.billingInfo
-      items = line_items.data.map((li) => ({
-        name: li.description,
-        price: li.price.unit_amount / 100,
-        quantity: li.quantity,
-      }))
-      totalAmount = line_items.data.reduce(
-        (acc, li) => acc + li.amount_total / 100,
-        0
-      )
-      status = stripeStatus
-    } else {
-      throw new Error("Stripe payment not completed.")
-    }
+    // ✅ Populate data once payment is confirmed
+    customerEmail = email
+    billingInfo = metadata?.billingInfo || {}
+    items = line_items.data.map((li) => ({
+      name: li.description,
+      price: li.price.unit_amount / 100,
+      quantity: li.quantity,
+    }))
+    totalAmount = line_items.data.reduce((acc, li) => acc + li.amount_total / 100, 0)
+    status = "COMPLETED"
   } else {
     // ✅ PAYPAL LOGIC
     const capRes = await fetch(`${origin}/api/paypal/capture-order`, {
@@ -89,10 +85,17 @@ export default async function Success({ searchParams }) {
       : items.reduce((s, it) => s + it.price * it.quantity, 0)
 
     status = capture?.status || "COMPLETED"
-    billingInfo = { email: customerEmail }
+    billingInfo = {
+      email: customerEmail,
+      name: capture?.payer?.name?.given_name + " " + capture?.payer?.name?.surname,
+      payerId: capture?.payer?.payer_id,
+      country: capture?.payer?.address?.country_code,
+    }
+    
   }
 
   // ✅ Save order in DB
+  console.log("📦 Saving order in DB...")
   await fetch(`${origin}/api/orders`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
