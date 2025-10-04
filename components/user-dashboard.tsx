@@ -110,7 +110,7 @@ export function UserDashboard() {
   // Create recent purchases from orders
   const recentPurchases = orders.map(order => ({
     id: order._id,
-    domain: order.items[0].name,
+    domain: order.items[0]?.name,
     price: order.totalAmount,
     date: order.createdAt,
     status: order.paymentStatus,
