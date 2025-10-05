@@ -357,7 +357,7 @@ export function UserDashboard() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-medium">{formatCurrency(purchase.price)}</p>
+                      <p className="text-sm font-medium">${purchase.price}</p>
                       <p className="text-sm text-muted-foreground capitalize">{purchase.status}</p>
                     </div>
                   </div>

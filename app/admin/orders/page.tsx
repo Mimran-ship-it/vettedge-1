@@ -25,7 +25,7 @@ interface Order {
     _id: string
   }[]
   totalAmount: number
-  paymentStatus: "complete" | "pending" | "cancelled" | "failed"
+  paymentStatus: "COMPLETED" | "pending" | "cancelled" | "failed"
   domainTransfer: "pending" | "completed" // Added domainTransfer field
   createdAt: string
   updatedAt: string
@@ -159,7 +159,7 @@ export default function AdminOrdersPage() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "complete":
+      case "COMPLETED":
         return <CheckCircle className="h-4 w-4 text-green-600" />
       case "pending":
         return <Clock className="h-4 w-4 text-yellow-600" />
@@ -234,7 +234,7 @@ export default function AdminOrdersPage() {
                 },
                 { 
                   title: "Completed", 
-                  count: orders.filter((o) => o.paymentStatus === "complete").length, 
+                  count: orders.filter((o) => o.paymentStatus === "COMPLETED").length, 
                   icon: CheckCircle,
                   color: "text-green-600" 
                 },

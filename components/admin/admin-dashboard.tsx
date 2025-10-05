@@ -194,7 +194,7 @@ export function AdminDashboard() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'completed':
+      case 'COMPLETED':
       case 'complete': // Added to handle API response
         return <CheckCircle className="h-4 w-4 text-green-600" />
       case 'pending':
@@ -335,7 +335,7 @@ export function AdminDashboard() {
                       <p className="text-sm text-muted-foreground">{sale.customer}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-medium">{formatCurrency(sale.price)}</p>
+                      <p className="text-sm font-medium">${sale.price}</p>
                       <p className="text-sm text-muted-foreground">{formatDate(sale.date)}</p>
                     </div>
                   </div>
