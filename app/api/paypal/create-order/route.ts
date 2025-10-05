@@ -37,6 +37,17 @@ export async function POST(req: NextRequest) {
     // Infer origin for return/cancel URLs
     const origin = process.env.NEXT_PUBLIC_SITE_URL || req.headers.get("origin") || "http://localhost:3000"
 
+    // Encode minimal metadata from the checkout form to carry through PayPal redirects
+    // Note: Keep this compact to avoid URL length issues
+    const metaPayload = {
+      userId: userId || "guest",
+      billingInfo: billingInfo || {},
+      items: Array.isArray(items)
+        ? items.map((it: any) => ({ name: it.name, price: it.price, quantity: it.quantity }))
+        : [],
+    }
+    const meta = Buffer.from(JSON.stringify(metaPayload)).toString("base64url")
+
     const orderRes = await fetch(`${BASE}/v2/checkout/orders`, {
       method: "POST",
       headers: {
@@ -70,7 +81,8 @@ export async function POST(req: NextRequest) {
           brand_name: "Vettedge Domains",
           shipping_preference: "NO_SHIPPING",
           user_action: "PAY_NOW",
-          return_url: `${origin}/checkout/paypal-return`,
+          // Carry meta through the redirect so the success page can prefer checkout form data
+          return_url: `${origin}/checkout/paypal-return?meta=${encodeURIComponent(meta)}`,
           cancel_url: `${origin}/checkout?canceled=true`,
         },
         // pass-through metadata in custom_id

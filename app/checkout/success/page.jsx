@@ -17,6 +17,17 @@ export default async function Success({ searchParams }) {
   let totalAmount = 0
   let status = "COMPLETED"
   let billingInfo = null
+  let metaFromReturn = null
+
+  // Try decoding meta from PayPal return redirect (base64url-encoded JSON)
+  if (searchParams?.meta) {
+    try {
+      const decoded = Buffer.from(searchParams.meta, "base64url").toString("utf8")
+      metaFromReturn = JSON.parse(decoded)
+    } catch (e) {
+      console.error("Failed to decode PayPal return meta:", e)
+    }
+  }
 
   if (isStripeSession) {
     // ✅ STRIPE LOGIC (unchanged)
@@ -46,69 +57,75 @@ export default async function Success({ searchParams }) {
     totalAmount = line_items.data.reduce((acc, li) => acc + li.amount_total / 100, 0)
     status = "COMPLETED"
   } else {
-   // ✅ PAYPAL LOGIC
-const capRes = await fetch(`${origin}/api/paypal/capture-order`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ orderId: session_id }),
-  cache: "no-store",
-})
+    // ✅ PAYPAL LOGIC
+    const capRes = await fetch(`${origin}/api/paypal/capture-order`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderId: session_id }),
+      cache: "no-store",
+    })
 
-const capData = await capRes.json()
-if (!capRes.ok) {
-  console.error("PayPal capture fetch failed:", capData)
-  throw new Error("Failed to retrieve PayPal order details")
-}
+    const capData = await capRes.json()
+    if (!capRes.ok) {
+      console.error("PayPal capture fetch failed:", capData)
+      throw new Error("Failed to retrieve PayPal order details")
+    }
 
-const capture = capData.capture
+    const capture = capData.capture
 
-// 🧠 Parse custom metadata (billing info & userId)
-let metadata = {}
-try {
-  const rawMeta = capture?.purchase_units?.[0]?.custom_id
-  if (rawMeta) metadata = JSON.parse(rawMeta)
-} catch (e) {
-  console.error("Failed to parse custom_id metadata:", e)
-}
+    // 🧠 Prefer metadata from return URL (from checkout form). Fallback to custom_id
+    let metadata = metaFromReturn || {}
+    if (!metadata || Object.keys(metadata).length === 0) {
+      try {
+        const rawMeta = capture?.purchase_units?.[0]?.custom_id
+        if (rawMeta) metadata = JSON.parse(rawMeta)
+      } catch (e) {
+        console.error("Failed to parse custom_id metadata:", e)
+      }
+    }
 
-const metaBilling = metadata?.billingInfo || {}
+    const metaBilling = metadata?.billingInfo || {}
 
-customerEmail =
-  metaBilling.email ||
-  capture?.payer?.email_address ||
-  capture?.payment_source?.paypal?.email_address ||
-  ""
+    // ✅ Always prefer checkout form email over PayPal account email
+    customerEmail =
+      metaBilling.email ||
+      capture?.payer?.email_address ||
+      capture?.payment_source?.paypal?.email_address ||
+      ""
 
-const firstUnit = Array.isArray(capture?.purchase_units)
-  ? capture.purchase_units[0]
-  : null
+    const firstUnit = Array.isArray(capture?.purchase_units)
+      ? capture.purchase_units[0]
+      : null
 
-items = Array.isArray(firstUnit?.items)
-  ? firstUnit.items.map((it) => ({
-      name: it.name,
-      price: parseFloat(it.unit_amount?.value || "0"),
-      quantity: parseInt(it.quantity || "1", 10),
-    }))
-  : []
+    // Prefer items from meta (from checkout form), fallback to PayPal items
+    items = Array.isArray(metadata?.items)
+      ? metadata.items
+      : Array.isArray(firstUnit?.items)
+        ? firstUnit.items.map((it) => ({
+            name: it.name,
+            price: parseFloat(it.unit_amount?.value || "0"),
+            quantity: parseInt(it.quantity || "1", 10),
+          }))
+        : []
 
-totalAmount = firstUnit?.amount?.value
-  ? parseFloat(firstUnit.amount.value)
-  : items.reduce((s, it) => s + it.price * it.quantity, 0)
+    totalAmount = firstUnit?.amount?.value
+      ? parseFloat(firstUnit.amount.value)
+      : items.reduce((s, it) => s + it.price * it.quantity, 0)
 
-status = capture?.status || "COMPLETED"
+    status = capture?.status || "COMPLETED"
 
-// ✅ Use metadata billing info if present, fallback to PayPal data
-billingInfo = {
-  email: metaBilling.email || customerEmail,
-  name:
-    metaBilling.name ||
-    `${capture?.payer?.name?.given_name || ""} ${capture?.payer?.name?.surname || ""}`,
-  address: metaBilling.address || capture?.payer?.address?.address_line_1,
-  city: metaBilling.city || capture?.payer?.address?.admin_area_2,
-  country:
-    metaBilling.country || capture?.payer?.address?.country_code || "Unknown",
-  payerId: capture?.payer?.payer_id,
-}
+    // ✅ Use metadata (checkout form) billing info if present, fallback to PayPal data
+    billingInfo = {
+      email: metaBilling.email || customerEmail,
+      name:
+        metaBilling.name ||
+        `${capture?.payer?.name?.given_name || ""} ${capture?.payer?.name?.surname || ""}`,
+      address: metaBilling.address || capture?.payer?.address?.address_line_1,
+      city: metaBilling.city || capture?.payer?.address?.admin_area_2,
+      country:
+        metaBilling.country || capture?.payer?.address?.country_code || "Unknown",
+      payerId: capture?.payer?.payer_id,
+    }
   }
 
   // ✅ Save order in DB

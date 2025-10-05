@@ -30,5 +30,6 @@ export default async function PayPalReturn({
   }
 
   // ✅ If successful, redirect without try/catch
-  return redirect(`/checkout/success?session_id=${orderId}`)
+  const meta = searchParams?.meta ? `&meta=${encodeURIComponent(searchParams.meta)}` : ""
+  return redirect(`/checkout/success?session_id=${orderId}${meta}`)
 }
