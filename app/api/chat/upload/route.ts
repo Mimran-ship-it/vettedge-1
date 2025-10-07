@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
-import { promises as fs } from "fs";
+// We will forward uploads directly to Cloudinary to avoid storing files locally
 
 export const dynamic = "force-dynamic";
 
@@ -22,30 +21,44 @@ export async function POST(request: NextRequest) {
     const isImage = mime.startsWith("image/");
     const messageType: "image" | "file" = isImage ? "image" : "file";
 
-    // Prepare output path
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    // Forward to Cloudinary unsigned upload, mirroring admin/domains/new/page.tsx
+    // If you want to change cloud, preset, or folder, adjust below constants
+    const CLOUD_NAME = "dcday5wio"; // same as used in admin domain page
+    const UPLOAD_PRESET = "domain"; // reuse existing unsigned preset
+    const FOLDER = "chat"; // separate folder for chat uploads
 
-    const uploadDir = path.join(process.cwd(), "public", "uploads", "chat");
-    console.log("Creating upload directory:", uploadDir);
-    await fs.mkdir(uploadDir, { recursive: true });
+    const cloudForm = new FormData();
+    // Provide filename explicitly to preserve name when possible
+    cloudForm.append("file", file, (file as any).name || "upload");
+    cloudForm.append("upload_preset", UPLOAD_PRESET);
+    cloudForm.append("folder", FOLDER);
 
-    // Sanitize filename and make unique
-    const origName = file.name || `upload-${Date.now()}`;
-    const ext = path.extname(origName) || (isImage ? ".png" : "");
-    const base = path.basename(origName, ext).replace(/[^a-zA-Z0-9-_]/g, "_");
-    const filename = `${base}-${Date.now()}${ext}`;
-    const filepath = path.join(uploadDir, filename);
+    const cloudUrl = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`;
+    const cloudRes = await fetch(cloudUrl, {
+      method: "POST",
+      body: cloudForm,
+      // No credentials for unsigned uploads
+    });
 
-    console.log("Writing file to:", filepath);
-    await fs.writeFile(filepath, buffer);
+    if (!cloudRes.ok) {
+      const errText = await cloudRes.text();
+      console.error("Cloudinary upload failed:", cloudRes.status, errText);
+      return NextResponse.json({ error: "Cloud upload failed" }, { status: 502 });
+    }
 
-    const publicUrl = `/uploads/chat/${filename}`;
-    console.log("Upload successful, returning URL:", publicUrl);
+    const cloudData = await cloudRes.json();
+    const secureUrl: string | undefined = cloudData?.secure_url;
 
-    return NextResponse.json({ url: publicUrl, messageType });
+    if (!secureUrl) {
+      console.error("Cloudinary response missing secure_url:", cloudData);
+      return NextResponse.json({ error: "Invalid cloud response" }, { status: 500 });
+    }
+
+    console.log("Cloudinary upload successful, returning URL:", secureUrl);
+    return NextResponse.json({ url: secureUrl, messageType });
   } catch (err) {
     console.error("Upload error:", err);
     return NextResponse.json({ error: "Failed to upload" }, { status: 500 });
   }
 }
+
