@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { Facebook, Instagram, Mail, Phone, MapPin, Code2, Twitter } from "lucide-react"
+import { Facebook, Instagram, Mail, Phone, MapPin, Code2, Twitter, Linkedin, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 
@@ -83,6 +83,16 @@ export function Footer() {
               <Link href="#" target="_blank">
                 <Button variant="ghost" size="icon" className="hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
                   <Twitter className="w-5 h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
+                </Button>
+              </Link>
+              <Link href="https://www.linkedin.com/company/vettedge-domains/" target="_blank">
+                <Button variant="ghost" size="icon" className="hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
+                  <Linkedin className="w-5 h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
+                </Button>
+              </Link>
+              <Link href="https://whatsapp.com/channel/0029VbBLngqJpe8n9JJLzu3x" target="_blank">
+                <Button variant="ghost" size="icon" className="hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
+                  <MessageCircle className="w-5 h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
                 </Button>
               </Link>
             </div>

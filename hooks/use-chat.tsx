@@ -62,10 +62,36 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   // visibility ref (used to decide whether to increment unread)
   const isPageVisibleRef = useRef<boolean>(true);
 
+  // Track current user to detect user changes
+  const previousUserIdRef = useRef<string | null>(null);
+
   // reset dedupe when session changes
   useEffect(() => {
     processedMessageIds.current = new Set();
   }, [currentSession?._id]);
+
+  // Detect user changes and reset chat state
+  useEffect(() => {
+    const currentUserId = user?.id || null;
+    
+    // If user changed (and it's not initial mount with no user)
+    if (previousUserIdRef.current !== null && previousUserIdRef.current !== currentUserId) {
+      console.log("User changed detected. Resetting chat state.", {
+        previousUserId: previousUserIdRef.current,
+        currentUserId,
+      });
+      
+      // Clear all chat state
+      setMessages([]);
+      setCurrentSession(null);
+      setUnreadCount(0);
+      processedMessageIds.current = new Set();
+      setIsCreatingSession(false);
+    }
+    
+    // Update the ref to current user
+    previousUserIdRef.current = currentUserId;
+  }, [user?.id]);
 
   // track page visibility (do not cause re-subscribes)
   useEffect(() => {
@@ -279,6 +305,15 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     // fetch session data if available
     const sessionData = await fetchSessionData(sessionId);
     if (sessionData) {
+      // Verify session belongs to current user (for customers)
+      if (user && user.role === "customer" && sessionData.userId !== user.id) {
+        console.warn("Session userId mismatch. Session does not belong to current user.", {
+          sessionUserId: sessionData.userId,
+          currentUserId: user.id,
+        });
+        // Don't set this session - it belongs to another user
+        return;
+      }
       setCurrentSession(sessionData);
     } else {
       // fallback minimal session (safe, fully typed)
@@ -323,6 +358,18 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           console.error("Failed to create session for message:", err);
         }
       }
+      return;
+    }
+
+    // Verify session belongs to current user (for customers)
+    if (user.role === "customer" && currentSession.userId && currentSession.userId !== user.id) {
+      console.error("Session ownership mismatch. Cannot send message.", {
+        sessionUserId: currentSession.userId,
+        currentUserId: user.id,
+      });
+      // Clear the invalid session
+      setCurrentSession(null);
+      setMessages([]);
       return;
     }
 
@@ -391,6 +438,18 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           console.error("Failed to create session for attachment:", err);
         }
       }
+      return;
+    }
+
+    // Verify session belongs to current user (for customers)
+    if (user.role === "customer" && currentSession.userId && currentSession.userId !== user.id) {
+      console.error("Session ownership mismatch. Cannot send attachment.", {
+        sessionUserId: currentSession.userId,
+        currentUserId: user.id,
+      });
+      // Clear the invalid session
+      setCurrentSession(null);
+      setMessages([]);
       return;
     }
 

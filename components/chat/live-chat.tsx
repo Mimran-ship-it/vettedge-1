@@ -25,6 +25,37 @@ export function LiveChat() {
   const { toast } = useToast()
 
   const prevMessageCount = useRef(messages.length)
+  const previousUserIdRef = useRef<string | null>(null)
+
+  // Detect user changes and close chat
+  useEffect(() => {
+    const currentUserId = user?.id || null
+    
+    // If user changed (and it's not initial mount)
+    if (previousUserIdRef.current !== null && previousUserIdRef.current !== currentUserId) {
+      console.log("User changed in LiveChat. Closing chat interface.", {
+        previousUserId: previousUserIdRef.current,
+        currentUserId,
+      })
+      
+      // Close chat and clear message input
+      setIsOpen(false)
+      setIsMinimized(false)
+      setMessage("")
+    }
+    
+    // Update the ref to current user
+    previousUserIdRef.current = currentUserId
+  }, [user?.id])
+
+  useEffect(() => {
+    const handleOpenChat = () => {
+      setIsOpen(true)
+      setIsMinimized(false)
+    }
+    window.addEventListener("openLiveChat", handleOpenChat)
+    return () => window.removeEventListener("openLiveChat", handleOpenChat)
+  }, [])
 
   useEffect(() => {
     if (messages.length > prevMessageCount.current && !isOpen && (prevMessageCount.current !== 0 || messages.length === 1)) {

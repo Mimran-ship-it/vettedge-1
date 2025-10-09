@@ -224,7 +224,7 @@ View full details:`;
             </div>
           )}
           {domain.isHot && (
-            <Badge className="absolute top-2 right-2 bg-orange-500 hover:bg-orange-600 z-10">
+            <Badge className="absolute top-2 right-2 bg-orange-500 hover:bg-orange-600 z-0">
               HOT
             </Badge>
           )}

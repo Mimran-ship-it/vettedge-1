@@ -4,6 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { HelpCircle, CheckCircle } from "lucide-react"
+import Link from "next/link"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -98,9 +99,14 @@ export default function ContactPage() {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
+  const handleStartChat = () => {
+    // Dispatch custom event to open the LiveChat component
+    window.dispatchEvent(new Event("openLiveChat"))
+  }
+
   const contactMethods = [
-    { icon: Mail, title: "Email Support", description: "Get help via email", contact: "support@vettedge.domains", action: "Send Email" }, 
-    { icon: MessageSquare, title: "Live Chat", description: "Instant support available", contact: "Available 24/7", action: "Start Chat" },
+    { icon: Mail, title: "Email Support", description: "Get help via email", contact: "support@vettedge.domains", action: "Send Email", link: 'https://mail.google.com/mail/u/0/?fs=1&to=support@vettedge.domains&tf=cm', isExternal: true }, 
+    { icon: MessageSquare, title: "Live Chat", description: "Instant support available", contact: "Available 24/7", action: "Start Chat", link: '', isExternal: false },
   ]
 
   const officeInfo = [
@@ -166,9 +172,17 @@ export default function ContactPage() {
                     <h3 className="text-lg md:text-xl font-semibold text-[#33BDC7] dark:text-[#33BDC7] mb-2">{method.title}</h3>
                     <p className="text-gray-600 dark:text-gray-300 mb-3">{method.description}</p>
                     <p className="font-medium text-gray-900 dark:text-white mb-4">{method.contact}</p>
-                    <Button className="bg-[#33BDC7] hover:from-[#33BDC7]">
-                      {method.action}
-                    </Button>
+                    {method.isExternal ? (
+                      <Link href={method.link}>
+                        <Button className="bg-[#33BDC7] hover:from-[#33BDC7]">
+                          {method.action}
+                        </Button>
+                      </Link>
+                    ) : (
+                      <Button onClick={handleStartChat} className="bg-[#33BDC7] hover:from-[#33BDC7]">
+                        {method.action}
+                      </Button>
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>
@@ -324,6 +338,7 @@ export default function ContactPage() {
         </div>
       </section>
       <Footer/>
+      <LiveChat />
     </div>
   )
 }
