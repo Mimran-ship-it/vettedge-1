@@ -178,6 +178,6 @@ export default async function Success({ searchParams }) {
     })
   }
 
-  // ✅ Redirect to transfer process page
-  redirect(`/transfer-process`)
+  // ✅ Redirect to transfer process page with session ID for verification
+  redirect(`/transfer-process?session_id=${session_id}`)
 }

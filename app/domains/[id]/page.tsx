@@ -40,10 +40,12 @@ import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import { LiveChat } from "@/components/chat/live-chat"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function DomainDetailsPage() {
   const params = useParams()
   const [domain, setDomain] = useState<Domain | null>(null)
+  const [similarDomains, setSimilarDomains] = useState<Domain[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("overview")
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
@@ -57,6 +59,16 @@ export default function DomainDetailsPage() {
         const data: Domain[] = await res.json()
         const matchedDomain = data.find((d) => d._id === params?.id)
         setDomain(matchedDomain || null)
+        
+        // Fetch similar domains if we have a domain with tags
+        if (matchedDomain && matchedDomain.tags && matchedDomain.tags.length > 0) {
+          const similar = data.filter(d => 
+            d._id !== matchedDomain._id && 
+            d.tags && 
+            d.tags.some(tag => matchedDomain.tags?.includes(tag))
+          )
+          setSimilarDomains(similar)
+        }
       } catch (error) {
         console.error("Failed to fetch domain data:", error)
         setDomain(null)
@@ -284,27 +296,26 @@ export default function DomainDetailsPage() {
                           </div>
                         </div>
                         <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 rounded-lg">
-  <Clock className="h-5 w-5 text-purple-500" />
-  <div>
-    <p className="text-sm text-gray-500 dark:text-gray-300">Industry</p>
-    <div className="flex flex-wrap gap-2 mt-1">
-      {domain.tags && domain.tags.length > 0 ? (
-        domain.tags.map((tag, index) => (
-          <Badge
-            key={index}
-            variant="outline"
-            className="px-2 py-1 text-xs dark:border-gray-500 dark:text-gray-200"
-          >
-            {tag}
-          </Badge>
-        ))
-      ) : (
-        <p className="font-medium dark:text-white">N/A</p>
-      )}
-    </div>
-  </div>
-</div>
-
+                          <Clock className="h-5 w-5 text-purple-500" />
+                          <div>
+                            <p className="text-sm text-gray-500 dark:text-gray-300">Industry</p>
+                            <div className="flex flex-wrap gap-2 mt-1">
+                              {domain.tags && domain.tags.length > 0 ? (
+                                domain.tags.map((tag, index) => (
+                                  <Badge
+                                    key={index}
+                                    variant="outline"
+                                    className="px-2 py-1 text-xs dark:border-gray-500 dark:text-gray-200"
+                                  >
+                                    {tag}
+                                  </Badge>
+                                ))
+                              ) : (
+                                <p className="font-medium dark:text-white">N/A</p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
                         <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 rounded-lg">
                           <Users className="h-5 w-5 text-orange-500" />
                           <div>
@@ -533,9 +544,8 @@ export default function DomainDetailsPage() {
             </div>
           </div>
         </div>
-
-        {/* Additional Sections */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+   {/* Additional Sections */}
+   <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
           {domain?.metrics.monthlyTraffic && (
             <Card className="border-blue-100 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20 rounded-lg">
               <CardHeader>
@@ -583,6 +593,68 @@ export default function DomainDetailsPage() {
             </CardContent>
           </Card>}
         </div>
+        {/* Similar Domains Section */}
+        {similarDomains.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold mb-6 dark:text-white">Similar Domains You May Like</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {similarDomains.map((similarDomain) => (
+                <Card key={similarDomain._id} className="overflow-hidden transition-all hover:shadow-lg dark:bg-gray-800 dark:border-gray-700">
+                  <div className="relative h-40">
+                    <Image
+                      src={similarDomain.image?.[0] || "/placeholder.png"}
+                      alt={similarDomain.name}
+                      fill
+                      className="object-cover"
+                    />
+                    {similarDomain.isSold && (
+                      <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+                        <Badge variant="destructive" className="text-white">SOLD</Badge>
+                      </div>
+                    )}
+                  </div>
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="font-bold text-lg dark:text-white">{similarDomain.name}</h3>
+                      {similarDomain.isHot && (
+                        <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white border-0">
+                          <Zap className="h-3 w-3 mr-1" /> HOT
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">
+                      {similarDomain.description}
+                    </p>
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {similarDomain.tags && similarDomain.tags.slice(0, 2).map((tag, idx) => (
+                        <Badge key={idx} variant="outline" className="text-xs dark:border-gray-600 dark:text-gray-300">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <span className="text-lg font-bold dark:text-white">${similarDomain.price.toLocaleString()}</span>
+                        {similarDomain.Actualprice > similarDomain.price && (
+                          <span className="text-sm text-gray-500 dark:text-gray-400 line-through ml-2">
+                            ${similarDomain.Actualprice.toLocaleString()}
+                          </span>
+                        )}
+                      </div>
+                      <Link href={`/domains/${similarDomain._id}`}>
+                        <Button size="sm" variant="outline" className="dark:border-gray-600 dark:hover:bg-gray-700">
+                          View Details
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+     
       </main>
       <Footer />
       <LiveChat />
