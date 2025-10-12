@@ -35,7 +35,7 @@ Thank you for your purchase from Vettedge Domains! We're excited to help you get
 Order Number: ${orderNumber}
 
 Order Details:
-${items.map((item, index) => `
+${items.map((item: { name: any; price: any; quantity: any }, index: number) => `
 ${index + 1}. ${item.name}
    Price: $${item.price}
    Quantity: ${item.quantity}
@@ -74,7 +74,7 @@ The Vettedge Team
       </tr>
     </thead>
     <tbody>
-      ${items.map((item, index) => `
+      ${items.map((item: { name: any; price: any; quantity: any }, index: number) => `
         <tr>
           <td style="padding: 12px; border-bottom: 1px solid #ddd;">${index + 1}. ${item.name}</td>
           <td style="padding: 12px; border-bottom: 1px solid #ddd;">$${item.price}</td>

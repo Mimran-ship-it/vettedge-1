@@ -69,7 +69,7 @@ export function AdminDashboard() {
           price: sale.totalAmount,
           customer: sale.customerEmail,
           date: sale.createdAt,
-          status: sale.paymentStatus === "complete" ? "completed" : 
+          status: sale.paymentStatus === "COMPLETED" ? "COMPLETED" : 
                  sale.paymentStatus === "pending" ? "pending" : 
                  sale.paymentStatus
         }))
@@ -195,7 +195,6 @@ export function AdminDashboard() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'COMPLETED':
-      case 'complete': // Added to handle API response
         return <CheckCircle className="h-4 w-4 text-green-600" />
       case 'pending':
         return <Clock className="h-4 w-4 text-yellow-600" />

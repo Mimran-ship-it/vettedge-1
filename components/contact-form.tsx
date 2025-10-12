@@ -55,42 +55,42 @@ export default function ContactForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    // Basic validation
-    if (!formData.name.trim() || !formData.email.trim() || !formData.subject.trim() || !formData.message.trim()) {
-      if (variant === "home") {
-        useToastHook({
-          title: "Validation Error",
-          description: "Please fill in all required fields.",
-          variant: "destructive"
-        })
-      } else {
-        toast.error("Please fill in all required fields")
-      }
-      return
+    // Detailed validation with specific error messages
+    const errors: string[] = []
+    
+    if (!formData.name.trim()) {
+      errors.push("Name is required")
     }
-
-    if (formData.subject.trim().length < 3) {
-      if (variant === "home") {
-        useToastHook({
-          title: "Validation Error", 
-          description: "Subject must be at least 3 characters long.",
-          variant: "destructive"
-        })
-      } else {
-        toast.error("Subject must be at least 3 characters long")
-      }
-      return
+    
+    if (!formData.email.trim()) {
+      errors.push("Email is required")
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.push("Please enter a valid email address")
     }
-
-    if (formData.message.trim().length < 10) {
+    
+    if (!formData.subject.trim()) {
+      errors.push("Subject is required")
+    } else if (formData.subject.trim().length < 3) {
+      errors.push("Subject must be at least 3 characters long")
+    }
+    
+    if (!formData.message.trim()) {
+      errors.push("Message is required")
+    } else if (formData.message.trim().length < 10) {
+      errors.push(`Message is too short (${formData.message.trim().length}/10 characters minimum)`)
+    }
+    
+    // If there are validation errors, show them
+    if (errors.length > 0) {
+      const errorMessage = errors.join(". ")
       if (variant === "home") {
         useToastHook({
-          title: "Validation Error",
-          description: "Message must be at least 10 characters long.",
+          title: "Please complete the form",
+          description: errorMessage,
           variant: "destructive"
         })
       } else {
-        toast.error("Message must be at least 10 characters long")
+        toast.error(errorMessage)
       }
       return
     }
@@ -321,12 +321,31 @@ export default function ContactForm({
               value={formData.message}
               onChange={handleInputChange}
               required
-              className={`${getInputStyles()} min-h-32`}
+              className={`${getInputStyles()} min-h-32 ${
+                formData.message.trim().length > 0 && formData.message.trim().length < 10 
+                  ? 'border-red-500 focus:border-red-500' 
+                  : ''
+              }`}
               maxLength={2000}
               rows={variant === "contact" ? 6 : variant === "home" ? 5 : 4}
             />
-            <div className="text-right text-sm text-gray-500">
-              {formData.message.length}/2000 characters
+            <div className="flex justify-between text-sm">
+              <span className={`${
+                formData.message.trim().length > 0 && formData.message.trim().length < 10
+                  ? 'text-red-500 font-medium'
+                  : formData.message.trim().length >= 10
+                  ? 'text-green-600'
+                  : 'text-gray-500'
+              }`}>
+                {formData.message.trim().length > 0 && formData.message.trim().length < 10
+                  ? `Minimum 10 characters (${10 - formData.message.trim().length} more needed)`
+                  : formData.message.trim().length >= 10
+                  ? '✓ Message length is good'
+                  : 'Minimum 10 characters required'}
+              </span>
+              <span className="text-gray-500">
+                {formData.message.length}/2000
+              </span>
             </div>
           </div>
 

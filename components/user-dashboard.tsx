@@ -98,7 +98,7 @@ export function UserDashboard() {
   // Calculate order statistics from fetched orders
   const orderStats = {
     total: orders.length,
-    completed: orders.filter(order => order.paymentStatus === 'complete').length,
+    completed: orders.filter(order => order.paymentStatus === 'COMPLETED').length,
     pending: orders.filter(order => order.paymentStatus === 'pending').length,
     domainTransferCompleted: orders.filter(order => order.domainTransfer === 'completed').length,
     domainTransferPending: orders.filter(order => order.domainTransfer === 'pending').length,
@@ -237,8 +237,7 @@ export function UserDashboard() {
   
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'completed':
-      case 'complete':
+      case 'COMPLETED':
         return <CheckCircle className="h-4 w-4 text-green-600" />
       case 'pending':
         return <Clock className="h-4 w-4 text-yellow-600" />

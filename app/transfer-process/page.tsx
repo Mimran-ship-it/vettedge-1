@@ -222,9 +222,14 @@ export default function TransferProcessPage() {
                       </p>
                     </div>
                   </div>
-                  <Badge className="bg-[#3BD17A] text-white hover:bg-[#3BD17A]/90 text-sm px-4 py-2">
-                    {latestOrder.domainTransfer}
-                  </Badge>
+                  <div className="flex items-center gap-2">
+    <h4 className="text-lg font-semibold text-[#33BDC7] dark:text-[#33BDC7]">
+      Domain Transfer:
+    </h4>
+    <Badge className="bg-[#3BD17A] text-white hover:bg-[#3BD17A]/90 text-sm px-4 py-2">
+      {latestOrder.domainTransfer}
+    </Badge>
+  </div>
                 </div>
               </CardHeader>
               <CardContent className="p-6">

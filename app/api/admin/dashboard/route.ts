@@ -115,7 +115,7 @@ export async function GET(request: NextRequest) {
                 _id: null,
                 totalOrders: { $sum: 1 },
                 completedOrders: {
-                  $sum: { $cond: [{ $eq: ["$paymentStatus", "complete"] }, 1, 0] }
+                  $sum: { $cond: [{ $eq: ["$paymentStatus", "COMPLETED"] }, 1, 0] }
                 },
                 pendingOrders: {
                   $sum: { $cond: [{ $eq: ["$paymentStatus", "pending"] }, 1, 0] }
@@ -123,7 +123,7 @@ export async function GET(request: NextRequest) {
                 totalRevenue: {
                   $sum: {
                     $cond: [
-                      { $eq: ["$paymentStatus", "complete"] },
+                      { $eq: ["$paymentStatus", "COMPLETED"] },
                       "$totalAmount",
                       0
                     ]
@@ -167,7 +167,7 @@ export async function GET(request: NextRequest) {
           const result = await Order.aggregate([
             {
               $match: {
-                paymentStatus: "complete",
+                paymentStatus: "COMPLETED",
                 createdAt: { $gte: startOfMonth, $lte: endOfMonth }
               }
             },
@@ -193,7 +193,7 @@ export async function GET(request: NextRequest) {
           const result = await Order.aggregate([
             {
               $match: {
-                paymentStatus: "complete",
+                paymentStatus: "COMPLETED",
                 createdAt: { $gte: startOfLastMonth, $lte: endOfLastMonth }
               }
             },

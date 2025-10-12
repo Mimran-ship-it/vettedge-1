@@ -185,7 +185,7 @@ export default function AdminOrdersPage() {
 
   const getStatusBadge = (status: string) => {
     const variants = {
-      complete: "default",
+      COMPLETED: "default",
       pending: "secondary",
       cancelled: "destructive",
       failed: "destructive",
@@ -287,9 +287,9 @@ export default function AdminOrdersPage() {
                     onChange={(e) => setStatusFilter(e.target.value)}
                     className="px-3 py-2 border border-input bg-background rounded-md text-sm"
                   >
-                    <option value="all">All Payment </option>
+                    <option value="all">All Payment Status</option>
                     <option value="pending">Pending</option>
-                    <option value="complete">Complete</option>
+                    <option value="COMPLETED">Completed</option>
                     <option value="cancelled">Cancelled</option>
                     <option value="failed">Failed</option>
                   </select>

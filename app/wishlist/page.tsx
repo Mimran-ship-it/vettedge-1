@@ -58,14 +58,24 @@ export default function WishlistPage() {
 
         const freshDomains = await res.json()
 
-        // Filter domains to only include those that are in the wishlist
-        const domainsInWishlist = freshDomains.filter((domain: Domain) =>
-          ids.includes(domain._id)
-        )
+        // Separate available and unavailable domains
+        const available: Domain[] = []
+        const unavailable: Domain[] = []
 
-        // Find IDs that didn't return a domain (deleted or sold)
-        const unavailableIds = ids.filter(id => !domainsInWishlist.some((fetched: Domain) => fetched._id === id))
-        const unavailable: Domain[] = unavailableIds.map((id: string) => ({
+        freshDomains.forEach((domain: Domain) => {
+          if (ids.includes(domain._id)) {
+            // Check if domain is sold or not available
+            if (domain.isSold || !domain.isAvailable) {
+              unavailable.push(domain)
+            } else {
+              available.push(domain)
+            }
+          }
+        })
+
+        // Find IDs that didn't return a domain (deleted)
+        const missingIds = ids.filter(id => !freshDomains.some((fetched: Domain) => fetched._id === id))
+        const missingDomains: Domain[] = missingIds.map((id: string) => ({
           _id: id,
           name: "Unavailable domain",
           description: "This domain is no longer available.",
@@ -96,8 +106,8 @@ export default function WishlistPage() {
           updatedAt: new Date().toISOString(),
         } as Domain))
 
-        setDomains(domainsInWishlist)
-        setUnavailableDomains(unavailable)
+        setDomains(available)
+        setUnavailableDomains([...unavailable, ...missingDomains])
       } catch (error) {
         console.error('Error fetching wishlist domains:', error)
         // Fallback: show nothing but keep count
