@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useAuth } from "@/hooks/use-auth"
 import { ArrowLeft } from "lucide-react"
+import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar"
 
 interface Order {
   _id: string
@@ -72,7 +73,7 @@ export function UserDashboard() {
         const ordersData = await ordersResponse.json()
         // Filter orders by user email
         const userOrders = user?.email 
-          ? (ordersData.orders || []).filter(order => order.customerEmail === user.email)
+          ? (ordersData.orders || []).filter((order: Order) => order.customerEmail === user.email)
           : [];
         setOrders(userOrders)
       } else {
@@ -266,18 +267,15 @@ export function UserDashboard() {
   }
   
   return (
-    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-      <div className="flex items-center justify-between space-y-2">
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={() => router.back()}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            <ArrowLeft className="h-6 w-6 text-gray-700" />
-          </button>
-          <h2 className="text-3xl font-bold tracking-tight">Welcome back, {user?.name || 'User'}</h2>
+    <div className="flex min-h-screen">
+      <DashboardSidebar />
+      <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+        <div className="flex items-center justify-between space-y-2">
+          <div className="flex flex-col space-y-1">
+            <h2 className="text-3xl font-bold tracking-tight">Welcome back, {user?.name || 'User'}</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{user?.email}</p>
+          </div>
         </div>
-      </div>
       
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -401,6 +399,7 @@ export function UserDashboard() {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   )
 }

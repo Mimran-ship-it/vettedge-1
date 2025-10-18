@@ -56,8 +56,35 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
   
   const [isHot, setIsHot] = useState<boolean>(currentFilters.isHot)
   
-  const tlds = [".com", ".net", ".org", ".io", ".co", ".ai"]
+  const [tlds, setTlds] = useState<string[]>([])
+  const [tldsLoading, setTldsLoading] = useState(true)
   
+  // Fetch TLDs from backend on mount
+  useEffect(() => {
+    const fetchTlds = async () => {
+      try {
+        setTldsLoading(true)
+        const res = await fetch('/api/domains/tlds')
+        if (res.ok) {
+          const data = await res.json()
+          setTlds(data.tlds || [])
+        } else {
+          console.error('Failed to fetch TLDs')
+          // Fallback to some common TLDs if API fails
+          setTlds([".com", ".net", ".org", ".io", ".co", ".ai"])
+        }
+      } catch (error) {
+        console.error('Error fetching TLDs:', error)
+        // Fallback to some common TLDs if API fails
+        setTlds([".com", ".net", ".org", ".io", ".co", ".ai"])
+      } finally {
+        setTldsLoading(false)
+      }
+    }
+
+    fetchTlds()
+  }, [])
+
   // Handle URL parameters on first mount
   useEffect(() => {
     if (!firstMount.current) return
@@ -283,19 +310,31 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
         {/* TLD Filter */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700 dark:text-gray-300">Domain Extension</Label>
-          <div className="grid grid-cols-2 gap-2 dark:bg-gray-800 p-2 rounded-md">
-            {tlds.map((tld) => (
-              <div key={tld} className="flex items-center space-x-2">
-                <Checkbox
-                  id={tld}
-                  checked={selectedTlds.includes(tld)}
-                  onCheckedChange={(checked) => handleTldChange(tld, checked as boolean)}
-                  className="dark:border-gray-600 dark:bg-gray-700"
-                />
-                <Label htmlFor={tld} className="text-sm text-gray-600 dark:text-gray-300">{tld}</Label>
-              </div>
-            ))}
-          </div>
+          {tldsLoading ? (
+            <div className="dark:bg-gray-800 p-4 rounded-md text-center">
+              <span className="text-sm text-gray-500 dark:text-gray-400">Loading extensions...</span>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto dark:bg-gray-800 p-2 rounded-md">
+              {tlds.length > 0 ? (
+                tlds.map((tld) => (
+                  <div key={tld} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={tld}
+                      checked={selectedTlds.includes(tld)}
+                      onCheckedChange={(checked) => handleTldChange(tld, checked as boolean)}
+                      className="dark:border-gray-600 dark:bg-gray-700"
+                    />
+                    <Label htmlFor={tld} className="text-sm text-gray-600 dark:text-gray-300">{tld}</Label>
+                  </div>
+                ))
+              ) : (
+                <div className="col-span-2 text-center text-sm text-gray-500 dark:text-gray-400 p-2">
+                  No extensions available
+                </div>
+              )}
+            </div>
+          )}
         </div>
         
         {/* Availability */}

@@ -25,6 +25,12 @@ import {
   Eye,
   Share2,
 } from "lucide-react"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import type { Domain } from "@/types/domain"
 import { useCart } from "@/components/providers/cart-provider"
 import { useWishlist } from "@/components/providers/wishlist-provider"
@@ -77,7 +83,7 @@ export function DomainCard({ domain }: DomainCardProps) {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
   const { toast } = useToast()
   const isWishlisted = isInWishlist(domain._id)
-  
+
   const handleAddToCart = () => {
     if (domain.isSold || !domain.isAvailable) {
       toast({
@@ -99,7 +105,7 @@ export function DomainCard({ domain }: DomainCardProps) {
       description: `${domain.name} has been added to your cart.`,
     })
   }
-  
+
   const handleBuyNow = () => {
     if (domain.isSold || !domain.isAvailable) {
       toast({
@@ -128,7 +134,7 @@ export function DomainCard({ domain }: DomainCardProps) {
       router.push("/checkout")
     }
   }
-  
+
   const handleWishlistToggle = () => {
     if (isWishlisted) {
       removeFromWishlist(domain._id)
@@ -144,10 +150,10 @@ export function DomainCard({ domain }: DomainCardProps) {
       })
     }
   }
-  
+
   const handleShare = async () => {
     const url = `${window.location.origin}/domains/${domain._id}`;
-    
+
     // Create shareable text with all key domain information
     const shareText = `Check out this premium domain: ${domain.name}
 Key Metrics:
@@ -165,7 +171,7 @@ Price: $${domain.price.toLocaleString()} ${domain.Actualprice > domain.price ? `
 Registrar: ${domain.registrar}
 Status: ${domain.isAvailable ? 'Available' : 'Unavailable'} ${domain.isSold ? '(SOLD)' : ''}
 View full details:`;
-    
+
     if (navigator.share) {
       try {
         await navigator.share({
@@ -198,7 +204,7 @@ View full details:`;
       }
     }
   };
-  
+
   return (
     <Card className={cn(
       "relative group hover:shadow-sm hover:rounded-xl transition-all duration-300 overflow-hidden flex flex-col w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700",
@@ -230,7 +236,7 @@ View full details:`;
           )}
         </div>
       )}
-      
+
       <div className="flex flex-col flex-1 p-3 sm:p-4">
         {/* Domain Name */}
         <CardHeader className="p-0 pb-2 sm:pb-3">
@@ -268,7 +274,7 @@ View full details:`;
             </div>
           </div>
         </CardHeader>
-        
+
         <CardContent className="p-0 space-y-2 sm:space-y-3 flex-1 flex flex-col">
           {/* Provider/Status Row */}
           <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600 dark:text-gray-300">
@@ -290,7 +296,7 @@ View full details:`;
               <span className="truncate">{domain.registrar}</span>
             </div>
           </div>
-          
+
           {/* Price & Availability */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
             <div className="flex items-center gap-1">
@@ -310,7 +316,7 @@ View full details:`;
               {domain.isAvailable ? "Available" : "Unavailable"}
             </Badge>
           </div>
-          
+
           {/* Enhanced Overall Score Section */}
           <div className="mb-3 sm:mb-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 border border-blue-100 dark:border-blue-800">
             <div className="flex items-center justify-between mb-2">
@@ -330,7 +336,7 @@ View full details:`;
                 </div>
               </div>
             </div>
-            
+
             {/* Desktop Score Description */}
             <div className="  text-xs text-gray-600 dark:text-gray-300">
               {domain.metrics.score >= 80 ? (
@@ -343,7 +349,7 @@ View full details:`;
                 <span className="text-orange-600 dark:text-orange-400 font-medium">Developing domain score</span>
               )}
             </div>
-            
+
             {/* Mobile Score Indicator */}
             {/* <div className="sm:hidden flex items-center justify-between mt-2">
               <div className="flex-1 mr-2">
@@ -361,62 +367,139 @@ View full details:`;
               </span>
             </div> */}
           </div>
-          
-          {/* SEO & Domain Metrics - Updated for Mobile */}
-          <div className="grid grid-cols-3 gap-1 sm:gap-3 text-[10px] sm:text-xs">
-            {/* Column 1 */}
-            <div className="space-y-1 sm:space-y-2">
-              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
-                <TrendingUp className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                <span>DR: {domain.metrics.domainRank}</span>
+
+          <TooltipProvider>
+            <div className="grid grid-cols-3 gap-1 sm:gap-3 text-[10px] sm:text-xs">
+              {/* Column 1 */}
+              <div className="space-y-1 sm:space-y-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                      <TrendingUp className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                      <span>DR: {domain.metrics.domainRank}</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="font-semibold">Domain Rank (DR)</p>
+                    <p className="text-xs text-gray-500">Measures the strength of a website's backlink profile</p>
+                  </TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                      <Activity className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                      <span>TF: {domain.metrics.trustFlow}</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="font-semibold">Trust Flow (TF)</p>
+                    <p className="text-xs text-gray-500">Measures the quality of backlinks based on trustworthiness</p>
+                  </TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                      <LinkIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                      <span>{domain.metrics.authorityLinks.length} ALs</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="font-semibold">Authority Links (ALs)</p>
+                    <p className="text-xs text-gray-500">Number of high-quality backlinks from authoritative domains</p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
-             
-              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
-                <Activity className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                <span>TF: {domain.metrics.trustFlow}</span>
+
+              {/* Column 2 */}
+              <div className="space-y-1 sm:space-y-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                      <LinkIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                      <span>{domain.metrics.referringDomains} RDs</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="font-semibold">Referring Domains (RDs)</p>
+                    <p className="text-xs text-gray-500">Total number of unique domains linking to this website</p>
+                  </TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                      <Flag className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                      <span>CF: {domain.metrics.citationFlow}</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="font-semibold">Citation Flow (CF)</p>
+                    <p className="text-xs text-gray-500">Measures the quantity of backlinks pointing to the domain</p>
+                  </TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                      <Hourglass className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                      <span>{domain.metrics.age} yrs</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="font-semibold">Domain Age</p>
+                    <p className="text-xs text-gray-500">Number of years since the domain was first registered</p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
-              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
-                <LinkIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                <span>{domain.metrics.authorityLinks.length} ALs</span>
+
+              {/* Column 3 */}
+              <div className="space-y-1 sm:space-y-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                      <Building className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                      <span>DA: {domain.metrics.domainAuthority}</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="font-semibold">Domain Authority (DA)</p>
+                    <p className="text-xs text-gray-500">Predicts how well a domain will rank on search engines</p>
+                  </TooltipContent>
+                </Tooltip>
+
+                {domain.type === "traffic" && domain.metrics.monthlyTraffic && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                        <Globe className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                        <span>{domain.metrics.monthlyTraffic.toLocaleString()}</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="font-semibold">Monthly Traffic</p>
+                      <p className="text-xs text-gray-500">Estimated number of monthly visitors to the domain</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                      <Languages className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                      <span>{domain.metrics.language}</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="font-semibold">Primary Language</p>
+                    <p className="text-xs text-gray-500">Main language of the domain's content and audience</p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
             </div>
-            
-            {/* Column 2 */}
-            <div className="space-y-1 sm:space-y-2">
-              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
-                <LinkIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                <span>{domain.metrics.referringDomains} RDs</span>
-              </div>
-              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
-                <Flag className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                <span>CF: {domain.metrics.citationFlow}</span>
-              </div>
-              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
-                <Hourglass className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                <span>{domain.metrics.age} yrs</span>
-              </div>
-            </div>
-            
-            {/* Column 3 */}
-            
-            <div className="space-y-1 sm:space-y-2">
-            <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
-                <Building className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                <span>DA: {domain.metrics.domainAuthority}</span>
-              </div>
-              {domain.type === "traffic" && domain.metrics.monthlyTraffic && (
-                <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
-                  <Globe className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                  <span>{domain.metrics.monthlyTraffic.toLocaleString()}</span>
-                </div>
-              )}
-              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
-                <Languages className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                <span>{domain.metrics.language}</span>
-              </div>
-            </div>
-          </div>
-          
+          </TooltipProvider>
+
           {/* Tags */}
           {domain.tags?.length > 0 && (
             <div className="flex flex-wrap gap-1 pt-1">

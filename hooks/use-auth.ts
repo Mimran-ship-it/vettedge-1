@@ -7,7 +7,16 @@ export interface User {
   id: string
   name: string
   email: string
+  image?: string
   role: "admin" | "customer"
+  billingAddress?: {
+    address: string
+    city: string
+    state: string
+    zipCode: string
+    country: string
+    phone: string
+  }
 }
 
 interface AuthContextType {

@@ -22,6 +22,14 @@ export default function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [acceptTerms, setAcceptTerms] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [billingAddress, setBillingAddress] = useState({
+    address: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    country: "",
+    phone: "",
+  })
 
   const { user, signInWithGoogle } = useAuth()
   const { toast } = useToast()
@@ -62,7 +70,7 @@ export default function SignUpPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, password, billingAddress }),
       })
 
       const data = await res.json()
@@ -190,6 +198,79 @@ export default function SignUpPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="dark:text-gray-200 text-base font-semibold">Billing Address (Optional)</Label>
+              <p className="text-sm text-gray-500 dark:text-gray-400">This will be used as default for checkout</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="phone" className="dark:text-gray-200">Phone</Label>
+              <Input
+                id="phone"
+                type="tel"
+                placeholder="Enter your phone number"
+                value={billingAddress.phone}
+                onChange={(e) => setBillingAddress({...billingAddress, phone: e.target.value})}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="address" className="dark:text-gray-200">Address</Label>
+              <Input
+                id="address"
+                type="text"
+                placeholder="Enter your street address"
+                value={billingAddress.address}
+                onChange={(e) => setBillingAddress({...billingAddress, address: e.target.value})}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="city" className="dark:text-gray-200">City</Label>
+                <Input
+                  id="city"
+                  type="text"
+                  placeholder="City"
+                  value={billingAddress.city}
+                  onChange={(e) => setBillingAddress({...billingAddress, city: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="state" className="dark:text-gray-200">State</Label>
+                <Input
+                  id="state"
+                  type="text"
+                  placeholder="State"
+                  value={billingAddress.state}
+                  onChange={(e) => setBillingAddress({...billingAddress, state: e.target.value})}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="zipCode" className="dark:text-gray-200">ZIP Code</Label>
+                <Input
+                  id="zipCode"
+                  type="text"
+                  placeholder="ZIP Code"
+                  value={billingAddress.zipCode}
+                  onChange={(e) => setBillingAddress({...billingAddress, zipCode: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="country" className="dark:text-gray-200">Country</Label>
+                <Input
+                  id="country"
+                  type="text"
+                  placeholder="Country"
+                  value={billingAddress.country}
+                  onChange={(e) => setBillingAddress({...billingAddress, country: e.target.value})}
+                />
+              </div>
             </div>
 
             <div className="flex items-center space-x-2">

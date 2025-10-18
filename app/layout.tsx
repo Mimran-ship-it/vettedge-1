@@ -50,9 +50,7 @@ export default function RootLayout({
       <head>
         {/* ✅ Add favicon here */}
         <link rel="icon" href="/shihlogo.png" sizes="any"  />
-       {/* { <!-- TrustBox script -->} */}
-<script type="text/javascript" src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js" async></script>
-{/* <!-- End TrustBox script --> */}
+       
       </head>
       <body className={inter.className}>
         <SocketInitializer />
@@ -71,11 +69,7 @@ export default function RootLayout({
                     {children}
                  
                     <LiveChat />
-                       {/* <!-- TrustBox widget - Review Collector --> */}
-<div className="trustpilot-widget" data-locale="en-GB" data-template-id="56278e9abfbbba0bdcd568bc" data-businessunit-id="68e8254f4257ef8404e61249" data-style-height="52px" data-style-width="100%" data-token="87a62d8c-4680-45b5-b69a-df54c620cd39">
-  <a href="https://uk.trustpilot.com/review/vettedge.domains" target="_blank" rel="noopener">Trustpilot</a>
-</div>
-{/* <!-- End TrustBox widget --> */}
+                    
                   </WishlistProvider>
                 </StripeProvider>
                 <Script

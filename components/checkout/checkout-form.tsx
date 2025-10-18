@@ -37,19 +37,31 @@ export function CheckoutForm() {
     clearCart: () => void
   }
   const { user } = useAuth() as {
-    user: { id: string; name: string; email: string } | null
+    user: { 
+      id: string; 
+      name: string; 
+      email: string;
+      billingAddress?: {
+        address: string;
+        city: string;
+        state: string;
+        zipCode: string;
+        country: string;
+        phone: string;
+      }
+    } | null
   }
   
   const [billingInfo, setBillingInfo] = useState<BillingInfo>({
     firstName: user?.name?.split(" ")[0] || "",
     lastName: user?.name?.split(" ")[1] || "",
     email: user?.email || "",
-    phone: "",
-    address: "",
-    city: "",
-    state: "",
-    zipCode: "",
-    country: "",
+    phone: user?.billingAddress?.phone || "",
+    address: user?.billingAddress?.address || "",
+    city: user?.billingAddress?.city || "",
+    state: user?.billingAddress?.state || "",
+    zipCode: user?.billingAddress?.zipCode || "",
+    country: user?.billingAddress?.country || "",
   })
 
   // State to track form validity
@@ -80,6 +92,23 @@ export function CheckoutForm() {
     }
     verifyPrices()
   }, [items, clearCart])
+
+  // Load user billing address when user data is available
+  useEffect(() => {
+    if (user) {
+      setBillingInfo({
+        firstName: user.name?.split(" ")[0] || "",
+        lastName: user.name?.split(" ")[1] || "",
+        email: user.email || "",
+        phone: user.billingAddress?.phone || "",
+        address: user.billingAddress?.address || "",
+        city: user.billingAddress?.city || "",
+        state: user.billingAddress?.state || "",
+        zipCode: user.billingAddress?.zipCode || "",
+        country: user.billingAddress?.country || "",
+      })
+    }
+  }, [user])
 
   // Check form validity whenever billingInfo changes
   useEffect(() => {

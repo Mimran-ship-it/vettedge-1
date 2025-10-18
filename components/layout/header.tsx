@@ -28,6 +28,7 @@ export function Header() {
   
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
+    console.log('user',user)
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden'
     } else {
@@ -46,8 +47,19 @@ export function Header() {
   const renderUserMenu = () => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm">
-          <User className="h-5 w-5" />
+        <Button variant="ghost" size="sm" className="flex items-center gap-2">
+          {user?.image ? (
+            <div className="relative h-7 w-7 rounded-full overflow-hidden border-2 border-gray-200 dark:border-gray-700">
+              <Image
+                src={user.image}
+                alt={user.name}
+                fill
+                className="object-cover"
+              />
+            </div>
+          ) : (
+            <User className="h-5 w-5" />
+          )}
           <span className="ml-2 hidden sm:inline">{user?.name}</span>
         </Button>
       </DropdownMenuTrigger>
@@ -65,7 +77,12 @@ export function Header() {
                 <Link href="/dashboard" className={linkClass("/dashboard")}>Dashboard</Link>
               </DropdownMenuItem>
             }
-        
+            
+            {user?.role != "admin" &&    
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/settings" className={linkClass("/dashboard/settings")}>Account Settings</Link>
+              </DropdownMenuItem>
+            }
             <DropdownMenuItem asChild>
               <Link href="/wishlist" className={linkClass("/wishlist")}>Wishlist</Link>
             </DropdownMenuItem>
@@ -155,11 +172,11 @@ export function Header() {
                 </Button>
               </Link>
               
-              {/* Desktop Profile or Auth Buttons - Hidden on mobile */}
-              <div className="hidden md:flex items-center space-x-2">
+              {/* Profile or Auth Buttons */}
+              <div className="flex items-center space-x-2">
                 {loading ? (
                   <span className="flex items-center text-gray-500 dark:text-gray-400 text-sm ms-4">
-                    Loading
+                    <span className="hidden sm:inline">Loading</span>
                     <span className="ml-1 flex space-x-1">
                       <span className="w-1 h-1 bg-gray-500 dark:bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
                       <span className="w-1 h-1 bg-gray-500 dark:bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
@@ -169,7 +186,7 @@ export function Header() {
                 ) : user ? (
                   renderUserMenu()
                 ) : (
-                  <>
+                  <div className="hidden md:flex items-center space-x-2">
                     <Button variant="ghost" size="sm" asChild>
                       <Link href="/auth/signin" className={linkClass("/auth/signin")}>
                         Sign In
@@ -180,7 +197,7 @@ export function Header() {
                         Sign Up
                       </Link>
                     </Button>
-                  </>
+                  </div>
                 )}
               </div>
               
@@ -290,7 +307,7 @@ export function Header() {
                     </div>
                     <div className="flex flex-col space-y-3">
                       <Link href="/dashboard" className={linkClass("/dashboard")} onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
-                      
+                      <Link href="/dashboard/settings" className={linkClass("/dashboard/settings")} onClick={() => setIsMenuOpen(false)}>Account Settings</Link>
                       <Link href="/wishlist" className={linkClass("/wishlist")} onClick={() => setIsMenuOpen(false)}>Wishlist</Link>
                       {user?.role === "admin" && (
                         <Link href="/admin" className={linkClass("/admin")} onClick={() => setIsMenuOpen(false)}>Admin Panel</Link>

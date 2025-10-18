@@ -11,12 +11,30 @@ export const authOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+          scope: "openid email profile", // Ensure profile scope is included
+        },
+      },
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture, // Google provides 'picture' field
+        }
+      },
     }),
   ],
 
   callbacks: {
     // Runs whenever a user signs in
-    async signIn({ user }) {
+    async signIn({ user, account, profile }: any) {
+      console.log("Google Sign In - User:", user)
+      console.log("Google Sign In - Profile:", profile)
       await connectDB()
 
       // Try to find existing user in DB
@@ -24,12 +42,21 @@ export const authOptions = {
 
       // If user doesn't exist → create them
       if (!dbUser) {
+        console.log("Creating new user with image:", user.image)
         dbUser = await UserModel.create({
           name: user.name || "Unknown User",
           email: user.email || "",
+          image: user.image, // Save Google profile picture
           oauthProvider: "google",
           role: "customer", // default role
         })
+      } else {
+        // Always update the image if Google provides one (in case it changed)
+        if (user.image && user.image !== dbUser.image) {
+          console.log("Updating user image:", user.image)
+          dbUser.image = user.image
+          await dbUser.save()
+        }
       }
 
       // ✅ Generate JWT including role

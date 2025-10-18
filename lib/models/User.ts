@@ -6,7 +6,16 @@ export interface IUser extends Document {
   email: string;
   password?: string; // optional for OAuth users
   oauthProvider?: "google"; // track how user signed up
+  image?: string; // profile picture URL from OAuth or uploaded
   role: "admin" | "customer";
+  billingAddress?: {
+    address: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+    phone: string;
+  };
   createdAt?: Date;
   lastLogin?: Date;
   pushSubscription?: any;
@@ -41,6 +50,9 @@ const UserSchema = new Schema<IUser>({
     type: String,
     enum: ["google"],
   },
+  image: {
+    type: String,
+  },
   role: {
     type: String,
     enum: ["admin", "customer"],
@@ -55,6 +67,14 @@ const UserSchema = new Schema<IUser>({
   },
   pushSubscription: {
     type: Schema.Types.Mixed,
+  },
+  billingAddress: {
+    address: { type: String },
+    city: { type: String },
+    state: { type: String },
+    zipCode: { type: String },
+    country: { type: String },
+    phone: { type: String },
   },
 });
 

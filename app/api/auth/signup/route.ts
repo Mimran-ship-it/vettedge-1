@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB()
 
-    const { name, email, password } = await request.json()
+    const { name, email, password, billingAddress } = await request.json()
 
     // Validate fields
     if (!name || !email || !password) {
@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
       email,
       password: hashedPassword,
       role: "customer",
+      billingAddress: billingAddress || undefined,
     })
 
     // Return created user data (excluding password)

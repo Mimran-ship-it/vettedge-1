@@ -62,10 +62,13 @@ export default function DomainDetailsPage() {
         
         // Fetch similar domains if we have a domain with tags
         if (matchedDomain && matchedDomain.tags && matchedDomain.tags.length > 0) {
+          // Filter similar domains by tags and exclude sold/unavailable domains
           const similar = data.filter(d => 
             d._id !== matchedDomain._id && 
             d.tags && 
-            d.tags.some(tag => matchedDomain.tags?.includes(tag))
+            d.tags.some(tag => matchedDomain.tags?.includes(tag)) &&
+            !d.isSold && // Exclude sold domains
+            d.isAvailable // Include only available domains
           )
           setSimilarDomains(similar)
         }
@@ -596,7 +599,12 @@ export default function DomainDetailsPage() {
         {/* Similar Domains Section */}
         {similarDomains.length > 0 && (
           <div className="mt-12">
-            <h2 className="text-2xl font-bold mb-6 dark:text-white">Similar Domains You May Like</h2>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold dark:text-white">Similar Domains You May Like</h2>
+              <Badge variant="outline" className="px-3 py-1 dark:border-gray-600">
+                {similarDomains.length} available domains
+              </Badge>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {similarDomains.map((similarDomain) => (
                 <Card key={similarDomain._id} className="overflow-hidden transition-all hover:shadow-lg dark:bg-gray-800 dark:border-gray-700">
@@ -607,20 +615,18 @@ export default function DomainDetailsPage() {
                       fill
                       className="object-cover"
                     />
-                    {similarDomain.isSold && (
-                      <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
-                        <Badge variant="destructive" className="text-white">SOLD</Badge>
-                      </div>
+                    {similarDomain.isHot && (
+                      <Badge className="absolute top-2 right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white border-0">
+                        <Zap className="h-3 w-3 mr-1" /> HOT
+                      </Badge>
                     )}
                   </div>
                   <CardContent className="p-4">
                     <div className="flex justify-between items-start mb-2">
                       <h3 className="font-bold text-lg dark:text-white">{similarDomain.name}</h3>
-                      {similarDomain.isHot && (
-                        <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white border-0">
-                          <Zap className="h-3 w-3 mr-1" /> HOT
-                        </Badge>
-                      )}
+                      <Badge variant="outline" className="px-2 py-1 text-xs dark:border-gray-600 dark:text-gray-300">
+                        Available
+                      </Badge>
                     </div>
                     <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">
                       {similarDomain.description}
@@ -654,7 +660,18 @@ export default function DomainDetailsPage() {
           </div>
         )}
 
-     
+        {/* Show message if no similar domains are available */}
+        {similarDomains.length === 0 && domain && domain.tags && domain.tags.length > 0 && (
+          <div className="mt-12 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8 text-center">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No Similar Domains Available</h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
+              We couldn't find any available domains similar to {domain.name} at the moment.
+            </p>
+            <Button asChild className="px-6 py-3">
+              <Link href="/domains">Browse All Domains</Link>
+            </Button>
+          </div>
+        )}
       </main>
       <Footer />
       <LiveChat />
