@@ -29,6 +29,8 @@ type MetricKey =
   | "monthlyTraffic"
   | "year"
   | "age"
+  | "authorityLinksCount"
+  | "score"
 
 export default function NewDomainPage() {
   const router = useRouter()
@@ -53,6 +55,7 @@ export default function NewDomainPage() {
       domainRank: "",
       referringDomains: "",
       authorityLinks: "",
+      authorityLinksCount: "",
       avgAuthorityDR: "",
       domainAuthority: "",
       score: "",
@@ -104,7 +107,7 @@ export default function NewDomainPage() {
         ...formData,
         images,
         price: parseFloat(formData.price),
-        Actualprice: parseFloat(formData.Actualprice),
+        Actualprice: formData.Actualprice === "" ? null : parseFloat(formData.Actualprice),
         tags: formData.tags.split(",").map((tag) => tag.trim()).filter(Boolean),
         isSold: false,
         metrics: {
@@ -114,6 +117,7 @@ export default function NewDomainPage() {
             .split(",")
             .map((link) => link.trim())
             .filter(Boolean),
+          authorityLinksCount: parseInt(formData.metrics.authorityLinksCount) || 0,
           avgAuthorityDR: parseInt(formData.metrics.avgAuthorityDR),
           domainAuthority: parseInt(formData.metrics.domainAuthority),
           score: parseInt(formData.metrics.score),
@@ -187,7 +191,7 @@ export default function NewDomainPage() {
 
                     <div className="grid grid-cols-2 gap-4">
                       <InputGroup label="Price ($) *" id="price" type="number" value={formData.price} onChange={(v) => setFormData({ ...formData, price: v })} required />
-                      <InputGroup label="Actual Price ($) *" id="Actualprice" type="number" value={formData.Actualprice} onChange={(v) => setFormData({ ...formData, Actualprice: v })} required />
+                      <InputGroup label="Actual Price ($)" id="Actualprice" type="number" value={formData.Actualprice} onChange={(v) => setFormData({ ...formData, Actualprice: v })}  />
                       <InputGroup label="Registrar *" id="registrar" value={formData.registrar} onChange={(v) => setFormData({ ...formData, registrar: v })} required />
                     </div>
 
@@ -254,12 +258,13 @@ export default function NewDomainPage() {
                         ["Overall Score", "score"],
                         ["Trust Flow", "trustFlow"],
                         ["Citation Flow", "citationFlow"],
+                        ["Authority Links Count", "authorityLinksCount"],
                         ["Monthly Traffic", "monthlyTraffic"],
                         ["Registration Year", "year"],
                         ["Age", "age"],
                       ].map(([label, key]) => (
                         <InputGroup
-                          required
+                          required={key !== "authorityLinksCount"}
                           key={key}
                           label={label}
                           id={key}

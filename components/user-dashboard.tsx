@@ -287,7 +287,7 @@ export function UserDashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{orderStats.total}</div>
             <p className="text-xs text-muted-foreground">
-              {orderStats.completed} completed, {orderStats.pending} pending
+              {orderStats.completed-orderStats.domainTransferPending} completed, {orderStats.domainTransferPending} pending
             </p>
           </CardContent>
         </Card>
@@ -320,7 +320,7 @@ export function UserDashboard() {
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Completed Orders</CardTitle>
+            <CardTitle className="text-sm font-medium">Transactions</CardTitle>
             <CheckCircle className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>

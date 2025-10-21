@@ -4,6 +4,7 @@ import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { DomainCard } from "@/components/domains/domain-card"
 import { DomainFilters } from "@/components/domains/domain-filters"
+import { SavedFiltersList } from "@/components/domains/saved-filters-list"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, Filter, ArrowUpDown, Flame } from "lucide-react"
@@ -61,6 +62,7 @@ export default function DomainsPage() {
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>(defaultFilters)
   const [availableTags, setAvailableTags] = useState<string[]>([])
   const [sortBy, setSortBy] = useState<SortOption>("price-desc")
+  const [refreshTrigger, setRefreshTrigger] = useState(0) // Trigger for saved filters refresh
   const searchParams = useSearchParams()
   
   // Initialize filters from URL parameters
@@ -89,6 +91,7 @@ export default function DomainsPage() {
       setActiveFilters(newFilters)
       setShowFilters(true)
     }
+    
   }, [searchParams])
   
   useEffect(() => {
@@ -125,7 +128,9 @@ export default function DomainsPage() {
   
   // Apply filters whenever activeFilters, domains, searchQuery, or sortBy changes
   useEffect(() => {
-    applyFilters(activeFilters)
+    if (domains.length > 0) {
+      applyFilters(activeFilters)
+    }
   }, [activeFilters, domains, searchQuery, sortBy])
   
   const sortDomains = useCallback((domainsToSort: Domain[], sortOption: SortOption) => {
@@ -281,11 +286,11 @@ export default function DomainsPage() {
       }
     )
     
-    // Authority Links - be lenient with missing data
+    // Authority Links - use authorityLinksCount directly
     filtered = filtered.filter(
       (d) => {
-        if (d.metrics?.authorityLinks === undefined) return true
-        return (d.metrics.authorityLinks?.length || 0) >= (filters.authorityLinksMin || 0)
+        if (d.metrics?.authorityLinksCount === undefined) return true
+        return (d.metrics.authorityLinksCount || 0) >= (filters.authorityLinksMin || 0)
       }
     )
     
@@ -322,6 +327,11 @@ export default function DomainsPage() {
     setActiveFilters(defaultFilters)
     setSortBy("price-desc")
     // applyFilters will be called automatically by the useEffect
+  }
+  
+  const handleFilterSaved = () => {
+    // Increment trigger to force SavedFiltersList to refetch
+    setRefreshTrigger(prev => prev + 1)
   }
   
   return (
@@ -407,8 +417,21 @@ export default function DomainsPage() {
               onFilterChange={applyFiltersWithSorting} 
               availableTags={availableTags} 
               currentFilters={activeFilters}
+              onFilterSaved={handleFilterSaved}
             />
           </div>
+        </div>
+        
+        {/* Saved Filters Section */}
+        <div className="mb-6">
+          <SavedFiltersList 
+            onApplyFilter={(filters) => {
+              setActiveFilters(filters)
+              setShowFilters(true)
+            }}
+            currentFilters={activeFilters}
+            refreshTrigger={refreshTrigger}
+          />
         </div>
         
         <div className="mb-6 text-gray-600 dark:text-gray-300">

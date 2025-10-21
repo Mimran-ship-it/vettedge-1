@@ -211,22 +211,32 @@ export default function AdminDomainsPage() {
                                 </TableCell>
                                 <TableCell className="text-right">
                                   <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                      <Button variant="ghost" className="h-8 w-8 p-0">
-                                        <MoreHorizontal className="h-4 w-4" />
-                                      </Button>
-                                    </DropdownMenuTrigger>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button
+                                      variant="ghost"
+                                      className="h-8 w-8 p-0"
+                                      onClick={(e) => e.stopPropagation()}
+                                      onMouseDown={(e) => e.preventDefault()} // prevents scroll jump on click
+                                    >
+                                      <MoreHorizontal className="h-4 w-4" />
+                                    </Button>
+                                  </DropdownMenuTrigger>
+
                                     <DropdownMenuContent align="end">
-                                      <DropdownMenuItem asChild>
-                                        <Link href={`/domains/${domain._id}`}>
+                                      <DropdownMenuItem  onSelect={(e) => {
+    e.preventDefault() // stops Radix from closing abruptly
+    router.push(`/domains/${domain._id}`)
+  }}>
+                                      
                                           <Eye className="h-4 w-4 mr-2" /> View
-                                        </Link>
+                                     
                                       </DropdownMenuItem>
-                                      <DropdownMenuItem asChild>
-                                        <Link href={`/admin/domains/edit/${domain._id}`}>
+                                      <DropdownMenuItem  onSelect={(e) => {
+    e.preventDefault() // stops Radix from closing abruptly
+    router.push(`/admin/domains/edit/${domain._id}`)
+  }}>
                                           <Edit className="h-4 w-4 mr-2" /> Edit
-                                        </Link>
-                                      </DropdownMenuItem>
+                                        </DropdownMenuItem>
                                       <DropdownMenuItem
                                         onClick={() => handleDeleteDomain(domain._id!, domain.name)}
                                         className="text-red-600"

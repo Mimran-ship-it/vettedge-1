@@ -14,7 +14,8 @@ export interface Domain {
   metrics: {
     domainRank: number
     referringDomains: number
-    authorityLinks: string[] // Array of URLs
+    authorityLinks?: string[] // Optional array of URLs
+    authorityLinksCount: number // Direct count field
     avgAuthorityDR: number
     domainAuthority: number
     score:number

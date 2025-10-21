@@ -6,8 +6,18 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input" 
-import { Flame } from "lucide-react"
+import { Flame, Save } from "lucide-react"
 import { set } from "mongoose"
+import { useAuth } from "@/hooks/use-auth"
+import { useToast } from "@/hooks/use-toast"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 interface ActiveFilters {
   priceRange: [number, number]
@@ -31,9 +41,10 @@ interface DomainFiltersProps {
   onFilterChange: (filters: ActiveFilters) => void
   availableTags: string[]
   currentFilters: ActiveFilters
+  onFilterSaved?: () => void // Callback when filter is saved
 } 
 
-export function DomainFilters({ onFilterChange, availableTags, currentFilters }: DomainFiltersProps) {
+export function DomainFilters({ onFilterChange, availableTags, currentFilters, onFilterSaved }: DomainFiltersProps) {
   const searchParams = useSearchParams()
   const firstMount = useRef(true)
   const urlParamsSet = useRef<{ type?: boolean; isHot?: boolean }>({})
@@ -58,6 +69,13 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
   
   const [tlds, setTlds] = useState<string[]>([])
   const [tldsLoading, setTldsLoading] = useState(true)
+  
+  // Save filter state
+  const [showSaveDialog, setShowSaveDialog] = useState(false)
+  const [filterName, setFilterName] = useState("")
+  const [saving, setSaving] = useState(false)
+  const { user } = useAuth()
+  const { toast } = useToast()
   
   // Fetch TLDs from backend on mount
   useEffect(() => {
@@ -281,6 +299,69 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
           }
         }
       }
+    }
+  }
+  
+  const handleSaveFilter = async () => {
+    if (!filterName.trim()) return
+    
+    setSaving(true)
+    try {
+      const currentFilters = {
+        priceRange,
+        tlds: selectedTlds,
+        availability,
+        type,
+        tags: selectedTags,
+        domainRankRange,
+        domainAuthorityRange,
+        scoresRange: scoresRange || [0, 100],
+        trustFlowRange,
+        citationFlowRange,
+        monthlyTrafficMin,
+        ageMin,
+        referringDomainsMin,
+        authorityLinksMin,
+        isHot,
+      }
+      
+      const res = await fetch("/api/saved-filters", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: filterName.trim(),
+          filters: currentFilters,
+        }),
+      })
+      
+      if (res.ok) {
+        toast({
+          title: "Filter Saved",
+          description: `"${filterName}" has been saved successfully.`,
+        })
+        setShowSaveDialog(false)
+        setFilterName("")
+        // Trigger refresh of saved filters list
+        if (onFilterSaved) {
+          onFilterSaved()
+        }
+      } else if (res.status === 409) {
+        toast({
+          title: "Name Already Exists",
+          description: "A filter with this name already exists. Please choose a different name.",
+          variant: "destructive",
+        })
+      } else {
+        throw new Error("Failed to save filter")
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save filter. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setSaving(false)
     }
   }
    
@@ -598,12 +679,68 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters }:
         </div>
       </div>
       
-      {/* Clear Filters Button */}
-      <div className="flex justify-end">
-        <Button variant="outline" onClick={clearFilters} className="px-6 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800">
-          Clear All Filters
-        </Button>
+      {/* Action Buttons */}
+      <div className="flex justify-between items-center gap-3">
+          <Button 
+            variant="outline" 
+            onClick={clearFilters} 
+            className="flex-1 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+          >
+            Clear All Filters
+          </Button>
+          {user && (
+            <Button 
+              onClick={() => setShowSaveDialog(true)}
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              <Save className="h-4 w-4 mr-2" />
+              Save Current Filters
+            </Button>
+          )}
       </div>
+      
+      {/* Save Filter Dialog */}
+      <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Save Filter Preset</DialogTitle>
+          <DialogDescription>
+            Give your filter configuration a memorable name to quickly access it later.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          <div className="space-y-2">
+            <Label htmlFor="filter-name">Filter Name</Label>
+            <Input
+              id="filter-name"
+              placeholder="e.g., High Authority Aged Domains"
+              value={filterName}
+              onChange={(e) => setFilterName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && filterName.trim()) {
+                  handleSaveFilter()
+                }
+              }}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => {
+            setShowSaveDialog(false)
+            setFilterName("")
+          }}>
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleSaveFilter}
+            disabled={!filterName.trim() || saving}
+            className="bg-blue-600 hover:bg-blue-700"
+          >
+            {saving ? "Saving..." : "Save Filter"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
     </div>
   )
 }

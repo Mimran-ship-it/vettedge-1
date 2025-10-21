@@ -37,6 +37,7 @@ import { useWishlist } from "@/components/providers/wishlist-provider"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
+import { useState } from "react"
 
 interface DomainCardProps {
   domain: {
@@ -55,7 +56,8 @@ interface DomainCardProps {
     metrics: {
       domainRank: number
       referringDomains: number
-      authorityLinks: string[]
+      authorityLinks?: string[]
+      authorityLinksCount: number
       avgAuthorityDR: number
       domainAuthority: number
       score: number
@@ -69,6 +71,35 @@ interface DomainCardProps {
     createdAt: string
     updatedAt: string
   }
+}
+
+// Custom Tooltip Component that supports both hover and click
+function CustomTooltip({ 
+  children, 
+  content, 
+  tooltipKey 
+}: { 
+  children: React.ReactNode
+  content: React.ReactNode
+  tooltipKey: string 
+}) {
+  const [isOpen, setIsOpen] = useState(false)
+  
+  return (
+    <Tooltip open={isOpen} onOpenChange={setIsOpen}>
+      <TooltipTrigger 
+        asChild
+        onMouseEnter={() => setIsOpen(true)}
+        onMouseLeave={() => setIsOpen(false)}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {children}
+      </TooltipTrigger>
+      <TooltipContent>
+        {content}
+      </TooltipContent>
+    </Tooltip>
+  )
 }
 
 export function DomainCard({ domain }: DomainCardProps) {
@@ -163,11 +194,11 @@ Key Metrics:
 • Trust Flow (TF): ${domain.metrics.trustFlow}
 • Citation Flow (CF): ${domain.metrics.citationFlow}
 • Referring Domains: ${domain.metrics.referringDomains}
-• Authority Links: ${domain.metrics.authorityLinks.length}
+• Authority Links: ${domain.metrics.authorityLinksCount}
 • Domain Age: ${domain.metrics.age} years
 • Language: ${domain.metrics.language}
-${domain.metrics.monthlyTraffic ? `• Monthly Traffic: ${domain.metrics.monthlyTraffic.toLocaleString()}` : ''}
-Price: $${domain.price.toLocaleString()} ${domain.Actualprice > domain.price ? `(was $${domain.Actualprice.toLocaleString()})` : ''}
+ ${domain.metrics.monthlyTraffic ? `• Monthly Traffic: ${domain.metrics.monthlyTraffic.toLocaleString()}` : ''}
+Price: $${domain.price.toLocaleString()} ${(domain.Actualprice&&(domain.Actualprice > domain.price)) ? `(was $${domain.Actualprice.toLocaleString()})` : ''}
 Registrar: ${domain.registrar}
 Status: ${domain.isAvailable ? 'Available' : 'Unavailable'} ${domain.isSold ? '(SOLD)' : ''}
 View full details:`;
@@ -303,7 +334,7 @@ View full details:`;
               <span className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
                 ${domain.price.toLocaleString()}
               </span>
-              {domain.Actualprice > domain.price && (
+              {domain.Actualprice&&(domain.Actualprice > domain.price) && (
                 <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 line-through">
                   ${domain.Actualprice.toLocaleString()}
                 </span>
@@ -338,7 +369,7 @@ View full details:`;
             </div>
 
             {/* Desktop Score Description */}
-            <div className="  text-xs text-gray-600 dark:text-gray-300">
+            <div className="text-xs text-gray-600 dark:text-gray-300">
               {domain.metrics.score >= 80 ? (
                 <span className="text-green-600 dark:text-green-400 font-medium">Exceptional domain score</span>
               ) : domain.metrics.score >= 60 ? (
@@ -349,153 +380,82 @@ View full details:`;
                 <span className="text-orange-600 dark:text-orange-400 font-medium">Developing domain score</span>
               )}
             </div>
-
-            {/* Mobile Score Indicator */}
-            {/* <div className="sm:hidden flex items-center justify-between mt-2">
-              <div className="flex-1 mr-2">
-                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
-                    style={{ width: `${Math.min(100, domain.metrics.domainAuthority)}%` }}
-                  ></div>
-                </div>
-              </div>
-              <span className="text-xs font-medium text-gray-600">
-                {domain.metrics.domainAuthority >= 80 ? 'Exceptional' : 
-                 domain.metrics.domainAuthority >= 60 ? 'Strong' :
-                 domain.metrics.domainAuthority >= 40 ? 'Moderate' : 'Developing'}
-              </span>
-            </div> */}
           </div>
 
           <TooltipProvider>
             <div className="grid grid-cols-3 gap-1 sm:gap-3 text-[10px] sm:text-xs">
               {/* Column 1 */}
               <div className="space-y-1 sm:space-y-2">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
-                      <TrendingUp className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                      <span>DR: {domain.metrics.domainRank}</span>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="font-semibold">Domain Rank (DR)</p>
-                    <p className="text-xs text-gray-500">Measures the strength of a website's backlink profile</p>
-                  </TooltipContent>
-                </Tooltip>
+                <CustomTooltip tooltipKey="domainRank" content={<p className="font-semibold">Domain Rank</p>}>
+                  <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                    <TrendingUp className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                    <span>DR: {domain.metrics.domainRank}</span>
+                  </div>
+                </CustomTooltip>
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
-                      <Activity className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                      <span>TF: {domain.metrics.trustFlow}</span>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="font-semibold">Trust Flow (TF)</p>
-                    <p className="text-xs text-gray-500">Measures the quality of backlinks based on trustworthiness</p>
-                  </TooltipContent>
-                </Tooltip>
+                <CustomTooltip tooltipKey="trustFlow" content={<p className="font-semibold">Trust Flow</p>}>
+                  <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                    <Activity className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                    <span>TF: {domain.metrics.trustFlow}</span>
+                  </div>
+                </CustomTooltip>
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
-                      <LinkIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                      <span>{domain.metrics.authorityLinks.length} ALs</span>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="font-semibold">Authority Links (ALs)</p>
-                    <p className="text-xs text-gray-500">Number of high-quality backlinks from authoritative domains</p>
-                  </TooltipContent>
-                </Tooltip>
+                <CustomTooltip tooltipKey="authorityLinks" content={<p className="font-semibold">Authority Links</p>}>
+                  <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                    <LinkIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                    <span>{domain.metrics.authorityLinksCount} ALs</span>
+                  </div>
+                </CustomTooltip>
               </div>
 
               {/* Column 2 */}
               <div className="space-y-1 sm:space-y-2">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
-                      <LinkIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                      <span>{domain.metrics.referringDomains} RDs</span>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="font-semibold">Referring Domains (RDs)</p>
-                    <p className="text-xs text-gray-500">Total number of unique domains linking to this website</p>
-                  </TooltipContent>
-                </Tooltip>
+                <CustomTooltip tooltipKey="referringDomains" content={<p className="font-semibold">Referring Domains</p>}>
+                  <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                    <LinkIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                    <span>{domain.metrics.referringDomains} RDs</span>
+                  </div>
+                </CustomTooltip>
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
-                      <Flag className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                      <span>CF: {domain.metrics.citationFlow}</span>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="font-semibold">Citation Flow (CF)</p>
-                    <p className="text-xs text-gray-500">Measures the quantity of backlinks pointing to the domain</p>
-                  </TooltipContent>
-                </Tooltip>
+                <CustomTooltip tooltipKey="citationFlow" content={<p className="font-semibold">Citation Flow</p>}>
+                  <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                    <Flag className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                    <span>CF: {domain.metrics.citationFlow}</span>
+                  </div>
+                </CustomTooltip>
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
-                      <Hourglass className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                      <span>{domain.metrics.age} yrs</span>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="font-semibold">Domain Age</p>
-                    <p className="text-xs text-gray-500">Number of years since the domain was first registered</p>
-                  </TooltipContent>
-                </Tooltip>
+                <CustomTooltip tooltipKey="domainAge" content={<p className="font-semibold">Domain Age</p>}>
+                  <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                    <Hourglass className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                    <span>{domain.metrics.age} yrs</span>
+                  </div>
+                </CustomTooltip>
               </div>
 
               {/* Column 3 */}
               <div className="space-y-1 sm:space-y-2">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
-                      <Building className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                      <span>DA: {domain.metrics.domainAuthority}</span>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="font-semibold">Domain Authority (DA)</p>
-                    <p className="text-xs text-gray-500">Predicts how well a domain will rank on search engines</p>
-                  </TooltipContent>
-                </Tooltip>
+                <CustomTooltip tooltipKey="domainAuthority" content={<p className="font-semibold">Domain Authority</p>}>
+                  <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                    <Building className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                    <span>DA: {domain.metrics.domainAuthority}</span>
+                  </div>
+                </CustomTooltip>
 
                 {domain.type === "traffic" && domain.metrics.monthlyTraffic && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
-                        <Globe className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                        <span>{domain.metrics.monthlyTraffic.toLocaleString()}</span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="font-semibold">Monthly Traffic</p>
-                      <p className="text-xs text-gray-500">Estimated number of monthly visitors to the domain</p>
-                    </TooltipContent>
-                  </Tooltip>
+                  <CustomTooltip tooltipKey="monthlyTraffic" content={<p className="font-semibold">Monthly Traffic</p>}>
+                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                      <Globe className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                      <span>{domain.metrics.monthlyTraffic.toLocaleString()}</span>
+                    </div>
+                  </CustomTooltip>
                 )}
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
-                      <Languages className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                      <span>{domain.metrics.language}</span>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="font-semibold">Primary Language</p>
-                    <p className="text-xs text-gray-500">Main language of the domain's content and audience</p>
-                  </TooltipContent>
-                </Tooltip>
+                <CustomTooltip tooltipKey="language" content={<p className="font-semibold">Primary Language</p>}>
+                  <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                    <Languages className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                    <span>{domain.metrics.language}</span>
+                  </div>
+                </CustomTooltip>
               </div>
             </div>
           </TooltipProvider>

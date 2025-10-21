@@ -43,9 +43,7 @@ export function BlogPreview() {
     fetchBlogs()
   }, [])
 
-  const featuredPosts = blogs
-    .filter((post) => post.featured)
-    .sort(
+  const featuredPosts = blogs?.filter((post) => post.featured).sort(
       (a, b) =>
         new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     )

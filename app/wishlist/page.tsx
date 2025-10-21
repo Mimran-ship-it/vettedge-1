@@ -92,6 +92,7 @@ export default function WishlistPage() {
             domainRank: 0,
             referringDomains: 0,
             authorityLinks: [],
+            authorityLinksCount: 0,
             avgAuthorityDR: 0,
             domainAuthority: 0,
             score: 0,

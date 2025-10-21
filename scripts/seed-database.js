@@ -14,7 +14,8 @@ const sampleDomains = [
     metrics: {
       domainRank: 75,
       referringDomains: 1320,
-      authorityLinks: 290,
+      authorityLinks: [],
+      authorityLinksCount: 290,
       avgAuthorityDR: 67,
       monthlyTraffic: 50000,
       year: 5,
@@ -35,7 +36,8 @@ const sampleDomains = [
     metrics: {
       domainRank: 62,
       referringDomains: 980,
-      authorityLinks: 215,
+      authorityLinks: [],
+      authorityLinksCount: 215,
       avgAuthorityDR: 54,
       monthlyTraffic: 12000,
       year: 6,
@@ -55,7 +57,8 @@ const sampleDomains = [
     metrics: {
       domainRank: 70,
       referringDomains: 620,
-      authorityLinks: 175,
+      authorityLinks: [],
+      authorityLinksCount: 175,
       avgAuthorityDR: 61,
       monthlyTraffic: 25000,
       year: 4,
@@ -75,7 +78,8 @@ const sampleDomains = [
     metrics: {
       domainRank: 82,
       referringDomains: 2100,
-      authorityLinks: 430,
+      authorityLinks: [],
+      authorityLinksCount: 430,
       avgAuthorityDR: 73,
       monthlyTraffic: 75000,
       year: 8,
@@ -96,7 +100,8 @@ const sampleDomains = [
     metrics: {
       domainRank: 58,
       referringDomains: 400,
-      authorityLinks: 110,
+      authorityLinks: [],
+      authorityLinksCount: 110,
       avgAuthorityDR: 47,
       monthlyTraffic: 20000,
       year: 2,

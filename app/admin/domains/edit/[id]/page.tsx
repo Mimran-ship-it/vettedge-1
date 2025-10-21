@@ -27,6 +27,8 @@ type MetricKey =
   | "monthlyTraffic"
   | "year"
   | "age"
+  | "authorityLinksCount"
+  | "score"
 
 export default function EditDomainPage() {
   const router = useRouter()
@@ -52,6 +54,7 @@ export default function EditDomainPage() {
       domainRank: "",
       referringDomains: "",
       authorityLinks: "",
+      authorityLinksCount: "",
       avgAuthorityDR: "",
       domainAuthority: "",
       score: "",
@@ -85,6 +88,7 @@ export default function EditDomainPage() {
             domainRank: data.metrics?.domainRank?.toString() || "",
             referringDomains: data.metrics?.referringDomains?.toString() || "",
             authorityLinks: data.metrics?.authorityLinks?.join(", ") || "",
+            authorityLinksCount: data.metrics?.authorityLinksCount?.toString() || "",
             avgAuthorityDR: data.metrics?.avgAuthorityDR?.toString() || "",
             domainAuthority: data.metrics?.domainAuthority?.toString() || "",
             score: data.metrics?.score?.toString() || "",
@@ -175,7 +179,7 @@ export default function EditDomainPage() {
         // Include the images array in the payload
         image: images, // Changed from 'images' to 'image' to match backend field name
         price: parseFloat(formData.price),
-        Actualprice: parseFloat(formData.Actualprice),
+        Actualprice: formData.Actualprice === "" ? null : parseFloat(formData.Actualprice),
         tags: formData.tags.split(",").map((tag) => tag.trim()).filter(Boolean),
         metrics: {
           domainRank: parseInt(formData.metrics.domainRank),
@@ -184,6 +188,7 @@ export default function EditDomainPage() {
             .split(",")
             .map((link) => link.trim())
             .filter(Boolean),
+          authorityLinksCount: parseInt(formData.metrics.authorityLinksCount) || 0,
           avgAuthorityDR: parseInt(formData.metrics.avgAuthorityDR),
           domainAuthority: parseInt(formData.metrics.domainAuthority),
           score: parseInt(formData.metrics.score),
@@ -253,7 +258,7 @@ export default function EditDomainPage() {
                     <TextareaGroup label="Description *" id="description" value={formData.description} onChange={(v) => setFormData({ ...formData, description: v })} required />
                     <div className="grid grid-cols-2 gap-4">
                       <InputGroup label="Price ($) *" id="price" type="number" value={formData.price} onChange={(v) => setFormData({ ...formData, price: v })} required />
-                      <InputGroup label="Actual Price ($) *" id="Actualprice" type="number" value={formData.Actualprice} onChange={(v) => setFormData({ ...formData, Actualprice: v })} required />
+                      <InputGroup label="Actual Price ($)" id="Actualprice" type="number" value={formData.Actualprice} onChange={(v) => setFormData({ ...formData, Actualprice: v })}  />
                       <InputGroup label="Registrar *" id="registrar" value={formData.registrar} onChange={(v) => setFormData({ ...formData, registrar: v })} required />
                     </div>
                     <div className="space-y-2">
@@ -382,12 +387,13 @@ export default function EditDomainPage() {
                         ["Overall Score", "score"],
                         ["Trust Flow", "trustFlow"],
                         ["Citation Flow", "citationFlow"],
+                        ["Authority Links Count", "authorityLinksCount"],
                         ["Monthly Traffic", "monthlyTraffic"],
                         ["Registration Year", "year"],
                         ["Age", "age"],
                       ].map(([label, key]) => (
                         <InputGroup
-                          required
+                          required={key !== "authorityLinksCount"}
                           key={key}
                           label={label}
                           id={key}

@@ -14,7 +14,8 @@ const DomainSchema = new Schema(
     metrics: {
       domainRank: Number,
       referringDomains: Number,
-      authorityLinks: [String], // now array of links
+      authorityLinks: { type: [String], default: [] }, // Optional array of links
+      authorityLinksCount: { type: Number, default: 0 }, // Direct count field
       avgAuthorityDR: Number,
       domainAuthority: Number,
       score: Number,
