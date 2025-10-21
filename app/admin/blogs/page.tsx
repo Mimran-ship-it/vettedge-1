@@ -130,17 +130,24 @@ export default function AdminBlogsPage() {
                                   </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                  <DropdownMenuItem asChild>
-                                    <Link href={`/blog/${b.slug}`}>
-                                      <Eye className="h-4 w-4 mr-2" /> View
-                                    </Link>
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem asChild>
-                                    <Link href={`/admin/blogs/edit/${b._id}`}>
-                                      <Edit className="h-4 w-4 mr-2" /> Edit
-                                    </Link>
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => handleDelete(b._id, b.title)} className="text-red-600">
+                                <DropdownMenuItem
+  onSelect={(e) => {
+    e.preventDefault()
+    router.push(`/blog/${b.slug}`)
+  }}
+>
+  <Eye className="h-4 w-4 mr-2" /> View
+</DropdownMenuItem>
+
+<DropdownMenuItem
+  onSelect={(e) => {
+    e.preventDefault()
+    router.push(`/admin/blogs/edit/${b._id}`)
+  }}
+>
+  <Edit className="h-4 w-4 mr-2" /> Edit
+</DropdownMenuItem>
+      <DropdownMenuItem onClick={() => handleDelete(b._id, b.title)} className="text-red-600">
                                     <Trash2 className="h-4 w-4 mr-2" /> Delete
                                   </DropdownMenuItem>
                                 </DropdownMenuContent>
