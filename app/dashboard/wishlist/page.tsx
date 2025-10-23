@@ -142,10 +142,10 @@ export default function WishlistPage() {
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       
-      
+      <DashboardSidebar/>
       <div className="flex-1 md:pl-6">
     
-        
+      
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
