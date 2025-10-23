@@ -52,7 +52,7 @@ export function Header() {
             <div className="relative h-7 w-7 rounded-full overflow-hidden border-2 border-gray-200 dark:border-gray-700">
               <Image
                 src={user.image}
-                alt={user.name}
+                alt={''}
                 fill
                 className="object-cover"
               />

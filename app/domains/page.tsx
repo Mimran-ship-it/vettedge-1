@@ -35,7 +35,7 @@ type ActiveFilters = {
   tags: string[]
   isHot: boolean // Changed to boolean to match DomainFilters component
 }
-type SortOption = "price-asc" | "price-desc" | "domainRank-desc" | "domainAuthority-desc" | "score-desc" | "age-desc" | "referringDomains-desc" | "monthlyTraffic-desc"
+type SortOption = "price-asc" | "price-desc" | "domainRank-desc" | "domainAuthority-desc" | "score-desc" | "age-desc" | "referringDomains-desc" | "monthlyTraffic-desc" | "newest" | "oldest"
 const defaultFilters: ActiveFilters = {
   priceRange: [0, 100000],
   tlds: [],
@@ -61,6 +61,7 @@ export default function DomainsPage() {
   const [showFilters, setShowFilters] = useState(false)
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>(defaultFilters)
   const [availableTags, setAvailableTags] = useState<string[]>([])
+  const [tldCounts, setTldCounts] = useState<Record<string, number>>({})
   const [sortBy, setSortBy] = useState<SortOption>("price-desc")
   const [refreshTrigger, setRefreshTrigger] = useState(0) // Trigger for saved filters refresh
   const searchParams = useSearchParams()
@@ -109,10 +110,22 @@ export default function DomainsPage() {
       
       // Extract unique tags dynamically
       const tagsSet = new Set<string>()
+      const tldCountMap: Record<string, number> = {}
+      
       data.forEach((d) => {
+        // Extract TLD (everything after the last dot)
+        const parts = d.name.split('.')
+        if (parts.length > 1) {
+          const tld = parts[parts.length - 1].toLowerCase()
+          tldCountMap[tld] = (tldCountMap[tld] || 0) + 1
+        }
+        
+        // Handle tags
         d.tags?.forEach((tag) => tagsSet.add(tag))
       })
+      
       setAvailableTags(Array.from(tagsSet))
+      setTldCounts(tldCountMap)
       
       // Apply initial sorting without filters
       const sorted = sortDomains(data, sortBy)
@@ -133,16 +146,24 @@ export default function DomainsPage() {
     }
   }, [activeFilters, domains, searchQuery, sortBy])
   
-  const sortDomains = useCallback((domainsToSort: Domain[], sortOption: SortOption) => {
-    const sorted = [...domainsToSort]
+  const sortDomains = useCallback((domains: Domain[], sortOption: SortOption): Domain[] => {
+    const sorted = [...domains]
     
     switch (sortOption) {
       case "price-asc":
-        // Fixed: Changed to sort from low to high (ascending)
+        // Sort from low to high (ascending)
         return sorted.sort((a, b) => Number(a.price) - Number(b.price))
       case "price-desc":
-        // Fixed: Changed to sort from high to low (descending)
+        // Sort from high to low (descending)
         return sorted.sort((a, b) => Number(b.price) - Number(a.price))
+      case "newest":
+        return sorted.sort((a, b) => 
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+      case "oldest":
+        return sorted.sort((a, b) => 
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        )
       case "domainRank-desc":
         return sorted.sort((a, b) => {
           const aRank = a.metrics?.domainRank || 0
@@ -150,47 +171,27 @@ export default function DomainsPage() {
           return bRank - aRank
         })
       case "domainAuthority-desc":
-        return sorted.sort((a, b) => {
-          const aDA = a.metrics?.domainAuthority || 0
-          const bDA = b.metrics?.domainAuthority || 0
-          return bDA - aDA
-        })
-        case "score-desc":
-        return sorted.sort((a, b) => {
-          const aS = a.metrics?.score || 0
-          const bS = b.metrics?.score || 0
-          return bS - aS
-        })
+        return sorted.sort((a, b) => (b.metrics?.domainAuthority || 0) - (a.metrics?.domainAuthority || 0))
+      case "score-desc":
+        return sorted.sort((a, b) => (b.metrics?.score || 0) - (a.metrics?.score || 0))
       case "age-desc":
-        return sorted.sort((a, b) => {
-          const aAge = a.metrics?.age || 0
-          const bAge = b.metrics?.age || 0
-          return bAge - aAge
-        })
+        return sorted.sort((a, b) => (b.metrics?.age || 0) - (a.metrics?.age || 0))
       case "referringDomains-desc":
-        return sorted.sort((a, b) => {
-          const aRD = a.metrics?.referringDomains || 0
-          const bRD = b.metrics?.referringDomains || 0
-          return bRD - aRD
-        })
+        return sorted.sort((a, b) => (b.metrics?.referringDomains || 0) - (a.metrics?.referringDomains || 0))
       case "monthlyTraffic-desc":
-        return sorted.sort((a, b) => {
-          const aTraffic = a.metrics?.monthlyTraffic || 0
-          const bTraffic = b.metrics?.monthlyTraffic || 0
-          return bTraffic - aTraffic
-        })
+        return sorted.sort((a, b) => ((b.metrics?.monthlyTraffic || 0) - (a.metrics?.monthlyTraffic || 0)))
       default:
         return sorted
     }
   }, [])
   
   const applyFilters = useCallback((filters: ActiveFilters) => {
-    let filtered = [...domains]
+    let result = [...domains]
     
     // Search query filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase()
-      filtered = filtered.filter(
+      result = result.filter(
         (d) =>
           d.name.toLowerCase().includes(q) ||
           (d.description && d.description.toLowerCase().includes(q))
@@ -198,43 +199,43 @@ export default function DomainsPage() {
     }
     
     // Price range
-    filtered = filtered.filter(
+    result = result.filter(
       (d) => d.price >= filters.priceRange[0] && d.price <= filters.priceRange[1]
     )
     
     // TLDs
     if (filters.tlds.length > 0) {
-      filtered = filtered.filter((d) =>
+      result = result.filter((d) =>
         filters.tlds.some((tld) => d.name.toLowerCase().endsWith(tld.toLowerCase()))
       )
     }
     
     // Availability
     if (filters.availability === "available") {
-      filtered = filtered.filter((d) => d.isAvailable && !d.isSold)
+      result = result.filter((d) => d.isAvailable && !d.isSold)
     } else if (filters.availability === "sold") {
-      filtered = filtered.filter((d) => d.isSold)
+      result = result.filter((d) => d.isSold)
     }
     
     // Type
     if (filters.type !== "all") {
-      filtered = filtered.filter((d) => d.type?.toLowerCase() === filters.type)
+      result = result.filter((d) => d.type?.toLowerCase() === filters.type)
     }
     
     // Tags filter
     if (filters.tags.length > 0) {
-      filtered = filtered.filter((d) =>
+      result = result.filter((d) =>
         d.tags?.some((tag) => filters.tags.includes(tag))
       )
     }
     
     // isHot filter - Updated to handle boolean value
     if (filters.isHot) {
-      filtered = filtered.filter((d) => d.isHot)
+      result = result.filter((d) => d.isHot)
     }
     
     // Domain Rank - be lenient with missing data
-    filtered = filtered.filter(
+    result = result.filter(
       (d) => {
         if (d.metrics?.domainRank === undefined) return true
         return d.metrics.domainRank >= filters.domainRankRange[0] && d.metrics.domainRank <= filters.domainRankRange[1]
@@ -242,20 +243,20 @@ export default function DomainsPage() {
     )
     
     // Domain Authority - be lenient with missing data
-    filtered = filtered.filter(
+    result = result.filter(
       (d) => {
         if (d.metrics?.domainAuthority === undefined) return true
         return d.metrics.domainAuthority >= filters.domainAuthorityRange[0] && d.metrics.domainAuthority <= filters.domainAuthorityRange[1]
       }
     )
-    filtered = filtered.filter(
+    result = result.filter(
       (d) => {
         if (d.metrics?.score === undefined) return true
         return d.metrics.score >= filters.scoresRange[0] && d.metrics.score <= filters.scoresRange[1]
       }
     )
     // Trust Flow - be lenient with missing data
-    filtered = filtered.filter(
+    result = result.filter(
       (d) => {
         if (d.metrics?.trustFlow === undefined) return true
         return d.metrics.trustFlow >= filters.trustFlowRange[0] && d.metrics.trustFlow <= filters.trustFlowRange[1]
@@ -263,7 +264,7 @@ export default function DomainsPage() {
     )
     
     // Citation Flow - be lenient with missing data
-    filtered = filtered.filter(
+    result = result.filter(
       (d) => {
         if (d.metrics?.citationFlow === undefined) return true
         return d.metrics.citationFlow >= filters.citationFlowRange[0] && d.metrics.citationFlow <= filters.citationFlowRange[1]
@@ -271,7 +272,7 @@ export default function DomainsPage() {
     )
     
     // Age - be lenient with missing data
-    filtered = filtered.filter(
+    result = result.filter(
       (d) => {
         if (d.metrics?.age === undefined) return true
         return d.metrics.age >= (filters.ageMin || 0)
@@ -279,7 +280,7 @@ export default function DomainsPage() {
     )
     
     // Referring Domains - be lenient with missing data
-    filtered = filtered.filter(
+    result = result.filter(
       (d) => {
         if (d.metrics?.referringDomains === undefined) return true
         return d.metrics.referringDomains >= (filters.referringDomainsMin || 0)
@@ -287,7 +288,7 @@ export default function DomainsPage() {
     )
     
     // Authority Links - use authorityLinksCount directly
-    filtered = filtered.filter(
+    result = result.filter(
       (d) => {
         if (d.metrics?.authorityLinksCount === undefined) return true
         return (d.metrics.authorityLinksCount || 0) >= (filters.authorityLinksMin || 0)
@@ -295,7 +296,7 @@ export default function DomainsPage() {
     )
     
     // Monthly Traffic - be lenient with missing data
-    filtered = filtered.filter(
+    result = result.filter(
       (d) => {
         if (d.metrics?.monthlyTraffic === undefined || d.metrics.monthlyTraffic === null) return true
         return d.metrics.monthlyTraffic >= (filters.monthlyTrafficMin || 0)
@@ -303,7 +304,7 @@ export default function DomainsPage() {
     )
     
     // Apply sorting
-    const sorted = sortDomains(filtered, sortBy)
+    const sorted = sortDomains(result, sortBy)
     setFilteredDomains(sorted)
   }, [domains, searchQuery, sortBy, sortDomains])
   
@@ -369,12 +370,14 @@ export default function DomainsPage() {
                 <SelectContent>
                   <SelectItem value="price-asc">Price: Low to High</SelectItem>
                   <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                  <SelectItem value="domainRank-desc">Domain Rank: High to Low</SelectItem>
-                  <SelectItem value="domainAuthority-desc">Domain Authority: High to Low</SelectItem>
-                  <SelectItem value="score-desc">Score: High to Low</SelectItem>
-                  <SelectItem value="age-desc">Age: Oldest First</SelectItem>
-                  <SelectItem value="referringDomains-desc">Referring Domains: High to Low</SelectItem>
-                  <SelectItem value="monthlyTraffic-desc">Monthly Traffic: High to Low</SelectItem>
+                  <SelectItem value="newest">Newest First</SelectItem>
+                  <SelectItem value="oldest">Oldest First</SelectItem>
+                  <SelectItem value="domainRank-desc">Domain Rank</SelectItem>
+                  <SelectItem value="domainAuthority-desc">Domain Authority</SelectItem>
+                  <SelectItem value="score-desc">Score</SelectItem>
+                  <SelectItem value="age-desc">Age</SelectItem>
+                  <SelectItem value="referringDomains-desc">Referring Domains</SelectItem>
+                  <SelectItem value="monthlyTraffic-desc">Monthly Traffic</SelectItem>
                 </SelectContent>
               </Select>
               
@@ -418,6 +421,7 @@ export default function DomainsPage() {
               availableTags={availableTags} 
               currentFilters={activeFilters}
               onFilterSaved={handleFilterSaved}
+              tldCounts={tldCounts}
             />
           </div>
         </div>

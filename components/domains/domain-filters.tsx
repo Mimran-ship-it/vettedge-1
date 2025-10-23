@@ -42,9 +42,10 @@ interface DomainFiltersProps {
   availableTags: string[]
   currentFilters: ActiveFilters
   onFilterSaved?: () => void // Callback when filter is saved
+  tldCounts?: Record<string, number> // Count of domains per TLD
 } 
 
-export function DomainFilters({ onFilterChange, availableTags, currentFilters, onFilterSaved }: DomainFiltersProps) {
+export function DomainFilters({ onFilterChange, availableTags, currentFilters, onFilterSaved, tldCounts = {} }: DomainFiltersProps) {
   const searchParams = useSearchParams()
   const firstMount = useRef(true)
   const urlParamsSet = useRef<{ type?: boolean; isHot?: boolean }>({})
@@ -69,6 +70,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
   
   const [tlds, setTlds] = useState<string[]>([])
   const [tldsLoading, setTldsLoading] = useState(true)
+  const [tldCountsState, setTldCountsState] = useState<Record<string, number>>({})
   
   // Save filter state
   const [showSaveDialog, setShowSaveDialog] = useState(false)
@@ -77,6 +79,13 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
   const { user } = useAuth()
   const { toast } = useToast()
   
+  // Update TLD counts when props change
+  useEffect(() => {
+    if (tldCounts && Object.keys(tldCounts).length > 0) {
+      setTldCountsState(tldCounts)
+    }
+  }, [tldCounts])
+
   // Fetch TLDs from backend on mount
   useEffect(() => {
     const fetchTlds = async () => {
@@ -398,17 +407,35 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
           ) : (
             <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto dark:bg-gray-800 p-2 rounded-md">
               {tlds.length > 0 ? (
-                tlds.map((tld) => (
-                  <div key={tld} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={tld}
-                      checked={selectedTlds.includes(tld)}
-                      onCheckedChange={(checked) => handleTldChange(tld, checked as boolean)}
-                      className="dark:border-gray-600 dark:bg-gray-700"
-                    />
-                    <Label htmlFor={tld} className="text-sm text-gray-600 dark:text-gray-300">{tld}</Label>
-                  </div>
-                ))
+                tlds.map((tld) => {
+                  const count = tldCountsState[tld.replace(/^\./, '')] || 0
+                  return (
+                    <div key={tld} className="flex items-center justify-between w-full">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`tld-${tld}`}
+                          checked={selectedTlds.includes(tld)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedTlds([...selectedTlds, tld])
+                            } else {
+                              setSelectedTlds(selectedTlds.filter((t) => t !== tld))
+                            }
+                          }}
+                        />
+                        <label
+                          htmlFor={`tld-${tld}`}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          {tld}
+                        </label>
+                      </div>
+                      <span className="text-xs text-muted-foreground">
+                        {count.toLocaleString()}
+                      </span>
+                    </div>
+                  )
+                })
               ) : (
                 <div className="col-span-2 text-center text-sm text-gray-500 dark:text-gray-400 p-2">
                   No extensions available
