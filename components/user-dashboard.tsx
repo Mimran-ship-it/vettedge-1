@@ -286,7 +286,7 @@ export function UserDashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{orderStats.total}</div>
             <p className="text-xs text-muted-foreground">
-              {orderStats.completed-orderStats.domainTransferPending} completed, {orderStats.domainTransferPending} pending
+              {orderStats.total-orderStats.domainTransferPending} completed, {orderStats.domainTransferPending} pending
             </p>
           </CardContent>
         </Card>
@@ -323,7 +323,7 @@ export function UserDashboard() {
             <CheckCircle className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{orderStats.completed}</div>
+            <div className="text-2xl font-bold">{orderStats.total}</div>
             <p className="text-xs text-muted-foreground">Successfully purchased</p>
           </CardContent>
         </Card>
