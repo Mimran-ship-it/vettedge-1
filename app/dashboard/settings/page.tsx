@@ -145,7 +145,6 @@ export default function AccountSettingsPage() {
   if (fetchingUser) {
     return (
       <div className="flex min-h-screen">
-        <DashboardSidebar />
         <div className="flex-1 p-8">
           <div className="max-w-2xl mx-auto">
             <div className="animate-pulse space-y-4">
@@ -159,15 +158,12 @@ export default function AccountSettingsPage() {
   }
 
   return (
-    <div className="flex min-h-screen">
-      <DashboardSidebar />
-      <div className="flex-1 p-4 md:p-8">
-        <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-2xl mx-auto space-y-6">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Account Settings</h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">
-              Manage your account information and billing address
-            </p>
+              <h1 className="text-2xl font-bold tracking-tight">Account Settings</h1>
+              <p className="text-sm text-muted-foreground">
+                Manage your account settings and update your personal information.
+              </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -301,7 +297,7 @@ export default function AccountSettingsPage() {
 
             <Button
               type="submit"
-              className="w-full bg-[#33BDC7] hover:bg-[#28a3ac] text-white"
+              className="w-full sm:w-auto bg-[#33BDC7] hover:bg-[#28a3ac] text-white"
               disabled={loading}
             >
               {loading ? (
@@ -314,8 +310,6 @@ export default function AccountSettingsPage() {
               )}
             </Button>
           </form>
-        </div>
-      </div>
     </div>
   )
 }

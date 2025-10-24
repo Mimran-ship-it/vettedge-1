@@ -372,12 +372,12 @@ export default function DomainsPage() {
                   <SelectItem value="price-desc">Price: High to Low</SelectItem>
                   <SelectItem value="newest">Newest First</SelectItem>
                   <SelectItem value="oldest">Oldest First</SelectItem>
-                  <SelectItem value="domainRank-desc">Domain Rank</SelectItem>
-                  <SelectItem value="domainAuthority-desc">Domain Authority</SelectItem>
-                  <SelectItem value="score-desc">Score</SelectItem>
-                  <SelectItem value="age-desc">Age</SelectItem>
-                  <SelectItem value="referringDomains-desc">Referring Domains</SelectItem>
-                  <SelectItem value="monthlyTraffic-desc">Monthly Traffic</SelectItem>
+                  <SelectItem value="domainRank-desc">Domain Rank: High to Low</SelectItem>
+                  <SelectItem value="domainAuthority-desc">Domain Authority: High to Low</SelectItem>
+                  <SelectItem value="score-desc">Score: High to Low</SelectItem>
+                  <SelectItem value="age-desc">Age: Oldest First</SelectItem>
+                  <SelectItem value="referringDomains-desc">Referring Domains: High to Low</SelectItem>
+                  <SelectItem value="monthlyTraffic-desc">Monthly Traffic: High to Low</SelectItem>
                 </SelectContent>
               </Select>
               
