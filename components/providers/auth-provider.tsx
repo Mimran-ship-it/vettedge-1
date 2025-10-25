@@ -84,7 +84,7 @@ function AuthProviderInner({ children }: AuthProviderProps) {
 
   const signOut = () => {
     fetch("/api/auth/signout", { method: "POST" })
-    router.push("/")
+    window.location.href = "/"
     setUser(null)
   }
 
