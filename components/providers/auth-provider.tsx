@@ -82,11 +82,20 @@ function AuthProviderInner({ children }: AuthProviderProps) {
     }
   }
 
-  const signOut = () => {
-    fetch("/api/auth/signout", { method: "POST" })
-    window.location.href = "/"
-    setUser(null)
+  const signOut = async () => {
+    try {
+      const res = await fetch("/api/auth/signout", { method: "POST" })
+      if (res.ok) {
+        setUser(null)
+        window.location.href = "/"
+      } else {
+        console.error("Signout failed")
+      }
+    } catch (err) {
+      console.error("Error signing out:", err)
+    }
   }
+  
 
   return (
     <AuthContext.Provider
