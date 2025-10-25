@@ -391,58 +391,69 @@ export default function DomainDetailsPage() {
                           <p className="text-sm text-gray-600 dark:text-gray-300">This domain was first registered in {domain.metrics.year} and has been maintained for {domain.metrics.age} years.</p>
                         </div>
 
-                        {domain.metrics.authorityLinks?.length > 0 && (
-                          <div className="p-4 bg-gray-50 dark:bg-gray-600 rounded-lg">
-                            <h3 className="font-medium text-gray-900 dark:text-white mb-2">Authority Backlinks</h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">This domain has backlinks from the following authoritative sources:</p>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                              {domain.metrics.authorityLinks.map((link, idx) => {
-                                const trimmedLink = link.trim();
-                                let href = trimmedLink;
-                                let displayText = trimmedLink;
+                        {domain.metrics.authorityLinksCount > 0 && (
+  <div className="p-4 bg-gray-50 dark:bg-gray-600 rounded-lg">
+    <h3 className="font-medium text-gray-900 dark:text-white mb-2">Authority Backlinks</h3>
 
-                                // If the link doesn't start with a protocol, add https://
-                                if (!trimmedLink.startsWith('http://') && !trimmedLink.startsWith('https://')) {
-                                  href = `https://${trimmedLink}`;
-                                }
+    {/* If links exist, show details */}
+    {Array.isArray(domain.metrics.authorityLinks) && domain.metrics.authorityLinks.length > 0 ? (
+      <>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+          This domain has <span className="font-semibold">{domain.metrics.authorityLinksCount}</span> backlinks from the following authoritative sources:
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {domain.metrics.authorityLinks.map((link, idx) => {
+            const trimmedLink = link.trim();
+            let href = trimmedLink;
+            let displayText = trimmedLink;
 
-                                // Try to extract the hostname for display
-                                try {
-                                  const url = new URL(href);
-                                  displayText = url.hostname;
-                                } catch (e) {
-                                  // If parsing fails, use the original trimmed link
-                                  displayText = trimmedLink;
-                                }
+            if (!trimmedLink.startsWith('http://') && !trimmedLink.startsWith('https://')) {
+              href = `https://${trimmedLink}`;
+            }
 
-                                return (
-                                  <a
-                                    key={idx}
-                                    href={href}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-600 hover:border-blue-300 dark:hover:border-blue-500 transition-colors group"
-                                  >
-                                    <div className="flex items-center">
-                                      <div className="flex-shrink-0 w-10 h-10 rounded-md bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/50 transition-colors">
-                                        <ExternalLink className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                                      </div>
-                                      <div>
-                                        <div className="font-medium text-gray-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
-                                          {displayText}
-                                        </div>
-                                        <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px]">
-                                          {href}
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <ArrowRight className="h-4 w-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
-                                  </a>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        )}
+            try {
+              const url = new URL(href);
+              displayText = url.hostname;
+            } catch (e) {
+              displayText = trimmedLink;
+            }
+
+            return (
+              <a
+                key={idx}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-600 hover:border-blue-300 dark:hover:border-blue-500 transition-colors group"
+              >
+                <div className="flex items-center">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-md bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/50 transition-colors">
+                    <ExternalLink className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
+                      {displayText}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px]">
+                      {href}
+                    </div>
+                  </div>
+                </div>
+                <ArrowRight className="h-4 w-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+              </a>
+            );
+          })}
+        </div>
+      </>
+    ) : (
+      // If only count exists (no link details)
+      <p className="text-sm text-gray-600 dark:text-gray-300">
+        This domain has <span className="font-semibold">{domain.metrics.authorityLinksCount}</span> authoritative backlinks.
+      </p>
+    )}
+  </div>
+)}
+
 
                         <div className="p-4 bg-gray-50 dark:bg-gray-600 rounded-lg">
                           <h3 className="font-medium text-gray-900 dark:text-white mb-2">Domain Value</h3>
