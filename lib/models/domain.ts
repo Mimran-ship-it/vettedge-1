@@ -6,7 +6,7 @@ const DomainSchema = new Schema(
     description: { type: String },
     image: { type: [String], default: [] }, // Image array
     price: { type: Number, required: true },
-    Actualprice: { type: Number, required: true },
+    Actualprice: { type: Number },
     isAvailable: { type: Boolean, default: true },
     isHot: { type: Boolean, default: false },
     isSold: { type: Boolean, default: false },
