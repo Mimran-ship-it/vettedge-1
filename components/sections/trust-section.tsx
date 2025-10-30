@@ -96,7 +96,7 @@ export function TrustSection() {
   ]
 
   return (
-    <section className="py-20 bg-white dark:bg-gray-900">
+    <section className="py-20 bg-blue-100 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -112,9 +112,9 @@ export function TrustSection() {
           >
             Trusted by Thousands
           </Badge>
-          <h2 className="text-4xl lg:text-5xl font-bold text-[#33BDC7] mb-6">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight break-words">
             Why Industry Leaders
-            <span className="block text-[#3bd17a]">Choose Vettedge</span>
+            <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight break-words block text-[#3bd17a]">Choose Vettedge</span>
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
             We've built our reputation on trust, quality, and results. Here's
@@ -122,26 +122,35 @@ export function TrustSection() {
             domain needs.
           </p>
         </motion.div>
-
+ 
         {/* Trust Indicators */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 ml-12 sm:ml-0 sm:grid-cols-2 lg:grid-cols-3  gap-8 mb-16">
           {trustIndicators.map((indicator, index) => (
             <motion.div
               key={index}
-              className="text-center"
+              className="flex flex-row sm:flex-col items-center sm:items-center text-left sm:text-center"
               initial="hidden"
               whileInView="show"
               viewport={{ once: true }}
               custom={index * 0.15}
               variants={fadeUp}
             >
-              <div className="w-16 h-16 border border-[#38C172] rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <indicator.icon className="h-8 w-8 text-[#38C172]" />
+              {/* Icon Column */}
+              <div className="flex flex-col sm:block items-center justify-center mr-4 sm:mr-0">
+                <div className="w-16 h-16 border border-[#38C172] rounded-2xl flex items-center justify-center mb-0 sm:mb-4">
+                  <indicator.icon className="h-8 w-8 text-[#38C172]" />
+                </div>
               </div>
-              <div className="text-3xl font-bold text-[#33BDC7] mb-2">
-                {indicator.value}
+
+              {/* Text Column */}
+              <div className="flex flex-col">
+                <div className="text-3xl font-bold text-[#33BDC7] mb-1 sm:mb-2">
+                  {indicator.value}
+                </div>
+                <div className="text-gray-600 dark:text-gray-400 text-sm">
+                  {indicator.label}
+                </div>
               </div>
-              <div className="text-gray-600 dark:text-gray-400 text-sm">{indicator.label}</div>
             </motion.div>
           ))}
         </div>
@@ -157,7 +166,7 @@ export function TrustSection() {
       variants={fadeUp}
       className="h-full" // Add this to make the motion.div take full height
     >
-      <Card className="text-center hover:shadow-md transition-all duration-200 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 h-full flex flex-col">
+      <Card className="text-center hover:shadow-md transition-all duration-200 border border-gray-200 dark:border-gray-700 bg-blue-50 dark:bg-gray-800 h-full flex flex-col">
         <CardContent className="pt-8 pb-6 flex flex-col flex-grow">
           <div className="w-16 h-16 border border-[#38C172] rounded-2xl flex items-center justify-center mx-auto mb-6">
             <feature.icon className="h-8 w-8 text-[#38C172]" />
