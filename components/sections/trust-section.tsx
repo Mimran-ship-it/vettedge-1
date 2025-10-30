@@ -123,25 +123,34 @@ export function TrustSection() {
           </p>
         </motion.div>
 
-        {/* Trust Indicators */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+       {/* Trust Indicators */}
+       <div className="grid grid-cols-1 ml-12 sm:ml-0 sm:grid-cols-2 lg:grid-cols-3  gap-8 mb-16">
           {trustIndicators.map((indicator, index) => (
             <motion.div
               key={index}
-              className="text-center"
+              className="flex flex-row sm:flex-col items-center sm:items-center text-left sm:text-center"
               initial="hidden"
               whileInView="show"
               viewport={{ once: true }}
               custom={index * 0.15}
               variants={fadeUp}
             >
-              <div className="w-16 h-16 border border-[#38C172] rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <indicator.icon className="h-8 w-8 text-[#38C172]" />
+              {/* Icon Column */}
+              <div className="flex flex-col sm:block items-center justify-center mr-4 sm:mr-0">
+                <div className="w-16 h-16 border border-[#38C172] rounded-2xl flex items-center justify-center mb-0 sm:mb-4">
+                  <indicator.icon className="h-8 w-8 text-[#38C172]" />
+                </div>
               </div>
-              <div className="text-3xl font-bold text-[#33BDC7] mb-2">
-                {indicator.value}
+
+              {/* Text Column */}
+              <div className="flex flex-col">
+                <div className="text-3xl font-bold text-[#33BDC7] mb-1 sm:mb-2">
+                  {indicator.value}
+                </div>
+                <div className="text-gray-600 dark:text-gray-400 text-sm">
+                  {indicator.label}
+                </div>
               </div>
-              <div className="text-gray-600 dark:text-gray-400 text-sm">{indicator.label}</div>
             </motion.div>
           ))}
         </div>
