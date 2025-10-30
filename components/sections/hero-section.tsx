@@ -62,16 +62,16 @@ export function HeroSection() {
                 variant="secondary"
                 className="bg-[#33BDC7]/10 text-[#33BDC7] border-[#33BDC7]/30 px-4 py-2 mx-auto lg:mx-0"
               >
-                🔥Premium Expired Domains
+                🔥Premium Aged Domains
               </Badge>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight break-words">
-                <span className="block">Expired Domains With</span>
+                <span className="block">Aged Domains With</span>
                 <span className="block text-[#33BDC7]">Real Authority</span>
               </h1>
 
               <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                Get the edge with VettEdge — where expired domains mean business.
+                Get the edge with VettEdge — where Aged Domains mean business.
                 Supercharge your brand with SEO-rich domains.
               </p>
             </motion.div>
@@ -156,7 +156,7 @@ export function HeroSection() {
                     Icon: Search,
                     color: "text-[#33BDC7]",
                     bg: "from-[#33BDC7]/10 to-[#33BDC7]/20",
-                    title: "Search Expired Domains",
+                    title: "Search Aged Domains",
                     desc: "Browse hundreds of valuable domains"
                   }, {
                     Icon: TrendingUp,

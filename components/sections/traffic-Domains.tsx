@@ -21,8 +21,8 @@ export function TrafficDomains() {
 
         const data: Domain[] = await response.json()
 
-        // Filter only traffic domains
-        const trafficDomains = data.filter((domain) => domain.type === "traffic")
+        // Filter only available traffic domains
+        const trafficDomains = data.filter((domain) => domain.type === "traffic" && domain.isAvailable === true && domain.isSold === false)
 
         setDomains(trafficDomains)
       } catch (err: any) {

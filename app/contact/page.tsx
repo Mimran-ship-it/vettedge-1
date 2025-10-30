@@ -303,8 +303,8 @@ export default function ContactPage() {
                 answer: "Yes — we offer a 14-day refund policy. A 5% handling fee applies, and payment gateway fees (like PayPal's) are non-refundable. Domains must be unused and returned to us."
               },
               {
-                question: "Are expired domains safe to use for SEO?",
-                answer: "If properly vetted — yes. We only sell aged/expired domains with clean histories and strong SEO potential, making them ideal for authority sites, PBNs, niche blogs, or brand foundations."
+                question: "Are Aged Domains safe to use for SEO?",
+                answer: "If properly vetted — yes. We only sell aged/Aged Domains with clean histories and strong SEO potential, making them ideal for authority sites, PBNs, niche blogs, or brand foundations."
               },
               {
                 question: "How long does the transfer take?",

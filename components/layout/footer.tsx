@@ -59,7 +59,7 @@ export function Footer() {
  
             <div className="border-l-4 border-[#38C172] pl-4 mt-2 text-sm italic text-gray-700 dark:text-gray-400">
               <p>
-                "We're passionate about providing high-quality expired domains to help your business succeed online."
+                "We're passionate about providing high-quality Aged Domains to help your business succeed online."
               </p>
               <p className="mt-1 font-semibold not-italic text-[#33BDC7] dark:text-[#33BDC7]/80">
                 — VettEdge Team

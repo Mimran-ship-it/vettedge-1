@@ -21,8 +21,8 @@ export function IsHot() {
 
         const data: Domain[] = await response.json()
 
-        // Filter only isHot domains
-        const hotDomains = data.filter((domain) => domain.isHot === true)
+        // Filter only available isHot domains
+        const hotDomains = data.filter((domain) => domain.isHot === true && domain.isAvailable === true && domain.isSold === false)
 
         setDomains(hotDomains)
       } catch (err: any) {
@@ -47,7 +47,7 @@ export function IsHot() {
         <div className="text-center mb-12">
           <h2 className="text-4xl lg:text-5xl font-bold text-[#33BDC7] mb-4">🔥 Hot Deals</h2>
           <p className="text-lg text-gray-600 dark:text-gray-300">
-          Discover premium expired domains with proven authority — now available at 20–80% off
+          Discover premium Aged Domains with proven authority — now available at 20–80% off
           </p>
         </div>
 

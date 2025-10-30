@@ -35,7 +35,7 @@ export default function VettingProcessPage() {
     {
       step: 1,
       title: "Domain Discovery & Initial Screening",
-      description: "We identify expired domains from premium sources and perform initial quality checks",
+      description: "We identify Aged Domains from premium sources and perform initial quality checks",
       icon: Search,
       details: [
         "Monitor premium domain drop lists",
@@ -178,7 +178,7 @@ export default function VettingProcessPage() {
               </span>
             </h1>
             <p className="text-xl lg:text-2xl text-[#33BDC7] max-w-3xl mx-auto leading-relaxed">
-              At VettEdge.domains, we don’t just list expired domains — we curate them. Our portfolio stands out for several reasons:
+              At VettEdge.domains, we don’t just list Aged Domains — we curate them. Our portfolio stands out for several reasons:
             </p>
           </motion.div>
         </motion.div>
@@ -401,7 +401,7 @@ export default function VettingProcessPage() {
               Ready to Find Your Premium Domain?
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
-              Browse our carefully vetted collection of premium expired domains, each one guaranteed to meet our strict
+              Browse our carefully vetted collection of premium Aged Domains, each one guaranteed to meet our strict
               quality standards.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

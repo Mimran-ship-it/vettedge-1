@@ -22,7 +22,7 @@ export default function TermsOfService() {
       title: "2. Domain Services",
       icon: <FileText className="w-5 h-5" />,
       content: [
-        "VettEdge provides premium expired domain names that have been thoroughly vetted for quality and SEO value.",
+        "VettEdge provides premium aged domain names that have been thoroughly vetted for quality and SEO value.",
         "All domains are sold 'as-is' with no guarantees regarding future performance or search engine rankings.",
         "Domain transfer process typically takes 5-7 business days upon successful payment verification.",
         "We reserve the right to refuse service to any customer for any reason."

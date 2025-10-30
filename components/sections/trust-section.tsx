@@ -16,8 +16,43 @@ import {
   Zap,
 } from "lucide-react"
 import { motion } from "framer-motion"
+import { useEffect, useState } from "react"
+
+interface DomainStats {
+  totalDomains: number
+  soldDomains: number
+  availableDomains: number
+  yearsInMarket: number
+}
 
 export function TrustSection() {
+  const [stats, setStats] = useState<DomainStats | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch('/api/domains/stats')
+        if (!response.ok) throw new Error('Failed to fetch domain stats')
+        const data = await response.json()
+        setStats(data)
+      } catch (error) {
+        console.error('Error fetching domain stats:', error)
+        // Fallback to default values
+        setStats({
+          totalDomains: 100,
+          soldDomains: 50,
+          availableDomains: 50,
+          yearsInMarket: 5,
+        })
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchStats()
+  }, [])
+
   const fadeUp = {
     hidden: { opacity: 0, y: 40 },
     show: (delay = 0) => ({
@@ -32,9 +67,8 @@ export function TrustSection() {
       icon: Shield,
       title: "Competitive Pricing",
       description:
-        "We offer premium domains at prices lower than many competitors, without compromising on quality.",
+        "We offer premium domains at prices lower than many competitors, without compromising on quality.",
     },
-    
     {
       icon: SearchCheck,
       title: "Expert Vetting",
@@ -54,12 +88,11 @@ export function TrustSection() {
         "We prioritize names that are memorable, niche-relevant, and investment-worthy — perfect for startups or agencies.",
     },
   ]
-  
 
   const trustIndicators = [
-    { icon: Globe, label: "50+ Domains Sold", value: "50+" },
-    { icon: ListChecks, label: "100+ Listing", value: "100+" },
-    { icon: Store, label: "5+ Years on Market", value: "5+" },
+    { icon: Globe, label: "Domains Sold", value: stats ? `${stats.soldDomains}` : '...' },
+    { icon: ListChecks, label: "Total Listings", value: stats ? `${stats.totalDomains}` : '...' },
+    { icon: Store, label: "Years on Market", value: stats ? `${stats.yearsInMarket}+` : '...' },
   ]
 
   return (

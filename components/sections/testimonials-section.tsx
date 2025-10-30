@@ -56,7 +56,7 @@ export function TestimonialsSection() {
       role: "Investment Advisor",
       company: "Domain Capital",
       content:
-        "Vettedge has the best selection of premium expired domains. Their analytics and insights help make informed investment decisions.",
+        "Vettedge has the best selection of premium Aged Domains. Their analytics and insights help make informed investment decisions.",
       rating: 5,
       avatar: "JW",
     },

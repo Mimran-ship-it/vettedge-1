@@ -229,7 +229,7 @@ export default function SEOAnalysis() {
               <div className="space-y-4">
                 <h4 className="font-semibold text-[#33BDC7]">Top Keywords</h4>
                 <div className="space-y-2">
-                  {["domain investing", "expired domains", "SEO domains"].map((keyword, index) => (
+                  {["domain investing", "Aged Domains", "SEO domains"].map((keyword, index) => (
                     <div key={index} className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-800 rounded">
                       <span className="text-sm">{keyword}</span>
                       <Badge variant="outline" className="text-xs">

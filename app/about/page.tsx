@@ -20,17 +20,52 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { LiveChat } from "@/components/chat/live-chat"
+import { useEffect, useState } from "react"
+
+interface DomainStats {
+  totalDomains: number
+  soldDomains: number
+  availableDomains: number
+  yearsInMarket: number
+}
 
 export default function AboutPage() {
+  const [stats, setStats] = useState<DomainStats | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch('/api/domains/stats')
+        if (!response.ok) throw new Error('Failed to fetch domain stats')
+        const data = await response.json()
+        setStats(data)
+      } catch (error) {
+        console.error('Error fetching domain stats:', error)
+        // Fallback to default values
+        setStats({
+          totalDomains: 100,
+          soldDomains: 50,
+          availableDomains: 50,
+          yearsInMarket: 5,
+        })
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchStats()
+  }, [])
+
   const fadeUp = {
     hidden: { opacity: 0, y: 40 },
     show: { opacity: 1, y: 0, transition: { duration: 0.6 } }
   }
 
-  const stats = [
-    { icon: Globe, label: "50+ Domains Sold", value: "50+" },
-    { icon: ListChecks, label: "100+ Listings", value: "100+" },
-    { icon: Store, label: "5+ Years on Market", value: "5+" },
+  const statsData = [
+    { icon: Globe, label: "Domains Sold", value: stats ? stats.soldDomains.toString() : '...' },
+    { icon: ListChecks, label: "Total Listings", value: stats ? stats.totalDomains.toString() : '...' },
+    { icon: Store, label: "Years on Market", value: stats ? `${stats.yearsInMarket.toString()}+` : '...' },
   ]
 
   const values = [
@@ -63,7 +98,7 @@ export default function AboutPage() {
             <span className="block text-[#3BD17A]">Curated for Your Success</span>
           </h1>
           <p className="text-md lg:text-xl max-w-3xl mx-auto leading-relaxed">
-            Your trusted source for premium vetted, aged, and expired domain names — helping you launch brands, grow SEO authority, and invest with confidence.
+            Your trusted source for premium vetted, aged, and aged domain names — helping you launch brands, grow SEO authority, and invest with confidence.
           </p>
         </div>
       </motion.section>
@@ -84,7 +119,7 @@ export default function AboutPage() {
               Why Choose VettEdge?
             </Badge>
             <p className="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
-              Unlike generic domain marketplaces, we focus exclusively on high-potential aged and expired domains vetted by real humans — not bots.
+              Unlike generic domain marketplaces, we focus exclusively on high-potential aged and Aged Domains vetted by real humans — not bots.
             </p>
           </div>
 
@@ -115,21 +150,21 @@ export default function AboutPage() {
       {/* Stats Section */}
       <section className="py-16 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-            {stats.map((stat, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+            {statsData.map((stat, index) => (
               <motion.div
                 key={index}
-                className="text-center"
+                className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm text-center"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.2, duration: 0.5 }}
+                transition={{ delay: 0.2 * index }}
               >
-                <div className="w-16 h-16 bg-[#33BDC7] rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <stat.icon className="h-8 w-8 text-white" />
-                </div>
-                <div className="text-3xl font-bold text-[#33BDC7] mb-2">{stat.value}</div>
-                <div className="text-gray-600 dark:text-gray-300">{stat.label}</div>
+                <stat.icon className="h-10 w-10 text-[#33BDC7] mx-auto mb-4" />
+                <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                  {`${stat.value}`}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300">{stat.label}</p>
               </motion.div>
             ))}
           </div>

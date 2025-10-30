@@ -21,13 +21,13 @@ export function AgedDomains() {
 
         const data: Domain[] = await response.json()
 
-        // Filter only aged domains
-        const agedDomains = data.filter((domain) => domain.type === "aged")
+        // Filter only available Aged Domains
+        const agedDomains = data.filter((domain) => domain.type === "aged" && domain.isAvailable === true && domain.isSold === false)
 
         setDomains(agedDomains)
       } catch (err: any) {
-        console.error("Failed to fetch aged domains:", err)
-        setError("Unable to load aged domains at the moment.")
+        console.error("Failed to fetch Aged Domains:", err)
+        setError("Unable to load Aged Domains at the moment.")
         setDomains([])
       } finally {
         setLoading(false)
@@ -75,7 +75,7 @@ export function AgedDomains() {
         {!loading && (error || domains.length === 0) && (
           <div className="text-center py-12">
             <p className="text-gray-600 dark:text-gray-300 mb-4">
-              {error ? error : "No aged domains available at the moment."}
+              {error ? error : "No Aged Domains available at the moment."}
             </p>
             <Button size="lg" asChild>
               <a href="/domains">Browse All Domains</a>

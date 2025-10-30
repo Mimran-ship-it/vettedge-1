@@ -213,7 +213,7 @@ export default function AddBlogPage() {
                 <CardContent className="space-y-4">
         <div>
           <Label htmlFor="slug">Slug</Label>
-                    <Input id="slug" name="slug" value={formData.slug} onChange={handleChange} placeholder="e.g., ultimate-guide-expired-domains" required />
+                    <Input id="slug" name="slug" value={formData.slug} onChange={handleChange} placeholder="e.g., ultimate-guide-aged-domains" required />
         </div>
         <div>
           <Label htmlFor="title">Title</Label>

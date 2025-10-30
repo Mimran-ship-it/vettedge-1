@@ -119,6 +119,7 @@
     box-sizing: border-box; /* Add this to help sizing */
   }
   html, body {
+
     margin: 0;
     padding: 0;
     width: 100vw;
@@ -142,6 +143,9 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+* {
+  font-family: "Inter", sans-serif;
 }
 
 /* Make images, videos, iframes, etc. responsive to fit width */

@@ -46,7 +46,7 @@ export default function IsHot() {
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">🔥 Hot Deals</h2>
           <p className="text-lg text-gray-600 dark:text-gray-300">
-            Discover premium expired domains with proven authority
+            Discover premium Aged Domains with proven authority
           </p>
         </div>
 

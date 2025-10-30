@@ -183,6 +183,10 @@ export function DomainCard({ domain }: DomainCardProps) {
   }
 
   const handleShare = async () => {
+    if (domain.isSold || !domain.isAvailable) {
+      return; // Don't allow sharing for sold or unavailable domains
+    }
+    
     const url = `${window.location.origin}/domains/${domain._id}`;
 
     // Create shareable text with all key domain information
@@ -190,17 +194,16 @@ export function DomainCard({ domain }: DomainCardProps) {
 Key Metrics:
 • Domain Rank (DR): ${domain.metrics.domainRank}
 • Domain Authority (DA): ${domain.metrics.domainAuthority}
-• Overall Score : ${domain.metrics.score}
+• Overall Score: ${domain.metrics.score}
 • Trust Flow (TF): ${domain.metrics.trustFlow}
 • Citation Flow (CF): ${domain.metrics.citationFlow}
 • Referring Domains: ${domain.metrics.referringDomains}
 • Authority Links: ${domain.metrics.authorityLinksCount}
 • Domain Age: ${domain.metrics.age} years
 • Language: ${domain.metrics.language}
- ${domain.metrics.monthlyTraffic ? `• Monthly Traffic: ${domain.metrics.monthlyTraffic.toLocaleString()}` : ''}
-Price: $${domain.price.toLocaleString()} ${(domain.Actualprice&&(domain.Actualprice > domain.price)) ? `(was $${domain.Actualprice.toLocaleString()})` : ''}
+${domain.metrics.monthlyTraffic ? `• Monthly Traffic: ${domain.metrics.monthlyTraffic.toLocaleString()}` : ''}
+Price: $${domain.price.toLocaleString()} ${(domain.Actualprice && (domain.Actualprice > domain.price)) ? `(was $${domain.Actualprice.toLocaleString()})` : ''}
 Registrar: ${domain.registrar}
-Status: ${domain.isAvailable ? 'Available' : 'Unavailable'} ${domain.isSold ? '(SOLD)' : ''}
 View full details:`;
 
     if (navigator.share) {
@@ -244,19 +247,21 @@ View full details:`;
       {/* Top Image - Responsive Aspect Ratio */}
       {domain.image?.length > 0 && (
         <div className="relative w-full aspect-video">
-          <Link href={`/domains/${domain._id}`}><Image
-            src={domain.image[0]}
-            alt={domain.name}
-            fill
-            className={cn(
-              "object-cover transition duration-300 bg-white",
-              (domain.isSold||(!domain.isAvailable)) ? "blur-[40px] brightness-50" : (!domain.isAvailable && !domain.isSold ? "blur-sm" : "")
-            )}
-          /></Link>
-          {(domain.isSold||(!domain.isAvailable)) && (
+          <Link href={domain.isSold || !domain.isAvailable ? '#' : `/domains/${domain._id}`}>
+            <Image
+              src={domain.image[0]}
+              alt={domain.name}
+              fill
+              className={cn(
+                "object-cover transition duration-300 bg-white",
+                (domain.isSold || !domain.isAvailable) ? "blur-[40px] brightness-50" : ""
+              )}
+            />
+          </Link>
+          {(domain.isSold || !domain.isAvailable) && (
             <div className="absolute inset-0 bg-black/80 z-10 flex items-center justify-center">
               <Badge variant="destructive" className="text-xs px-2 py-1">
-                SOLD
+                {domain.isSold ? "SOLD" : "UNAVAILABLE"}
               </Badge>
             </div>
           )}
@@ -285,14 +290,16 @@ View full details:`;
               )}
             </div>
             <div className="flex gap-1 flex-shrink-0">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleShare}
-                className="p-1 h-7 w-7 sm:h-8 sm:w-8 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-              >
-                <Share2 className="h-3 w-3 sm:h-4 sm:w-4" />
-              </Button>
+              {!domain.isSold && domain.isAvailable && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleShare}
+                  className="p-1 h-7 w-7 sm:h-8 sm:w-8 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                >
+                  <Share2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                </Button>
+              )}
               <Button
                 variant="ghost"
                 size="icon"
@@ -340,12 +347,6 @@ View full details:`;
                 </span>
               )}
             </div>
-            <Badge className={cn(
-              "text-xs px-1.5 py-0.5 self-start sm:self-auto",
-              domain.isAvailable ? "bg-green-600 text-white" : "bg-gray-400 text-white"
-            )}>
-              {domain.isAvailable ? "Available" : "Unavailable"}
-            </Badge>
           </div>
 
           {/* Enhanced Overall Score Section */}

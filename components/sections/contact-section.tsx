@@ -58,7 +58,7 @@ export function ContactSection() {
             </span>
           </h2>
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Our domain experts are here to help you find the perfect expired domain for your business. Get personalized
+            Our domain experts are here to help you find the perfect aged domain for your business. Get personalized
             recommendations and expert guidance.
           </p>
         </motion.div>

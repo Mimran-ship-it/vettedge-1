@@ -341,7 +341,7 @@ export default function DomainsPage() {
       <main className="max-w-8xl sm:ms-0 ms-3.5 mx-auto ps-3 pe-6 sm:px-6 lg:px-16 pt-24 pb-8">
         <div className="mb-8 ">
           <h1 className="text-3xl font-bold sm:text-start text-center text-gray-900 dark:text-white mb-4">
-            Premium Expired Domains
+            Premium Aged Domains
           </h1>
           <p className="text-lg text-gray-600 sm:text-start text-center dark:text-gray-300">
             Discover high-authority domains with proven SEO value and traffic history

@@ -162,7 +162,7 @@ export default function CartPage() {
                 <ShoppingBag className="h-24 w-24 text-gray-300 mx-auto mb-6" />
                 <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Your cart is empty</h2>
                 <p className="text-gray-600 dark:text-gray-300 mb-8">
-                  Discover premium expired domains and add them to your cart
+                  Discover premium Aged Domains and add them to your cart
                 </p>
                 <Button size="lg" asChild>
                   <Link href="/domains">Browse Domains</Link>

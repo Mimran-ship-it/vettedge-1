@@ -3,25 +3,25 @@ import type { BlogPost } from "@/types/blog"
 export const blogPosts: BlogPost[] = [
   {
     _id: "1", 
-    slug: "ultimate-guide-expired-domains",
-    title: "The Ultimate Guide to Buying Expired Domains in 2024",
+    slug: "ultimate-guide-aged-domains",
+    title: "The Ultimate Guide to Buying Aged Domains in 2024",
     excerpt:
-      "Learn everything you need to know about finding, evaluating, and purchasing high-quality expired domains that can boost your SEO and business growth.",
+      "Learn everything you need to know about finding, evaluating, and purchasing high-quality Aged Domains that can boost your SEO and business growth.",
     content: `
-# The Ultimate Guide to Buying Expired Domains in 2024
+# The Ultimate Guide to Buying Aged Domains in 2024
 
-Expired domains represent one of the most valuable opportunities in digital marketing today. When a domain expires and becomes available for purchase, it often retains much of its original SEO value, backlinks, and domain authority.
+Aged Domains represent one of the most valuable opportunities in digital marketing today. When a domain expires and becomes available for purchase, it often retains much of its original SEO value, backlinks, and domain authority.
 
-## What Are Expired Domains?
+## What Are Aged Domains?
 
-Expired domains are previously registered domain names that have not been renewed by their original owners. These domains become available for purchase after going through a specific lifecycle:
+Aged Domains are previously registered domain names that have not been renewed by their original owners. These domains become available for purchase after going through a specific lifecycle:
 
 1. **Grace Period** (0-45 days): The original owner can still renew
 2. **Redemption Period** (45-75 days): Higher renewal fees apply
 3. **Pending Delete** (75-80 days): Domain enters auction phase
 4. **Available for Registration**: Domain becomes publicly available
 
-## Why Buy Expired Domains?
+## Why Buy Aged Domains?
 
 ### SEO Benefits
 - **Existing Backlinks**: Inherit valuable link equity from previous site
@@ -35,7 +35,7 @@ Expired domains are previously registered domain names that have not been renewe
 - **Cost Effective**: Often cheaper than building authority from scratch
 - **Time Savings**: Avoid months or years of link building
 
-## How to Evaluate Expired Domains
+## How to Evaluate Aged Domains
 
 ### Key Metrics to Check
 
@@ -66,7 +66,7 @@ Expired domains are previously registered domain names that have not been renewe
 - **Artificial Links**: Obvious link farms or PBN footprints
 - **Multiple Penalties**: History of Google manual actions
 
-## Where to Find Quality Expired Domains
+## Where to Find Quality Aged Domains
 
 ### Premium Marketplaces
 - **GoDaddy Auctions**: Large inventory with detailed metrics
@@ -75,9 +75,9 @@ Expired domains are previously registered domain names that have not been renewe
 - **Sedo**: International marketplace with negotiation options
 
 ### Specialized Platforms
-- **ExpiredDomains.net**: Free database with basic filtering
+- **agedDomains.net**: Free database with basic filtering
 - **DomCop**: Advanced filtering and SEO metrics
-- **FreshDrop**: Daily lists of newly expired domains
+- **FreshDrop**: Daily lists of newly Aged Domains
 - **Vettedge.domains**: Curated, pre-vetted premium domains
 
 ## Best Practices for Domain Acquisition
@@ -117,9 +117,9 @@ Expired domains are previously registered domain names that have not been renewe
 - Don't let valuable domains sit unused
 - Consider the resources needed for proper utilization
 
-## Future of Expired Domain Investing
+## Future of aged Domain Investing
 
-The expired domain market continues to evolve with search engine algorithm updates and changing SEO practices. Success requires:
+The aged domain market continues to evolve with search engine algorithm updates and changing SEO practices. Success requires:
 
 - **Staying Updated**: Follow SEO news and algorithm changes
 - **Quality Focus**: Prioritize relevance and natural link profiles
@@ -128,22 +128,22 @@ The expired domain market continues to evolve with search engine algorithm updat
 
 ## Conclusion
 
-Expired domains offer tremendous opportunities for businesses and SEO professionals willing to do their homework. By focusing on quality metrics, avoiding common pitfalls, and implementing proper integration strategies, you can leverage expired domains to accelerate your online success.
+Aged Domains offer tremendous opportunities for businesses and SEO professionals willing to do their homework. By focusing on quality metrics, avoiding common pitfalls, and implementing proper integration strategies, you can leverage Aged Domains to accelerate your online success.
 
-Remember that buying expired domains is just the first step - the real value comes from how you utilize these assets to build authority, drive traffic, and achieve your business objectives.
+Remember that buying Aged Domains is just the first step - the real value comes from how you utilize these assets to build authority, drive traffic, and achieve your business objectives.
 
-*Ready to start your expired domain journey? Browse our curated collection of premium expired domains at Vettedge.domains.*
+*Ready to start your aged domain journey? Browse our curated collection of premium Aged Domains at Vettedge.domains.*
     `,
     author: {
       name: "Sarah Johnson",
-      avatar: "/domainexpired.png?height=40&width=40&text=SJ",
+      avatar: "/domainaged.png?height=40&width=40&text=SJ",
     },
     publishedAt: "2024-01-15",
     readingTime: 12,
     category: "Domain Investing",
-    tags: ["SEO", "Expired Domains", "Digital Marketing", "Domain Authority"],
+    tags: ["SEO", "Aged Domains", "Digital Marketing", "Domain Authority"],
     featured: true,
-    image: "/domainexpired.png?height=400&width=800&text=Expired+Domains+Guide",
+    image: "/domainaged.png?height=400&width=800&text=aged+Domains+Guide",
   },
   {
     _id: "2",
@@ -237,38 +237,38 @@ Properly evaluating domain authority metrics is essential for making informed in
   
   {
     _id: "3",
-    slug: "top-10-expired-domain-strategies",
-    title: "Top 10 Strategies to Profit from Expired Domains in 2024",
+    slug: "top-10-aged-domain-strategies",
+    title: "Top 10 Strategies to Profit from Aged Domains in 2024",
     excerpt:
-      "Discover proven strategies to turn expired domains into profitable digital assets that generate traffic, revenue, and brand authority.",
+      "Discover proven strategies to turn Aged Domains into profitable digital assets that generate traffic, revenue, and brand authority.",
     content: `
-# Top 10 Strategies to Profit from Expired Domains in 2024
+# Top 10 Strategies to Profit from Aged Domains in 2024
 
-Expired domains aren't just for SEO enthusiasts—they're powerful business tools when used strategically. Here are 10 proven methods to leverage expired domains:
+Aged Domains aren't just for SEO enthusiasts—they're powerful business tools when used strategically. Here are 10 proven methods to leverage Aged Domains:
 
 ## 1. Build Authority Sites
 Turn an aged domain with strong backlinks into a niche website that ranks quickly.
 
 ## 2. Redirect for SEO Boost
-301-redirect an expired domain to your main site to pass link equity and authority.
+301-redirect an aged domain to your main site to pass link equity and authority.
 
 ## 3. Flip for Profit
 Purchase undervalued domains and resell them at premium prices on marketplaces.
 
 ## 4. Create PBNs (Safely)
-Use high-quality expired domains as part of a private blog network to boost rankings.
+Use high-quality Aged Domains as part of a private blog network to boost rankings.
 
 ## 5. Capture Type-In Traffic
-Some expired domains still receive direct traffic—monetize it with ads or offers.
+Some Aged Domains still receive direct traffic—monetize it with ads or offers.
 
 ## 6. Build Lead Generation Sites
 Create micro-sites targeting specific niches and funnel leads to your main business.
 
 ## 7. Brand Protection
-Acquire expired domains that match your brand or product keywords to prevent competitors from using them.
+Acquire Aged Domains that match your brand or product keywords to prevent competitors from using them.
 
 ## 8. Develop SaaS or Tools
-Use high-authority expired domains to launch SaaS products with built-in trust.
+Use high-authority Aged Domains to launch SaaS products with built-in trust.
 
 ## 9. Resurrect Old Content
 Use the Wayback Machine to restore the domain's historical content and recapture rankings.
@@ -276,7 +276,7 @@ Use the Wayback Machine to restore the domain's historical content and recapture
 ## 10. Build Email Lists
 Leverage existing traffic to collect emails and build audiences for future campaigns.
 
-*Ready to implement these strategies? Browse our curated premium expired domains today!*
+*Ready to implement these strategies? Browse our curated premium Aged Domains today!*
     `,
     author: {
       name: "Emma Carter",
@@ -285,21 +285,21 @@ Leverage existing traffic to collect emails and build audiences for future campa
     publishedAt: "2024-03-12",
     readingTime: 9,
     category: "Domain Investing",
-    tags: ["SEO", "Expired Domains", "Marketing Strategies", "Flipping"],
+    tags: ["SEO", "Aged Domains", "Marketing Strategies", "Flipping"],
     featured: true,
-    image: "/top10.png?height=400&width=800&text=Expired+Domain+Strategies",
+    image: "/top10.png?height=400&width=800&text=aged+Domain+Strategies",
   },
 
   {
     _id: "4",
-    slug: "common-mistakes-expired-domains",
-    title: "Avoid These 7 Common Mistakes When Buying Expired Domains",
+    slug: "common-mistakes-aged-domains",
+    title: "Avoid These 7 Common Mistakes When Buying Aged Domains",
     excerpt:
-      "Learn the biggest pitfalls new investors make when purchasing expired domains and how to avoid costly errors.",
+      "Learn the biggest pitfalls new investors make when purchasing Aged Domains and how to avoid costly errors.",
     content: `
-# Avoid These 7 Common Mistakes When Buying Expired Domains
+# Avoid These 7 Common Mistakes When Buying Aged Domains
 
-Many new investors jump into the expired domain market without proper knowledge. Here are the top mistakes to avo_id:
+Many new investors jump into the aged domain market without proper knowledge. Here are the top mistakes to avo_id:
 
 1. **Ignoring Spam History**
    - Always check past use and backlinks to avoid penalties.
@@ -322,7 +322,7 @@ Many new investors jump into the expired domain market without proper knowledge.
 7. **Not Monitoring After Purchase**
    - Track rankings and backlinks post-acquisition to maximize ROI.
 
-*Avoid these mistakes to make your expired domain investments truly profitable.*
+*Avoid these mistakes to make your aged domain investments truly profitable.*
     `,
     author: {
       name: "Michael Reed",
@@ -331,30 +331,30 @@ Many new investors jump into the expired domain market without proper knowledge.
     publishedAt: "2024-04-05",
     readingTime: 7,
     category: "Domain Investing",
-    tags: ["Expired Domains", "SEO Mistakes", "Investment", "Digital Marketing"],
+    tags: ["Aged Domains", "SEO Mistakes", "Investment", "Digital Marketing"],
     featured: false,
     image: "/risks.png?height=400&width=800&text=Domain+Buying+Mistakes",
   },
 
   {
     _id: "5",
-    slug: "seo-benefits-expired-domains",
-    title: "How Expired Domains Supercharge Your SEO in 2024",
+    slug: "seo-benefits-aged-domains",
+    title: "How Aged Domains Supercharge Your SEO in 2024",
     excerpt:
-      "Expired domains can give your website a massive SEO head start. Learn how to harness their power for rankings and traffic.",
+      "Aged Domains can give your website a massive SEO head start. Learn how to harness their power for rankings and traffic.",
     content: `
-# How Expired Domains Supercharge Your SEO in 2024
+# How Aged Domains Supercharge Your SEO in 2024
 
-When used correctly, expired domains can become your secret SEO weapon. Here's why:
+When used correctly, Aged Domains can become your secret SEO weapon. Here's why:
 
 ## Inherit Link Equity
-Most expired domains retain backlinks that pass authority to your site.
+Most Aged Domains retain backlinks that pass authority to your site.
 
 ## Faster Rankings
 Skip the typical 6-12 month "sandbox" period new domains face.
 
 ## Build Topical Authority
-Choose expired domains relevant to your niche to strengthen your E-E-A-T signals.
+Choose Aged Domains relevant to your niche to strengthen your E-E-A-T signals.
 
 ## Recover Lost Traffic
 If the domain previously ranked for keywords, you can restore pages and regain traffic.
@@ -362,7 +362,7 @@ If the domain previously ranked for keywords, you can restore pages and regain t
 ## Boost Content Marketing
 Launch blogs or landing pages on high-DA domains to rank quickly for new keywords.
 
-*Leverage the SEO power of expired domains and accelerate your growth with our hand-picked inventory.*
+*Leverage the SEO power of Aged Domains and accelerate your growth with our hand-picked inventory.*
     `,
     author: {
       name: "Sophia Martinez",
@@ -371,8 +371,8 @@ Launch blogs or landing pages on high-DA domains to rank quickly for new keyword
     publishedAt: "2024-05-10",
     readingTime: 8,
     category: "SEO",
-    tags: ["SEO", "Expired Domains", "Ranking Factors", "Backlinks"],
+    tags: ["SEO", "Aged Domains", "Ranking Factors", "Backlinks"],
     featured: true,
-    image: "/seo.png?height=400&width=800&text=SEO+Expired+Domains",
+    image: "/seo.png?height=400&width=800&text=SEO+aged+Domains",
   },
 ]
