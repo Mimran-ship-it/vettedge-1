@@ -12,6 +12,7 @@ export function TrafficDomains() {
   const [visibleCount, setVisibleCount] = useState(6)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [shouldRender, setShouldRender] = useState(false)
 
   useEffect(() => {
     const fetchTrafficDomains = async () => {
@@ -25,6 +26,11 @@ export function TrafficDomains() {
         const trafficDomains = data.filter((domain) => domain.type === "traffic" && domain.isAvailable === true && domain.isSold === false)
 
         setDomains(trafficDomains)
+        
+        // Only render the component if there are traffic domains
+        if (trafficDomains.length > 0) {
+          setShouldRender(true)
+        }
       } catch (err: any) {
         console.error("Failed to fetch traffic domains:", err)
         setError("Unable to load traffic domains at the moment.")
@@ -41,8 +47,13 @@ export function TrafficDomains() {
     setVisibleCount((prev) => prev + 6)
   }
 
+  // Don't render anything if there are no traffic domains
+  if (!shouldRender && !loading) {
+    return null
+  }
+
   return (
-    <section className="py-16 bg-white dark:bg-gray-900">
+    <section className="py-16 bg-blue-100 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-4xl lg:text-5xl font-bold text-[#33BDC7] mb-4">🚦 Traffic Domains</h2>

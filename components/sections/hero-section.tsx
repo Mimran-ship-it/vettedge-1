@@ -45,7 +45,7 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative bg-white dark:bg-gray-900 min-h-screen flex flex-col overflow-hidden text-gray-800 dark:text-gray-100">
+    <section className="relative bg-blue-100 dark:bg-gray-900 min-h-screen flex flex-col overflow-hidden text-gray-800 dark:text-gray-100">
       <div className="relative flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
         <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-y-16 gap-x-10 items-center">
           
@@ -58,10 +58,10 @@ export function HeroSection() {
             custom={0}
           >
             <motion.div className="space-y-6" variants={fadeUp} custom={0.2}>
-              <Badge
-                variant="secondary"
-                className="bg-[#33BDC7]/10 text-[#33BDC7] border-[#33BDC7]/30 px-4 py-2 mx-auto lg:mx-0"
-              >
+              <Badge 
+            variant="outline"
+            className="mb-4 px-4 py-2 border-[#38C172] text-[#38C172] font-medium"
+          >
                 🔥Premium Aged Domains
               </Badge>
 
@@ -78,7 +78,7 @@ export function HeroSection() {
 
             {/* Search Bar */}
             <motion.div
-              className="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 max-w-2xl mx-auto lg:mx-0"
+              className="bg-blue-50 dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 max-w-2xl mx-auto lg:mx-0"
               variants={fadeUp}
               custom={0.4}
             >
@@ -89,19 +89,19 @@ export function HeroSection() {
                     placeholder="Search for your perfect domain... (e.g., tech, marketing, health)"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-12 h-14 text-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#33BDC7]"
+                    className="pl-12 h-14 text-lg bg-blue-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#33BDC7]"
                   />
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full sm:w-auto flex-1 bg-[#38C172] hover:bg-[#30c97c] text-white font-semibold h-12 text-lg shadow hover:shadow-md transition-all duration-200"
+                    className="w-full sm:w-auto flex-1 bg-[#38C172] hover:bg-[#30c97c] text-blue-50 font-semibold h-12 text-lg shadow hover:shadow-md transition-all duration-200"
                   >
                     <Search className="h-5 w-5 mr-2" />
                     Search Domains
                   </Button>
-                  <Button
+                  {/* <Button
                     size="lg"
                     variant="outline"
                     className="w-full sm:w-auto border-gray-300 dark:border-gray-600 text-[#33BDC7] hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20 h-12 px-8 font-semibold"
@@ -111,7 +111,7 @@ export function HeroSection() {
                       Browse All
                       <ArrowRight className="h-5 w-5 ml-2" />
                     </Link>
-                  </Button>
+                  </Button> */}
                 </div>
               </form>
             </motion.div>
@@ -127,7 +127,7 @@ export function HeroSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
           >
-            <Card className="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02]">
+            <Card className="bg-blue-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 shadow-xl hover:shadow-2xl rounded-lg transition-all duration-300 transform hover:scale-[1.02]">
               <CardContent className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8">
                 
                 {/* Features */}
@@ -188,7 +188,7 @@ export function HeroSection() {
 
                 {/* Live Metrics */}
                 <motion.div
-                  className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 border border-gray-200 dark:border-gray-600 text-xs sm:text-sm"
+                  className="bg-blue-50 dark:bg-gray-700 rounded-xl p-4 border border-gray-200 dark:border-gray-600 text-xs sm:text-sm"
                   variants={fadeUp}
                   custom={0.8}
                 >
@@ -216,12 +216,12 @@ export function HeroSection() {
                 {/* CTA Button */}
                 <motion.div variants={fadeUp} custom={1}>
                   <Button
-                    className="w-full bg-[#38C172] hover:bg-[#30c97c] text-white font-semibold h-12 sm:h-14 text-base sm:text-lg shadow hover:shadow-md transform hover:scale-[1.02] transition-all duration-200"
+                    className="w-full bg-[#38C172] hover:bg-[#30c97c] text-blue-50 font-semibold h-12 sm:h-14 text-base sm:text-lg shadow hover:shadow-md transform hover:scale-[1.02] transition-all duration-200"
                     size="lg"
                     asChild
                   >
                     <Link href="/domains">
-                      Start Your Search Now
+                      Browse All
                       <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 ml-2" />
                     </Link>
                   </Button>

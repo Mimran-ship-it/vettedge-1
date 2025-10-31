@@ -18,17 +18,45 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
+  const [lastScrollY, setLastScrollY] = useState(0)
   const { user, loading, signOut } = useAuth()
   const { items } = useCart()
-  const { wishlistCount } = useWishlist() // Use the wishlist count from the context
+  const { wishlistCount } = useWishlist()
   const pathname = usePathname()
   const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0)
   
+  // Handle scroll behavior
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      
+      // Hide header when scrolling down
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false)
+      } 
+      // Show header when scrolling up
+      else if (currentScrollY < lastScrollY) {
+        setIsVisible(true)
+      }
+      
+      // Always show header at the top of the page
+      if (currentScrollY < 50) {
+        setIsVisible(true)
+      }
+      
+      setLastScrollY(currentScrollY)
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [lastScrollY])
+  
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    console.log('user',user)
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden'
     } else {
@@ -104,8 +132,8 @@ export function Header() {
   
   return (
     <>
-      {/* Fixed Header */}
-      <header className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700 w-full z-50 fixed top-0 left-0">
+      {/* Fixed Header with scroll behavior */}
+      <header className={`bg-blue-100 dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700 w-full z-50 fixed top-0 left-0 transition-transform duration-300 ease-in-out ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
         <div className="max-w-8xl mx-auto px-2 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
