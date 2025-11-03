@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import * as TooltipPrimitive from "@radix-ui/react-tooltip"
-
 import { cn } from "@/lib/utils"
 
 function TooltipProvider({
@@ -11,7 +10,6 @@ function TooltipProvider({
 }: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
   return (
     <TooltipPrimitive.Provider
-      data-slot="tooltip-provider"
       delayDuration={delayDuration}
       {...props}
     />
@@ -23,7 +21,7 @@ function Tooltip({
 }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
   return (
     <TooltipProvider>
-      <TooltipPrimitive.Root data-slot="tooltip" {...props} />
+      <TooltipPrimitive.Root {...props} />
     </TooltipProvider>
   )
 }
@@ -31,28 +29,36 @@ function Tooltip({
 function TooltipTrigger({
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
-  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
+  return <TooltipPrimitive.Trigger {...props} />
 }
 
 function TooltipContent({
   className,
-  sideOffset = 0,
+  sideOffset = 4,
   children,
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Content>) {
   return (
     <TooltipPrimitive.Portal>
       <TooltipPrimitive.Content
-        data-slot="tooltip-content"
         sideOffset={sideOffset}
+        {...props}
         className={cn(
-          "bg-primary text-primary-foreground animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-md px-3 py-1.5 text-xs text-balance",
+          // ✅ Sharp, visible in both themes
+          "z-50 w-max max-w-xs rounded-md px-3 py-1.5 text-xs font-medium",
+          "bg-gray-900 text-black dark:bg-gray-900 dark:text-white",
+          "light:bg-white light:text-gray-900 border border-gray-300 dark:border-gray-700 shadow-lg",
+          // ✅ No scroll, no blur
+          "overflow-hidden select-none whitespace-nowrap",
+          // ✅ Smooth + crisp animation
+          "data-[state=open]:animate-in data-[state=closed]:animate-out fade-in-0 zoom-in-95",
+          "data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2",
+          "data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2",
           className
         )}
-        {...props}
       >
         {children}
-        <TooltipPrimitive.Arrow className="bg-primary fill-primary z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px]" />
+        <TooltipPrimitive.Arrow className="fill-gray-900 dark:fill-gray-900" />
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>
   )

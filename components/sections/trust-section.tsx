@@ -14,6 +14,7 @@ import {
   Globe,
   Lock,
   Zap,
+  Star,
 } from "lucide-react"
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
@@ -67,40 +68,47 @@ export function TrustSection() {
       icon: Shield,
       title: "Competitive Pricing",
       description:
-        "We offer premium domains at prices lower than many competitors, without compromising on quality.",
+        "Premium domains at prices lower than competitors, without compromising on quality.",
     },
     {
       icon: SearchCheck,
       title: "Expert Vetting",
       description:
-        "Every domain is manually reviewed for SEO metrics, history, brandability, link quality, and niche relevance.",
+        "Every domain is manually reviewed for SEO metrics, history, brandability, and niche relevance.",
     },
     {
       icon: TrendingUp,
       title: "SEO-Edge",
       description:
-        "Our domains have DA/DR metrics, aged backlinks, and historical traffic — ready for affiliate, lead-gen, SaaS, or e-commerce use.",
+        "Domains with strong DA/DR metrics, aged backlinks, and historical traffic ready for your business.",
     },
     {
       icon: Type,
       title: "Brand-Centric Selection",
       description:
-        "We prioritize names that are memorable, niche-relevant, and investment-worthy — perfect for startups or agencies.",
+        "Memorable, niche-relevant names perfect for startups, agencies, and investment portfolios.",
     },
   ]
 
   const trustIndicators = [
-    { icon: Globe, label: "Domains Sold", value: stats ? `${stats.soldDomains}` : '...' },
-    { icon: ListChecks, label: "Total Listings", value: stats ? `${stats.totalDomains}` : '...' },
+    { icon: Globe, label: "Domains Sold", value: stats ? `${stats.soldDomains}+` : '...' },
+    { icon: ListChecks, label: "Total Listings", value: stats ? `${stats.totalDomains}+` : '...' },
     { icon: Store, label: "Years on Market", value: stats ? `${stats.yearsInMarket}+` : '...' },
   ]
 
   return (
-    <section className="py-20 bg-blue-100 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-green-100 dark:bg-green-900/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-xl opacity-70 animate-blob"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-teal-100 dark:bg-teal-900/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-100 dark:bg-blue-900/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-20"
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
@@ -108,99 +116,95 @@ export function TrustSection() {
         >
           <Badge
             variant="outline"
-            className="mb-4 px-4 py-2 border-[#38C172] text-[#38C172] font-medium"
+            className="mb-6 px-5 py-2 border-[#38C172] text-[#38C172] font-medium rounded-full text-sm shadow-sm"
           >
-            Trusted by Thousands
+            <Star className="w-4 h-4 mr-1" /> Trusted by Industry Leaders
           </Badge>
-          <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight break-words">
-            Why Industry Leaders
-            <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight break-words block text-[#3bd17a]">Choose Vettedge</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+            Why Thousands Choose
+            <span className="block text-[#33BDC7] mt-2">Vettedge</span>
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            We've built our reputation on trust, quality, and results. Here's
-            why thousands of businesses and investors rely on us for their
-            domain needs.
+            Building trust through quality domains, transparent pricing, and exceptional service.
           </p>
         </motion.div>
  
         {/* Trust Indicators */}
-        <div className="grid grid-cols-1 ml-12 sm:ml-0 sm:grid-cols-2 lg:grid-cols-3  gap-8 mb-16">
-          {trustIndicators.map((indicator, index) => (
-            <motion.div
-              key={index}
-              className="flex flex-row sm:flex-col items-center sm:items-center text-left sm:text-center"
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              custom={index * 0.15}
-              variants={fadeUp}
-            >
-              {/* Icon Column */}
-              <div className="flex flex-col sm:block items-center justify-center mr-4 sm:mr-0">
-                <div className="w-16 h-16 border border-[#38C172] rounded-2xl flex items-center justify-center mb-0 sm:mb-4">
-                  <indicator.icon className="h-8 w-8 text-[#38C172]" />
-                </div>
-              </div>
-
-              {/* Text Column */}
-              <div className="flex flex-col">
-                <div className="text-3xl font-bold text-[#33BDC7] mb-1 sm:mb-2">
-                  {indicator.value}
-                </div>
-                <div className="text-gray-600 dark:text-gray-400 text-sm">
-                  {indicator.label}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-  {features.map((feature, index) => (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-20">
+  {trustIndicators.map((indicator, index) => (
     <motion.div
       key={index}
+      className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 flex flex-col items-center text-center"
       initial="hidden"
       whileInView="show"
       viewport={{ once: true }}
       custom={index * 0.15}
       variants={fadeUp}
-      className="h-full" // Add this to make the motion.div take full height
+      whileHover={{ y: -10 }}
     >
-      <Card className="text-center hover:shadow-md transition-all duration-200 border border-gray-200 dark:border-gray-700 bg-blue-50 dark:bg-gray-800 h-full flex flex-col">
-        <CardContent className="pt-8 pb-6 flex flex-col flex-grow">
-          <div className="w-16 h-16 border border-[#38C172] rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <feature.icon className="h-8 w-8 text-[#38C172]" />
-          </div>
-          <h3 className="text-xl font-semibold text-[#33BDC7] mb-3">
-            {feature.title}
-          </h3>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed flex-grow">
-            {feature.description}
-          </p>
-        </CardContent>
-      </Card>
+      <div className="w-16 h-16 bg-gradient-to-br from-[#33BDC7] to-[#2caab4] rounded-2xl flex items-center justify-center mb-4 shadow-lg">
+        <indicator.icon className="h-8 w-8 text-white" />
+      </div>
+      <div className="text-4xl font-bold text-[#33BDC7] mb-2">
+        {indicator.value}
+      </div>
+      <div className="text-[#33BDC7] font-medium">
+        {indicator.label}
+      </div>
     </motion.div>
   ))}
 </div>
+
+        {/* Features Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+          {features.map((feature, index) => (
+            <motion.div
+              key={index}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              custom={index * 0.15}
+              variants={fadeUp}
+              whileHover={{ y: -10 }}
+              className="h-full"
+            >
+              <Card className="h-full bg-white dark:bg-gray-800 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+                <div className="h-2 bg-gradient-to-r from-[#38C172] to-[#33BDC7] w-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                <CardContent className="pt-8 pb-6 px-6 flex flex-col h-full">
+                  <div className="w-14 h-14 bg-gradient-to-br from-[#38C172]/10 to-[#33BDC7]/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:from-[#38C172]/20 group-hover:to-[#33BDC7]/20 transition-all duration-300">
+                    <feature.icon className="h-7 w-7 text-[#38C172] group-hover:text-[#33BDC7] transition-colors duration-300" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-3 group-hover:text-[#33BDC7] transition-colors duration-300">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed flex-grow">
+                    {feature.description}
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+        
         {/* Security Badge */}
         <motion.div
-          className="mt-16 text-center"
+          className="text-center"
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
           variants={fadeUp}
         >
-          <Card className="inline-block border border-[#38C172] bg-[#F6FFFA] dark:bg-gray-800">
+          <Card className="inline-block border-0 shadow-xl bg-gradient-to-r from-[#38C172]/10 to-[#33BDC7]/10 dark:from-[#38C172]/20 dark:to-[#33BDC7]/20 backdrop-blur-sm">
             <CardContent className="pt-6 pb-6 px-8">
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 border border-[#38C172] rounded-xl flex items-center justify-center">
-                  <Lock className="h-6 w-6 text-[#38C172]" />
+                <div className="w-14 h-14 bg-gradient-to-br from-[#38C172] to-[#33BDC7] rounded-xl flex items-center justify-center shadow-lg">
+                  <Lock className="h-7 w-7 text-white" />
                 </div>
                 <div className="text-left">
-                  <div className="font-semibold text-[#33BDC7]">
+                  <div className="font-bold text-lg text-gray-800 dark:text-white">
                     SSL Secured & GDPR Compliant
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-300">
+                  <div className="text-gray-600 dark:text-gray-300">
                     Your data and transactions are fully protected
                   </div>
                 </div>
@@ -209,6 +213,32 @@ export function TrustSection() {
           </Card>
         </motion.div>
       </div>
+
+      <style jsx global>{`
+        @keyframes blob {
+          0% {
+            transform: translate(0px, 0px) scale(1);
+          }
+          33% {
+            transform: translate(30px, -50px) scale(1.1);
+          }
+          66% {
+            transform: translate(-20px, 20px) scale(0.9);
+          }
+          100% {
+            transform: translate(0px, 0px) scale(1);
+          }
+        }
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        .animation-delay-4000 {
+          animation-delay: 4s;
+        }
+      `}</style>
     </section>
   )
 }

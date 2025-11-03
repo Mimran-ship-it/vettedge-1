@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -22,10 +22,18 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useCart } from "@/components/providers/cart-provider"
 
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState("")
   const router = useRouter()
+  const { getMostFrequentDomain } = useCart()
+  const [topDomain, setTopDomain] = useState<{ id: string; name: string } | null>(null)
+
+  useEffect(() => {
+    const top = getMostFrequentDomain()
+    setTopDomain(top)
+  }, [getMostFrequentDomain])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -45,7 +53,7 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative bg-blue-100 dark:bg-gray-900 min-h-screen flex flex-col overflow-hidden text-gray-800 dark:text-gray-100">
+    <section className="relative bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col overflow-hidden text-gray-800 dark:text-gray-100">
       <div className="relative flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
         <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-y-16 gap-x-10 items-center">
           
@@ -65,8 +73,8 @@ export function HeroSection() {
                 🔥Premium Aged Domains
               </Badge>
 
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight break-words">
-                <span className="block">Aged Domains With</span>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl font-bold leading-tight break-words">
+                <span className="block">Vettedge Aged Domains With</span>
                 <span className="block text-[#33BDC7]">Real Authority</span>
               </h1>
 
@@ -78,7 +86,7 @@ export function HeroSection() {
 
             {/* Search Bar */}
             <motion.div
-              className="bg-blue-50 dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 max-w-2xl mx-auto lg:mx-0"
+              className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 max-w-2xl mx-auto lg:mx-0"
               variants={fadeUp}
               custom={0.4}
             >
@@ -89,14 +97,14 @@ export function HeroSection() {
                     placeholder="Search for your perfect domain... (e.g., tech, marketing, health)"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-12 h-14 text-lg bg-blue-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#33BDC7]"
+                    className="pl-12 h-14 text-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#33BDC7]"
                   />
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full sm:w-auto flex-1 bg-[#38C172] hover:bg-[#30c97c] text-blue-50 font-semibold h-12 text-lg shadow hover:shadow-md transition-all duration-200"
+                    className="w-full sm:w-auto flex-1 bg-[#38C172] hover:bg-[#30c97c] text-white font-semibold h-12 text-lg shadow hover:shadow-md transition-all duration-200"
                   >
                     <Search className="h-5 w-5 mr-2" />
                     Search Domains
@@ -127,7 +135,7 @@ export function HeroSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
           >
-            <Card className="bg-blue-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 shadow-xl hover:shadow-2xl rounded-lg transition-all duration-300 transform hover:scale-[1.02]">
+            <Card className="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 shadow-xl hover:shadow-2xl rounded-lg transition-all duration-300 transform hover:scale-[1.02]">
               <CardContent className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8">
                 
                 {/* Features */}
@@ -188,7 +196,7 @@ export function HeroSection() {
 
                 {/* Live Metrics */}
                 <motion.div
-                  className="bg-blue-50 dark:bg-gray-700 rounded-xl p-4 border border-gray-200 dark:border-gray-600 text-xs sm:text-sm"
+                  className="bg-white dark:bg-gray-700 rounded-xl p-4 border border-gray-200 dark:border-gray-600 text-xs sm:text-sm"
                   variants={fadeUp}
                   custom={0.8}
                 >
@@ -196,15 +204,15 @@ export function HeroSection() {
                   <div className="grid grid-cols-2 gap-3">
                     <div className="flex justify-between">
                       <span className="text-gray-500 dark:text-gray-400">Domain Authority:</span>
-                      <span className="text-green-600 font-medium">65+</span>
+                      <span className="text-green-600 font-medium">65</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500 dark:text-gray-400">Backlinks:</span>
-                      <span className="text-[#33BDC7] font-medium">1,250+</span>
+                      <span className="text-[#33BDC7] font-medium">1,250</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500 dark:text-gray-400">Monthly Traffic:</span>
-                      <span className="text-purple-500 font-medium">15K+</span>
+                      <span className="text-purple-500 font-medium">15K</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500 dark:text-gray-400">Domain Age:</span>
@@ -216,12 +224,12 @@ export function HeroSection() {
                 {/* CTA Button */}
                 <motion.div variants={fadeUp} custom={1}>
                   <Button
-                    className="w-full bg-[#38C172] hover:bg-[#30c97c] text-blue-50 font-semibold h-12 sm:h-14 text-base sm:text-lg shadow hover:shadow-md transform hover:scale-[1.02] transition-all duration-200"
+                    className="w-full bg-[#38C172] hover:bg-[#30c97c] text-white font-semibold h-12 sm:h-14 text-base sm:text-lg shadow hover:shadow-md transform hover:scale-[1.02] transition-all duration-200"
                     size="lg"
                     asChild
                   >
-                    <Link href="/domains">
-                      Browse All
+                    <Link href={topDomain ? `/domains/${topDomain.id}` : "/domains"}>
+                      {topDomain ? topDomain.name : "Most Frequent Domain"}
                       <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 ml-2" />
                     </Link>
                   </Button>
