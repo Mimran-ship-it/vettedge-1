@@ -133,7 +133,7 @@ export function Header() {
   return (
     <>
       {/* Fixed Header with scroll behavior */}
-      <header className={`bg-blue-100 dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700 w-full z-50 fixed top-0 left-0 transition-transform duration-300 ease-in-out ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+      <header className={`bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700 w-full z-50 fixed top-0 left-0 transition-transform duration-300 ease-in-out ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
         <div className="max-w-8xl mx-auto px-2 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}

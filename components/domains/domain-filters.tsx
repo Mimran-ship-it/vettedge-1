@@ -71,6 +71,8 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
   const [tlds, setTlds] = useState<string[]>([])
   const [tldsLoading, setTldsLoading] = useState(true)
   const [tldCountsState, setTldCountsState] = useState<Record<string, number>>({})
+  const [tldQuery, setTldQuery] = useState("")
+  const [tagQuery, setTagQuery] = useState("")
   
   // Save filter state
   const [showSaveDialog, setShowSaveDialog] = useState(false)
@@ -374,9 +376,48 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
     }
   }
    
+  const visibleTlds = tlds.filter(t => t.toLowerCase().includes(tldQuery.toLowerCase()))
+  const visibleTags = availableTags.filter(t => t.toLowerCase().includes(tagQuery.toLowerCase()))
+
   return (
-    <div className="space-y-6 dark:bg-gray-900 dark:text-gray-100 p-4 rounded-lg">
-      <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6">
+    <div className="space-y-6 dark:bg-gray-900 dark:text-gray-100">
+      <div className="space-y-3">
+        <Label className="font-medium text-gray-700 dark:text-gray-300">Selected</Label>
+        <div className="flex flex-wrap gap-2">
+          {selectedTlds.map((tld) => (
+            <Button key={tld} size="sm" variant="secondary" className="rounded-full"
+              onClick={() => handleTldChange(tld, false)}>
+              {tld}
+            </Button>
+          ))}
+          {selectedTags.map((tag) => (
+            <Button key={tag} size="sm" variant="secondary" className="rounded-full capitalize"
+              onClick={() => handleTagChange(tag, false)}>
+              {tag}
+            </Button>
+          ))}
+          {isHot && (
+            <Button size="sm" variant="secondary" className="rounded-full" onClick={handleHotDealToggle}>
+              Hot Deal
+            </Button>
+          )}
+          {availability !== "all" && (
+            <Button size="sm" variant="secondary" className="rounded-full"
+              onClick={() => handleAvailabilityChange("all", true)}>
+              {availability}
+            </Button>
+          )}
+          {type !== "all" && (
+            <Button size="sm" variant="secondary" className="rounded-full"
+              onClick={() => handleTypeChange("all", true)}>
+              {type}
+            </Button>
+          )}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-5">
+
         {/* Price Range */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700 dark:text-gray-300">Price Range</Label>
@@ -396,18 +437,24 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
             <span>${priceRange[1].toLocaleString()}</span>
           </div>
         </div>
-        
+
         {/* TLD Filter */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700 dark:text-gray-300">Domain Extension</Label>
+          <Label className="font-medium text-gray-700 dark:text-gray-300">Domain Extension ({selectedTlds.length})</Label>
+          <Input
+            placeholder="Search extensions"
+            value={tldQuery}
+            onChange={(e) => setTldQuery(e.target.value)}
+            className="w-full dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+          />
           {tldsLoading ? (
             <div className="dark:bg-gray-800 p-4 rounded-md text-center">
               <span className="text-sm text-gray-500 dark:text-gray-400">Loading extensions...</span>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto dark:bg-gray-800 p-2 rounded-md">
-              {tlds.length > 0 ? (
-                tlds.map((tld) => {
+            <div className="grid grid-cols-2 gap-2 max-h-52 overflow-y-auto dark:bg-gray-800 p-2 rounded-md">
+              {visibleTlds.length > 0 ? (
+                visibleTlds.map((tld) => {
                   const count = tldCountsState[tld.replace(/^\./, '')] || 0
                   return (
                     <div key={tld} className="flex items-center justify-between w-full">
@@ -444,7 +491,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
             </div>
           )}
         </div>
-        
+
         {/* Availability */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700 dark:text-gray-300">Availability</Label>
@@ -478,68 +525,18 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
             </div>
           </div>
         </div>
-        
-        {/* Type */}
-        <div className="space-y-3">
-          <Label className="font-medium text-gray-700 dark:text-gray-300">Type</Label>
-          <div className="space-y-2 dark:bg-gray-800 p-2 rounded-md">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="type-all"
-                checked={type === "all"}
-                onCheckedChange={(checked) => handleTypeChange("all", checked as boolean)}
-                className="dark:border-gray-600 dark:bg-gray-700"
-              />
-              <Label htmlFor="type-all" className="text-sm text-gray-600 dark:text-gray-300">All types</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="type-aged"
-                checked={type === "aged"}
-                onCheckedChange={(checked) => handleTypeChange("aged", checked as boolean)}
-                className="dark:border-gray-600 dark:bg-gray-700"
-              />
-              <Label htmlFor="type-aged" className="text-sm text-gray-600 dark:text-gray-300">Aged Domain</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="type-traffic"
-                checked={type === "traffic"}
-                onCheckedChange={(checked) => handleTypeChange("traffic", checked as boolean)}
-                className="dark:border-gray-600 dark:bg-gray-700"
-              />
-              <Label htmlFor="type-traffic" className="text-sm text-gray-600 dark:text-gray-300">Traffic Domain</Label>
-            </div>
-          </div>
-        </div>
-        
-        {/* isHot Filter */}
-        <div className="space-y-3">
-          <Label className="font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
-            <Flame className="h-4 w-4 text-orange-500" />
-            Hot Deal
-          </Label>
-          <div className="flex items-center space-x-2 dark:bg-gray-800 p-2 rounded-md">
-            <Button
-              variant={isHot ? "default" : "outline"}
-              size="sm"
-              onClick={handleHotDealToggle}
-              className={`flex items-center ${isHot ? "bg-orange-500 hover:bg-orange-600" : "dark:border-gray-600 dark:text-gray-300"}`}
-            >
-              <Flame className="h-4 w-4 mr-1" />
-              {isHot ? "On" : "Off"}
-            </Button>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              {isHot ? "Showing hot deals only" : "Hot deals hidden"}
-            </span>
-          </div>
-        </div>
-        
+
         {/* Tags Filter */}
         <div className="space-y-3">
-          <Label className="font-medium text-gray-700 dark:text-gray-300">Industry</Label>
-          <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto border rounded p-2 dark:bg-gray-800 dark:border-gray-700">
-            {availableTags.map((tag) => (
+          <Label className="font-medium text-gray-700 dark:text-gray-300">Industry ({selectedTags.length})</Label>
+          <Input
+            placeholder="Search tags"
+            value={tagQuery}
+            onChange={(e) => setTagQuery(e.target.value)}
+            className="w-full dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+          />
+          <div className="grid grid-cols-2 gap-2 max-h-52 overflow-y-auto border rounded p-2 dark:bg-gray-800 dark:border-gray-700">
+            {visibleTags.map((tag) => (
               <div key={tag} className="flex items-center space-x-2">
                 <Checkbox
                   id={tag}
@@ -552,7 +549,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
             ))}
           </div>
         </div>
-        
+
         {/* Domain Rank */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700 dark:text-gray-300">Domain Rank (0-100)</Label>
@@ -572,7 +569,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
             <span>{domainRankRange[1]}</span>
           </div>
         </div>
-        
+
         {/* Domain Authority */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700 dark:text-gray-300">Domain Authority (0-100)</Label>
@@ -592,7 +589,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
             <span>{domainAuthorityRange[1]}</span>
           </div>
         </div>
-        
+
         {/* Overall Score */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700 dark:text-gray-300">Overall Score (0-100)</Label>
@@ -612,7 +609,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
             <span>{scoresRange?.[1]}</span>
           </div>
         </div>
-        
+
         {/* Trust Flow */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700 dark:text-gray-300">Trust Flow (0-100)</Label>
@@ -632,7 +629,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
             <span>{trustFlowRange[1]}</span>
           </div>
         </div>
-        
+
         {/* Citation Flow */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700 dark:text-gray-300">Citation Flow (0-100)</Label>
@@ -652,7 +649,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
             <span>{citationFlowRange[1]}</span>
           </div>
         </div>
-        
+
         {/* Monthly Traffic */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700 dark:text-gray-300">Monthly Traffic (min)</Label>
@@ -665,7 +662,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
             className="w-full dark:bg-gray-800 dark:border-gray-700 dark:text-white"
           />
         </div>
-        
+
         {/* Age */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700 dark:text-gray-300">Age (min, years)</Label>
@@ -678,7 +675,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
             className="w-full dark:bg-gray-800 dark:border-gray-700 dark:text-white"
           />
         </div>
-        
+
         {/* Referring Domains */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700 dark:text-gray-300">Referring Domains (min)</Label>
@@ -691,7 +688,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
             className="w-full dark:bg-gray-800 dark:border-gray-700 dark:text-white"
           />
         </div>
-        
+
         {/* Authority Links */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700 dark:text-gray-300">Authority Links (min)</Label>
@@ -705,52 +702,52 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
           />
         </div>
       </div>
-      
+
       {/* Action Buttons */}
-      <div className="flex justify-between items-center gap-3">
+      <div className="flex justify-between items-center gap-3 sticky bottom-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm py-3 border-t dark:border-gray-800">
+        <Button 
+          variant="outline" 
+          onClick={clearFilters} 
+          className="flex-1 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+        >
+          Clear All Filters
+        </Button>
+        {user && (
           <Button 
-            variant="outline" 
-            onClick={clearFilters} 
-            className="flex-1 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+            onClick={() => setShowSaveDialog(true)}
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
           >
-            Clear All Filters
+            <Save className="h-4 w-4 mr-2" />
+            Save Current Filters
           </Button>
-          {user && (
-            <Button 
-              onClick={() => setShowSaveDialog(true)}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              <Save className="h-4 w-4 mr-2" />
-              Save Current Filters
-            </Button>
-          )}
+        )}
       </div>
-      
+
       {/* Save Filter Dialog */}
       <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Save Filter Preset</DialogTitle>
-          <DialogDescription>
-            Give your filter configuration a memorable name to quickly access it later.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="filter-name">Filter Name</Label>
-            <Input
-              id="filter-name"
-              placeholder="e.g., High Authority Aged Domains"
-              value={filterName}
-              onChange={(e) => setFilterName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && filterName.trim()) {
-                  handleSaveFilter()
-                }
-              }}
-            />
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Save Filter Preset</DialogTitle>
+            <DialogDescription>
+              Give your filter configuration a memorable name to quickly access it later.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="filter-name">Filter Name</Label>
+              <Input
+                id="filter-name"
+                placeholder="e.g., High Authority Aged Domains"
+                value={filterName}
+                onChange={(e) => setFilterName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && filterName.trim()) {
+                    handleSaveFilter()
+                  }
+                }}
+              />
+            </div>
           </div>
-        </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => {
             setShowSaveDialog(false)

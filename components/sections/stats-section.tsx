@@ -26,7 +26,7 @@ export function StatsSection() {
           variants={fadeUp}
         >
           <p className="text-2xl font-semibold text-cyan-500 mb-8">
-            Powering 12,653,898+ Of Websites
+            Powering 12,653+ Of Websites
           </p>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">

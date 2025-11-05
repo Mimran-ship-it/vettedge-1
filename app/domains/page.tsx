@@ -25,7 +25,7 @@ type ActiveFilters = {
   type: "all" | "aged" | "traffic"
   domainRankRange: [number, number]
   domainAuthorityRange: [number, number]
-  scoresRange: [number, number]
+  scoresRange?: [number, number]
   trustFlowRange: [number, number]
   citationFlowRange: [number, number]
   ageMin: number | null
@@ -249,12 +249,14 @@ export default function DomainsPage() {
         return d.metrics.domainAuthority >= filters.domainAuthorityRange[0] && d.metrics.domainAuthority <= filters.domainAuthorityRange[1]
       }
     )
-    result = result.filter(
-      (d) => {
-        if (d.metrics?.score === undefined) return true
-        return d.metrics.score >= filters.scoresRange[0] && d.metrics.score <= filters.scoresRange[1]
-      }
-    )
+    if (filters.scoresRange) {
+      result = result.filter(
+        (d) => {
+          if (d.metrics?.score === undefined) return true
+          return d.metrics.score >= filters.scoresRange![0] && d.metrics.score <= filters.scoresRange![1]
+        }
+      )
+    }
     // Trust Flow - be lenient with missing data
     result = result.filter(
       (d) => {
@@ -348,138 +350,138 @@ export default function DomainsPage() {
           </p>
         </div>
         
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6 mb-8">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-              <Input
-                placeholder="Search domains by name or keyword..."
-                value={searchQuery}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                className="pl-10"
+        {/* Layout: Sidebar (filters) on the left, results on the right */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Sidebar */}
+          <aside className="lg:col-span-3">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 lg:p-5 sticky top-24">
+              <div className="mb-4 flex items-center justify-between lg:hidden">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Filters</h2>
+                <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)}>
+                  {showFilters ? 'Hide' : 'Show'}
+                </Button>
+              </div>
+              <div className={`${showFilters ? 'block' : 'hidden'} lg:block`}>
+                <DomainFilters 
+                  onFilterChange={applyFiltersWithSorting} 
+                  availableTags={availableTags} 
+                  currentFilters={activeFilters}
+                  onFilterSaved={handleFilterSaved}
+                  tldCounts={tldCounts}
+                />
+              </div>
+            </div>
+            <div className="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 lg:p-5">
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-3">Saved Filters</h3>
+              <SavedFiltersList 
+                onApplyFilter={(filters) => {
+                  setActiveFilters(filters)
+                  setShowFilters(true)
+                }}
+                currentFilters={activeFilters}
+                refreshTrigger={refreshTrigger}
               />
             </div>
-            
-            {/* Sort By Option */}
-            <div className="flex flex-col sm:flex-row gap-2 sm:w-auto w-full">
-              <Select value={sortBy} onValueChange={handleSortChange}>
-                <SelectTrigger className="w-full sm:w-fit h-10 px-4 py-2 inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-                  <ArrowUpDown className="h-4 w-4 mr-2" />
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                  <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                  <SelectItem value="newest">Newest First</SelectItem>
-                  <SelectItem value="oldest">Oldest First</SelectItem>
-                  <SelectItem value="domainRank-desc">Domain Rank: High to Low</SelectItem>
-                  <SelectItem value="domainAuthority-desc">Domain Authority: High to Low</SelectItem>
-                  <SelectItem value="score-desc">Score: High to Low</SelectItem>
-                  <SelectItem value="age-desc">Age: Oldest First</SelectItem>
-                  <SelectItem value="referringDomains-desc">Referring Domains: High to Low</SelectItem>
-                  <SelectItem value="monthlyTraffic-desc">Monthly Traffic: High to Low</SelectItem>
-                </SelectContent>
-              </Select>
-              
-              <Button 
-                variant="outline" 
-                onClick={() => setShowFilters(!showFilters)}
-                className="w-full sm:w-auto h-10 px-4 py-2 inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                <Filter className="h-4 w-4 mr-2" />
-                Filters
-                {showFilters ? (
-                  <span className="ml-2 bg-blue-500 text-white text-xs rounded-full px-2 py-0.5">On</span>
-                ) : (
-                  <span className="ml-2 bg-gray-200 text-gray-700 text-xs rounded-full px-2 py-0.5">Off</span>
-                )}
-              </Button>
-            </div>
-          </div>
-          
-          {/* Active Filters Display */}
-          <div className="mt-4 flex flex-wrap gap-2">
-            {(activeFilters.type !== "all" || activeFilters.isHot) && (
-              <span className="text-sm text-gray-600 mr-2">Active filters:</span>
-            )}
-            {activeFilters.type !== "all" && (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                {activeFilters.type === "aged" ? "Aged Domains" : "Traffic Domains"}
-              </span>
-            )}
-            {activeFilters.isHot && (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                <Flame className="h-3 w-3 mr-1" /> Hot Deals
-              </span>
-            )}
-          </div>
-          
-          {/* Always render DomainFilters but hide it when showFilters is false */}
-          <div className={`${showFilters ? 'block' : 'hidden'} mt-6 pt-6 border-t`}>
-            <DomainFilters 
-              onFilterChange={applyFiltersWithSorting} 
-              availableTags={availableTags} 
-              currentFilters={activeFilters}
-              onFilterSaved={handleFilterSaved}
-              tldCounts={tldCounts}
-            />
-          </div>
-        </div>
-        
-        {/* Saved Filters Section */}
-        <div className="mb-6">
-          <SavedFiltersList 
-            onApplyFilter={(filters) => {
-              setActiveFilters(filters)
-              setShowFilters(true)
-            }}
-            currentFilters={activeFilters}
-            refreshTrigger={refreshTrigger}
-          />
-        </div>
-        
-        <div className="mb-6 text-gray-600 dark:text-gray-300">
-          Showing {filteredDomains.length} of {domains.length} domains
-          {filteredDomains.length !== domains.length && (
-            <span className="ml-2 text-sm text-blue-600 dark:text-blue-400">
-              (Filtered from {domains.length} total)
-            </span>
-          )}
-        </div>
-        
-        {loading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white dark:bg-gray-800 p-6 rounded-lg animate-pulse">
-                <div className="h-6 bg-gray-200 dark:bg-gray-700 w-3/4 mb-4 rounded"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 w-1/2 mb-4 rounded"></div>
-                <div className="space-y-2">
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 w-2/3 rounded"></div>
+          </aside>
+
+          {/* Main content */}
+          <section className="lg:col-span-9">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6 mb-6">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                  <Input
+                    placeholder="Search domains by name or keyword..."
+                    value={searchQuery}
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                {/* Sort By */}
+                <div className="flex flex-col sm:flex-row gap-2 sm:w-auto w-full">
+                  <Select value={sortBy} onValueChange={handleSortChange}>
+                    <SelectTrigger className="w-full sm:w-fit h-10 px-4 py-2 inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                      <ArrowUpDown className="h-4 w-4 mr-2" />
+                      <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                      <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                      <SelectItem value="newest">Newest First</SelectItem>
+                      <SelectItem value="oldest">Oldest First</SelectItem>
+                      <SelectItem value="domainRank-desc">Domain Rank: High to Low</SelectItem>
+                      <SelectItem value="domainAuthority-desc">Domain Authority: High to Low</SelectItem>
+                      <SelectItem value="score-desc">Score: High to Low</SelectItem>
+                      <SelectItem value="age-desc">Age: Oldest First</SelectItem>
+                      <SelectItem value="referringDomains-desc">Referring Domains: High to Low</SelectItem>
+                      <SelectItem value="monthlyTraffic-desc">Monthly Traffic: High to Low</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
-            ))}
-          </div>
-        ) : filteredDomains.length > 0 ? (
-          <div className=" grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
-            {filteredDomains.map((domain) => (
-              <DomainCard key={domain._id} domain={domain} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-gray-500 dark:text-gray-400 text-lg">
-              No domains found matching your criteria.
-            </p>
-            <Button
-              variant="outline"
-              onClick={resetFilters}
-              className="mt-4"
-            >
-              Clear Filters
-            </Button>
-          </div>
-        )}
+
+              {/* Active Filters Display */}
+              <div className="mt-4 flex flex-wrap gap-2">
+                {(activeFilters.type !== "all" || activeFilters.isHot) && (
+                  <span className="text-sm text-gray-600 mr-2">Active filters:</span>
+                )}
+                {activeFilters.type !== "all" && (
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    {activeFilters.type === "aged" ? "Aged Domains" : "Traffic Domains"}
+                  </span>
+                )}
+                {activeFilters.isHot && (
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                    <Flame className="h-3 w-3 mr-1" /> Hot Deals
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="mb-6 text-gray-600 dark:text-gray-300">
+            Showing {filteredDomains.length} of {domains.length} domains
+            {filteredDomains.length !== domains.length && (
+              <span className="ml-2 text-sm text-blue-600 dark:text-blue-400">
+                (Filtered from {domains.length} total)
+              </span>
+            )}
+            </div>
+            
+            {loading ? (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="bg-white dark:bg-gray-800 p-6 rounded-lg animate-pulse">
+                    <div className="h-6 bg-gray-200 dark:bg-gray-700 w-3/4 mb-4 rounded"></div>
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 w-1/2 mb-4 rounded"></div>
+                    <div className="space-y-2">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 w-2/3 rounded"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : filteredDomains.length > 0 ? (
+              <div className=" grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 gap-4">
+                {filteredDomains.map((domain) => (
+                  <DomainCard key={domain._id} domain={domain} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-gray-500 dark:text-gray-400 text-lg">
+                  No domains found matching your criteria.
+                </p>
+                <Button
+                  variant="outline"
+                  onClick={resetFilters}
+                  className="mt-4"
+                >
+                  Clear Filters
+                </Button>
+              </div>
+            )}
+          </section>
+        </div>
       </main> 
       <Footer/>
     </div>
