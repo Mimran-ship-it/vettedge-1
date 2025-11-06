@@ -128,6 +128,7 @@ export function TrustSection() {
             Building trust through quality domains, transparent pricing, and exceptional service.
           </p>
         </motion.div>
+
  
         {/* Trust Indicators */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-20">
