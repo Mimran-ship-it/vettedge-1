@@ -146,7 +146,7 @@ export function Header() {
                   height={30}
                   className="object-contain"
                 />
-                <span className="text-md sm:text-lg md:text-xl font-semibold text-gray-900 dark:text-white ml-">
+                <span className="text-sm sm:text-sm md:text-xl font-semibold text-gray-900 dark:text-white ml-">
                   Vettedge.domains
                 </span>
               </div>
@@ -172,7 +172,7 @@ export function Header() {
             </nav>
             
             {/* Right Side Actions */}
-            <div className="flex items-center space-x-1 sm:space-x-2">
+            <div className="flex items-center space-x-0  ">
               {/* Theme Toggle */}
               <ThemeToggle />
               

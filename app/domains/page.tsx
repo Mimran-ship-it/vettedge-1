@@ -18,6 +18,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 type ActiveFilters = {
   priceRange: [number, number]
   tlds: string[]
@@ -63,6 +69,7 @@ export default function DomainsPage() {
   const [availableTags, setAvailableTags] = useState<string[]>([])
   const [tldCounts, setTldCounts] = useState<Record<string, number>>({})
   const [sortBy, setSortBy] = useState<SortOption>("price-desc")
+  const [showSortSheet, setShowSortSheet] = useState(false)
   const [refreshTrigger, setRefreshTrigger] = useState(0) // Trigger for saved filters refresh
   const searchParams = useSearchParams()
   
@@ -319,6 +326,14 @@ export default function DomainsPage() {
     setSortBy(newSortBy)
     // Sorting will be applied automatically by the useEffect
   }
+
+  const openFiltersMobile = () => {
+    setShowFilters(true)
+    try {
+      const el = document.getElementById('filtersSidebar')
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    } catch {}
+  }
   
   const handleSearchChange = (value: string) => {
     setSearchQuery(value)
@@ -340,7 +355,7 @@ export default function DomainsPage() {
   return (
     <div className="min-h-screen  bg-gray-50 dark:bg-gray-900">
       <Header />
-      <main className="max-w-8xl sm:ms-0 ms-3.5 mx-auto ps-3 pe-6 sm:px-6 lg:px-16 pt-24 pb-8">
+      <main className="max-w-8xl sm:ms-0 ms-3.5   ps-3 pe-6 sm:px-6 lg:px-16 pt-24 pb-28 lg:pb-8">
         <div className="mb-8 ">
           <h1 className="text-3xl font-bold sm:text-start text-center text-gray-900 dark:text-white mb-4">
             Premium Aged Domains
@@ -353,7 +368,7 @@ export default function DomainsPage() {
         {/* Layout: Sidebar (filters) on the left, results on the right */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Sidebar */}
-          <aside className="lg:col-span-3">
+          <aside id="filtersSidebar" className="lg:col-span-3">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 lg:p-5 sticky top-24">
               <div className="mb-4 flex items-center justify-between lg:hidden">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Filters</h2>
@@ -461,7 +476,7 @@ export default function DomainsPage() {
                 ))}
               </div>
             ) : filteredDomains.length > 0 ? (
-              <div className=" grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 gap-4">
+              <div className=" grid md:grid-cols-2 lg:grid-cols-3  gap-4">
                 {filteredDomains.map((domain) => (
                   <DomainCard key={domain._id} domain={domain} />
                 ))}
@@ -483,6 +498,52 @@ export default function DomainsPage() {
           </section>
         </div>
       </main> 
+      {/* Mobile sticky actions */}
+      <div className="fixed inset-x-0 bottom-0 mr-16 z-50 lg:hidden bg-white/95 dark:bg-gray-900/95 border-t border-gray-200 dark:border-gray-800 backdrop-blur supports-[backdrop-filter]:backdrop-blur px-4 py-3">
+        <div className="max-w-8xl mx-auto flex items-center gap-3">
+          <Button className="flex-1" variant="outline" onClick={openFiltersMobile}>
+            <Filter className="h-4 w-4 mr-2" /> Filters
+          </Button>
+          <Button className="flex-1" onClick={() => setShowSortSheet(true)}>
+            <ArrowUpDown className="h-4 w-4 mr-2" /> Sort
+          </Button>
+        </div>
+      </div>
+
+      {/* Mobile Sort Dialog */}
+      <Dialog open={showSortSheet} onOpenChange={setShowSortSheet}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Sort domains</DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-1 gap-2">
+            {([
+              { key: "price-asc", label: "Price: Low to High" },
+              { key: "price-desc", label: "Price: High to Low" },
+              { key: "newest", label: "Newest First" },
+              { key: "oldest", label: "Oldest First" },
+              { key: "domainRank-desc", label: "Domain Rank: High to Low" },
+              { key: "domainAuthority-desc", label: "Domain Authority: High to Low" },
+              { key: "score-desc", label: "Score: High to Low" },
+              { key: "age-desc", label: "Age: Oldest First" },
+              { key: "referringDomains-desc", label: "Referring Domains: High to Low" },
+              { key: "monthlyTraffic-desc", label: "Monthly Traffic: High to Low" },
+            ] as { key: SortOption; label: string }[]).map(opt => (
+              <Button
+                key={opt.key}
+                variant={sortBy === opt.key ? 'default' : 'outline'}
+                className="justify-start"
+                onClick={() => {
+                  handleSortChange(opt.key)
+                  setShowSortSheet(false)
+                }}
+              >
+                {opt.label}
+              </Button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
       <Footer/>
     </div>
   )

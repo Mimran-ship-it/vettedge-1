@@ -80,6 +80,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
         map[newItem.id] = { count: 1, name: newItem.name }
       }
       localStorage.setItem(key, JSON.stringify(map))
+
+      // Fire-and-forget: also increment global frequency on the server
+      fetch("/api/frequency", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: newItem.id, name: newItem.name }),
+        cache: "no-store",
+      }).catch(() => {})
     } catch (e) {
       console.warn("Failed to update cart add frequency:", e)
     }

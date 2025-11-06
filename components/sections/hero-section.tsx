@@ -31,8 +31,26 @@ export function HeroSection() {
   const [topDomain, setTopDomain] = useState<{ id: string; name: string } | null>(null)
 
   useEffect(() => {
-    const top = getMostFrequentDomain()
-    setTopDomain(top)
+    let cancelled = false
+    const loadTop = async () => {
+      try {
+        const res = await fetch('/api/frequency/top', { cache: 'no-store' })
+        if (res.ok) {
+          const data = await res.json()
+          if (!cancelled && data && data.id) {
+            setTopDomain({ id: data.id, name: data.name })
+            return
+          }
+        }
+      } catch {
+        // ignore and fallback
+      }
+      // Fallback to localStorage-based frequency
+      const topLocal = getMostFrequentDomain()
+      if (!cancelled) setTopDomain(topLocal)
+    }
+    loadTop()
+    return () => { cancelled = true }
   }, [getMostFrequentDomain])
 
   const handleSearch = (e: React.FormEvent) => {
@@ -233,6 +251,11 @@ export function HeroSection() {
                       <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 ml-2" />
                     </Link>
                   </Button>
+                  {topDomain && (
+                    <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
+                      This domain is mostly watched and frequently added to carts — check it out.
+                    </p>
+                  )}
                 </motion.div>
               </CardContent>
             </Card>

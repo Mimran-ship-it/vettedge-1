@@ -462,13 +462,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
                         <Checkbox
                           id={`tld-${tld}`}
                           checked={selectedTlds.includes(tld)}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setSelectedTlds([...selectedTlds, tld])
-                            } else {
-                              setSelectedTlds(selectedTlds.filter((t) => t !== tld))
-                            }
-                          }}
+                          onCheckedChange={(checked) => handleTldChange(tld, Boolean(checked))}
                         />
                         <label
                           htmlFor={`tld-${tld}`}

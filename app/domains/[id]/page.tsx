@@ -59,13 +59,13 @@ export default function DomainDetailsPage() {
         const data: Domain[] = await res.json()
         const matchedDomain = data.find((d) => d._id === params?.id)
         setDomain(matchedDomain || null)
-        
+
         // Fetch similar domains if we have a domain with tags
         if (matchedDomain && matchedDomain.tags && matchedDomain.tags.length > 0) {
           // Filter similar domains by tags and exclude sold/unavailable domains
-          const similar = data.filter(d => 
-            d._id !== matchedDomain._id && 
-            d.tags && 
+          const similar = data.filter(d =>
+            d._id !== matchedDomain._id &&
+            d.tags &&
             d.tags.some(tag => matchedDomain.tags?.includes(tag)) &&
             !d.isSold && // Exclude sold domains
             d.isAvailable // Include only available domains
@@ -270,17 +270,17 @@ export default function DomainDetailsPage() {
               </div>
 
               {/* Tabs for additional information */}
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full rounded-lg">
                 <TabsList className="grid w-full grid-cols-3 bg-gray-100 dark:bg-gray-700">
-                  <TabsTrigger value="overview" className="dark:data-[state=active]:bg-gray-600 dark:text-white">Overview</TabsTrigger>
-                  <TabsTrigger value="metrics" className="dark:data-[state=active]:bg-gray-600 dark:text-white">SEO Metrics</TabsTrigger>
-                  <TabsTrigger value="history" className="dark:data-[state=active]:bg-gray-600 dark:text-white">History</TabsTrigger>
+                  <TabsTrigger value="overview" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white">Overview</TabsTrigger>
+                  <TabsTrigger  value="metrics" className="data-[state=active]:bg-green-600 data-[state=active]:text-white dark:data-[state=active]:bg-green-600 dark:data-[state=active]:text-white">SEO Metrics</TabsTrigger>
+                  <TabsTrigger value="history" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white dark:data-[state=active]:bg-purple-600 dark:data-[state=active]:text-white">History</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="overview" className="mt-4">
-                  <Card className="dark:bg-gray-700 dark:border-gray-600">
+                <TabsContent value="overview" className="mt-4 ">
+                  <Card className="dark:bg-gray-700  rounded-lg dark:border-gray-600">
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2 dark:text-white"><Info className="h-5 w-5" /> Domain Information</CardTitle>
+                      <CardTitle className="flex items-center mt-2  gap-2 dark:text-white"><Info className="h-5 w-5" /> Domain Information</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -332,9 +332,9 @@ export default function DomainDetailsPage() {
                 </TabsContent>
 
                 <TabsContent value="metrics" className="mt-4">
-                  <Card className="dark:bg-gray-700 dark:border-gray-600">
+                  <Card className="rounded-lg dark:bg-gray-700 dark:border-gray-600">
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2 dark:text-white"><BarChart3 className="h-5 w-5" /> SEO Metrics</CardTitle>
+                      <CardTitle className="flex items-center  mt-2 gap-2 dark:text-white"><BarChart3 className="h-5 w-5" /> SEO Metrics</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -380,9 +380,9 @@ export default function DomainDetailsPage() {
                 </TabsContent>
 
                 <TabsContent value="history" className="mt-4">
-                  <Card className="dark:bg-gray-700 dark:border-gray-600">
+                  <Card className="rounded-lg dark:bg-gray-700 dark:border-gray-600">
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2 dark:text-white"><Clock className="h-5 w-5" /> Domain History</CardTitle>
+                      <CardTitle className="flex items-center gap-2  mt-2 dark:text-white"><Clock className="h-5 w-5" /> Domain History</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
@@ -392,67 +392,67 @@ export default function DomainDetailsPage() {
                         </div>
 
                         {domain.metrics.authorityLinksCount > 0 && (
-  <div className="p-4 bg-gray-50 dark:bg-gray-600 rounded-lg">
-    <h3 className="font-medium text-gray-900 dark:text-white mb-2">Authority Backlinks</h3>
+                          <div className="p-4 bg-gray-50 dark:bg-gray-600 rounded-lg">
+                            <h3 className="font-medium text-gray-900 dark:text-white mb-2">Authority Backlinks</h3>
 
-    {/* If links exist, show details */}
-    {Array.isArray(domain.metrics.authorityLinks) && domain.metrics.authorityLinks.length > 0 ? (
-      <>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
-          This domain has <span className="font-semibold">{domain.metrics.authorityLinksCount}</span> backlinks from the following authoritative sources:
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {domain.metrics.authorityLinks.map((link, idx) => {
-            const trimmedLink = link.trim();
-            let href = trimmedLink;
-            let displayText = trimmedLink;
+                            {/* If links exist, show details */}
+                            {Array.isArray(domain.metrics.authorityLinks) && domain.metrics.authorityLinks.length > 0 ? (
+                              <>
+                                <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                                  This domain has <span className="font-semibold">{domain.metrics.authorityLinksCount}</span> backlinks from the following authoritative sources:
+                                </p>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                  {domain.metrics.authorityLinks.map((link, idx) => {
+                                    const trimmedLink = link.trim();
+                                    let href = trimmedLink;
+                                    let displayText = trimmedLink;
 
-            if (!trimmedLink.startsWith('http://') && !trimmedLink.startsWith('https://')) {
-              href = `https://${trimmedLink}`;
-            }
+                                    if (!trimmedLink.startsWith('http://') && !trimmedLink.startsWith('https://')) {
+                                      href = `https://${trimmedLink}`;
+                                    }
 
-            try {
-              const url = new URL(href);
-              displayText = url.hostname;
-            } catch (e) {
-              displayText = trimmedLink;
-            }
+                                    try {
+                                      const url = new URL(href);
+                                      displayText = url.hostname;
+                                    } catch (e) {
+                                      displayText = trimmedLink;
+                                    }
 
-            return (
-              <a
-                key={idx}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-600 hover:border-blue-300 dark:hover:border-blue-500 transition-colors group"
-              >
-                <div className="flex items-center">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-md bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/50 transition-colors">
-                    <ExternalLink className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-gray-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
-                      {displayText}
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px]">
-                      {href}
-                    </div>
-                  </div>
-                </div>
-                <ArrowRight className="h-4 w-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
-              </a>
-            );
-          })}
-        </div>
-      </>
-    ) : (
-      // If only count exists (no link details)
-      <p className="text-sm text-gray-600 dark:text-gray-300">
-        This domain has <span className="font-semibold">{domain.metrics.authorityLinksCount}</span> authoritative backlinks.
-      </p>
-    )}
-  </div>
-)}
+                                    return (
+                                      <a
+                                        key={idx}
+                                        href={href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-600 hover:border-blue-300 dark:hover:border-blue-500 transition-colors group"
+                                      >
+                                        <div className="flex items-center">
+                                          <div className="flex-shrink-0 w-10 h-10 rounded-md bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/50 transition-colors">
+                                            <ExternalLink className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                                          </div>
+                                          <div>
+                                            <div className="font-medium text-gray-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
+                                              {displayText}
+                                            </div>
+                                            <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px]">
+                                              {href}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <ArrowRight className="h-4 w-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+                                      </a>
+                                    );
+                                  })}
+                                </div>
+                              </>
+                            ) : (
+                              // If only count exists (no link details)
+                              <p className="text-sm text-gray-600 dark:text-gray-300">
+                                This domain has <span className="font-semibold">{domain.metrics.authorityLinksCount}</span> authoritative backlinks.
+                              </p>
+                            )}
+                          </div>
+                        )}
 
 
                         <div className="p-4 bg-gray-50 dark:bg-gray-600 rounded-lg">
@@ -468,7 +468,7 @@ export default function DomainDetailsPage() {
 
             {/* Right Column - Pricing and Actions */}
             <div className="space-y-6">
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 rounded-2xl p-6 shadow-lg border border-blue-100 dark:border-gray-600">
+              <div className=" dark:bg-gray-700 rounded-2xl p-6 shadow-lg border border-blue-100 dark:border-gray-600">
                 <div className="text-center mb-6">
                   <div className="text-sm text-gray-500 dark:text-gray-300 mb-1">Current Price</div>
                   <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">${domain.price.toLocaleString()}</div>
@@ -529,9 +529,9 @@ export default function DomainDetailsPage() {
               </div>
 
               {/* Additional Information */}
-              <Card className="dark:bg-gray-700 dark:border-gray-600">
+              <Card className="dark:bg-gray-700 rounded-lg dark:border-gray-600">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 dark:text-white"><FileText className="h-5 w-5" /> Additional Information</CardTitle>
+                  <CardTitle className="flex items-center mt-4 gap-2 dark:text-white"><FileText className="h-5 w-5 " /> Additional Information</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
@@ -558,8 +558,8 @@ export default function DomainDetailsPage() {
             </div>
           </div>
         </div>
-   {/* Additional Sections */}
-   <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Additional Sections */}
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
           {domain?.metrics.monthlyTraffic && (
             <Card className="border-blue-100 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20 rounded-lg">
               <CardHeader>
