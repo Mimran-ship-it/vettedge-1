@@ -15,6 +15,8 @@ import {
   Lock,
   Zap,
   Star,
+  CreditCard,
+  Headset,
 } from "lucide-react"
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
@@ -106,95 +108,117 @@ export function TrustSection() {
       </div> */}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Header */}
-        <motion.div
-          className="text-center mb-20"
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          variants={fadeUp}
-        >
-          <Badge
-            variant="outline"
-            className="mb-6 px-5 py-2 border-[#38C172] text-[#38C172] font-medium rounded-full text-sm shadow-sm"
-          >
-            <Star className="w-4 h-4 mr-1" /> Trusted by Industry Leaders
-          </Badge>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-            Why Thousands Choose
-            <span className="block text-[#33BDC7] mt-2">Vettedge</span>
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Building trust through quality domains, transparent pricing, and exceptional service.
-          </p>
-        </motion.div>
 
- 
-        {/* Trust Indicators */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-20">
-  {trustIndicators.map((indicator, index) => (
-    <motion.div
-      key={index}
-      className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 flex flex-col items-center text-center"
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true }}
-      custom={index * 0.15}
-      variants={fadeUp}
-      whileHover={{ y: -10 }}
-    >
-      <div className="w-16 h-16 bg-gradient-to-br from-[#33BDC7] to-[#2caab4] rounded-2xl flex items-center justify-center mb-4 shadow-lg">
-        <indicator.icon className="h-8 w-8 text-white" />
-      </div>
-      <div className="text-4xl font-bold text-[#33BDC7] mb-2">
-        {indicator.value}
-      </div>
-      <div className="text-[#33BDC7] font-medium">
-        {indicator.label}
-      </div>
-    </motion.div>
-  ))}
-</div>
 
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
-          {features.map((feature, index) => (
-            <motion.div
-              key={index}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              custom={index * 0.15}
-              variants={fadeUp}
-              whileHover={{ y: -10 }}
-              className="h-full"
-            >
-              <Card className="h-full bg-white dark:bg-gray-800 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group">
-                <div className="h-2 bg-gradient-to-r from-[#38C172] to-[#33BDC7] w-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                <CardContent className="pt-8 pb-6 px-6 flex flex-col h-full">
-                  <div className="w-14 h-14 bg-gradient-to-br from-[#38C172]/10 to-[#33BDC7]/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:from-[#38C172]/20 group-hover:to-[#33BDC7]/20 transition-all duration-300">
-                    <feature.icon className="h-7 w-7 text-[#38C172] group-hover:text-[#33BDC7] transition-colors duration-300" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-3 group-hover:text-[#33BDC7] transition-colors duration-300">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed flex-grow">
-                    {feature.description}
-                  </p>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+
+        <div className="flex flex-col lg:flex-row gap-8 mb-20">
+          {/* Trust Indicators - Left side on large screens */}
+          <div className="lg:w-2/5">
+            <div className="bg-gradient-to-br from-[#33BDC7]/5 to-[#38C172]/5 dark:from-gray-800 dark:to-gray-900 rounded-3xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-8 text-center">Why Trust Us</h2>
+
+              <div className="space-y-6">
+                {trustIndicators.map((indicator, index) => (
+                  <motion.div
+                    key={index}
+                    className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-md border border-gray-100 dark:border-gray-700 flex items-center"
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true }}
+                    custom={index * 0.15}
+                    variants={fadeUp}
+                    whileHover={{
+                      y: -5,
+                      boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+                    }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="w-14 h-14 bg-gradient-to-br from-[#33BDC7] to-[#2caab4] rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                      <indicator.icon className="h-6 w-6 text-white" />
+                    </div>
+                    <div className="ml-4">
+                      <div className="text-3xl font-bold text-[#33BDC7]">
+                        {indicator.value}
+                      </div>
+                      <div className="text-[#33BDC7] font-medium">
+                        {indicator.label}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              <div className="mt-8 text-center">
+                <button className="px-6 py-3 bg-gradient-to-r from-[#33BDC7] to-[#38C172] text-white font-medium rounded-full hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                  Learn More
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Features Grid - Right side on large screens */}
+          <div className="lg:w-3/5">
+            <div className="grid grid-cols-2 gap-4 sm:gap-6">
+              {features.map((feature, index) => (
+                <motion.div
+                  key={index}
+                  initial="hidden"
+                  whileInView="show"
+                  viewport={{ once: true }}
+                  custom={index * 0.15}
+                  variants={fadeUp}
+                  whileHover={{ y: -10 }}
+                  className="h-full"
+                >
+                  <Card className="h-full bg-white dark:bg-gray-800 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+                    <div className="h-2 bg-gradient-to-r from-[#38C172] to-[#33BDC7] w-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                    <CardContent className="pt-6 pb-4 px-4 sm:pt-8 sm:pb-6 sm:px-6 flex flex-col h-full">
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-[#38C172]/10 to-[#33BDC7]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 group-hover:from-[#38C172]/20 group-hover:to-[#33BDC7]/20 transition-all duration-300">
+                        <feature.icon className="h-6 w-6 sm:h-7 sm:w-7 text-[#38C172] group-hover:text-[#33BDC7] transition-colors duration-300" />
+                      </div>
+                      <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-white mb-2 sm:mb-3 group-hover:text-[#33BDC7] transition-colors duration-300">
+                        {feature.title}
+                      </h3>
+                      <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed flex-grow">
+                        {feature.description}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </div>
-        
+
         {/* Security Badge */}
+        {/* Security Badges */}
         <motion.div
-          className="text-center"
+          className="flex flex-col md:flex-row justify-center items-center gap-6"
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
           variants={fadeUp}
         >
+          {/* Support Badge */}
+          <Card className="inline-block border-0 shadow-xl bg-gradient-to-r from-[#38C172]/10 to-[#33BDC7]/10 dark:from-[#38C172]/20 dark:to-[#33BDC7]/20 backdrop-blur-sm">
+            <CardContent className="pt-6 pb-6 px-8">
+              <div className="flex items-center space-x-4">
+                <div className="w-14 h-14 bg-[#38C172] rounded-xl flex items-center justify-center shadow-lg">
+                  <Headset className="h-7 w-7 text-white" />
+                </div>
+                <div className="text-left">
+                  <div className="font-bold text-lg text-gray-800 dark:text-white">
+                    Comprehensive Support
+                  </div>
+                  <div className="text-gray-600 dark:text-gray-300">
+                    From pre-sale inquiries to seamless domain transfer
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Security Badge */}
           <Card className="inline-block border-0 shadow-xl bg-gradient-to-r from-[#38C172]/10 to-[#33BDC7]/10 dark:from-[#38C172]/20 dark:to-[#33BDC7]/20 backdrop-blur-sm">
             <CardContent className="pt-6 pb-6 px-8">
               <div className="flex items-center space-x-4">
@@ -207,6 +231,25 @@ export function TrustSection() {
                   </div>
                   <div className="text-gray-600 dark:text-gray-300">
                     Your data and transactions are fully protected
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Payment Badge */}
+          <Card className="inline-block border-0 shadow-xl bg-gradient-to-r from-[#38C172]/10 to-[#33BDC7]/10 dark:from-[#38C172]/20 dark:to-[#33BDC7]/20 backdrop-blur-sm">
+            <CardContent className="pt-6 pb-6 px-8">
+              <div className="flex items-center space-x-4">
+                <div className="w-14 h-14 bg-[#33BDC7] rounded-xl flex items-center justify-center shadow-lg">
+                  <CreditCard className="h-7 w-7 text-white" />
+                </div>
+                <div className="text-left">
+                  <div className="font-bold text-lg text-gray-800 dark:text-white">
+                    Flexible Payment Options
+                  </div>
+                  <div className="text-gray-600 dark:text-gray-300">
+                    Pay securely via Stripe, PayPal, with full protection
                   </div>
                 </div>
               </div>

@@ -56,7 +56,7 @@ export function Footer() {
                 Vettedge.domains
               </h2>
             </Link>
- 
+
             <div className="border-l-4 border-[#38C172] pl-4 mt-2 text-sm italic text-gray-700 dark:text-gray-400">
               <p>
                 "We're passionate about providing high-quality Aged Domains to help your business succeed online."
@@ -65,34 +65,26 @@ export function Footer() {
                 — VettEdge Team
               </p>
             </div>
-            <div className="flex space-x-0 mt-4">
-              <Link href="#" target="_blank">
-                <Button variant="ghost" size="icon" className="hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
-                  <Facebook className="w-5 h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
-                </Button>
-              </Link>
-              <Link href="#" target="_blank">
-                <Button variant="ghost" size="icon" className="hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
-                  <Instagram className="w-5 h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
-                </Button>
-              </Link>
-              <Link href="#" target="_blank">
-                <Button variant="ghost" size="icon" className="hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
-                  <Twitter className="w-5 h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
-                </Button>
-              </Link>
-              <Link href="https://www.linkedin.com/company/vettedge-domains/" target="_blank">
-                <Button variant="ghost" size="icon" className="hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
-                  <Linkedin className="w-5 h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
-                </Button>
-              </Link>
-              <Link href="https://whatsapp.com/channel/0029VbBLngqJpe8n9JJLzu3x" target="_blank">
-                <Button variant="ghost" size="icon" className="hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
-                  <MessageCircle className="w-5 h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
-                </Button>
-              </Link>
-            </div>
-          </div>
+        <div className="flex space-x-0 mt-4">
+  <Link href="https://www.facebook.com/share/1AAwdxxvBD/?mibextid=wwXIfr" target="_blank">
+    <Button variant="ghost" className="p-0 hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
+      <Facebook className="w-14 h-14 text-[#33BDC7] dark:text-[#33BDC7]/80" />
+    </Button>
+  </Link>
+
+  <Link href="https://www.linkedin.com/company/vettedge-domains/" target="_blank">
+    <Button variant="ghost" className="p-0 hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
+      <Linkedin className="w-10 h-10 text-[#33BDC7] dark:text-[#33BDC7]/80" />
+    </Button>
+  </Link>
+
+  <Link href="https://whatsapp.com/channel/0029VbBLngqJpe8n9JJLzu3x" target="_blank">
+    <Button variant="ghost" className="p-0 hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
+      <MessageCircle className="w-10 h-10 text-[#33BDC7] dark:text-[#33BDC7]/80" />
+    </Button>
+  </Link>
+</div>
+</div>
 
           {/* Domains */}
           <div>
@@ -127,48 +119,46 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Contact Details */}
-          <div>
-            <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Contact Details</h4>
-            <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300"> 
-              <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-[#38C172]" />
-                <span>support@vettedge.domains</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-[#38C172]" />
-                <span>Available Worldwide</span>
-              </li>
-            </ul>
-          </div>
-        </div>
+          {/* Contact Details & Trustpilot */}
+          <div className="flex flex-col gap-6">
+            <div>
+              <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Contact Details</h4>
+              <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+                <li className="flex items-center gap-2">
+                  <Mail className="w-5 h-5 text-[#38C172]" />
+                  <span>support@vettedge.domains</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-[#38C172]" />
+                  <span>Available Worldwide</span>
+                </li>
+              </ul>
+            </div>
 
-        {/* Trustpilot Review Section */}
-        <div className="mt-6 mb-8 flex flex-col items-center justify-center">
-          <div className="text-center mb-4">
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Your Feedback Matters</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Help us improve by sharing your experience</p>
-          </div>
-          
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-1 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-lg">
-            <div 
-              data-locale="en-GB" 
-              data-template-id="56278e9abfbbba0bdcd568bc" 
-              data-businessunit-id="68e8254f4257ef8404e61249" 
-              data-style-height="52px" 
-              data-style-width="300px" 
-              data-token="87a62d8c-4680-45b5-b69a-df54c620cd39"
-              className="flex items-center justify-center"
-            >
-              <a 
-                href="https://uk.trustpilot.com/review/vettedge.domains" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full h-full px-4 py-2 bg-[#33BDC7] hover:bg-[#00B67A] text-white font-medium rounded-md transition-colors duration-300"
-              >
-                <Star className="w-4 h-4 fill-current" />
-                <span>Review us on Trustpilot</span>
-              </a>
+            {/* Trustpilot Review Section */}
+            <div>
+              <h4 className="text-sm font-semibold mb-2 text-[#33BDC7] dark:text-[#33BDC7]/80">Your Feedback</h4>
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-1 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-lg">
+                <div
+                  data-locale="en-GB"
+                  data-template-id="56278e9abfbbba0bdcd568bc"
+                  data-businessunit-id="68e8254f4257ef8404e61249"
+                  data-style-height="52px"
+                  data-style-width="300px"
+                  data-token="87a62d8c-4680-45b5-b69a-df54c620cd39"
+                  className="flex items-center justify-center"
+                >
+                  <a
+                    href="https://uk.trustpilot.com/review/vettedge.domains"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full h-full px-2 py-2 bg-[#33BDC7] hover:bg-[#00B67A] text-white font-medium rounded-md transition-colors duration-300"
+                  >
+                    <Star className="w-4 h-4 fill-current" />
+                    <span className="text-xs">Review us on Trustpilot</span>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
