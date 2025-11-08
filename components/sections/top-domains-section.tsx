@@ -7,7 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { ArrowUp, ArrowDown, ExternalLink, X } from 'lucide-react';
+import { ArrowUp, ArrowDown, ExternalLink, X, ShoppingCart } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/use-auth';
+import { useCart } from '@/components/providers/cart-provider';
+import { useToast } from '@/hooks/use-toast';
 
 type Domain = {
   _id: string;
@@ -94,6 +98,10 @@ export function TopDomainsSection() {
   const [loadingDomain, setLoadingDomain] = useState(false);
   const [activeTab, setActiveTab] = useState('da');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { user } = useAuth();
+  const router = useRouter();
+  const { addItem, clearCart } = useCart();
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchDomains = async () => {
@@ -130,6 +138,64 @@ export function TopDomainsSection() {
   const closeModal = () => {
     setIsModalOpen(false);
     setTimeout(() => setSelectedDomain(null), 300); // Wait for animation to complete
+  };
+
+  // Function to add domain to cart
+  const handleAddToCart = (domain: Domain) => {
+    if (domain.isSold || !domain.isAvailable) {
+      toast({
+        title: "Domain Unavailable",
+        description: "This domain is no longer available for purchase.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    addItem({
+      id: domain._id,
+      name: domain.name,
+      price: domain.price,
+      domain: domain,
+      isSold: domain.isSold,
+    });
+    
+    toast({
+      title: "Added to Cart",
+      description: `${domain.name} has been added to your cart.`,
+    });
+  };
+
+  // Function to handle buy now
+  const handleBuyNow = (domain: Domain) => {
+    if (domain.isSold || !domain.isAvailable) {
+      toast({
+        title: "Domain Unavailable",
+        description: "This domain is no longer available for purchase.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    clearCart();
+    addItem({
+      id: domain._id,
+      name: domain.name,
+      price: domain.price,
+      domain: domain,
+      isSold: domain.isSold,
+    });
+    
+    toast({
+      title: "Added to Cart",
+      description: `${domain.name} has been added to your cart. Redirecting to checkout...`,
+    });
+    
+    if (!user) {
+      router.push("/auth/signin?redirect=/checkout");
+      return;
+    } else {
+      router.push("/checkout");
+    }
   };
 
   // Filter out sold or unavailable domains
@@ -246,7 +312,11 @@ export function TopDomainsSection() {
                     ${selectedDomain.price} <span className="text-sm line-through text-gray-500">${selectedDomain.Actualprice}</span>
                   </p>
                 </div>
-                <Button className="bg-cyan-600 hover:bg-cyan-700 text-white">
+                <Button 
+                  className="bg-cyan-600 hover:bg-cyan-700 text-white"
+                  onClick={() => handleAddToCart(selectedDomain)}
+                >
+                  <ShoppingCart className="h-4 w-4 mr-1" />
                   Add to Cart
                 </Button>
               </div>
@@ -546,11 +616,18 @@ export function TopDomainsSection() {
                           <span className="text-3xl font-bold text-white">${selectedDomain.price}</span>
                         </div>
                         <div className="flex space-x-3 mt-6">
-                          <Button className="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white">
+                          <Button 
+                            className="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white"
+                            onClick={() => handleAddToCart(selectedDomain)}
+                          >
+                            <ShoppingCart className="h-4 w-4 mr-1" />
                             Add to Cart
                           </Button>
-                          <Button variant="outline" className="flex-1 border-cyan-700 text-cyan-300 hover:bg-cyan-900/50 hover:text-white">
-                            Make an Offer
+                          <Button 
+                            className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                            onClick={() => handleBuyNow(selectedDomain)}
+                          >
+                            Buy Now
                           </Button>
                         </div>
                       </div>
