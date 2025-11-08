@@ -92,7 +92,7 @@ export function HeroSection() {
               </Badge>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl font-bold leading-tight break-words">
-                <span className="block">Vettedge Aged Domains With</span>
+                <span className="block">Vetted Aged Domains With</span>
                 <span className="block text-[#33BDC7]">Real Authority</span>
               </h1>
 

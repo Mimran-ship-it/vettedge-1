@@ -164,7 +164,7 @@ export function Footer() {
                 href="https://uk.trustpilot.com/review/vettedge.domains" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full h-full px-4 py-2 bg-[#00B67A] hover:bg-[#008654] text-white font-medium rounded-md transition-colors duration-300"
+                className="flex items-center justify-center gap-2 w-full h-full px-4 py-2 bg-[#33BDC7] hover:bg-[#00B67A] text-white font-medium rounded-md transition-colors duration-300"
               >
                 <Star className="w-4 h-4 fill-current" />
                 <span>Review us on Trustpilot</span>

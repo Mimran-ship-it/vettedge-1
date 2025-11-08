@@ -365,7 +365,7 @@ View full details:`;
                 )}
               >
                 {domain.isAvailable && !domain.isSold ? "Available" : domain.isSold ? "Sold" : "Unavailable"}
-              </Badge>
+              </Badge>jgkdfjiodfjgnf
             </div>
 
             {/* Overall Score Section */}

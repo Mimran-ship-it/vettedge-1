@@ -116,7 +116,7 @@ export function DomainsShowcase() {
                 variant={active === tab ? "default" : "outline"}
                 className={`px-6 py-3 rounded-full flex items-center gap-2 transition-all duration-300 ${
                   active === tab 
-                    ? "bg-gradient-to-r from-[#38C172] to-[#33BDC7] text-white shadow-lg hover:shadow-xl" 
+                    ? "bg-[#33BDC7] text-white shadow-lg hover:shadow-xl" 
                     : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                 }`}
                 onClick={() => setActive(tab)}
@@ -141,12 +141,12 @@ export function DomainsShowcase() {
           variants={fadeInUp}
         >
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-[#38C172]/10 to-[#33BDC7]/10 mb-6">
-            <div className="text-[#38C172]">
+            <div className="text-[#33BDC7]">
               {meta.icon}
             </div>
           </div>
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            <span className="bg-gradient-to-r from-[#38C172] to-[#33BDC7] bg-clip-text text-transparent">
+            <span className="bg-[#33BDC7] bg-clip-text text-transparent">
               {meta.title}
             </span>
           </h2>
@@ -249,7 +249,7 @@ export function DomainsShowcase() {
               )}
               <Button 
                 size="lg" 
-                className="px-8 py-3 rounded-full bg-gradient-to-r from-[#38C172] to-[#33BDC7] text-white hover:shadow-lg transition-all duration-300"
+                className="px-8 py-3 rounded-full bg-[#33BDC7] text-white hover:shadow-lg transition-all duration-300"
                 asChild
               >
                 <Link href={meta.viewAllHref}>View All {meta.title}</Link>
