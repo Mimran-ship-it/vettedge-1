@@ -113,9 +113,16 @@ export function TrustSection() {
 
         <div className="flex flex-col lg:flex-row gap-8 mb-20">
           {/* Trust Indicators - Left side on large screens */}
+<<<<<<< HEAD
           <div className="lg:w-2/5 lg:pt-22">
             <div className="bg-gradient-to-br from-[#33BDC7]/5 to-[#38C172]/5 dark:from-gray-800 dark:to-gray-900 rounded-3xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
               
+=======
+          <div className="lg:w-2/5">
+            <div className="bg-gradient-to-br from-[#33BDC7]/5 to-[#38C172]/5 dark:from-gray-800 dark:to-gray-900 rounded-3xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-8 text-center">Why Trust Us</h2>
+
+>>>>>>> 5aa055346bbe1f3ac7457e03b285ef3e681de3f7
               <div className="space-y-6">
                 {trustIndicators.map((indicator, index) => (
                   <motion.div
@@ -147,7 +154,15 @@ export function TrustSection() {
                 ))}
               </div>
 
+<<<<<<< HEAD
               
+=======
+              <div className="mt-8 text-center">
+                <button className="px-6 py-3 bg-gradient-to-r from-[#33BDC7] to-[#38C172] text-white font-medium rounded-full hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                  Learn More
+                </button>
+              </div>
+>>>>>>> 5aa055346bbe1f3ac7457e03b285ef3e681de3f7
             </div>
           </div>
 

@@ -12,6 +12,7 @@ import { Footer } from "@/components/layout/footer"
 import { LiveChat } from "@/components/chat/live-chat"
 import { Badge } from "@/components/ui/badge"
 import { DomainsShowcase } from "@/components/sections/domains-showcase"
+import { TopDomainsSection } from "@/components/sections/top-domains-section"
 
 export default function HomePage() {
   return (
@@ -19,6 +20,7 @@ export default function HomePage() {
       <Header />
       <main className="pt-16" >
         <HeroSection />
+        <TopDomainsSection />
         <TrustSection />
         <DomainsShowcase />
         {/* <IsHot /> */}
