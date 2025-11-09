@@ -369,33 +369,35 @@ export default function DomainsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Sidebar */}
           <aside id="filtersSidebar" className="lg:col-span-3">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 lg:p-5 sticky top-24">
-              <div className="mb-4 flex items-center justify-between lg:hidden">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Filters</h2>
-                <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)}>
-                  {showFilters ? 'Hide' : 'Show'}
-                </Button>
+            <div className="lg:sticky lg:top-24 lg:self-start space-y-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 lg:p-5">
+                <div className="mb-4 flex items-center justify-between lg:hidden">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Filters</h2>
+                  <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)}>
+                    {showFilters ? 'Hide' : 'Show'}
+                  </Button>
+                </div>
+                <div className={`${showFilters ? 'block' : 'hidden'} lg:block max-h-[calc(100vh-8rem)] overflow-y-auto pr-2`}> 
+                  <DomainFilters 
+                    onFilterChange={applyFiltersWithSorting} 
+                    availableTags={availableTags} 
+                    currentFilters={activeFilters}
+                    onFilterSaved={handleFilterSaved}
+                    tldCounts={tldCounts}
+                  />
+                </div>
               </div>
-              <div className={`${showFilters ? 'block' : 'hidden'} lg:block`}>
-                <DomainFilters 
-                  onFilterChange={applyFiltersWithSorting} 
-                  availableTags={availableTags} 
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 lg:p-5">
+                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-3">Saved Filters</h3>
+                <SavedFiltersList 
+                  onApplyFilter={(filters) => {
+                    setActiveFilters(filters)
+                    setShowFilters(true)
+                  }}
                   currentFilters={activeFilters}
-                  onFilterSaved={handleFilterSaved}
-                  tldCounts={tldCounts}
+                  refreshTrigger={refreshTrigger}
                 />
               </div>
-            </div>
-            <div className="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 lg:p-5">
-              <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-3">Saved Filters</h3>
-              <SavedFiltersList 
-                onApplyFilter={(filters) => {
-                  setActiveFilters(filters)
-                  setShowFilters(true)
-                }}
-                currentFilters={activeFilters}
-                refreshTrigger={refreshTrigger}
-              />
             </div>
           </aside>
 

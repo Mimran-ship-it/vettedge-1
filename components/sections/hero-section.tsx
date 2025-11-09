@@ -104,7 +104,7 @@ export function HeroSection() {
 
             {/* Search Bar */}
             <motion.div
-              className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 max-w-2xl mx-auto lg:mx-0"
+              className="bg-white dark:bg-gray-800  p-6 border border-gray-200 dark:border-gray-700 max-w-2xl mx-auto lg:mx-0"
               variants={fadeUp}
               custom={0.4}
             >
@@ -153,7 +153,7 @@ export function HeroSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
           >
-            <Card className="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 shadow-xl hover:shadow-2xl rounded-lg transition-all duration-300 transform hover:scale-[1.02]">
+            <Card className="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 shadow-xl hover:shadow-2xl   transition-all duration-300 transform hover:scale-[1.02]">
               <CardContent className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8">
                 
                 {/* Features */}
@@ -212,51 +212,65 @@ export function HeroSection() {
                   ))}
                 </motion.div>
 
-                {/* Live Metrics */}
-                <motion.div
-                  className="bg-white dark:bg-gray-700 rounded-xl p-4 border border-gray-200 dark:border-gray-600 text-xs sm:text-sm"
-                  variants={fadeUp}
-                  custom={0.8}
-                >
-                  <h4 className="font-medium text-gray-600 dark:text-gray-300 mb-3">Live Domain Metrics Preview</h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="flex justify-between">
-                      <span className="text-gray-500 dark:text-gray-400">Domain Authority:</span>
-                      <span className="text-green-600 font-medium">65</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500 dark:text-gray-400">Backlinks:</span>
-                      <span className="text-[#33BDC7] font-medium">1,250</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500 dark:text-gray-400">Monthly Traffic:</span>
-                      <span className="text-purple-500 font-medium">15K</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500 dark:text-gray-400">Domain Age:</span>
-                      <span className="text-orange-500 font-medium">5+ years</span>
-                    </div>
-                  </div>
-                </motion.div>
+                 {/* Enhanced Live Metrics */}
+      <motion.div
+        className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-600 shadow-sm"
+        variants={fadeUp}
+        custom={0.8}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h4 className="font-bold text-gray-700 dark:text-gray-200 text-base flex items-center">
+            <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+            Live Domain Metrics Preview
+          </h4>
+          <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded">Real-time</span>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { label: "Domain Authority:", value: "65", color: "text-green-600" },
+            { label: "Authority Links:", value: "4", color: "text-[#33BDC7]" },
+            { label: "Monthly Traffic:", value: "15K", color: "text-purple-500" },
+            { label: "Domain Age:", value: "5+ years", color: "text-orange-500" }
+          ].map((metric, index) => (
+            <div key={index} className="flex justify-between items-center bg-white dark:bg-gray-700/50 p-2 rounded-lg">
+              <span className="text-gray-600 dark:text-gray-300 text-sm font-medium">{metric.label}</span>
+              <span className={`${metric.color} font-bold text-base`}>{metric.value}</span>
+            </div>
+          ))}
+        </div>
+      </motion.div>
 
                 {/* CTA Button */}
-                <motion.div variants={fadeUp} custom={1}>
-                  <Button
-                    className="w-full bg-[#38C172] hover:bg-[#30c97c] text-white font-semibold h-12 sm:h-14 text-base sm:text-lg shadow hover:shadow-md transform hover:scale-[1.02] transition-all duration-200"
-                    size="lg"
-                    asChild
-                  >
-                    <Link href={topDomain ? `/domains/${topDomain.id}` : "/domains"}>
-                      {topDomain ? topDomain.name : "Most Frequent Domain"}
-                      <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 ml-2" />
-                    </Link>
-                  </Button>
-                  {topDomain && (
-                    <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
-                      This domain is mostly watched and frequently added to carts — check it out.
-                    </p>
-                  )}
-                </motion.div>
+               <motion.div variants={fadeUp} custom={1}>
+  {!topDomain ? (
+    <div className="flex flex-col items-center justify-center py-8">
+      {/* Loader spinner */}
+      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#38C172] mb-3"></div>
+      <p className="text-sm text-gray-600 dark:text-gray-300">
+        Fetching the most frequent domain...
+      </p>
+    </div>
+  ) : (
+    <>
+      <Button
+        className="w-full bg-[#38C172] hover:bg-[#30c97c] text-white font-semibold h-12 sm:h-14 text-base sm:text-lg shadow hover:shadow-md transform hover:scale-[1.02] transition-all duration-200"
+        size="lg"
+        asChild
+      >
+        <Link href={`/domains/${topDomain.id}`}>
+          {topDomain.name}
+          <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 ml-2" />
+        </Link>
+      </Button>
+
+      <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
+        This domain is mostly watched and frequently added to carts — check it out.
+      </p>
+    </>
+  )}
+</motion.div>
+
+                
               </CardContent>
             </Card>
           </motion.div>

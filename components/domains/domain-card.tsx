@@ -345,27 +345,33 @@ View full details:`;
 
             {/* Price & Availability */}
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1">
-                <span className="text-xl font-bold text-gray-900 dark:text-white">
-                  ${domain.price.toLocaleString()}
-                </span>
-                {domain.Actualprice&&(domain.Actualprice > domain.price) && (
-                  <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
-                    ${domain.Actualprice.toLocaleString()}
-                  </span>
-                )}
-              </div>
+               <div className="flex items-center gap-2">
+    <span className="text-xl font-bold text-gray-900 dark:text-white">
+      ${domain.price.toLocaleString()}
+    </span>
+
+    {domain.Actualprice && domain.Actualprice > domain.price && (
+      <>
+        <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
+          ${domain.Actualprice.toLocaleString()}
+        </span>
+        <span className="text-sm font-semibold text-[#38C172]">
+          {Math.round(((domain.Actualprice - domain.price) / domain.Actualprice) * 100)}% off
+        </span>
+      </>
+    )}
+  </div>
               <Badge 
                 variant={domain.isAvailable && !domain.isSold ? "default" : "secondary"}
                 className={cn(
                   "text-xs",
                   domain.isAvailable && !domain.isSold 
-                    ? "bg-[#33BDC7]/10 text-[#33BDC7]" 
+                    ? "bg-[#38C172]/10 text-[#38C172]" 
                     : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
                 )}
               >
                 {domain.isAvailable && !domain.isSold ? "Available" : domain.isSold ? "Sold" : "Unavailable"}
-              </Badge>jgkdfjiodfjgnf
+              </Badge>
             </div>
 
             {/* Overall Score Section */}

@@ -379,6 +379,18 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
   const visibleTlds = tlds.filter(t => t.toLowerCase().includes(tldQuery.toLowerCase()))
   const visibleTags = availableTags.filter(t => t.toLowerCase().includes(tagQuery.toLowerCase()))
 
+  const handleDomainTypePreset = (preset: "all" | "aged" | "traffic" | "hot") => {
+    if (preset === "hot") {
+      setIsHot(true)
+      setType("all")
+      applyFilters({ isHot: true, type: "all" })
+    } else {
+      setType(preset)
+      setIsHot(false)
+      applyFilters({ type: preset, isHot: false })
+    }
+  }
+
   return (
     <div className="space-y-6 dark:bg-gray-900 dark:text-gray-100">
       <div className="space-y-3">
@@ -417,6 +429,41 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
       </div>
 
       <div className="grid grid-cols-1 gap-5">
+
+        {/* Domain Type */}
+        <div className="space-y-3">
+          <Label className="font-medium text-gray-700 dark:text-gray-300">Domain Type</Label>
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              variant={(type === "all" && !isHot) ? "default" : "outline"}
+              className="w-full"
+              onClick={() => handleDomainTypePreset("all")}
+            >
+              All
+            </Button>
+            <Button
+              variant={(type === "aged"  ) ? "default" : "outline"}
+              className="w-full"
+              onClick={() => handleDomainTypePreset("aged")}
+            >
+              Aged
+            </Button>
+            <Button
+              variant={(type === "traffic" && !isHot) ? "default" : "outline"}
+              className="w-full"
+              onClick={() => handleDomainTypePreset("traffic")}
+            >
+              Traffic
+            </Button>
+            <Button
+              variant={isHot ? "default" : "outline"}
+              className="w-full"
+              onClick={() => handleDomainTypePreset("hot")}
+            >
+              Hot Deals
+            </Button>
+          </div>
+        </div>
 
         {/* Price Range */}
         <div className="space-y-3">

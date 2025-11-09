@@ -7,7 +7,7 @@ import { DomainCard } from "@/components/domains/domain-card"
 import type { Domain } from "@/types/domain"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { Sparkles, Clock, TrendingUp } from "lucide-react"
+import { Sparkles, Clock, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react"
 
 type TabKey = "hot" | "aged" | "traffic"
 
@@ -17,6 +17,8 @@ export function DomainsShowcase() {
   const [error, setError] = useState<string | null>(null)
   const [active, setActive] = useState<TabKey>("hot")
   const [visibleCount, setVisibleCount] = useState(6)
+  const [itemsPerView, setItemsPerView] = useState(3)
+  const [currentIndex, setCurrentIndex] = useState(0)
 
   useEffect(() => {
     const run = async () => {
@@ -38,6 +40,7 @@ export function DomainsShowcase() {
   useEffect(() => {
     // reset pagination on tab change
     setVisibleCount(6)
+    setCurrentIndex(0)
   }, [active])
 
   const filtered = useMemo(() => {
@@ -46,6 +49,32 @@ export function DomainsShowcase() {
     if (active === "aged") return available.filter((d) => d.type === "aged")
     return available.filter((d) => d.type === "traffic")
   }, [allDomains, active])
+
+  useEffect(() => {
+    const calc = () => {
+      if (typeof window === "undefined") return
+      const w = window.innerWidth
+      if (w < 640) {
+        setItemsPerView(1)
+      } else if (w < 1024) {
+        setItemsPerView(2)
+      } else {
+        setItemsPerView(3)
+      }
+    }
+    calc()
+    window.addEventListener("resize", calc)
+    return () => window.removeEventListener("resize", calc)
+  }, [])
+
+  useEffect(() => {
+    // Clamp index when itemsPerView changes
+    setCurrentIndex((i) => {
+      const max = Math.max(0, filtered.length - itemsPerView)
+      return Math.min(i, max)
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [itemsPerView, filtered.length])
 
   const meta = useMemo(() => {
     switch (active) {
@@ -213,22 +242,51 @@ export function DomainsShowcase() {
           </motion.div>
         )}
 
-        {/* Grid */}
+        {/* Carousel */}
         {!loading && filtered.length > 0 && (
           <>
-            <motion.div 
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              variants={staggerContainer}
-            >
-              {filtered.slice(0, visibleCount).map((domain, index) => (
-                <motion.div key={domain?._id} variants={fadeInUp}>
-                  <DomainCard domain={domain} />
-                </motion.div>
-              ))}
-            </motion.div>
+            <div className="relative mb-12">
+              {/* Arrows */}
+              <button
+                aria-label="Previous"
+                className="absolute -left-3 sm:-left-4 lg:-left-24   top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-2 lg:p-4 shadow hover:shadow-lg disabled:opacity-40"
+                onClick={() => setCurrentIndex((i) => Math.max(0, i - 1))}
+                disabled={currentIndex === 0}
+              >
+                <ChevronLeft className="w-5 h-5 lg:w-7 lg:h-7 " />
+              </button>
+              <button
+                aria-label="Next"
+                className="absolute -right-3 sm:-right-4 lg:-right-24 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-2 lg:p-4 shadow hover:shadow-lg disabled:opacity-40"
+                onClick={() => setCurrentIndex((i) => Math.min(Math.max(0, filtered.length - itemsPerView), i + 1))}
+                disabled={currentIndex >= Math.max(0, filtered.length - itemsPerView)}
+              >
+                <ChevronRight className="w-5 h-5 lg:w-7 lg:h-7" />
+              </button>
+
+              {/* Viewport */}
+              <div className="overflow-hidden">
+                <div className="-mx-4">
+                  <div
+                    className="flex transition-transform duration-500 ease-out"
+                    style={{
+                      transform: `translateX(-${(currentIndex * 100) / filtered.length}%)`,
+                      width: `${(filtered.length * 100) / itemsPerView}%`,
+                    }}
+                  >
+                    {filtered.map((domain) => (
+                      <div
+                        key={domain?._id}
+                        className="shrink-0 px-4"
+                        style={{ width: `${100 / filtered.length}%` }}
+                      >
+                        <DomainCard domain={domain} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <motion.div 
               className="flex flex-col sm:flex-row justify-center items-center gap-4"
@@ -237,16 +295,6 @@ export function DomainsShowcase() {
               viewport={{ once: true }}
               variants={fadeInUp}
             >
-              {visibleCount < filtered.length && (
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={handleShowMore}
-                  className="px-8 py-3 rounded-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300"
-                >
-                  Show More
-                </Button>
-              )}
               <Button 
                 size="lg" 
                 className="px-8 py-3 rounded-full bg-[#33BDC7] text-white hover:shadow-lg transition-all duration-300"
