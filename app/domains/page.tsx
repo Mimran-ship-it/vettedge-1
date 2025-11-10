@@ -353,46 +353,57 @@ export default function DomainsPage() {
   }
   
   return (
-    <div className="min-h-screen  bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
-      <main className="max-w-8xl sm:ms-0 ms-3.5   ps-3 pe-6 sm:px-6 lg:px-16 pt-24 pb-28 lg:pb-8">
-        <div className="mb-8 ">
-          <h1 className="text-3xl font-bold sm:text-start text-center text-gray-900 dark:text-white mb-4">
+      <main className="max-w-8xl sm:ms-0 ms-3.5 ps-3 pe-6 sm:px-6 lg:px-16 pt-24 pb-28 lg:pb-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-4">
             Premium Aged Domains
           </h1>
-          <p className="text-lg text-gray-600 sm:text-start text-center dark:text-gray-300">
-            Discover high-authority domains with proven SEO value and traffic history
-          </p>
+        
         </div>
         
         {/* Layout: Sidebar (filters) on the left, results on the right */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Sidebar */}
-          <aside id="filtersSidebar" className="lg:col-span-3">
-            <div className="lg:sticky lg:top-24 lg:self-start space-y-6">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 lg:p-5">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Sidebar - Fixed on desktop, hidden on mobile */}
+          <aside
+            id="filtersSidebar"
+            className="hidden bg-[#F9FAFB] lg:flex flex-col w-[22%] fixed top-16 left-0 bottom-0 dark:bg-gray-900 z-30 overflow-y-scroll hover:overflow-y-scroll"
+          >
+            <div className="space-y-6 px-4 py-4">
+              {/* Filters Section */}
+              <div className="bg-[#F9FAFB] dark:bg-gray-800 dark:border-gray-700 p-4 lg:p-5">
                 <div className="mb-4 flex items-center justify-between lg:hidden">
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Filters</h2>
-                  <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)}>
-                    {showFilters ? 'Hide' : 'Show'}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowFilters(!showFilters)}
+                  >
+                    {showFilters ? "Hide" : "Show"}
                   </Button>
                 </div>
-                <div className={`${showFilters ? 'block' : 'hidden'} lg:block max-h-[calc(100vh-8rem)] overflow-y-auto pr-2`}> 
-                  <DomainFilters 
-                    onFilterChange={applyFiltersWithSorting} 
-                    availableTags={availableTags} 
+
+                <div className={`${showFilters ? "block" : "hidden"} lg:block`}>
+                  <DomainFilters
+                    onFilterChange={applyFiltersWithSorting}
+                    availableTags={availableTags}
                     currentFilters={activeFilters}
                     onFilterSaved={handleFilterSaved}
                     tldCounts={tldCounts}
                   />
                 </div>
               </div>
+
+              {/* Saved Filters */}
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 lg:p-5">
-                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-3">Saved Filters</h3>
-                <SavedFiltersList 
+                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-3">
+                  Saved Filters
+                </h3>
+                <SavedFiltersList
                   onApplyFilter={(filters) => {
-                    setActiveFilters(filters)
-                    setShowFilters(true)
+                    setActiveFilters(filters);
+                    setShowFilters(true);
                   }}
                   currentFilters={activeFilters}
                   refreshTrigger={refreshTrigger}
@@ -401,9 +412,48 @@ export default function DomainsPage() {
             </div>
           </aside>
 
-          {/* Main content */}
-          <section className="lg:col-span-9">
+          {/* Main Content */}
+          <section className="flex-1 lg:ml-[20%] px-4 lg:px-0">
+            {/* Mobile Filters - Conditionally shown */}
+            {showFilters && (
+              <div className="lg:hidden mb-6">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 lg:p-5">
+                  <div className="mb-4 flex items-center justify-between">
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Filters</h2>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowFilters(false)}
+                    >
+                      Hide
+                    </Button>
+                  </div>
+                  <DomainFilters
+                    onFilterChange={applyFiltersWithSorting}
+                    availableTags={availableTags}
+                    currentFilters={activeFilters}
+                    onFilterSaved={handleFilterSaved}
+                    tldCounts={tldCounts}
+                  />
+                </div>
+                <div className="mt-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 lg:p-5">
+                  <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-3">
+                    Saved Filters
+                  </h3>
+                  <SavedFiltersList
+                    onApplyFilter={(filters) => {
+                      setActiveFilters(filters);
+                      setShowFilters(true);
+                    }}
+                    currentFilters={activeFilters}
+                    refreshTrigger={refreshTrigger}
+                  />
+                </div>
+              </div>
+            )}
+
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6 mb-6">
+              {/* Search & Sort */}
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
@@ -414,7 +464,7 @@ export default function DomainsPage() {
                     className="pl-10"
                   />
                 </div>
-                {/* Sort By */}
+
                 <div className="flex flex-col sm:flex-row gap-2 sm:w-auto w-full">
                   <Select value={sortBy} onValueChange={handleSortChange}>
                     <SelectTrigger className="w-full sm:w-fit h-10 px-4 py-2 inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
@@ -430,8 +480,12 @@ export default function DomainsPage() {
                       <SelectItem value="domainAuthority-desc">Domain Authority: High to Low</SelectItem>
                       <SelectItem value="score-desc">Score: High to Low</SelectItem>
                       <SelectItem value="age-desc">Age: Oldest First</SelectItem>
-                      <SelectItem value="referringDomains-desc">Referring Domains: High to Low</SelectItem>
-                      <SelectItem value="monthlyTraffic-desc">Monthly Traffic: High to Low</SelectItem>
+                      <SelectItem value="referringDomains-desc">
+                        Referring Domains: High to Low
+                      </SelectItem>
+                      <SelectItem value="monthlyTraffic-desc">
+                        Monthly Traffic: High to Low
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -455,19 +509,24 @@ export default function DomainsPage() {
               </div>
             </div>
 
+            {/* Filtered Info */}
             <div className="mb-6 text-gray-600 dark:text-gray-300">
-            Showing {filteredDomains.length} of {domains.length} domains
-            {filteredDomains.length !== domains.length && (
-              <span className="ml-2 text-sm text-blue-600 dark:text-blue-400">
-                (Filtered from {domains.length} total)
-              </span>
-            )}
+              Showing {filteredDomains.length} of {domains.length} domains
+              {filteredDomains.length !== domains.length && (
+                <span className="ml-2 text-sm text-blue-600 dark:text-blue-400">
+                  (Filtered from {domains.length} total)
+                </span>
+              )}
             </div>
-            
+
+            {/* Domain Cards */}
             {loading ? (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[...Array(6)].map((_, i) => (
-                  <div key={i} className="bg-white dark:bg-gray-800 p-6 rounded-lg animate-pulse">
+                  <div
+                    key={i}
+                    className="bg-white dark:bg-gray-800 p-6 rounded-lg animate-pulse"
+                  >
                     <div className="h-6 bg-gray-200 dark:bg-gray-700 w-3/4 mb-4 rounded"></div>
                     <div className="h-4 bg-gray-200 dark:bg-gray-700 w-1/2 mb-4 rounded"></div>
                     <div className="space-y-2">
@@ -478,7 +537,7 @@ export default function DomainsPage() {
                 ))}
               </div>
             ) : filteredDomains.length > 0 ? (
-              <div className=" grid md:grid-cols-2 lg:grid-cols-3  gap-4">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredDomains.map((domain) => (
                   <DomainCard key={domain._id} domain={domain} />
                 ))}
@@ -488,18 +547,15 @@ export default function DomainsPage() {
                 <p className="text-gray-500 dark:text-gray-400 text-lg">
                   No domains found matching your criteria.
                 </p>
-                <Button
-                  variant="outline"
-                  onClick={resetFilters}
-                  className="mt-4"
-                >
+                <Button variant="outline" onClick={resetFilters} className="mt-4">
                   Clear Filters
                 </Button>
               </div>
             )}
           </section>
         </div>
-      </main> 
+      </main>
+      
       {/* Mobile sticky actions */}
       <div className="fixed inset-x-0 bottom-0 mr-16 z-50 lg:hidden bg-white/95 dark:bg-gray-900/95 border-t border-gray-200 dark:border-gray-800 backdrop-blur supports-[backdrop-filter]:backdrop-blur px-4 py-3">
         <div className="max-w-8xl mx-auto flex items-center gap-3">

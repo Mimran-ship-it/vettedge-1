@@ -167,7 +167,7 @@ export function SavedFiltersList({ onApplyFilter, currentFilters, refreshTrigger
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="sm:space-x-4 space-y-2 sm:flex">
+          <div className="sm:space-x-4 space-y-2 flex flex-col">
             {savedFilters.map((filter) => (
               <div
                 key={filter._id}

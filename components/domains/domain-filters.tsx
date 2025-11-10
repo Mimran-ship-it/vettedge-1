@@ -494,12 +494,12 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
             onChange={(e) => setTldQuery(e.target.value)}
             className="w-full dark:bg-gray-800 dark:border-gray-700 dark:text-white"
           />
-          {tldsLoading ? (
+          {tldsLoading ? ( 
             <div className="dark:bg-gray-800 p-4 rounded-md text-center">
               <span className="text-sm text-gray-500 dark:text-gray-400">Loading extensions...</span>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-2 max-h-52 overflow-y-auto dark:bg-gray-800 p-2 rounded-md">
+            <div className="grid grid-cols-2 gap-2 max-h-contain overflow-y-hidden dark:bg-gray-800 p-2 rounded-md">
               {visibleTlds.length > 0 ? (
                 visibleTlds.map((tld) => {
                   const count = tldCountsState[tld.replace(/^\./, '')] || 0
@@ -576,7 +576,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
             onChange={(e) => setTagQuery(e.target.value)}
             className="w-full dark:bg-gray-800 dark:border-gray-700 dark:text-white"
           />
-          <div className="grid grid-cols-2 gap-2 max-h-52 overflow-y-auto border rounded p-2 dark:bg-gray-800 dark:border-gray-700">
+          <div className="grid grid-cols-2 gap-2 max-h-contain overflow-hidden  border rounded p-2 dark:bg-gray-800 dark:border-gray-700">
             {visibleTags.map((tag) => (
               <div key={tag} className="flex items-center space-x-2">
                 <Checkbox
@@ -745,7 +745,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
       </div>
 
       {/* Action Buttons */}
-      <div className="flex justify-between items-center gap-3 sticky bottom-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm py-3 border-t dark:border-gray-800">
+      <div className="flex flex-col justify-between items-center gap-3 sticky bottom-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm py-3 border-t dark:border-gray-800">
         <Button 
           variant="outline" 
           onClick={clearFilters} 
