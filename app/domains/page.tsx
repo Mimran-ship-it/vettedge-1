@@ -329,10 +329,8 @@ export default function DomainsPage() {
 
   const openFiltersMobile = () => {
     setShowFilters(true)
-    try {
-      const el = document.getElementById('filtersSidebar')
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    } catch {}
+    // Scroll to top of the page for mobile
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
   
   const handleSearchChange = (value: string) => {
@@ -357,10 +355,10 @@ export default function DomainsPage() {
       <Header />
       <main className="max-w-8xl sm:ms-0 ms-3.5 ps-3 pe-6 sm:px-6 lg:px-16 pt-24 pb-28 lg:pb-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-4">
+          <h1 className="text-3xl font-bold  text-center text-gray-900 dark:text-white mb-4">
             Premium Aged Domains
           </h1>
-        
+          
         </div>
         
         {/* Layout: Sidebar (filters) on the left, results on the right */}
