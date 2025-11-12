@@ -393,7 +393,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
 
   return (
     <div className="space-y-6 dark:bg-gray-900 dark:text-gray-100">
-     <p className="flex justify-self-center text-lg font-semibold">Filters</p> 
+     <p className="sm:flex justify-self-center hidden text-lg font-semibold">Filters</p> 
       <div className="space-y-3">
         <Label className="font-medium text-gray-700 dark:text-gray-300">Selected</Label>
         <div className="flex flex-wrap gap-2">
