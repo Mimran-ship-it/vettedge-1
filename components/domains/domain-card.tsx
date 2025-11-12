@@ -247,7 +247,7 @@ View full details:`;
       className="h-full"
     >
       <Card className={cn(
-        "relative group h-full flex flex-col overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200",
+        "relative group h-full flex flex-col  overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200",
         (domain.isSold||(!domain.isAvailable)) && "opacity-70"
       )}>
         {/* Top Image - Responsive Aspect Ratio */}

@@ -148,11 +148,7 @@ export function TrustSection() {
                 ))}
               </div>
 
-              <div className="mt-8 text-center">
-                <button className="px-6 py-3 bg-gradient-to-r from-[#33BDC7] to-[#38C172] text-white font-medium rounded-full hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-                  Learn More
-                </button>
-              </div>
+            
             </div>
           </div>
 

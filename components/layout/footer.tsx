@@ -68,19 +68,19 @@ export function Footer() {
         <div className="flex space-x-0 mt-4">
   <Link href="https://www.facebook.com/share/1AAwdxxvBD/?mibextid=wwXIfr" target="_blank">
     <Button variant="ghost" className="p-0 hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
-      <Facebook className="w-14 h-14 text-[#33BDC7] dark:text-[#33BDC7]/80" />
+    <Facebook  className="!w-5 !h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
     </Button>
   </Link>
 
   <Link href="https://www.linkedin.com/company/vettedge-domains/" target="_blank">
     <Button variant="ghost" className="p-0 hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
-      <Linkedin className="w-10 h-10 text-[#33BDC7] dark:text-[#33BDC7]/80" />
+      <Linkedin className="!w-5 !h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
     </Button>
   </Link>
 
   <Link href="https://whatsapp.com/channel/0029VbBLngqJpe8n9JJLzu3x" target="_blank">
     <Button variant="ghost" className="p-0 hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
-      <MessageCircle className="w-10 h-10 text-[#33BDC7] dark:text-[#33BDC7]/80" />
+      <MessageCircle className="!w-5 !h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
     </Button>
   </Link>
 </div>

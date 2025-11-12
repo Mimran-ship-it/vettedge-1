@@ -353,10 +353,10 @@ export default function DomainsPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
-      <main className="max-w-8xl sm:ms-0 ms-3.5 ps-3 pe-6 sm:px-6 lg:px-16 pt-24 pb-28 lg:pb-8">
+      <main className="max-w-8xl sm:ms-0  sm:px-6 lg:px-16 pt-24 pb-28 lg:pb-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold  text-center text-gray-900 dark:text-white mb-4">
-            Premium Aged Domains
+          Domain inventory
           </h1>
           
         </div>
@@ -535,7 +535,7 @@ export default function DomainsPage() {
                 ))}
               </div>
             ) : filteredDomains.length > 0 ? (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid border md:grid-cols-2 lg:grid-cols-3 gap-4 ">
                 {filteredDomains.map((domain) => (
                   <DomainCard key={domain._id} domain={domain} />
                 ))}

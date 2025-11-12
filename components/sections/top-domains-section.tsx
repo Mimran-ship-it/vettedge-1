@@ -406,14 +406,14 @@ export function TopDomainsSection() {
       key={domain._id} 
       className={`p-4 rounded-lg cursor-pointer transition-all mb-3 border border-cyan-900/50 bg-cyan-950/30 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/10 ${selectedDomain?._id === domain._id ? 'border-cyan-400 bg-cyan-900/20' : ''}`}
     >
-      <div className="flex justify-between items-center">
+      <div className=" flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 border border-cyan-800/40 rounded-lg bg-cyan-900/30 hover:bg-cyan-900/40 transition-all">
         <div className="flex items-center space-x-4">
           <div className="w-10 h-10 rounded-full bg-cyan-900/50 flex items-center justify-center text-cyan-400 font-bold">
             {index + 1}
           </div>
           <div>
             <h4 className="font-medium text-white">{domain.name}</h4>
-            <div className="flex flex-wrap items-center gap-2 mt-1">
+            <div className="sm:flex hidden sm:flex-wrap items-center gap-2 mt-1">
               <span className="text-xs text-cyan-300">DA: <span className="font-bold">{domain.metrics.domainAuthority}</span></span>
               <span className="text-xs text-blue-300">DR: <span className="font-bold">{domain.metrics.domainRank}</span></span>
               <span className="text-xs text-pink-300">Age: <span className="font-bold">{domain.metrics.age}y</span></span>
@@ -423,7 +423,7 @@ export function TopDomainsSection() {
         <Button 
           variant="outline" 
           size="sm" 
-          className="bg-cyan-600/20 border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/30 hover:text-white transition-colors"
+          className="mt-2 sm:mt-0 w-full sm:w-auto border border-[#53EAFD] bg-cyan-700/60 hover:bg-cyan-700 text-[#53EAFD] text-sm px-4 py-2 rounded-lg transition-all"
           onClick={(e) => {
             e.stopPropagation();
             fetchDomainDetails(domain._id);
@@ -521,7 +521,7 @@ export function TopDomainsSection() {
 
   return (
     <>
-      <section className="py-16 px-4 md:px-6 bg-gradient-to-br from-gray-950 to-cyan-950">
+      <section className="pt-16 px-4 md:px-6 bg-gradient-to-br from-gray-950 to-cyan-950">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 to-green-400 text-transparent bg-clip-text">
@@ -532,7 +532,7 @@ export function TopDomainsSection() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {/* Left Side: Chart */}
-            <Card className="border border-cyan-800/50 bg-cyan-950/30 backdrop-blur-sm">
+            <Card className=" h-fit border border-cyan-800/50 bg-cyan-950/30 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-white mt-4 flex items-center">
                   <div className="w-2 h-5 bg-cyan-400 rounded-full mr-2"></div>
@@ -549,8 +549,8 @@ export function TopDomainsSection() {
                       <Skeleton className="h-64 w-full bg-cyan-900/30" />
                     </div>
                   ) : (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                    <ResponsiveContainer className='mt-10' width="100%" height="100%">
+                      <BarChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#1e4a3e" />
                         <XAxis 
                           dataKey="name" 
@@ -594,7 +594,7 @@ export function TopDomainsSection() {
                   </CardTitle>
                   
                   {/* Custom Dropdown */}
-                  <div className="relative">
+                  <div className="relative mt-2">
                     <button
                       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                       className="flex items-center justify-between w-48 px-4 py-2 text-sm font-medium text-cyan-300 bg-cyan-900/50 border border-cyan-700 rounded-lg hover:bg-cyan-800/50 focus:outline-none focus:ring-2 focus:ring-cyan-500"

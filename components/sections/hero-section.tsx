@@ -148,7 +148,7 @@ export function HeroSection() {
 
           {/* Right Content */}
           <motion.div
-            className="lg:pl-8 px-4 sm:px-0"
+            className="lg:pl-8 px-0 sm:px-0"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
