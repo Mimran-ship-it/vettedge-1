@@ -366,7 +366,7 @@ export default function DomainsPage() {
           {/* Sidebar - Fixed on desktop, hidden on mobile */}
           <aside
             id="filtersSidebar"
-            className="hidden bg-[#F9FAFB] lg:flex flex-col w-[22%] fixed top-16 left-0 bottom-0 dark:bg-gray-900 z-30 overflow-y-scroll hover:overflow-y-scroll"
+            className="hidden  bg-[#F9FAFB] lg:flex flex-col w-[22%] fixed top-16 left-0 bottom-0 dark:bg-gray-900   overflow-y-scroll hover:overflow-y-scroll"
           >
             <div className="space-y-6 px-4 py-4">
               {/* Filters Section */}

@@ -114,14 +114,14 @@ export function TrustSection() {
         <div className="flex flex-col lg:flex-row gap-8 mb-20">
           {/* Trust Indicators - Left side on large screens */}
           <div className="lg:w-2/5">
-            <div className="bg-gradient-to-br from-[#33BDC7]/5 to-[#38C172]/5 dark:from-gray-800 dark:to-gray-900 rounded-3xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-8 text-center">Why Trust Us</h2>
+            <div className="">
+             
 
-              <div className="space-y-6">
+              <div className="space-y-6 ">
                 {trustIndicators.map((indicator, index) => (
                   <motion.div
                     key={index}
-                    className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-md border border-gray-100 dark:border-gray-700 flex items-center"
+                    className="bg-white  dark:bg-gray-800 rounded-2xl p-5 shadow-md border border-gray-100 dark:border-gray-700 flex items-center"
                     initial="hidden"
                     whileInView="show"
                     viewport={{ once: true }}
@@ -133,8 +133,8 @@ export function TrustSection() {
                     }}
                     transition={{ duration: 0.3 }}
                   >
-                    <div className="w-14 h-14 bg-gradient-to-br from-[#33BDC7] to-[#2caab4] rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
-                      <indicator.icon className="h-6 w-6 text-white" />
+                    <div className="w-14 h-14 bg-transparent rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                      <indicator.icon className="h-6 w-6 text-[#33BDC7]" />
                     </div>
                     <div className="ml-4">
                       <div className="text-3xl font-bold text-[#33BDC7]">
@@ -199,8 +199,8 @@ export function TrustSection() {
           <Card className="inline-block border-0 shadow-xl bg-gradient-to-r from-[#38C172]/10 to-[#33BDC7]/10 dark:from-[#38C172]/20 dark:to-[#33BDC7]/20 backdrop-blur-sm">
             <CardContent className="pt-6 pb-6 px-8">
               <div className="flex items-center space-x-4">
-                <div className="w-14 h-14 bg-[#38C172] rounded-xl flex items-center justify-center shadow-lg">
-                  <Headset className="h-7 w-7 text-white" />
+                <div className="w-14 h-14  rounded-xl flex items-center justify-center ">
+                  <Headset className="h-7 w-7 text-[#38C172] " />
                 </div>
                 <div className="text-left">
                   <div className="font-bold text-lg text-gray-800 dark:text-white">
@@ -218,8 +218,8 @@ export function TrustSection() {
           <Card className="inline-block border-0 shadow-xl bg-gradient-to-r from-[#38C172]/10 to-[#33BDC7]/10 dark:from-[#38C172]/20 dark:to-[#33BDC7]/20 backdrop-blur-sm">
             <CardContent className="pt-6 pb-6 px-8">
               <div className="flex items-center space-x-4">
-                <div className="w-14 h-14 bg-[#33BDC7] rounded-xl flex items-center justify-center shadow-lg">
-                  <Lock className="h-7 w-7 text-white" />
+                <div className="w-14 h-14  flex items-center justify-center ">
+                  <Lock className="h-7 w-7 text-[#38C172] " />
                 </div>
                 <div className="text-left">
                   <div className="font-bold text-lg text-gray-800 dark:text-white">
@@ -237,8 +237,8 @@ export function TrustSection() {
           <Card className="inline-block border-0 shadow-xl bg-gradient-to-r from-[#38C172]/10 to-[#33BDC7]/10 dark:from-[#38C172]/20 dark:to-[#33BDC7]/20 backdrop-blur-sm">
             <CardContent className="pt-6 pb-6 px-8">
               <div className="flex items-center space-x-4">
-                <div className="w-14 h-14 bg-[#33BDC7] rounded-xl flex items-center justify-center shadow-lg">
-                  <CreditCard className="h-7 w-7 text-white" />
+                <div className="w-14 h-14  flex items-center justify-center ">
+                  <CreditCard className="h-7 w-7 text-[#38C172]" />
                 </div>
                 <div className="text-left">
                   <div className="font-bold text-lg text-gray-800 dark:text-white">

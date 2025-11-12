@@ -530,128 +530,133 @@ export function TopDomainsSection() {
             <p className="mt-2 text-gray-400">Discover our premium domains with detailed metrics</p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            {/* Left Side: Chart */}
-            <Card className=" h-fit border border-cyan-800/50 bg-cyan-950/30 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-white mt-4 flex items-center">
-                  <div className="w-2 h-5 bg-cyan-400 rounded-full mr-2"></div>
-                  {getChartTitle(activeTab)} Metrics
-                </CardTitle>
-                <CardDescription className="text-cyan-300">
-                  Top 5 domains by {getMetricDescription(activeTab).toLowerCase()}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="h-80 w-full">
-                  {chartLoading ? (
-                    <div className="flex items-center justify-center h-full">
-                      <Skeleton className="h-64 w-full bg-cyan-900/30" />
-                    </div>
-                  ) : (
-                    <ResponsiveContainer className='mt-10' width="100%" height="100%">
-                      <BarChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#1e4a3e" />
-                        <XAxis 
-                          dataKey="name" 
-                          stroke="#33BDC7" 
-                          tick={{ fontSize: 12 }}
-                        />
-                        <YAxis 
-                          stroke="#33BDC7"
-                          tick={{ fontSize: 12 }}
-                        />
-                        <Tooltip 
-                          contentStyle={{
-                            backgroundColor: 'rgba(6, 95, 70, 0.9)',
-                            border: '1px solid rgba(51, 189, 199, 0.3)',
-                            borderRadius: '0.5rem',
-                          }}
-                          itemStyle={{ color: '#fff' }}
-                          labelStyle={{ color: '#33BDC7' }}
-                          formatter={(value) => [value, chartData[0]?.label || 'Value']}
-                        />
-                        <Bar 
-                          dataKey="value" 
-                          name={chartData[0]?.label || 'Value'}
-                          fill="#36C374" 
-                          radius={[4, 4, 0, 0]}
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 items-stretch">
+  {/* Left Side: Chart */}
+  <Card className="flex flex-col justify-between border border-cyan-800/50 bg-cyan-950/30 backdrop-blur-sm h-full">
+    <CardHeader>
+      <CardTitle className="text-white mt-4 flex items-center">
+        <div className="w-2 h-5 bg-cyan-400 rounded-full mr-2"></div>
+        {getChartTitle(activeTab)} Metrics
+      </CardTitle>
+      <CardDescription className="text-cyan-300">
+        Top 5 domains by {getMetricDescription(activeTab).toLowerCase()}
+      </CardDescription>
+    </CardHeader>
+    <CardContent className="flex-1 flex items-center">
+  <div className="h-[28rem] w-full"> {/* Increased height from h-80 to 28rem */}
+    {chartLoading ? (
+      <div className="flex items-center justify-center h-full">
+        <Skeleton className="h-[26rem] w-full bg-cyan-900/30" />
+      </div>
+    ) : (
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#1e4a3e" />
+          <XAxis
+            dataKey="name"
+            stroke="#33BDC7"
+            tick={{ fontSize: 12 }}
+          />
+          <YAxis
+            stroke="#33BDC7"
+            tick={{ fontSize: 12 }}
+          />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: 'rgba(6, 95, 70, 0.9)',
+              border: '1px solid rgba(51, 189, 199, 0.3)',
+              borderRadius: '0.5rem',
+            }}
+            itemStyle={{ color: '#fff' }}
+            labelStyle={{ color: '#33BDC7' }}
+            formatter={(value) => [value, chartData[0]?.label || 'Value']}
+          />
+          <Bar
+            dataKey="value"
+            name={chartData[0]?.label || 'Value'}
+            fill="#36C374"
+            radius={[4, 4, 0, 0]}
+          />
+        </BarChart>
+      </ResponsiveContainer>
+    )}
+  </div>
+</CardContent>
 
-            {/* Right Side: Top Domains */}
-            <Card className="border border-cyan-800/50 bg-cyan-950/30 backdrop-blur-sm">
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <CardTitle className="text-white flex items-center">
-                    <div className="w-2 h-5 bg-cyan-400 rounded-full mr-2"></div>
-                    Top Domains
-                  </CardTitle>
-                  
-                  {/* Custom Dropdown */}
-                  <div className="relative mt-2">
-                    <button
-                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                      className="flex items-center justify-between w-48 px-4 py-2 text-sm font-medium text-cyan-300 bg-cyan-900/50 border border-cyan-700 rounded-lg hover:bg-cyan-800/50 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                    >
-                      <span className="flex items-center">
-                        {metricOptions.find(opt => opt.value === activeTab)?.icon}
-                        <span className="ml-2">
-                          {metricOptions.find(opt => opt.value === activeTab)?.label}
-                        </span>
-                      </span>
-                      <ChevronDown className={`w-4 h-4 ml-2 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
-                    </button>
-                    
-                    {isDropdownOpen && (
-                      <div className="absolute right-0 z-10 w-48 mt-1 bg-cyan-950 border border-cyan-800 rounded-lg shadow-lg">
-                        <div className="py-1">
-                          {metricOptions.map((option) => (
-                            <button
-                              key={option.value}
-                              onClick={() => {
-                                setActiveTab(option.value);
-                                setIsDropdownOpen(false);
-                              }}
-                              className={`flex items-center w-full px-4 py-2 text-sm text-left ${
-                                activeTab === option.value
-                                  ? 'text-cyan-300 bg-cyan-900/50'
-                                  : 'text-gray-300 hover:bg-cyan-900/30'
-                              }`}
-                            >
-                              {option.icon}
-                              <span className="ml-2">{option.label}</span>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <CardDescription className="text-cyan-300">
-                  {getMetricDescription(activeTab)}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 max-h-contain overflow-y-hidden pr-2">
-                  {activeTab === 'da' && topDomains.da.map((domain, index) => renderDomainCard(domain, index))}
-                  {activeTab === 'dr' && topDomains.dr.map((domain, index) => renderDomainCard(domain, index))}
-                  {activeTab === 'tf' && topDomains.tf.map((domain, index) => renderDomainCard(domain, index))}
-                  {activeTab === 'cf' && topDomains.cf.map((domain, index) => renderDomainCard(domain, index))}
-                  {activeTab === 'score' && topDomains.score.map((domain, index) => renderDomainCard(domain, index))}
-                  {activeTab === 'refDomains' && topDomains.refDomains.map((domain, index) => renderDomainCard(domain, index))}
-                  {activeTab === 'authLinks' && topDomains.authLinks.map((domain, index) => renderDomainCard(domain, index))}
-                  {activeTab === 'traffic' && hasTrafficData && topDomains.traffic.map((domain, index) => renderDomainCard(domain, index))}
-                  {activeTab === 'age' && topDomains.age.map((domain, index) => renderDomainCard(domain, index))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+  </Card>
+
+  {/* Right Side: Top Domains */}
+  <Card className="flex flex-col border border-cyan-800/50 bg-cyan-950/30 backdrop-blur-sm h-full">
+    <CardHeader>
+      <div className="flex justify-between items-center">
+        <CardTitle className="text-white flex items-center">
+          <div className="w-2 h-5 bg-cyan-400 rounded-full mr-2"></div>
+          Top Domains
+        </CardTitle>
+
+        {/* Custom Dropdown */}
+        <div className="relative mt-2">
+          <button
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="flex items-center justify-between w-48 px-4 py-2 text-sm font-medium text-cyan-300 bg-cyan-900/50 border border-cyan-700 rounded-lg hover:bg-cyan-800/50 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          >
+            <span className="flex items-center">
+              {metricOptions.find(opt => opt.value === activeTab)?.icon}
+              <span className="ml-2">
+                {metricOptions.find(opt => opt.value === activeTab)?.label}
+              </span>
+            </span>
+            <ChevronDown
+              className={`w-4 h-4 ml-2 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+            />
+          </button>
+
+          {isDropdownOpen && (
+            <div className="absolute right-0 z-10 w-48 mt-1 bg-cyan-950 border border-cyan-800 rounded-lg shadow-lg">
+              <div className="py-1">
+                {metricOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => {
+                      setActiveTab(option.value);
+                      setIsDropdownOpen(false);
+                    }}
+                    className={`flex items-center w-full px-4 py-2 text-sm text-left ${
+                      activeTab === option.value
+                        ? 'text-cyan-300 bg-cyan-900/50'
+                        : 'text-gray-300 hover:bg-cyan-900/30'
+                    }`}
+                  >
+                    {option.icon}
+                    <span className="ml-2">{option.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+      <CardDescription className="text-cyan-300">
+        {getMetricDescription(activeTab)}
+      </CardDescription>
+    </CardHeader>
+
+    <CardContent className="flex-1 overflow-y-auto">
+      <div className="space-y-3 pr-2">
+        {activeTab === 'da' && topDomains.da.map((domain, index) => renderDomainCard(domain, index))}
+        {activeTab === 'dr' && topDomains.dr.map((domain, index) => renderDomainCard(domain, index))}
+        {activeTab === 'tf' && topDomains.tf.map((domain, index) => renderDomainCard(domain, index))}
+        {activeTab === 'cf' && topDomains.cf.map((domain, index) => renderDomainCard(domain, index))}
+        {activeTab === 'score' && topDomains.score.map((domain, index) => renderDomainCard(domain, index))}
+        {activeTab === 'refDomains' && topDomains.refDomains.map((domain, index) => renderDomainCard(domain, index))}
+        {activeTab === 'authLinks' && topDomains.authLinks.map((domain, index) => renderDomainCard(domain, index))}
+        {activeTab === 'traffic' && hasTrafficData && topDomains.traffic.map((domain, index) => renderDomainCard(domain, index))}
+        {activeTab === 'age' && topDomains.age.map((domain, index) => renderDomainCard(domain, index))}
+      </div>
+    </CardContent>
+  </Card>
+</div>
+
 
       
         </div>
