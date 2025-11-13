@@ -100,28 +100,16 @@ export function TrustSection() {
 
   return (
     <section className="py-20 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
-      {/* Decorative elements */}
-      {/* <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-green-100 dark:bg-green-900/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-teal-100 dark:bg-teal-900/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-100 dark:bg-blue-900/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-      </div> */}
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-
-
-
         <div className="flex flex-col lg:flex-row gap-8 mb-20">
           {/* Trust Indicators - Left side on large screens */}
           <div className="lg:w-2/5">
             <div className="">
-             
-
-              <div className="space-y-6 ">
+              <div className="space-y-6">
                 {trustIndicators.map((indicator, index) => (
                   <motion.div
                     key={index}
-                    className="bg-white  dark:bg-gray-800 rounded-2xl p-5 shadow-md border border-gray-100 dark:border-gray-700 flex items-center"
+                    className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-md border border-gray-100 dark:border-gray-700 flex items-center"
                     initial="hidden"
                     whileInView="show"
                     viewport={{ once: true }}
@@ -147,14 +135,98 @@ export function TrustSection() {
                   </motion.div>
                 ))}
               </div>
-
-            
             </div>
           </div>
 
           {/* Features Grid - Right side on large screens */}
           <div className="lg:w-3/5">
-            <div className="grid grid-cols-2 gap-4 sm:gap-6">
+            {/* Mobile L-shaped layout */}
+            <div className="sm:hidden">
+  {/* L-shape 1: Green theme */}
+  <motion.div
+    initial="hidden"
+    whileInView="show"
+    viewport={{ once: true }}
+    variants={fadeUp}
+    className="relative min-h-[220px] w-full border-2 border-[#36C374] rounded-none p-0 overflow-hidden bg-white dark:bg-gray-800 shadow-lg"
+  >
+    <div className="absolute top-0 left-0 w-1/2 h-1/2 p-6 border-r-2 border-b-2 border-[#36C374] flex items-center justify-center bg-white">
+      <h3 className="text-xl font-bold text-[#36C374] text-center font-serif leading-tight">
+        {features[0].title}
+      </h3>
+    </div>
+    <div className="absolute bottom-0 left-0 w-full h-1/2 p-6 flex items-center">
+      <p className="text-base text-gray-700 dark:text-gray-200 leading-relaxed font-sans">
+        {features[0].description}
+      </p>
+    </div>
+  </motion.div>
+
+  {/* L-shape 2: Cyan theme */}
+  <motion.div
+    initial="hidden"
+    whileInView="show"
+    viewport={{ once: true }}
+    variants={fadeUp}
+    custom={0.15}
+    className="relative min-h-[220px] w-full border-2 border-[#33BDC7] rounded-none p-0 overflow-hidden bg-white dark:bg-gray-800 shadow-lg -mt-0.5"
+  >
+    <div className="absolute top-0 left-0 w-full h-1/2 p-6 flex items-center">
+      <p className="text-base text-gray-700 dark:text-gray-200 leading-relaxed font-sans">
+        {features[1].description}
+      </p>
+    </div>
+    <div className="absolute bottom-0 right-0 w-1/2 h-1/2 p-6 border-t-2 border-l-2 border-[#33BDC7] flex items-center justify-center bg-white">
+      <h3 className="text-xl font-bold text-[#33BDC7] text-center font-serif leading-tight">
+        {features[1].title}
+      </h3>
+    </div>
+  </motion.div>
+
+  {/* L-shape 3: Green theme */}
+  <motion.div
+    initial="hidden"
+    whileInView="show"
+    viewport={{ once: true }}
+    variants={fadeUp}
+    custom={0.3}
+    className="relative min-h-[220px] w-full border-2 border-[#36C374] rounded-none p-0 overflow-hidden bg-white dark:bg-gray-800 shadow-lg -mt-0.5"
+  >
+    <div className="absolute top-0 left-0 w-1/2 h-1/2 p-6 border-r-2 border-b-2 border-[#36C374] flex items-center justify-center bg-white">
+      <h3 className="text-xl font-bold text-[#36C374] text-center font-serif leading-tight">
+        {features[2].title}
+      </h3>
+    </div>
+    <div className="absolute bottom-0 left-0 w-full h-1/2 p-6 flex items-center">
+      <p className="text-base text-gray-700 dark:text-gray-200 leading-relaxed font-sans">
+        {features[2].description}
+      </p>
+    </div>
+  </motion.div>
+
+  {/* L-shape 4: Cyan theme */}
+  <motion.div
+    initial="hidden"
+    whileInView="show"
+    viewport={{ once: true }}
+    variants={fadeUp}
+    custom={0.45}
+    className="relative min-h-[220px] w-full border-2 border-[#33BDC7] rounded-none p-0 overflow-hidden bg-white dark:bg-gray-800 shadow-lg -mt-0.5"
+  >
+    <div className="absolute top-0 left-0 w-full h-1/2 p-6 flex items-center">
+      <p className="text-base text-gray-700 dark:text-gray-200 leading-relaxed font-sans">
+        {features[3].description}
+      </p>
+    </div>
+    <div className="absolute bottom-0 right-0 w-1/2 h-1/2 p-6 border-t-2 border-l-2 border-[#33BDC7] flex items-center justify-center bg-white">
+      <h3 className="text-xl font-bold text-[#33BDC7] text-center font-serif leading-tight">
+        {features[3].title}
+      </h3>
+    </div>
+  </motion.div>
+</div>
+            {/* Desktop layout (unchanged) */}
+            <div className="hidden sm:grid grid-cols-2 gap-4 sm:gap-6">
               {features.map((feature, index) => (
                 <motion.div
                   key={index}
@@ -187,7 +259,6 @@ export function TrustSection() {
         </div>
 
         {/* Security Badge */}
-        {/* Security Badges */}
         <motion.div
           className="flex flex-col md:flex-row justify-center items-center gap-6"
           initial="hidden"
@@ -199,8 +270,8 @@ export function TrustSection() {
           <Card className="inline-block border-0 shadow-xl bg-gradient-to-r from-[#38C172]/10 to-[#33BDC7]/10 dark:from-[#38C172]/20 dark:to-[#33BDC7]/20 backdrop-blur-sm">
             <CardContent className="pt-6 pb-6 px-8">
               <div className="flex items-center space-x-4">
-                <div className="w-14 h-14  rounded-xl flex items-center justify-center ">
-                  <Headset className="h-7 w-7 text-[#38C172] " />
+                <div className="w-14 h-14 rounded-xl flex items-center justify-center">
+                  <Headset className="h-7 w-7 text-[#38C172]" />
                 </div>
                 <div className="text-left">
                   <div className="font-bold text-lg text-gray-800 dark:text-white">
@@ -218,8 +289,8 @@ export function TrustSection() {
           <Card className="inline-block border-0 shadow-xl bg-gradient-to-r from-[#38C172]/10 to-[#33BDC7]/10 dark:from-[#38C172]/20 dark:to-[#33BDC7]/20 backdrop-blur-sm">
             <CardContent className="pt-6 pb-6 px-8">
               <div className="flex items-center space-x-4">
-                <div className="w-14 h-14  flex items-center justify-center ">
-                  <Lock className="h-7 w-7 text-[#38C172] " />
+                <div className="w-14 h-14 flex items-center justify-center">
+                  <Lock className="h-7 w-7 text-[#38C172]" />
                 </div>
                 <div className="text-left">
                   <div className="font-bold text-lg text-gray-800 dark:text-white">
@@ -237,7 +308,7 @@ export function TrustSection() {
           <Card className="inline-block border-0 shadow-xl bg-gradient-to-r from-[#38C172]/10 to-[#33BDC7]/10 dark:from-[#38C172]/20 dark:to-[#33BDC7]/20 backdrop-blur-sm">
             <CardContent className="pt-6 pb-6 px-8">
               <div className="flex items-center space-x-4">
-                <div className="w-14 h-14  flex items-center justify-center ">
+                <div className="w-14 h-14 flex items-center justify-center">
                   <CreditCard className="h-7 w-7 text-[#38C172]" />
                 </div>
                 <div className="text-left">

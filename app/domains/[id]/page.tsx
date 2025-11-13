@@ -271,10 +271,10 @@ export default function DomainDetailsPage() {
 
               {/* Tabs for additional information */}
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full rounded-lg">
-                <TabsList className="grid w-full grid-cols-3 bg-gray-100 dark:bg-gray-700">
-                  <TabsTrigger value="overview" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white">Overview</TabsTrigger>
-                  <TabsTrigger  value="metrics" className="data-[state=active]:bg-green-600 data-[state=active]:text-white dark:data-[state=active]:bg-green-600 dark:data-[state=active]:text-white">SEO Metrics</TabsTrigger>
-                  <TabsTrigger value="history" className="data-[stnpate=active]:bg-purple-600 data-[state=active]:text-white dark:data-[state=active]:bg-purple-600 dark:data-[state=active]:text-white">History</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-3 gap-2 ">
+                  <TabsTrigger value="overview" className="data-[state=active]:bg-blue-600 bg-muted  data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white">Overview</TabsTrigger>
+                  <TabsTrigger  value="metrics" className="data-[state=active]:bg-green-600 bg-muted data-[state=active]:text-white dark:data-[state=active]:bg-green-600 dark:data-[state=active]:text-white">SEO Metrics</TabsTrigger>
+                  <TabsTrigger value="history" className="data-[stnpate=active]:bg-purple-600 bg-muted data-[state=active]:text-black dark:data-[state=active]:bg-purple-600 dark:data-[state=active]:text-white">History</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="overview" className="mt-4 ">
