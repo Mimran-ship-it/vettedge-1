@@ -127,7 +127,7 @@ export function LiveChat() {
     )
   }
   return (
-    <div className="fixed bottom-4 right-4 z-[999px] max-w-[calc(100vw-2rem)]">
+    <div className="fixed z-[999999] bottom-4 right-4 max-w-[calc(100vw-2rem)]">
       <Card className={`w-80 max-w-full shadow-xl transition-all duration-300 ${isMinimized ? "h-14" : "h-96"} sm:w-80 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700`}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 cursor-pointer bg-[#33BDC7] text-white rounded-t-lg" onClick={() => setIsMinimized(!isMinimized)}>
           <CardTitle className="text-sm font-medium flex items-center space-x-2">

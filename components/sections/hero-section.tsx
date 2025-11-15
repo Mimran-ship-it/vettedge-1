@@ -104,7 +104,7 @@ export function HeroSection() {
 
             {/* Search Bar */}
             <motion.div
-              className="bg-white dark:bg-gray-800  p-6 border border-gray-200 dark:border-gray-700 max-w-2xl mx-auto lg:mx-0"
+              className="   p-6  max-w-2xl mx-auto lg:mx-0"
               variants={fadeUp}
               custom={0.4}
             >
@@ -203,7 +203,7 @@ export function HeroSection() {
                       variants={fadeUp}
                       custom={i * 0.2}
                     >
-                      <div className={`w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br ${bg} rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-200`}>
+                      <div className={`w-8 h-8 sm:w-16 sm:h-10 flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-200`}>
                         <Icon className={`h-5 w-5 sm:h-8 sm:w-8 ${color}`} />
                       </div>
                       <h4 className="font-semibold text-sm sm:text-base">{title}</h4>
@@ -232,7 +232,7 @@ export function HeroSection() {
             { label: "Monthly Traffic:", value: "15K", color: "text-purple-500" },
             { label: "Domain Age:", value: "5+ years", color: "text-orange-500" }
           ].map((metric, index) => (
-            <div key={index} className="flex justify-between items-center bg-white dark:bg-gray-700/50 p-2 rounded-lg">
+            <div key={index} className="flex justify-between items-center  p-2 ">
               <span className="text-gray-600 dark:text-gray-300 text-sm font-medium">{metric.label}</span>
               <span className={`${metric.color} font-bold text-base`}>{metric.value}</span>
             </div>

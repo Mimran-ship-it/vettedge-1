@@ -555,9 +555,9 @@ export default function DomainsPage() {
       </main>
       
       {/* Mobile sticky actions */}
-      <div className="fixed inset-x-0 bottom-0 mr-16 z-50 lg:hidden bg-white/95 dark:bg-gray-900/95 border-t border-gray-200 dark:border-gray-800 backdrop-blur supports-[backdrop-filter]:backdrop-blur px-4 py-3">
+      <div className="fixed inset-x-0 bottom-0 mr-16 z-50 lg:hidden   border-t border-gray-200 dark:border-gray-800   px-4 py-3">
         <div className="max-w-8xl mx-auto flex items-center gap-3">
-          <Button className="flex-1" variant="outline" onClick={openFiltersMobile}>
+          <Button className="flex-1 dark:bg-black" variant="outline" onClick={openFiltersMobile}>
             <Filter className="h-4 w-4 mr-2" /> Filters
           </Button>
           <Button className="flex-1" onClick={() => setShowSortSheet(true)}>

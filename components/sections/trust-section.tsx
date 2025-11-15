@@ -101,7 +101,7 @@ export function TrustSection() {
   return (
     <section className="py-10 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="flex flex-col lg:flex-row gap-8 mb-20">
+        <div className="flex flex-col lg:flex-row gap-8 mb-10 sm:mb-20">
           {/* Trust Indicators - Left side on large screens */}
           <div className="lg:w-2/5">
             <div className="">
@@ -150,12 +150,12 @@ export function TrustSection() {
     variants={fadeUp}
     className="relative min-h-[220px] w-full  rounded-none p-0 overflow-hidden bg-white dark:bg-gray-800 "
   >
-    <div className="absolute top-0 left-0 w-1/2 h-1/2 p-6 border-r-2 border-b-2 border-[#36C374] flex items-center justify-center bg-white">
+    <div className="absolute top-0 left-0 w-1/2 h-1/2 p-6 border-r-2 border-b-2 border-[#36C374] flex items-center justify-center ">
       <h3 className="text-xl font-bold text-[#36C374] text-center font-serif leading-tight">
        
       </h3>
     </div>
-    <div className="absolute top-0 right-0 w-1/2 h-1/2 p-6 border-r-2 border-t-2 border-[#36C374] flex items-center justify-center bg-white">
+    <div className="absolute top-0 right-0 w-1/2 h-1/2 p-6 border-r-2 border-t-2 border-[#36C374] flex items-center justify-center ">
       <h3 className="text-xl font-bold text-[#36C374] text-center font-serif leading-tight">
         {features[0].title}
       </h3>
@@ -183,12 +183,12 @@ export function TrustSection() {
       </p>
     </div>
     
-    <div className="absolute bottom-0 right-0 w-1/2 h-1/2 p-6  border-t-2 border-l-2 border-r-2 border-[#36C374] flex items-center justify-center bg-white">
+    <div className="absolute bottom-0 right-0 w-1/2 h-1/2 p-6  border-t-2 border-l-2 border-r-2 border-[#36C374] flex items-center justify-center ">
     <h3 className="text-xl font-bold  text-[#36C374] text-center font-serif leading-tight">
         {features[2].title}
       </h3>
     </div>
-      <div className="absolute bottom-0 left-0 w-1/2 h-1/2 p-6 border-b-2 border-[#33BDC7] flex items-center justify-center bg-white">
+      <div className="absolute bottom-0 left-0 w-1/2 h-1/2 p-6 border-b-2 border-[#33BDC7] flex items-center justify-center ">
       <h3 className="text-xl font-bold text-[#33BDC7] text-center font-serif leading-tight">
         {features[1].title}
       </h3>
@@ -227,12 +227,12 @@ export function TrustSection() {
         {features[3].description}
       </p>
     </div>
-    <div className="absolute bottom-0 right-0 w-1/2 h-1/2 p-6 border-t-2 border-l-2 border-[#33BDC7] flex items-center justify-center bg-white">
+    <div className="absolute bottom-0 right-0 w-1/2 h-1/2 p-6 border-t-2 border-l-2 border-[#33BDC7] flex items-center justify-center ">
       <h3 className="text-xl font-bold text-[#33BDC7] text-center font-serif leading-tight">
       
       </h3>
     </div>
-    <div className="absolute bottom-0 left-0 w-1/2 h-1/2 p-6 border-l-2 border-b-2  border-[#33BDC7] flex items-center justify-center bg-white">
+    <div className="absolute bottom-0 left-0 w-1/2 h-1/2 p-6 border-l-2 border-b-2  border-[#33BDC7] flex items-center justify-center ">
       <h3 className="text-xl font-bold text-[#33BDC7] text-center font-serif leading-tight">
         {features[3].title}
       </h3>

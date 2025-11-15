@@ -404,7 +404,7 @@ export function TopDomainsSection() {
   const renderDomainCard = (domain: Domain, index: number) => (
     <div 
       key={domain._id} 
-      className={`p-4 rounded-lg cursor-pointer transition-all mb-3 border border-cyan-900/50 bg-cyan-950/30 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/10 ${selectedDomain?._id === domain._id ? 'border-cyan-400 bg-cyan-900/20' : ''}`}
+      className={`p-0 rounded-lg cursor-pointer transition-all  ${selectedDomain?._id === domain._id ? 'border-cyan-400 bg-cyan-900/20' : ''}`}
     >
       <div className=" flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 border border-cyan-800/40 rounded-lg bg-cyan-900/30 hover:bg-cyan-900/40 transition-all">
         <div className="flex items-center space-x-4">
@@ -543,13 +543,14 @@ export function TopDomainsSection() {
       </CardDescription>
     </CardHeader>
     <CardContent className="flex-1 flex items-center">
-  <div className="h-[28rem] w-full"> {/* Increased height from h-80 to 28rem */}
+  <div className="h-[28rem]  !w-full"> {/* Increased height from h-80 to 28rem */}
     {chartLoading ? (
       <div className="flex items-center justify-center h-full">
         <Skeleton className="h-[26rem] w-full bg-cyan-900/30" />
       </div>
     ) : (
-      <ResponsiveContainer width="100%" height="100%">
+      <div className="w-[120%] sm:w-full  ms-[-3rem] sm:ms-0 h-full">
+  <ResponsiveContainer width="100%" height="100%">
         <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#1e4a3e" />
           <XAxis
@@ -579,6 +580,7 @@ export function TopDomainsSection() {
           />
         </BarChart>
       </ResponsiveContainer>
+      </div>
     )}
   </div>
 </CardContent>
