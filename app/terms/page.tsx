@@ -111,7 +111,7 @@ export default function TermsOfService() {
                 <div className="space-y-3">
                   {section.content.map((item, itemIndex) => (
                     <div key={itemIndex} className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-[#38C172] rounded-full mt-2 flex-shrink-0" />
+                      <div className="w-2 h-2 bg-[#38C172] full mt-2 flex-shrink-0" />
                       <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{item}</p>
                     </div>
                   ))}

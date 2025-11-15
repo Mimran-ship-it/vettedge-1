@@ -244,10 +244,10 @@ export function TopDomainsSection() {
   const renderDomainCard = (domain: Domain, index: number) => (
     <div 
       key={domain._id} 
-      className={`p-4 rounded-lg cursor-pointer transition-all mb-3 border border-cyan-900/50 bg-cyan-950/30 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/10 ${selectedDomain?._id === domain._id ? 'border-cyan-400 bg-cyan-900/20' : ''}`}
+      className={`p-3 sm:p-4 cursor-pointer transition-all mb-3 border border-cyan-900/50 bg-cyan-950/30 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/10 ${selectedDomain?._id === domain._id ? 'border-cyan-400 bg-cyan-900/20' : ''}`}
     >
-      <div className="flex justify-between items-center">
-        <div className="flex items-center space-x-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <div className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-full bg-cyan-900/50 flex items-center justify-center text-cyan-400 font-bold">
             {index + 1}
           </div>
@@ -263,7 +263,7 @@ export function TopDomainsSection() {
         <Button 
           variant="outline" 
           size="sm" 
-          className="bg-cyan-600/20 border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/30 hover:text-white transition-colors"
+          className="bg-cyan-600/20 border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/30 hover:text-white transition-colors w-full sm:w-auto mt-2 sm:mt-0"
           onClick={(e) => {
             e.stopPropagation();
             fetchDomainDetails(domain._id);
@@ -287,17 +287,17 @@ export function TopDomainsSection() {
           ) : (
             <>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div className="bg-cyan-900/30 p-3 rounded-lg">
+                <div className="bg-cyan-900/30 p-3 ">
                   <p className="text-xs text-cyan-300">Trust Flow</p>
                   <p className="text-xl font-bold text-white">{selectedDomain.metrics.trustFlow}</p>
                   <p className="text-xs text-cyan-400">{getTrendIcon(1)} 2.5%</p>
                 </div>
-                <div className="bg-cyan-900/30 p-3 rounded-lg">
+                <div className="bg-cyan-900/30 p-3 ">
                   <p className="text-xs text-cyan-300">Citation Flow</p>
                   <p className="text-xl font-bold text-white">{selectedDomain.metrics.citationFlow}</p>
                   <p className="text-xs text-cyan-400">{getTrendIcon(1)} 1.8%</p>
                 </div>
-                <div className="bg-cyan-900/30 p-3 rounded-lg">
+                <div className="bg-cyan-900/30 p-3 ">
                   <p className="text-xs text-cyan-300">Organic Traffic</p>
                   {selectedDomain.metrics.monthlyTraffic&&<p className="text-xl font-bold text-white">
                     {selectedDomain.metrics.monthlyTraffic ? selectedDomain.metrics.monthlyTraffic.toLocaleString() : 'N/A'}
@@ -305,7 +305,7 @@ export function TopDomainsSection() {
                   <p className="text-xs text-cyan-400">{getTrendIcon(1)} 3.2%</p>
                 </div>
               </div>
-              <div className="mt-3 flex justify-between items-center">
+              <div className="mt-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                 <div>
                   <p className="text-xs text-gray-400">Price</p>
                   <p className="text-lg font-bold text-white">
@@ -338,8 +338,8 @@ export function TopDomainsSection() {
             <p className="mt-2 text-gray-400">Discover our premium domains with detailed metrics</p>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Skeleton className="h-96 rounded-xl bg-cyan-900/30" />
-            <Skeleton className="h-96 rounded-xl bg-cyan-900/30" />
+            <Skeleton className="h-96  bg-cyan-900/30" />
+            <Skeleton className="h-96  bg-cyan-900/30" />
           </div>
         </div>
       </section>
@@ -364,7 +364,7 @@ export function TopDomainsSection() {
 
   return (
     <>
-      <section className="py-16 px-4 md:px-6 bg-gradient-to-br from-gray-950 to-cyan-950">
+      <section className="py-16 px-2 md:px-16 lg:px-24 bg-gradient-to-br from-gray-950 to-cyan-950">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 to-green-400 text-transparent bg-clip-text">
@@ -373,10 +373,10 @@ export function TopDomainsSection() {
             <p className="mt-2 text-gray-400">Discover our premium domains with detailed metrics</p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6  mb-4 lg:mb-8">
             {/* Left Side: Chart */}
-            <Card className="border border-cyan-800/50 bg-cyan-950/30 backdrop-blur-sm">
-              <CardHeader>
+            <Card className="border border-cyan-800/50 pt-4 lg:pt-16 bg-cyan-950/30 backdrop-blur-sm">
+              <CardHeader className="pb-2">
                 <CardTitle className="text-white flex items-center">
                   <div className="w-2 h-5 bg-cyan-400 rounded-full mr-2"></div>
                   Domain Authority Metrics
@@ -385,15 +385,17 @@ export function TopDomainsSection() {
                   Growth trends over the last 6 months
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="h-80 w-full">
+              <CardContent className="pt-0 p-0 lg:p-6">
+                <div className="h-72 md:h-96 w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                    <LineChart data={chartData} margin={{ top: 0, right: 10, left: 0, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#1e4a3e" />
                       <XAxis 
                         dataKey="name" 
                         stroke="#33BDC7" 
                         tick={{ fontSize: 12 }}
+                        padding={{ left: 0, right: 0 }}
+                        tickMargin={6}
                       />
                       <YAxis 
                         stroke="#33BDC7"
@@ -434,42 +436,42 @@ export function TopDomainsSection() {
             </Card>
 
             {/* Right Side: Top Domains */}
-            <Card className="border border-cyan-800/50 bg-cyan-950/30 backdrop-blur-sm">
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <CardTitle className="text-white flex items-center">
-                    <div className="w-2 h-5 bg-cyan-400 rounded-full mr-2"></div>
+            <Card className="border border-cyan-800/50 pt-8 bg-cyan-950/30 backdrop-blur-sm">
+              <CardHeader className="pb-2">
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center">
+                    <div className="w-2 h-5 bg-cyan-400  mr-2"></div>
                     Top Domains
-                  </CardTitle>
+                  </div>
                   <Tabs 
                     value={activeTab} 
                     onValueChange={setActiveTab}
-                    className="w-auto"
+                    className="w-full"
                   >
-                    <TabsList className="bg-cyan-900/50 border border-cyan-800/50 p-1 h-auto">
+                    <TabsList className="bg-cyan-900/50 border border-cyan-800/50 p-1 h-auto flex gap-1 overflow-x-auto whitespace-nowrap ">
                       <TabsTrigger 
                         value="da" 
-                        className="px-3 py-1 text-xs data-[state=active]:bg-cyan-600/50 data-[state=active]:text-white"
+                        className="px-3 py-1 text-xs shrink-0 data-[state=active]:bg-cyan-600/50 data-[state=active]:text-white"
                       >
                         DA
                       </TabsTrigger>
                       <TabsTrigger 
                         value="dr" 
-                        className="px-3 py-1 text-xs data-[state=active]:bg-cyan-600/50 data-[state=active]:text-white"
+                        className="px-3 py-1 text-xs shrink-0 data-[state=active]:bg-cyan-600/50 data-[state=active]:text-white"
                       >
                         DR
                       </TabsTrigger>
                       {hasTrafficData && (
                         <TabsTrigger 
                           value="traffic" 
-                          className="px-3 py-1 text-xs data-[state=active]:bg-cyan-600/50 data-[state=active]:text-white"
+                          className="px-3 py-1 text-xs shrink-0 data-[state=active]:bg-cyan-600/50 data-[state=active]:text-white"
                         >
                           Traffic
                         </TabsTrigger>
                       )}
                       <TabsTrigger 
                         value="age" 
-                        className="px-3 py-1 text-xs data-[state=active]:bg-cyan-600/50 data-[state=active]:text-white"
+                        className="px-3 py-1 text-xs shrink-0 data-[state=active]:bg-cyan-600/50 data-[state=active]:text-white"
                       >
                         Age
                       </TabsTrigger>
@@ -483,8 +485,8 @@ export function TopDomainsSection() {
                   {activeTab === 'age' && 'Oldest Domains'}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
+              <CardContent className="pt-0 p-2 sm:p-4">
+                <div className={`space-y-3 pr-1 sm:pr-2`}>
                   {activeTab === 'da' && topDomains.da.map((domain, index) => renderDomainCard(domain, index))}
                   {activeTab === 'dr' && topDomains.dr.map((domain, index) => renderDomainCard(domain, index))}
                   {activeTab === 'traffic' && hasTrafficData && topDomains.traffic.map((domain, index) => renderDomainCard(domain, index))}
@@ -507,7 +509,7 @@ export function TopDomainsSection() {
           
           {/* Modal Content */}
           <div 
-            className={`relative bg-gradient-to-br from-cyan-950 to-gray-950 rounded-xl p-6 border border-cyan-800/50 max-w-4xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${isModalOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}
+            className={`relative bg-gradient-to-br from-cyan-950 to-gray-950  p-6 border border-cyan-800/50 max-w-4xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${isModalOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
@@ -549,7 +551,7 @@ export function TopDomainsSection() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div>
                     <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-                      <div className="w-1.5 h-4 bg-cyan-400 rounded-full mr-2"></div>
+                      <div className="w-1.5 h-4 bg-cyan-400 rounde d-full mr-2"></div>
                       Domain Metrics
                     </h3>
                     <div className="grid grid-cols-2 gap-4">
@@ -597,7 +599,7 @@ export function TopDomainsSection() {
                   </div>
                   
                   <div>
-                    <div className="bg-cyan-900/20 border border-cyan-800/50 rounded-xl p-6 mb-6">
+                    <div className="bg-cyan-900/20 border border-cyan-800/50  p-6 mb-6">
                       <h3 className="text-lg font-semibold text-white mb-4">Pricing Details</h3>
                       <div className="space-y-4">
                         <div className="flex justify-between items-center">
@@ -606,16 +608,14 @@ export function TopDomainsSection() {
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-gray-400">Discount</span>
-                          <span className="text-cyan-400">
-                            {Math.round((1 - selectedDomain.price / selectedDomain.Actualprice) * 100)}% OFF
-                          </span>
+                          <span className="text-cyan-400">{Math.round((1 - selectedDomain.price / selectedDomain.Actualprice) * 100)}% OFF</span>
                         </div>
                         <div className="h-px bg-cyan-800/50 my-2"></div>
                         <div className="flex justify-between items-center">
                           <span className="text-lg font-semibold text-white">Your Price</span>
                           <span className="text-3xl font-bold text-white">${selectedDomain.price}</span>
                         </div>
-                        <div className="flex space-x-3 mt-6">
+                        <div className="flex flex-col sm:flex-row gap-3 mt-6">
                           <Button 
                             className="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white"
                             onClick={() => handleAddToCart(selectedDomain)}
@@ -633,7 +633,7 @@ export function TopDomainsSection() {
                       </div>
                     </div>
                     
-                    <div className="bg-cyan-900/20 border border-cyan-800/50 rounded-xl p-6">
+                    <div className="bg-cyan-900/20 border border-cyan-800/50  p-6">
                       <h3 className="text-lg font-semibold text-white mb-4">Domain Tags</h3>
                       <div className="flex flex-wrap gap-2">
                         {selectedDomain.tags.map((tag) => (
@@ -706,7 +706,7 @@ const MetricCard = ({ title, value, change, max = 100, color = 'cyan' }: {
   const progress = Math.min(100, Math.max(0, (numericValue / max) * 100));
 
   return (
-    <div className={`${getColorClass()} p-3 rounded-lg border`}>
+    <div className={`${getColorClass()} p-3  border`}>
       <p className="text-xs text-cyan-300">{title}</p>
       <p className="text-xl font-bold text-white">{value}</p>
       {change !== undefined && (

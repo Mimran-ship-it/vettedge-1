@@ -71,7 +71,7 @@ export default function SignInPage() {
               alt="Vettedge Logo"
               width={55}
               height={55}
-              className="rounded-xl"
+              className="xl"
               priority
             />
           </div>

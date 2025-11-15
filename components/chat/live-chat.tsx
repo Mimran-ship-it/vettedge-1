@@ -115,7 +115,7 @@ export function LiveChat() {
       <div className="fixed bottom-4 right-4 z-50 flex items-end gap-2 overflow-hidden">
         <AnimatePresence>
           {showPopup && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} transition={{ duration: 0.4 }} className="text-white shadow-lg rounded-xl z-[999px] px-4 py-2 text-sm bg-[#33BDC7] backdrop-blur-sm">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} transition={{ duration: 0.4 }} className="text-white shadow-lg xl z-[999px] px-4 py-2 text-sm bg-[#33BDC7] backdrop-blur-sm">
               💬 Need help? Chat with us!
             </motion.div>
           )}
@@ -129,7 +129,7 @@ export function LiveChat() {
   return (
     <div className="fixed bottom-4 right-4 z-[999px] max-w-[calc(100vw-2rem)]">
       <Card className={`w-80 max-w-full shadow-xl transition-all duration-300 ${isMinimized ? "h-14" : "h-96"} sm:w-80 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700`}>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 cursor-pointer bg-[#33BDC7] text-white rounded-t-lg" onClick={() => setIsMinimized(!isMinimized)}>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 cursor-pointer bg-[#33BDC7] text-white t-lg" onClick={() => setIsMinimized(!isMinimized)}>
           <CardTitle className="text-sm font-medium flex items-center space-x-2">
             <MessageSquare className="h-4 w-4" />
             <span>Live Support</span>
@@ -158,7 +158,7 @@ export function LiveChat() {
               ) : (
                 messages.map((msg) => (
                   <div key={msg._id} className={`flex ${msg.senderRole === "customer" ? "justify-end" : "justify-start"}`}>
-                    <div className={`max-w-[75%] sm:max-w-xs px-3 py-2 rounded-lg text-sm ${msg.senderRole === "customer" ? "bg-[#33BDC7] text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100"} shadow-sm`}>
+                    <div className={`max-w-[75%] sm:max-w-xs px-3 py-2  text-sm ${msg.senderRole === "customer" ? "bg-[#33BDC7] text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100"} shadow-sm`}>
                       {msg.messageType === "image" ? (
                         <a href={msg.content} target="_blank" rel="noreferrer">
                           <img src={msg.content} alt="attachment" className="rounded max-h-60 w-auto object-contain" />

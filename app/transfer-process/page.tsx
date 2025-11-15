@@ -210,7 +210,7 @@ export default function TransferProcessPage() {
               <CardHeader className="bg-gradient-to-r from-[#33BDC7]/10 to-[#3BD17A]/10 dark:from-[#33BDC7]/20 dark:to-[#3BD17A]/20">
                 <div className="flex items-center justify-between flex-wrap gap-4">
                   <div className="flex items-center gap-3">
-                    <div className="p-3 rounded-full bg-[#33BDC7] text-white">
+                    <div className="p-3 full bg-[#33BDC7] text-white">
                       <Receipt className="h-6 w-6" />
                     </div>
                     <div>
@@ -282,7 +282,7 @@ export default function TransferProcessPage() {
                 </div>
 
                 {/* Billing Information */}
-                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+                <div className="bg-gray-50 dark:bg-gray-700/50  p-4">
                   <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-3">Billing Information</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                     <div>
@@ -335,7 +335,7 @@ export default function TransferProcessPage() {
                 </div>
 
                 {/* Important Note */}
-                <div className="mt-6 p-4 bg-[#33BDC7]/10 dark:bg-[#33BDC7]/20 rounded-lg border-l-4 border-[#33BDC7]">
+                <div className="mt-6 p-4 bg-[#33BDC7]/10 dark:bg-[#33BDC7]/20  border-l-4 border-[#33BDC7]">
                   <p className="text-sm text-gray-700 dark:text-gray-300">
                     <strong className="text-[#33BDC7]">⚡ Important:</strong> This contains important information about your purchase. 
                     Please keep it for your records and contact us via Live Chat or Contact Form to begin the transfer process.
@@ -445,7 +445,7 @@ export default function TransferProcessPage() {
               To begin the transfer process quickly, contact us via Live Chat or our Contact Form as soon as your payment is complete. Let us know:
             </p>
             
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-3xl mx-auto border border-gray-200 dark:border-gray-600 mb-8">
+            <div className="bg-white dark:bg-gray-800 xl p-6 max-w-3xl mx-auto border border-gray-200 dark:border-gray-600 mb-8">
               <ul className="space-y-3 text-left text-gray-600 dark:text-gray-300">
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-[#33BDC7] mr-2 mt-0.5 flex-shrink-0" />
@@ -464,7 +464,7 @@ export default function TransferProcessPage() {
             
             <div className="flex flex-col sm:flex-row justify-center gap-4">
              
-             <Link href='/contact'> <Button variant="outline" size="lg" className="rounded-full px-8 py-4 border-[#33BDC7] text-[#33BDC7] hover:bg-[#33BDC7]/10 font-semibold">
+             <Link href='/contact'> <Button variant="outline" size="lg" className="full px-8 py-4 border-[#33BDC7] text-[#33BDC7] hover:bg-[#33BDC7]/10 font-semibold">
                 Contact Form
               </Button>
               </Link>
@@ -503,9 +503,9 @@ export default function TransferProcessPage() {
                 variants={fadeUp}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="h-full hover:shadow-lg p-6 transition-all duration-300 border-2 hover:border-[#33BDC7] rounded-2xl flex flex-col dark:bg-gray-700 dark:border-gray-600">
+                <Card className="h-full hover:shadow-lg p-6 transition-all duration-300 border-2 hover:border-[#33BDC7] 2xl flex flex-col dark:bg-gray-700 dark:border-gray-600">
                   <CardHeader className="flex items-center space-x-4 pb-4">
-                    <div className="p-3 rounded-2xl bg-[#33BDC7]/10 dark:bg-[#33BDC7]/20 text-[#33BDC7]">
+                    <div className="p-3 2xl bg-[#33BDC7]/10 dark:bg-[#33BDC7]/20 text-[#33BDC7]">
                       <step.icon className="h-7 w-7" />
                     </div>
                     <CardTitle className="text-xl text-[#33BDC7]">{step.title}</CardTitle>

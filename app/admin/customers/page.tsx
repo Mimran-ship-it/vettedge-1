@@ -151,7 +151,7 @@ export default function AdminCustomersPage() {
                   {loading ? (
                     <div className="min-w-[800px] w-full space-y-2 p-4">
                       {[...Array(5)].map((_, index) => (
-                        <div key={index} className="grid grid-cols-5 gap-4 bg-muted rounded-md p-4 animate-pulse">
+                        <div key={index} className="grid grid-cols-5 gap-4 bg-muted  p-4 animate-pulse">
                           {Array.from({ length: 5 }).map((_, i) => (
                             <div key={i} className="h-4 bg-gray-300 rounded w-full" />
                           ))}
@@ -177,7 +177,7 @@ export default function AdminCustomersPage() {
                               <TableRow key={user._id}>
                                 <TableCell>
                                   <div className="flex items-center space-x-3">
-                                    <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                                    <div className="w-8 h-8 bg-muted full flex items-center justify-center">
                                       <User className="h-4 w-4" />
                                     </div>
                                     <div>
@@ -233,7 +233,7 @@ export default function AdminCustomersPage() {
                           <Card key={user._id}>
                             <CardHeader>
                               <div className="flex items-center space-x-3">
-                                <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
+                                <div className="w-10 h-10 bg-muted full flex items-center justify-center">
                                   <User className="h-5 w-5" />
                                 </div>
                                 <div>

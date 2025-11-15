@@ -70,14 +70,14 @@ export default function TestSocketPage() {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold mb-6">Socket Connection Test</h1>
         
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <div className="bg-white  shadow p-6 mb-6">
           <h2 className="text-lg font-semibold mb-2">Connection Status</h2>
           <div className={`p-4 rounded ${status.includes("✅") ? "bg-green-100 text-green-800" : status.includes("❌") ? "bg-red-100 text-red-800" : "bg-blue-100 text-blue-800"}`}>
             {status}
           </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white  shadow p-6">
           <h2 className="text-lg font-semibold mb-2">Logs</h2>
           <div className="bg-gray-900 text-green-400 p-4 rounded font-mono text-sm h-96 overflow-y-auto">
             {logs.map((log, index) => (

@@ -370,7 +370,7 @@ export default function DomainsPage() {
           {/* Sidebar */}
           <aside id="filtersSidebar" className="lg:col-span-3">
             <div className="lg:sticky lg:top-24 lg:self-start space-y-6">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 lg:p-5">
+              <div className="bg-white dark:bg-gray-800  shadow-sm border dark:border-gray-700 p-4 lg:p-5">
                 <div className="mb-4 flex items-center justify-between lg:hidden">
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Filters</h2>
                   <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)}>
@@ -387,7 +387,7 @@ export default function DomainsPage() {
                   />
                 </div>
               </div>
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 lg:p-5">
+              <div className="bg-white dark:bg-gray-800  shadow-sm border dark:border-gray-700 p-4 lg:p-5">
                 <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-3">Saved Filters</h3>
                 <SavedFiltersList 
                   onApplyFilter={(filters) => {
@@ -403,7 +403,7 @@ export default function DomainsPage() {
 
           {/* Main content */}
           <section className="lg:col-span-9">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6 mb-6">
+            <div className="bg-white dark:bg-gray-800  shadow-sm border dark:border-gray-700 p-6 mb-6">
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
@@ -417,7 +417,7 @@ export default function DomainsPage() {
                 {/* Sort By */}
                 <div className="flex flex-col sm:flex-row gap-2 sm:w-auto w-full">
                   <Select value={sortBy} onValueChange={handleSortChange}>
-                    <SelectTrigger className="w-full sm:w-fit h-10 px-4 py-2 inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                    <SelectTrigger className="w-full sm:w-fit h-10 px-4 py-2 inline-flex items-center justify-center  text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                       <ArrowUpDown className="h-4 w-4 mr-2" />
                       <SelectValue placeholder="Sort by" />
                     </SelectTrigger>
@@ -443,12 +443,12 @@ export default function DomainsPage() {
                   <span className="text-sm text-gray-600 mr-2">Active filters:</span>
                 )}
                 {activeFilters.type !== "all" && (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  <span className="inline-flex items-center px-2.5 py-0.5 full text-xs font-medium bg-blue-100 text-blue-800">
                     {activeFilters.type === "aged" ? "Aged Domains" : "Traffic Domains"}
                   </span>
                 )}
                 {activeFilters.isHot && (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                  <span className="inline-flex items-center px-2.5 py-0.5 full text-xs font-medium bg-orange-100 text-orange-800">
                     <Flame className="h-3 w-3 mr-1" /> Hot Deals
                   </span>
                 )}
@@ -467,7 +467,7 @@ export default function DomainsPage() {
             {loading ? (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[...Array(6)].map((_, i) => (
-                  <div key={i} className="bg-white dark:bg-gray-800 p-6 rounded-lg animate-pulse">
+                  <div key={i} className="bg-white dark:bg-gray-800 p-6  animate-pulse">
                     <div className="h-6 bg-gray-200 dark:bg-gray-700 w-3/4 mb-4 rounded"></div>
                     <div className="h-4 bg-gray-200 dark:bg-gray-700 w-1/2 mb-4 rounded"></div>
                     <div className="space-y-2">

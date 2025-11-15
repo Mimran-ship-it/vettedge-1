@@ -375,7 +375,7 @@ View full details:`;
             </div>
 
             {/* Overall Score Section */}
-            <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg p-3 border border-gray-200 dark:border-gray-600">
+            <div className="bg-gray-50 dark:bg-gray-700/30  p-3 border border-gray-200 dark:border-gray-600">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="h-5 w-5 text-[#33BDC7]" />
@@ -385,9 +385,9 @@ View full details:`;
                   <span className="text-lg font-bold text-gray-800 dark:text-gray-200">
                     {domain.metrics.score}
                   </span>
-                  <div className="relative w-16 h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                  <div className="relative w-16 h-2 bg-gray-200 dark:bg-gray-600 full overflow-hidden">
                     <div 
-                      className="absolute top-0 left-0 h-full bg-[#33BDC7] rounded-full"
+                      className="absolute top-0 left-0 h-full bg-[#33BDC7] full"
                       style={{ width: `${Math.min(100, domain.metrics.score)}%` }}
                     ></div>
                   </div>

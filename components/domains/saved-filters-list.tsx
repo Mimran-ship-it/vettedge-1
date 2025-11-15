@@ -171,7 +171,7 @@ export function SavedFiltersList({ onApplyFilter, currentFilters, refreshTrigger
             {savedFilters.map((filter) => (
               <div
                 key={filter._id}
-                className="group flex w-fit items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all cursor-pointer"
+                className="group flex w-fit items-center justify-between p-3  border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all cursor-pointer"
                 onClick={() => onApplyFilter(filter.filters)}
               >
                 <div className="flex-1 min-w-0">

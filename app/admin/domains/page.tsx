@@ -152,7 +152,7 @@ export default function AdminDomainsPage() {
                   {loading ? (
                     <div className="min-w-[800px] w-full space-y-2 p-4">
                       {[...Array(5)].map((_, index) => (
-                        <div key={index} className="grid grid-cols-6 gap-4 bg-muted rounded-md p-4 animate-pulse">
+                        <div key={index} className="grid grid-cols-6 gap-4 bg-muted  p-4 animate-pulse">
                           {Array.from({ length: 6 }).map((_, i) => (
                             <div key={i} className="h-4 bg-gray-300 rounded w-full" />
                           ))}

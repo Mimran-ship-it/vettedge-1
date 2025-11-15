@@ -72,7 +72,7 @@ export function HeroSection() {
 
   return (
     <section className="relative bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col overflow-hidden text-gray-800 dark:text-gray-100">
-      <div className="relative flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
+      <div className="relative flex-1 flex items-center justify-center px-4 sm:px-2 lg:px-8 py-12">
         <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-y-16 gap-x-10 items-center">
           
           {/* Left Content */}
@@ -112,7 +112,7 @@ export function HeroSection() {
                 <div className="relative">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 h-6 w-6" />
                   <Input
-                    placeholder="Search for your perfect domain... (e.g., tech, marketing, health)"
+                    placeholder="Search your domain... (e.g., tech, marketing, health)"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-12 h-14 text-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#33BDC7]"
@@ -124,7 +124,7 @@ export function HeroSection() {
                     size="lg"
                     className="w-full sm:w-auto flex-1 bg-[#38C172] hover:bg-[#30c97c] text-white font-semibold h-12 text-lg shadow hover:shadow-md transition-all duration-200"
                   >
-                    <Search className="h-5 w-5 mr-2" />
+                    <Search className="h-5 w-5 mr-2 py-2" />
                     Search Domains
                   </Button>
                   {/* <Button
@@ -148,13 +148,13 @@ export function HeroSection() {
 
           {/* Right Content */}
           <motion.div
-            className="lg:pl-8 px-4 sm:px-0"
+            className="lg:pl-8 px- sm:px-0"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
           >
             <Card className="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 shadow-xl hover:shadow-2xl   transition-all duration-300 transform hover:scale-[1.02]">
-              <CardContent className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8">
+              <CardContent className="p-4 sm:p-6 md:p-8 space-y-2 md:space-y-8">
                 
                 {/* Features */}
                 <motion.div
@@ -203,7 +203,7 @@ export function HeroSection() {
                       variants={fadeUp}
                       custom={i * 0.2}
                     >
-                      <div className={`w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br ${bg} rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-200`}>
+                      <div className={`w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br ${bg} xl sm:2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-200`}>
                         <Icon className={`h-5 w-5 sm:h-8 sm:w-8 ${color}`} />
                       </div>
                       <h4 className="font-semibold text-sm sm:text-base">{title}</h4>
@@ -213,39 +213,50 @@ export function HeroSection() {
                 </motion.div>
 
                  {/* Enhanced Live Metrics */}
-      <motion.div
-        className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-600 shadow-sm"
-        variants={fadeUp}
-        custom={0.8}
+    <motion.div
+  className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-4 sm:p-5 border border-gray-200 dark:border-gray-600 shadow-sm  "
+  variants={fadeUp}
+  custom={0.8}
+>
+  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-4 gap-2">
+    <h4 className="font-bold text-gray-700 dark:text-gray-200 text-sm sm:text-base flex items-center">
+      <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+      Live Domain Metrics Preview
+    </h4>
+    <span className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded">
+      Real-time
+    </span>
+  </div>
+
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    {[
+      { label: "Domain Authority:", value: "65", color: "text-green-600" },
+      { label: "Authority Links:", value: "4", color: "text-[#33BDC7]" },
+      { label: "Monthly Traffic:", value: "15K", color: "text-purple-500" },
+      { label: "Domain Age:", value: "5+ years", color: "text-orange-500" },
+    ].map((metric, index) => (
+      <div
+        key={index}
+        className="flex justify-between items-center bg-white dark:bg-gray-700/50 p-3 rounded-md"
       >
-        <div className="flex items-center justify-between mb-4">
-          <h4 className="font-bold text-gray-700 dark:text-gray-200 text-base flex items-center">
-            <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-            Live Domain Metrics Preview
-          </h4>
-          <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded">Real-time</span>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          {[
-            { label: "Domain Authority:", value: "65", color: "text-green-600" },
-            { label: "Authority Links:", value: "4", color: "text-[#33BDC7]" },
-            { label: "Monthly Traffic:", value: "15K", color: "text-purple-500" },
-            { label: "Domain Age:", value: "5+ years", color: "text-orange-500" }
-          ].map((metric, index) => (
-            <div key={index} className="flex justify-between items-center bg-white dark:bg-gray-700/50 p-2 rounded-lg">
-              <span className="text-gray-600 dark:text-gray-300 text-sm font-medium">{metric.label}</span>
-              <span className={`${metric.color} font-bold text-base`}>{metric.value}</span>
-            </div>
-          ))}
-        </div>
-      </motion.div>
+        <span className="text-gray-600 dark:text-gray-300 text-sm font-medium">
+          {metric.label}
+        </span>
+        <span className={`${metric.color} font-bold text-base`}>
+          {metric.value}
+        </span>
+      </div>
+    ))}
+  </div>
+</motion.div>
+
 
                 {/* CTA Button */}
                <motion.div variants={fadeUp} custom={1}>
   {!topDomain ? (
     <div className="flex flex-col items-center justify-center py-8">
       {/* Loader spinner */}
-      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#38C172] mb-3"></div>
+      <div className="animate-spin full h-8 w-8 border-t-2 border-b-2 border-[#38C172] mb-3"></div>
       <p className="text-sm text-gray-600 dark:text-gray-300">
         Fetching the most frequent domain...
       </p>

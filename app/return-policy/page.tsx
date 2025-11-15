@@ -98,10 +98,10 @@ export default function RefundPolicyPage() {
               variants={fadeUp}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="h-full hover:shadow-lg transition-all duration-300 border-2 hover:border-[#33BDC7] rounded-2xl dark:bg-gray-700 dark:border-gray-600">
+              <Card className="h-full hover:shadow-lg transition-all duration-300 border-2 hover:border-[#33BDC7] 2xl dark:bg-gray-700 dark:border-gray-600">
                 <CardContent className="pt-8 pb-6 px-6">
                   <div className="flex items-center mb-4">
-                    <div className="p-3 rounded-2xl bg-[#33BDC7]/10 dark:bg-[#33BDC7]/20 text-[#33BDC7] mr-4">
+                    <div className="p-3 2xl bg-[#33BDC7]/10 dark:bg-[#33BDC7]/20 text-[#33BDC7] mr-4">
                       <section.icon className="h-6 w-6" />
                     </div>
                     <h3 className="text-xl font-semibold text-[#33BDC7] dark:text-[#33BDC7]">
@@ -151,7 +151,7 @@ export default function RefundPolicyPage() {
             Contact us for personalized assistance.
           </p>
           <Link href="/contact">
-            <button className="px-8 py-4 rounded-full bg-[#33BDC7] hover:bg-[#2da7b0] text-white text-lg font-semibold shadow-md">
+            <button className="px-8 py-4 full bg-[#33BDC7] hover:bg-[#2da7b0] text-white text-lg font-semibold shadow-md">
               Contact Support
             </button>
           </Link>

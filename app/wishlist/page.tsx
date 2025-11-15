@@ -184,7 +184,7 @@ export default function WishlistPage() {
 
         {isLoading ? (
           <div className="text-center py-16">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-gray-300 mx-auto mb-4"></div>
+            <div className="animate-spin full h-12 w-12 border-b-2 border-gray-900 dark:border-gray-300 mx-auto mb-4"></div>
             <p className="text-gray-600 dark:text-gray-300">Loading your wishlist...</p>
           </div>
         ) : (
@@ -197,7 +197,7 @@ export default function WishlistPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
+                <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800  p-4">
                   <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                     <div className="flex items-start">
                       <AlertCircle className="h-5 w-5 text-orange-500 mt-0.5 mr-2" />

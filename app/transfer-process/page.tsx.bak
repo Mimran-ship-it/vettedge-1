@@ -174,7 +174,7 @@ export default function TransferProcessPage() {
               To begin the transfer process quickly, contact us via Live Chat or our Contact Form as soon as your payment is complete. Let us know:
             </p>
             
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-3xl mx-auto border border-gray-200 dark:border-gray-600 mb-8">
+            <div className="bg-white dark:bg-gray-800 xl p-6 max-w-3xl mx-auto border border-gray-200 dark:border-gray-600 mb-8">
               <ul className="space-y-3 text-left text-gray-600 dark:text-gray-300">
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-[#33BDC7] mr-2 mt-0.5 flex-shrink-0" />
@@ -193,7 +193,7 @@ export default function TransferProcessPage() {
             
             <div className="flex flex-col sm:flex-row justify-center gap-4">
              
-             <Link href='/contact'> <Button variant="outline" size="lg" className="rounded-full px-8 py-4 border-[#33BDC7] text-[#33BDC7] hover:bg-[#33BDC7]/10 font-semibold">
+             <Link href='/contact'> <Button variant="outline" size="lg" className="full px-8 py-4 border-[#33BDC7] text-[#33BDC7] hover:bg-[#33BDC7]/10 font-semibold">
                 Contact Form
               </Button>
               </Link>
@@ -232,9 +232,9 @@ export default function TransferProcessPage() {
                 variants={fadeUp}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="h-full hover:shadow-lg p-6 transition-all duration-300 border-2 hover:border-[#33BDC7] rounded-2xl flex flex-col dark:bg-gray-700 dark:border-gray-600">
+                <Card className="h-full hover:shadow-lg p-6 transition-all duration-300 border-2 hover:border-[#33BDC7] 2xl flex flex-col dark:bg-gray-700 dark:border-gray-600">
                   <CardHeader className="flex items-center space-x-4 pb-4">
-                    <div className="p-3 rounded-2xl bg-[#33BDC7]/10 dark:bg-[#33BDC7]/20 text-[#33BDC7]">
+                    <div className="p-3 2xl bg-[#33BDC7]/10 dark:bg-[#33BDC7]/20 text-[#33BDC7]">
                       <step.icon className="h-7 w-7" />
                     </div>
                     <CardTitle className="text-xl text-[#33BDC7]">{step.title}</CardTitle>

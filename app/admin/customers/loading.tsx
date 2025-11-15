@@ -35,7 +35,7 @@ export default function CustomersLoading() {
         <CardContent className="p-0">
           <div className="space-y-2 p-4">
             {[...Array(5)].map((_, index) => (
-              <div key={index} className="grid grid-cols-5 gap-4 bg-muted rounded-md p-4">
+              <div key={index} className="grid grid-cols-5 gap-4 bg-muted  p-4">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Skeleton key={i} className="h-4 w-full" />
                 ))}

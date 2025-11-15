@@ -102,9 +102,9 @@ export function TrustSection() {
     <section className="py-20 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
       {/* Decorative elements */}
       {/* <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-green-100 dark:bg-green-900/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-teal-100 dark:bg-teal-900/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-100 dark:bg-blue-900/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-green-100 dark:bg-green-900/20 full mix-blend-multiply dark:mix-blend-screen filter blur-xl opacity-70 animate-blob"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-teal-100 dark:bg-teal-900/20 full mix-blend-multiply dark:mix-blend-screen filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-100 dark:bg-blue-900/20 full mix-blend-multiply dark:mix-blend-screen filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
       </div> */}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -113,21 +113,14 @@ export function TrustSection() {
 
         <div className="flex flex-col lg:flex-row gap-8 mb-20">
           {/* Trust Indicators - Left side on large screens */}
-<<<<<<< HEAD
           <div className="lg:w-2/5 lg:pt-22">
-            <div className="bg-gradient-to-br from-[#33BDC7]/5 to-[#38C172]/5 dark:from-gray-800 dark:to-gray-900 rounded-3xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
+            <div className="bg-gradient-to-br from-[#33BDC7]/5 to-[#38C172]/5 dark:from-gray-800 dark:to-gray-900 3xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
               
-=======
-          <div className="lg:w-2/5">
-            <div className="bg-gradient-to-br from-[#33BDC7]/5 to-[#38C172]/5 dark:from-gray-800 dark:to-gray-900 rounded-3xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-8 text-center">Why Trust Us</h2>
-
->>>>>>> 5aa055346bbe1f3ac7457e03b285ef3e681de3f7
               <div className="space-y-6">
                 {trustIndicators.map((indicator, index) => (
                   <motion.div
                     key={index}
-                    className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-md border border-gray-100 dark:border-gray-700 flex items-center"
+                    className="bg-white dark:bg-gray-800 2xl p-5 shadow-md border border-gray-100 dark:border-gray-700 flex items-center"
                     initial="hidden"
                     whileInView="show"
                     viewport={{ once: true }}
@@ -139,7 +132,7 @@ export function TrustSection() {
                     }}
                     transition={{ duration: 0.3 }}
                   >
-                    <div className="w-14 h-14 bg-gradient-to-br from-[#33BDC7] to-[#2caab4] rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                    <div className="w-14 h-14 bg-gradient-to-br from-[#33BDC7] to-[#2caab4] xl flex items-center justify-center shadow-lg flex-shrink-0">
                       <indicator.icon className="h-6 w-6 text-white" />
                     </div>
                     <div className="ml-4">
@@ -154,15 +147,7 @@ export function TrustSection() {
                 ))}
               </div>
 
-<<<<<<< HEAD
               
-=======
-              <div className="mt-8 text-center">
-                <button className="px-6 py-3 bg-gradient-to-r from-[#33BDC7] to-[#38C172] text-white font-medium rounded-full hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-                  Learn More
-                </button>
-              </div>
->>>>>>> 5aa055346bbe1f3ac7457e03b285ef3e681de3f7
             </div>
           </div>
 
@@ -183,7 +168,7 @@ export function TrustSection() {
                   <Card className="h-full bg-white dark:bg-gray-800 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group">
                     <div className="h-2 bg-gradient-to-r from-[#38C172] to-[#33BDC7] w-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
                     <CardContent className="pt-6 pb-4 px-4 sm:pt-8 sm:pb-6 sm:px-6 flex flex-col h-full">
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-[#38C172]/10 to-[#33BDC7]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 group-hover:from-[#38C172]/20 group-hover:to-[#33BDC7]/20 transition-all duration-300">
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-[#38C172]/10 to-[#33BDC7]/10 2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 group-hover:from-[#38C172]/20 group-hover:to-[#33BDC7]/20 transition-all duration-300">
                         <feature.icon className="h-6 w-6 sm:h-7 sm:w-7 text-[#38C172] group-hover:text-[#33BDC7] transition-colors duration-300" />
                       </div>
                       <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-white mb-2 sm:mb-3 group-hover:text-[#33BDC7] transition-colors duration-300">
@@ -213,7 +198,7 @@ export function TrustSection() {
           <Card className="inline-block border-0 shadow-xl bg-gradient-to-r from-[#38C172]/10 to-[#33BDC7]/10 dark:from-[#38C172]/20 dark:to-[#33BDC7]/20 backdrop-blur-sm">
             <CardContent className="pt-6 pb-6 px-8">
               <div className="flex items-center space-x-4">
-                <div className="w-14 h-14 bg-[#38C172] rounded-xl flex items-center justify-center shadow-lg">
+                <div className="w-14 h-14 bg-[#38C172] xl flex items-center justify-center shadow-lg">
                   <Headset className="h-7 w-7 text-white" />
                 </div>
                 <div className="text-left">
@@ -232,7 +217,7 @@ export function TrustSection() {
           <Card className="inline-block border-0 shadow-xl bg-gradient-to-r from-[#38C172]/10 to-[#33BDC7]/10 dark:from-[#38C172]/20 dark:to-[#33BDC7]/20 backdrop-blur-sm">
             <CardContent className="pt-6 pb-6 px-8">
               <div className="flex items-center space-x-4">
-                <div className="w-14 h-14 bg-[#33BDC7] rounded-xl flex items-center justify-center shadow-lg">
+                <div className="w-14 h-14 bg-[#33BDC7] xl flex items-center justify-center shadow-lg">
                   <Lock className="h-7 w-7 text-white" />
                 </div>
                 <div className="text-left">
@@ -251,7 +236,7 @@ export function TrustSection() {
           <Card className="inline-block border-0 shadow-xl bg-gradient-to-r from-[#38C172]/10 to-[#33BDC7]/10 dark:from-[#38C172]/20 dark:to-[#33BDC7]/20 backdrop-blur-sm">
             <CardContent className="pt-6 pb-6 px-8">
               <div className="flex items-center space-x-4">
-                <div className="w-14 h-14 bg-[#33BDC7] rounded-xl flex items-center justify-center shadow-lg">
+                <div className="w-14 h-14 bg-[#33BDC7] xl flex items-center justify-center shadow-lg">
                   <CreditCard className="h-7 w-7 text-white" />
                 </div>
                 <div className="text-left">

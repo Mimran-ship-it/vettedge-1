@@ -343,7 +343,7 @@ export function CheckoutForm() {
                 <button
                   disabled={loading}
                   onClick={handlePaymentSubmit}
-                  className="w-full bg-black dark:bg-white dark:text-black text-white py-3 rounded-lg mt-4 disabled:opacity-50"
+                  className="w-full bg-black dark:bg-white dark:text-black text-white py-3  mt-4 disabled:opacity-50"
                 >
                   {loading ? "Processing..." : "Pay Now (Stripe)"}
                 </button>
@@ -354,7 +354,7 @@ export function CheckoutForm() {
                 <button
                   disabled={loading}
                   onClick={handlePayPalSubmit}
-                  className="w-full bg-[#ffc439] text-black py-3 rounded-lg mt-3 disabled:opacity-50"
+                  className="w-full bg-[#ffc439] text-black py-3  mt-3 disabled:opacity-50"
                 >
                   {loading ? "Processing..." : "Pay with PayPal"}
                 </button>
@@ -362,7 +362,7 @@ export function CheckoutForm() {
               
               {/* Show a message if form is not complete */}
               {!isFormValid && (
-                <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-200 rounded-lg text-sm">
+                <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-200  text-sm">
                   Please complete all required fields to proceed with payment.
                 </div>
               )}
