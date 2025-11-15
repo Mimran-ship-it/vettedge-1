@@ -160,7 +160,7 @@ export function OrderSummary({ paymentMethod }: OrderSummaryProps) {
         </div>
 
         {/* Demo Notice */}
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+        <div className="bg-yellow-50 border border-yellow-200  p-3">
           <div className="text-sm text-yellow-800">
             <strong>Demo Mode:</strong> This is a demonstration. No real payment will be processed.
           </div>

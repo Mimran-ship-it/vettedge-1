@@ -169,13 +169,13 @@ export default function DomainDetailsPage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <Header />
         <main className="max-w-7xl mx-auto px-4 pb-8 pt-24 animate-pulse">
-          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-6"></div>
+          <div className="h-8 bg-gray-200 dark:bg-gray-700  w-1/3 mb-6"></div>
           <div className="grid lg:grid-cols-2 gap-8">
-            <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            <div className="h-64 bg-gray-200 dark:bg-gray-700 "></div>
             <div className="space-y-4">
-              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-              <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
+              <div className="h-8 bg-gray-200 dark:bg-gray-700  w-3/4"></div>
+              <div className="h-4 bg-gray-200 dark:bg-gray-700  w-1/2"></div>
+              <div className="h-32 bg-gray-200 dark:bg-gray-700 "></div>
             </div>
           </div>
         </main>
@@ -189,7 +189,7 @@ export default function DomainDetailsPage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <Header />
         <main className="max-w-7xl mx-auto px-4 pb-8  pt-24 text-center">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 max-w-2xl mx-auto">
+          <div className="bg-white dark:bg-gray-800  shadow-xl p-8 max-w-2xl mx-auto">
             <div className="text-red-500 mx-auto w-16 h-16 mb-4">
               <Info size={64} />
             </div>
@@ -215,7 +215,7 @@ export default function DomainDetailsPage() {
       <Header />
       <main className="max-w-7xl mx-auto px-2 sm:px-16 pb-8 pt-24">
         {/* Hero Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mb-8 border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800  shadow-xl p-6 mb-8 border border-gray-200 dark:border-gray-700">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
@@ -250,7 +250,7 @@ export default function DomainDetailsPage() {
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Column - Image and Description */}
             <div className="lg:col-span-2 space-y-6">
-              <div className="relative rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-md">
+              <div className="relative xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-md">
                 {domain.isSold && (
                   <div className="absolute inset-0 bg-black/70 flex items-center justify-center z-10">
                     <Badge variant="destructive" className="text-lg px-6 py-3">SOLD</Badge>
@@ -270,35 +270,35 @@ export default function DomainDetailsPage() {
               </div>
 
               {/* Tabs for additional information */}
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full rounded-lg">
-                <TabsList className="grid w-full grid-cols-3 gap-2 ">
-                  <TabsTrigger value="overview" className="data-[state=active]:bg-blue-600 bg-muted  data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white">Overview</TabsTrigger>
-                  <TabsTrigger  value="metrics" className="data-[state=active]:bg-green-600 bg-muted data-[state=active]:text-white dark:data-[state=active]:bg-green-600 dark:data-[state=active]:text-white">SEO Metrics</TabsTrigger>
-                  <TabsTrigger value="history" className="data-[stnpate=active]:bg-purple-600 bg-muted data-[state=active]:text-black dark:data-[state=active]:bg-purple-600 dark:data-[state=active]:text-white">History</TabsTrigger>
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full  ">
+                <TabsList className="grid w-full grid-cols-3  ">
+                  <TabsTrigger value="overview" className="data-[state=active]:bg-blue-600  text-black bg-blue-600 dark:data-[state=active]:text-white">Overview</TabsTrigger>
+                  <TabsTrigger  value="metrics" className="data-[state=active]:bg-green-600  text-black  bg-green-600 dark:data-[state=active]:text-white">SEO Metrics</TabsTrigger>
+                  <TabsTrigger value="history" className="data-[state=active]:bg-purple-600 text-black  bg-purple-600 dark:data-[state=active]:text-white">History</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="overview" className="mt-4 ">
-                  <Card className="dark:bg-gray-700  rounded-lg dark:border-gray-600">
+                  <Card className="dark:bg-gray-700   dark:border-gray-600">
                     <CardHeader>
                       <CardTitle className="flex items-center mt-2  gap-2 dark:text-white"><Info className="h-5 w-5" /> Domain Information</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 rounded-lg">
+                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 ">
                           <Globe className="h-5 w-5 text-blue-500" />
                           <div>
                             <p className="text-sm text-gray-500 dark:text-gray-300">Domain Type</p>
                             <p className="font-medium dark:text-white">{domain.type === "traffic" ? "High Traffic Domain" : "Aged Domain"}</p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 rounded-lg">
+                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 ">
                           <Calendar className="h-5 w-5 text-green-500" />
                           <div>
                             <p className="text-sm text-gray-500 dark:text-gray-300">Domain Age</p>
                             <p className="font-medium dark:text-white">{domain.metrics.age || 'N/A'} years</p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 rounded-lg">
+                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 ">
                           <Clock className="h-5 w-5 text-purple-500" />
                           <div>
                             <p className="text-sm text-gray-500 dark:text-gray-300">Industry</p>
@@ -319,7 +319,7 @@ export default function DomainDetailsPage() {
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 rounded-lg">
+                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 ">
                           <Users className="h-5 w-5 text-orange-500" />
                           <div>
                             <p className="text-sm text-gray-500 dark:text-gray-300">Language</p>
@@ -332,7 +332,7 @@ export default function DomainDetailsPage() {
                 </TabsContent>
 
                 <TabsContent value="metrics" className="mt-4">
-                  <Card className="rounded-lg dark:bg-gray-700 dark:border-gray-600">
+                  <Card className=" dark:bg-gray-700 dark:border-gray-600">
                     <CardHeader>
                       <CardTitle className="flex items-center  mt-2 gap-2 dark:text-white"><BarChart3 className="h-5 w-5" /> SEO Metrics</CardTitle>
                     </CardHeader>
@@ -380,19 +380,19 @@ export default function DomainDetailsPage() {
                 </TabsContent>
 
                 <TabsContent value="history" className="mt-4">
-                  <Card className="rounded-lg dark:bg-gray-700 dark:border-gray-600">
+                  <Card className=" dark:bg-gray-700 dark:border-gray-600">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2  mt-2 dark:text-white"><Clock className="h-5 w-5" /> Domain History</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        <div className="p-4 bg-gray-50 dark:bg-gray-600 rounded-lg">
+                        <div className="p-4 bg-gray-50 dark:bg-gray-600 ">
                           <h3 className="font-medium text-gray-900 dark:text-white mb-2">Registration Details</h3>
                           <p className="text-sm text-gray-600 dark:text-gray-300">This domain was first registered in {domain.metrics.year} and has been maintained for {domain.metrics.age} years.</p>
                         </div>
 
                         {domain.metrics.authorityLinksCount > 0 && (
-                          <div className="p-4 bg-gray-50 dark:bg-gray-600 rounded-lg">
+                          <div className="p-4 bg-gray-50 dark:bg-gray-600 ">
                             <h3 className="font-medium text-gray-900 dark:text-white mb-2">Authority Backlinks</h3>
 
                             {/* If links exist, show details */}
@@ -424,10 +424,10 @@ export default function DomainDetailsPage() {
                                         href={href}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-600 hover:border-blue-300 dark:hover:border-blue-500 transition-colors group"
+                                        className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700  hover:bg-blue-50 dark:hover:bg-gray-600 hover:border-blue-300 dark:hover:border-blue-500 transition-colors group"
                                       >
                                         <div className="flex items-center">
-                                          <div className="flex-shrink-0 w-10 h-10 rounded-md bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/50 transition-colors">
+                                          <div className="flex-shrink-0 w-10 h-10  bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/50 transition-colors">
                                             <ExternalLink className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                                           </div>
                                           <div>
@@ -455,7 +455,7 @@ export default function DomainDetailsPage() {
                         )}
 
 
-                        <div className="p-4 bg-gray-50 dark:bg-gray-600 rounded-lg">
+                        <div className="p-4 bg-gray-50 dark:bg-gray-600 ">
                           <h3 className="font-medium text-gray-900 dark:text-white mb-2">Domain Value</h3>
                           <p className="text-sm text-gray-600 dark:text-gray-300">Based on its age, authority metrics, and traffic, this domain represents a valuable digital asset with strong SEO potential.</p>
                         </div>
@@ -468,7 +468,7 @@ export default function DomainDetailsPage() {
 
             {/* Right Column - Pricing and Actions */}
             <div className="space-y-6">
-              <div className=" dark:bg-gray-700 rounded-2xl p-6 shadow-lg border border-blue-100 dark:border-gray-600">
+              <div className=" dark:bg-gray-700  p-6 shadow-lg border border-blue-100 dark:border-gray-600">
                 <div className="text-center mb-6">
                   <div className="text-sm text-gray-500 dark:text-gray-300 mb-1">Current Price</div>
                   <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">${domain.price.toLocaleString()}</div>
@@ -529,7 +529,7 @@ export default function DomainDetailsPage() {
               </div>
 
               {/* Additional Information */}
-              <Card className="dark:bg-gray-700 rounded-lg dark:border-gray-600">
+              <Card className="dark:bg-gray-700  dark:border-gray-600">
                 <CardHeader>
                   <CardTitle className="flex items-center mt-4 gap-2 dark:text-white"><FileText className="h-5 w-5 " /> Additional Information</CardTitle>
                 </CardHeader>
@@ -561,7 +561,7 @@ export default function DomainDetailsPage() {
         {/* Additional Sections */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
           {domain?.metrics.monthlyTraffic && (
-            <Card className="border-blue-100 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20 rounded-lg">
+            <Card className="border-blue-100 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20 ">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-blue-800 dark:text-blue-300"><Eye className="h-5 w-5" /> Traffic Insights</CardTitle>
               </CardHeader>
@@ -576,7 +576,7 @@ export default function DomainDetailsPage() {
               </CardContent>
             </Card>
           )}
-          <Card className="border-purple-100 bg-purple-50 dark:border-purple-800 dark:bg-purple-900/20 rounded-lg">
+          <Card className="border-purple-100 bg-purple-50 dark:border-purple-800 dark:bg-purple-900/20 ">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 p-2 text-purple-800 dark:text-purple-300"><ThumbsUp className="h-5 w-5" /> Overall Score</CardTitle>
             </CardHeader>
@@ -584,15 +584,15 @@ export default function DomainDetailsPage() {
               <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                 Domain Score: {domain.metrics.score || 'N/A'}/100
               </p>
-              <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5">
+              <div className="w-full bg-gray-200 dark:bg-gray-600  h-2.5">
                 <div
-                  className="bg-purple-600 h-2.5 rounded-full"
+                  className="bg-purple-600 h-2.5 "
                   style={{ width: `${(domain.metrics.score || 0) / 100 * 100}%` }}
                 ></div>
               </div>
             </CardContent>
           </Card>
-          {domain.type == 'aged' && <Card className="border-orange-100 bg-orange-50 dark:border-orange-800 dark:bg-orange-900/20 rounded-lg">
+          {domain.type == 'aged' && <Card className="border-orange-100 bg-orange-50 dark:border-orange-800 dark:bg-orange-900/20 ">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 p-2 text-orange-800 dark:text-orange-300"><Calendar className="h-5 w-5" /> Age & History</CardTitle>
             </CardHeader>
@@ -673,7 +673,7 @@ export default function DomainDetailsPage() {
 
         {/* Show message if no similar domains are available */}
         {similarDomains.length === 0 && domain && domain.tags && domain.tags.length > 0 && (
-          <div className="mt-12 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8 text-center">
+          <div className="mt-12 bg-white dark:bg-gray-800 xl shadow-sm p-8 text-center">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No Similar Domains Available</h3>
             <p className="text-gray-600 dark:text-gray-300 mb-6">
               We couldn't find any available domains similar to {domain.name} at the moment.
@@ -706,10 +706,10 @@ const MetricCard = ({ title, value, icon, color }: {
   }[color] || "bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600"
 
   return (
-    <div className={`p-4 rounded-lg border ${colorClasses} transition-all hover:shadow-md dark:hover:shadow-lg`}>
+    <div className={`p-4  border ${colorClasses} transition-all hover:shadow-md dark:hover:shadow-lg`}>
       <div className="flex items-center justify-between mb-2">
         <div className="text-gray-500 dark:text-gray-400">{icon}</div>
-        <div className="text-xs font-medium bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 px-2 py-1 rounded">{title}</div>
+        <div className="text-xs font-medium bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 px-2 py-1 ">{title}</div>
       </div>
       <div className="text-2xl font-bold dark:text-white">{value}</div>
     </div>

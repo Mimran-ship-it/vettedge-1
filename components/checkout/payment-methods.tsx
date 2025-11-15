@@ -99,7 +99,7 @@ export function PaymentMethods({
                 <Label htmlFor="cardName">Cardholder Name</Label>
                 <input
                   id="cardName"
-                  className="border rounded-md w-full p-2 bg-white"
+                  className="border  w-full p-2 bg-white"
                   placeholder="John Doe"
                   value={cardholderName}
                   onChange={(e) => setCardholderName(e.target.value)}
@@ -109,7 +109,7 @@ export function PaymentMethods({
 
               <div>
                 <Label>Card Details</Label>
-                <div className="border rounded-md p-3 bg-white">
+                <div className="border  p-3 bg-white">
                   <CardElement
                     options={{
                       hidePostalCode: true,

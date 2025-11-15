@@ -152,7 +152,7 @@ export default function HelpCenter() {
                 <CardContent>
                   <div className="space-y-3">
                     {category.articles.map((article, articleIndex) => (
-                      <div key={articleIndex} className="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg cursor-pointer transition-colors">
+                      <div key={articleIndex} className="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-800  cursor-pointer transition-colors">
                         <FileText className="w-4 h-4 text-[#38C172]" />
                         <span className="text-gray-700 dark:text-gray-300">{article}</span>
                         <ArrowRight className="w-4 h-4 text-gray-400 ml-auto" />

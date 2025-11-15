@@ -175,7 +175,7 @@ export default function SEOAnalysis() {
               <CardTitle className="text-[#33BDC7]">SEO Analysis Packages</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="p-4 border border-[#33BDC7]/20 rounded-lg">
+              <div className="p-4 border border-[#33BDC7]/20 ">
                 <div className="flex justify-between items-center mb-2">
                   <h4 className="font-semibold text-[#33BDC7]">Basic Analysis</h4>
                   <span className="text-2xl font-bold">$49</span>
@@ -188,7 +188,7 @@ export default function SEOAnalysis() {
                 </Button>
               </div>
 
-              <div className="p-4 border-2 border-[#38C172] rounded-lg relative">
+              <div className="p-4 border-2 border-[#38C172]  relative">
                 <Badge className="absolute -top-2 left-4 bg-[#38C172] text-white">Popular</Badge>
                 <div className="flex justify-between items-center mb-2">
                   <h4 className="font-semibold text-[#38C172]">Professional</h4>
@@ -202,7 +202,7 @@ export default function SEOAnalysis() {
                 </Button>
               </div>
 
-              <div className="p-4 border border-blue-500/20 rounded-lg">
+              <div className="p-4 border border-blue-500/20 ">
                 <div className="flex justify-between items-center mb-2">
                   <h4 className="font-semibold text-blue-500">Enterprise</h4>
                   <span className="text-2xl font-bold">$299</span>

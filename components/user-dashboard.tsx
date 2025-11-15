@@ -126,7 +126,7 @@ export function UserDashboard() {
           <div className="flex items-center space-x-2">
             <button
               onClick={() => router.back()}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              className="p-2  hover:bg-gray-100 transition-colors"
             >
               <ArrowLeft className="h-6 w-6 text-gray-700" />
             </button>
@@ -194,7 +194,7 @@ export function UserDashboard() {
         <div className="flex items-center space-x-2">
           <button
             onClick={() => router.back()}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="p-2  hover:bg-gray-100 transition-colors"
           >
             <ArrowLeft className="h-6 w-6 text-gray-700" />
           </button>
@@ -339,7 +339,7 @@ export function UserDashboard() {
             <div className="space-y-4">
               {recentPurchases.length > 0 ? (
                 recentPurchases.map((purchase) => (
-                  <div key={purchase.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border rounded-lg">
+                  <div key={purchase.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border ">
                     <div className="space-y-2 mb-2 sm:mb-0">
                       <div className="flex items-center space-x-2">
                         <p className="text-sm font-medium leading-none">{purchase.domain}</p>

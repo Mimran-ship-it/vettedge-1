@@ -482,7 +482,7 @@ export function AdminChatInterface() {
                       }`}
                     >
                       <div
-                        className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                        className={`max-w-xs lg:max-w-md px-4 py-2  ${
                           message.senderRole === "admin"
                             ? "bg-blue-600 dark:bg-blue-700 text-white"
                             : "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700"
@@ -493,13 +493,13 @@ export function AdminChatInterface() {
                             <img 
                               src={message.content} 
                               alt="Shared image" 
-                              className="max-w-48 max-h-48 h-auto rounded-md cursor-pointer object-cover"
+                              className="max-w-48 max-h-48 h-auto  cursor-pointer object-cover"
                               onClick={() => window.open(message.content, '_blank')}
                             />
                           </div>
                         ) : message.messageType === "file" ? (
                           <div className="space-y-2">
-                            <div className={`flex items-center gap-2 p-2 rounded-md ${
+                            <div className={`flex items-center gap-2 p-2  ${
                               message.senderRole === "admin" 
                                 ? "bg-white/10" 
                                 : "bg-gray-100 dark:bg-gray-700"

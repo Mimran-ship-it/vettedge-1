@@ -97,7 +97,7 @@ export default function CartPage() {
         {/* Unavailable Items Alert */}
         {unavailableItems.length > 0 && (
           <motion.div
-            className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4"
+            className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800  p-4"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -145,7 +145,7 @@ export default function CartPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white mx-auto mb-4"></div>
+            <div className="animate-spin full h-12 w-12 border-b-2 border-gray-900 dark:border-white mx-auto mb-4"></div>
             <p className="text-gray-600 dark:text-gray-300">Checking cart items availability...</p>
           </motion.div>
         ) : (

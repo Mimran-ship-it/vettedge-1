@@ -111,7 +111,7 @@ export function ContactSection() {
                     <Card className="border-l-4 hover:shadow-lg transition-shadow bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600" style={{ borderLeftColor: "#33BDC7" }}>
                       <CardContent className="pt-6">
                         <div className="flex items-center space-x-4">
-                          <div className="w-12 h-12 border border-[#3BD17A] rounded-xl flex items-center justify-center">
+                          <div className="w-12 h-12 border border-[#3BD17A] xl flex items-center justify-center">
                             <method.icon className="h-6 w-6 text-[#3BD17A]" />
                           </div>
                           <div>
@@ -169,7 +169,7 @@ export function ContactSection() {
                 <Card className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600">
                   <CardContent className="pt-6">
                     <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 border border-[#38C172] rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 border border-[#38C172] xl flex items-center justify-center">
                         <Clock className="h-6 w-6 text-[#38C172]" />
                       </div>
                       <div>

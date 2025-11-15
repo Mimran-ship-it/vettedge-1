@@ -239,7 +239,7 @@ export default function AddBlogPage() {
             required
           />
                     {formData.content && (
-                      <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                      <div className="mt-4 p-4 bg-gray-50 ">
                         <h4 className="font-semibold mb-2">Content Preview:</h4>
                         <div className="prose prose-sm max-w-none">
                           {parseBlogContent(formData.content)}
@@ -279,7 +279,7 @@ export default function AddBlogPage() {
           </div>
           <div className="flex gap-2 flex-wrap">
             {tags.map((tag) => (
-                        <span key={tag} className="bg-gray-200 px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                        <span key={tag} className="bg-gray-200 px-3 py-1 full text-sm flex items-center gap-2">
                 {tag}
                           <button type="button" className="text-red-500" onClick={() => removeTag(tag)}>×</button>
               </span>

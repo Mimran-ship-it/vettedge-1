@@ -98,7 +98,7 @@ export function Header() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md"
+            className="z-50 min-w-[8rem] overflow-hidden  border bg-popover p-1 text-popover-foreground shadow-md"
           >
             {user?.role != "admin" &&    
               <DropdownMenuItem asChild>
@@ -266,7 +266,7 @@ export function Header() {
               <div className="p-5">
                 <div className="flex justify-between items-center mb-6">
                   <Link href="/" className="flex items-center ">
-                    <div className="w-16 h-16 rounded-lg overflow-hidden flex items-center justify-center">
+                    <div className="w-16 h-16  overflow-hidden flex items-center justify-center">
                       <Image
                         src="/shihlogo.png"
                         alt="Vettedge Logo"
@@ -289,7 +289,7 @@ export function Header() {
                 </div>
                 
                 {/* Tablet Navigation - Visible only in tablet view */}
-                <nav className="hidden md:flex flex-col space-y-4 mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <nav className="hidden md:flex flex-col space-y-4 mb-6 p-4 bg-gray-50 dark:bg-gray-800 ">
                   <Link href="/domains" className={linkClass("/domains")} onClick={() => setIsMenuOpen(false)}>
                     Buy Domains
                   </Link>

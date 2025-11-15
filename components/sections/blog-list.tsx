@@ -28,13 +28,13 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
           }}
           transition={{ duration: 0.4, ease: "easeOut" }}
         >
-          <Card className="overflow-hidden bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col h-full hover:shadow-md dark:hover:shadow-lg transition-shadow">
+          <Card className="overflow-hidden bg-white dark:bg-gray-800  shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col h-full hover:shadow-md dark:hover:shadow-lg transition-shadow">
             {/* Blog Image */}
             <div className="w-full h-48 flex items-center justify-center overflow-hidden">
               <motion.img
                 src={post.image || "/domaininvesting.png"}
                 alt={post.title}
-                className="w-full h-full object-cover rounded-t-lg transition-transform duration-300 group-hover:scale-105"
+                className="w-full h-full object-cover t-lg transition-transform duration-300 group-hover:scale-105"
                 whileHover={{ scale: 1.05 }}
               />
             </div>

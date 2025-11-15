@@ -34,7 +34,7 @@ export function AdminNotificationBell() {
       >
         <Bell className="h-5 w-5" />
         {unreadCount > 0 && (
-          <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-red-500">
+          <Badge className="absolute -top-2 -right-2 h-5 w-5 full p-0 flex items-center justify-center text-xs bg-red-500">
             {unreadCount > 99 ? '99+' : unreadCount}
           </Badge>
         )}
@@ -102,7 +102,7 @@ export function AdminNotificationBell() {
                                 {notification.title}
                               </p>
                               {!notification.isRead && (
-                                <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0" />
+                                <div className="w-2 h-2 bg-blue-600 full flex-shrink-0" />
                               )}
                             </div>
                             <p className={`text-sm mt-1 ${

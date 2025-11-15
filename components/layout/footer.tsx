@@ -39,7 +39,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="pt-8 z-50 bg-white  dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+    <footer className="pt-8 z-[999999] bg-white  dark:bg-gray-900 text-gray-800 dark:text-gray-200">
       <div className="relative z-0 w-11/12 sm:w-5/6 mx-auto ps-0 pe-3 pt-10 pb-2 rounded-xl">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* Logo & Social */}
@@ -50,7 +50,7 @@ export function Footer() {
                 alt="Vettedge Logo"
                 width={55}
                 height={60}
-                className="rounded-lg scale-125"
+                className=" scale-125"
               />
               <h2 className="text-xl text-black dark:text-white transition-all duration-300 tracking-wide">
                 Vettedge.domains
@@ -138,7 +138,7 @@ export function Footer() {
             {/* Trustpilot Review Section */}
             <div>
               <h4 className="text-sm font-semibold mb-2 text-[#33BDC7] dark:text-[#33BDC7]/80">Your Feedback</h4>
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-1 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-lg">
+              <div className="bg-white dark:bg-gray-800  shadow-md p-1 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-lg">
                 <div
                   data-locale="en-GB"
                   data-template-id="56278e9abfbbba0bdcd568bc"
@@ -152,7 +152,7 @@ export function Footer() {
                     href="https://uk.trustpilot.com/review/vettedge.domains"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full h-full px-2 py-2 bg-[#33BDC7] hover:bg-[#00B67A] text-white font-medium rounded-md transition-colors duration-300"
+                    className="flex items-center justify-center gap-2 w-full h-full px-2 py-2 bg-[#33BDC7] hover:bg-[#00B67A] text-white font-medium  transition-colors duration-300"
                   >
                     <Star className="w-4 h-4 fill-current" />
                     <span className="text-xs">Review us on Trustpilot</span>

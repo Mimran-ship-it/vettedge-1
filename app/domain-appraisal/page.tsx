@@ -163,7 +163,7 @@ export default function DomainAppraisal() {
             {process.map((item, index) => (
               <Card key={index} className="text-center border-[#38C172]/20">
                 <CardContent className="p-6">
-                  <div className="w-12 h-12 bg-[#38C172] text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
+                  <div className="w-12 h-12 bg-[#38C172] text-white full flex items-center justify-center text-xl font-bold mx-auto mb-4">
                     {item.step}
                   </div>
                   <h3 className="text-lg font-semibold mb-2 text-[#38C172]">{item.title}</h3>

@@ -21,7 +21,7 @@ export default function NotFound() {
           <div className="text-8xl md:text-9xl font-bold bg-gradient-to-r from-[#33BDC7] to-[#38C172] bg-clip-text text-transparent">
             404
           </div>
-          <div className="w-24 h-1 bg-gradient-to-r from-[#33BDC7] to-[#38C172] mx-auto mt-4 rounded-full"></div>
+          <div className="w-24 h-1 bg-gradient-to-r from-[#33BDC7] to-[#38C172] mx-auto mt-4 full"></div>
         </div>
 
         {/* Error Message */}
@@ -67,7 +67,7 @@ export default function NotFound() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {suggestions.map((suggestion, index) => (
                 <Link key={index} href={suggestion.href}>
-                  <div className="p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-[#33BDC7]/40 hover:bg-[#33BDC7]/5 transition-colors cursor-pointer">
+                  <div className="p-3 border border-gray-200 dark:border-gray-700  hover:border-[#33BDC7]/40 hover:bg-[#33BDC7]/5 transition-colors cursor-pointer">
                     <div className="flex items-center gap-2 text-sm">
                       <span className="text-[#38C172]">{suggestion.icon}</span>
                       <span className="text-gray-700 dark:text-gray-300">{suggestion.title}</span>
@@ -80,7 +80,7 @@ export default function NotFound() {
         </Card>
 
         {/* Fun Domain Fact */}
-        <div className="mt-8 p-4 bg-gradient-to-r from-[#33BDC7]/10 to-[#38C172]/10 rounded-lg border border-[#33BDC7]/20">
+        <div className="mt-8 p-4 bg-gradient-to-r from-[#33BDC7]/10 to-[#38C172]/10  border border-[#33BDC7]/20">
           <p className="text-sm text-gray-600 dark:text-gray-400">
             <strong className="text-[#33BDC7]">Fun Fact:</strong> Did you know that the first domain name ever registered was symbolics.com on March 15, 1985? 
             It's still active today! Just like how we help you find premium domains that stand the test of time.

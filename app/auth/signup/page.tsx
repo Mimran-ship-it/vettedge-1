@@ -124,7 +124,7 @@ export default function SignUpPage() {
               width={55}
               height={55}
               priority
-              className="rounded-xl"
+              className="xl"
             />
           </div>
           <CardTitle className="text-2xl font-bold dark:text-white">Create your account</CardTitle>

@@ -166,7 +166,7 @@ export default function ContactPage() {
               >
                 <Card className="text-center hover:shadow-lg transition-all duration-300 border-2 hover:border-[#33BDC7] dark:bg-gray-700 dark:border-gray-600">
                   <CardContent className="pt-8 pb-6">
-                    <div className="w-16 h-16 border border-[#4DD184] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 border border-[#4DD184] 2xl flex items-center justify-center mx-auto mb-4">
                       <method.icon className="h-8 w-8 text-[#4DD184]" />
                     </div>
                     <h3 className="text-lg md:text-xl font-semibold text-[#33BDC7] dark:text-[#33BDC7] mb-2">{method.title}</h3>

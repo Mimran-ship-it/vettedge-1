@@ -350,12 +350,12 @@ export default function EditDomainPage() {
                                   <img
                                     src={img}
                                     alt={`Domain image ${i + 1}`}
-                                    className="w-20 h-20 object-cover border rounded-md"
+                                    className="w-20 h-20 object-cover border "
                                   />
                                   <button
                                     type="button"
                                     onClick={() => handleRemoveImage(i)}
-                                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition"
+                                    className="absolute -top-2 -right-2 bg-red-500 text-white full p-1 opacity-0 group-hover:opacity-100 transition"
                                     title="Remove Image"
                                   >
                                     <X className="h-3 w-3" />
@@ -444,7 +444,7 @@ export default function EditDomainPage() {
                 <Button type="submit" disabled={loading}>
                   {loading ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      <div className="animate-spin full h-4 w-4 border-b-2 border-white mr-2"></div>
                       Updating...
                     </>
                   ) : (

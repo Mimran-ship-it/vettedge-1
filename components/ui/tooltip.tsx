@@ -45,7 +45,7 @@ function TooltipContent({
         {...props}
         className={cn(
           // ✅ Sharp, visible in both themes
-          "z-50 w-max max-w-xs rounded-md px-3 py-1.5 text-xs font-medium",
+          "z-50 w-max max-w-xs  px-3 py-1.5 text-xs font-medium",
           "bg-gray-900 text-black dark:bg-gray-900 dark:text-white",
           "light:bg-white light:text-gray-900 border border-gray-300 dark:border-gray-700 shadow-lg",
           // ✅ No scroll, no blur

@@ -285,7 +285,7 @@ export default function AdminOrdersPage() {
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="px-3 py-2 border border-input bg-background rounded-md text-sm"
+                    className="px-3 py-2 border border-input bg-background  text-sm"
                   >
                     <option value="all">All Payment Status</option>
                     <option value="pending">Pending</option>
@@ -296,7 +296,7 @@ export default function AdminOrdersPage() {
                   <select
                     value={domainTransferFilter}
                     onChange={(e) => setDomainTransferFilter(e.target.value)}
-                    className="px-3 py-2 border border-input bg-background rounded-md text-sm"
+                    className="px-3 py-2 border border-input bg-background  text-sm"
                   >
                     <option value="all">All Domain Transfers</option>
                     <option value="pending">Pending</option>
@@ -314,7 +314,7 @@ export default function AdminOrdersPage() {
                   {loading ? (
                     <div className="min-w-[800px] w-full space-y-2 p-4">
                       {[...Array(5)].map((_, index) => (
-                        <div key={index} className="grid grid-cols-9 gap-4 bg-muted rounded-md p-4 animate-pulse">
+                        <div key={index} className="grid grid-cols-9 gap-4 bg-muted  p-4 animate-pulse">
                           {Array.from({ length: 9 }).map((_, i) => (
                             <div key={i} className="h-4 bg-gray-300 rounded w-full" />
                           ))}
@@ -465,7 +465,7 @@ export default function AdminOrdersPage() {
                                             <h3 className="text-sm font-medium text-muted-foreground mb-2">Order Items</h3>
                                             <div className="space-y-3">
                                               {order.items.map((item) => (
-                                                <div key={item._id} className="flex justify-between items-center p-3 border rounded-md">
+                                                <div key={item._id} className="flex justify-between items-center p-3 border ">
                                                   <div>
                                                     <p className="font-medium">{item.name}</p>
                                                     <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
@@ -612,7 +612,7 @@ export default function AdminOrdersPage() {
                                           <h3 className="text-sm font-medium text-muted-foreground mb-2">Order Items</h3>
                                           <div className="space-y-3">
                                             {order.items.map((item) => (
-                                              <div key={item._id} className="flex justify-between items-center p-3 border rounded-md">
+                                              <div key={item._id} className="flex justify-between items-center p-3 border ">
                                                 <div>
                                                   <p className="font-medium">{item.name}</p>
                                                   <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>

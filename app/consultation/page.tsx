@@ -164,7 +164,7 @@ export default function FreeConsultation() {
                     Budget Range
                   </label>
                   <select 
-                    className="w-full p-2 border border-[#33BDC7]/20 rounded-md focus:border-[#33BDC7] bg-white dark:bg-gray-800"
+                    className="w-full p-2 border border-[#33BDC7]/20  focus:border-[#33BDC7] bg-white dark:bg-gray-800"
                     value={formData.budget}
                     onChange={(e) => handleInputChange("budget", e.target.value)}
                   >
@@ -181,7 +181,7 @@ export default function FreeConsultation() {
                     Preferred Time
                   </label>
                   <select 
-                    className="w-full p-2 border border-[#33BDC7]/20 rounded-md focus:border-[#33BDC7] bg-white dark:bg-gray-800"
+                    className="w-full p-2 border border-[#33BDC7]/20  focus:border-[#33BDC7] bg-white dark:bg-gray-800"
                     value={formData.preferredTime}
                     onChange={(e) => handleInputChange("preferredTime", e.target.value)}
                   >
@@ -263,7 +263,7 @@ export default function FreeConsultation() {
           <CardContent>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
               {topics.map((topic, index) => (
-                <div key={index} className="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div key={index} className="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-800 ">
                   <CheckCircle className="w-4 h-4 text-[#38C172] flex-shrink-0" />
                   <span className="text-sm text-gray-700 dark:text-gray-300">{topic}</span>
                 </div>
@@ -281,7 +281,7 @@ export default function FreeConsultation() {
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-[#33BDC7] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                  <div className="w-6 h-6 bg-[#33BDC7] text-white full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
                     1
                   </div>
                   <div>
@@ -290,7 +290,7 @@ export default function FreeConsultation() {
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-[#33BDC7] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                  <div className="w-6 h-6 bg-[#33BDC7] text-white full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
                     2
                   </div>
                   <div>
@@ -299,7 +299,7 @@ export default function FreeConsultation() {
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-[#33BDC7] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                  <div className="w-6 h-6 bg-[#33BDC7] text-white full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
                     3
                   </div>
                   <div>
@@ -317,17 +317,17 @@ export default function FreeConsultation() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div className="p-4 bg-gray-50 dark:bg-gray-800 ">
                   <h4 className="font-semibold text-[#33BDC7] mb-1">Sarah Johnson</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Senior Domain Strategist</p>
                   <p className="text-xs text-gray-500">12+ years in domain investing, $50M+ in sales</p>
                 </div>
-                <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div className="p-4 bg-gray-50 dark:bg-gray-800 ">
                   <h4 className="font-semibold text-[#33BDC7] mb-1">Michael Chen</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">SEO Domain Specialist</p>
                   <p className="text-xs text-gray-500">Former Google engineer, domain SEO expert</p>
                 </div>
-                <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div className="p-4 bg-gray-50 dark:bg-gray-800 ">
                   <h4 className="font-semibold text-[#33BDC7] mb-1">Lisa Rodriguez</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Brand Protection Expert</p>
                   <p className="text-xs text-gray-500">Fortune 500 brand consulting experience</p>

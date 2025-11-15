@@ -211,7 +211,7 @@ export default function VettingProcessPage() {
               >
                 <Card className="text-center hover:shadow-lg hover:scale-[1.02] transition-all duration-300 dark:bg-gray-700 dark:border-gray-600">
                   <CardContent className="pt-6">
-                    <div className="w-16 h-16 border border-[#38C172] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 border border-[#38C172] 2xl flex items-center justify-center mx-auto mb-4">
                       <metric.icon className="h-8 w-8 text-[#38C172]" />
                     </div>
                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{metric.title}</h3>
@@ -261,7 +261,7 @@ export default function VettingProcessPage() {
                 
                 {/* Icon - Hidden on mobile */}
                 <div className="flex-shrink-0 hidden sm:flex">
-                  <div className="w-16 h-16 border border-[#38C172] rounded-2xl flex items-center justify-center">
+                  <div className="w-16 h-16 border border-[#38C172] 2xl flex items-center justify-center">
                     <step.icon className="h-8 w-8 text-[#38C172]" />
                   </div>
                 </div>
@@ -326,7 +326,7 @@ export default function VettingProcessPage() {
               <div className="grid md:grid-cols-2 gap-4">
                 {rejectionReasons.map((reason, index) => (
                   <div key={index} className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-red-500 full"></div>
                     <span className="text-gray-700 dark:text-gray-300">{reason}</span>
                   </div>
                 ))}
@@ -394,7 +394,7 @@ export default function VettingProcessPage() {
           className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
         >
           <div className="space-y-8">
-            <div className="w-20 h-20 border-[#38C172] border rounded-2xl flex items-center justify-center mx-auto">
+            <div className="w-20 h-20 border-[#38C172] border 2xl flex items-center justify-center mx-auto">
               <Award className="h-10 w-10 text-[#38C172]" />
             </div>
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">

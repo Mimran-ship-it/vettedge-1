@@ -135,7 +135,7 @@ export default function AboutPage() {
               >
                 <Card className="text-center p-6 hover:shadow-lg transition-shadow border border-[#33BDC7] dark:bg-gray-800 dark:border-gray-600 h-full flex flex-col">
                   <CardContent className="pt-6 flex-1 flex flex-col">
-                    <div className="w-16 h-16 border border-[#4dd184] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 border border-[#4dd184] 2xl flex items-center justify-center mx-auto mb-4">
                       <value.icon className="h-8 w-8 text-[#4dd184]" />
                     </div>
                     <h3 className="text-xl font-semibold text-[#33BDC7] mb-3">{value.title}</h3>
@@ -154,7 +154,7 @@ export default function AboutPage() {
             {statsData.map((stat, index) => (
               <motion.div
                 key={index}
-                className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm text-center"
+                className="bg-white dark:bg-gray-800 p-6 xl shadow-sm text-center"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}

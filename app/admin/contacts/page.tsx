@@ -201,7 +201,7 @@ export default function ContactsPage() {
                         {contacts.filter(c => c.status === "new").length}
                       </p>
                     </div>
-                    <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
+                    <div className="w-3 h-3 bg-blue-600 full"></div>
                   </div>
                 </CardContent>
               </Card>
@@ -214,7 +214,7 @@ export default function ContactsPage() {
                         {contacts.filter(c => c.status === "read" || c.status === "replied").length}
                       </p>
                     </div>
-                    <div className="w-3 h-3 bg-yellow-600 rounded-full"></div>
+                    <div className="w-3 h-3 bg-yellow-600 full"></div>
                   </div>
                 </CardContent>
               </Card>
@@ -227,7 +227,7 @@ export default function ContactsPage() {
                         {contacts.filter(c => c.status === "resolved").length}
                       </p>
                     </div>
-                    <div className="w-3 h-3 bg-green-600 rounded-full"></div>
+                    <div className="w-3 h-3 bg-green-600 full"></div>
                   </div>
                 </CardContent>
               </Card>
@@ -288,7 +288,7 @@ export default function ContactsPage() {
                     {contacts.map((contact) => (
                       <div
                         key={contact._id}
-                        className="border rounded-lg p-4 hover:bg-muted/50 transition-colors"
+                        className="border  p-4 hover:bg-muted/50 transition-colors"
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex-1">

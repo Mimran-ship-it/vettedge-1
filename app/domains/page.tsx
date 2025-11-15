@@ -465,7 +465,7 @@ export default function DomainsPage() {
 
                 <div className="flex flex-col sm:flex-row gap-2 sm:w-auto w-full">
                   <Select value={sortBy} onValueChange={handleSortChange}>
-                    <SelectTrigger className="w-full sm:w-fit h-10 px-4 py-2 inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                    <SelectTrigger className="w-full sm:w-fit h-10 px-4 py-2 inline-flex items-center justify-center  text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                       <ArrowUpDown className="h-4 w-4 mr-2" />
                       <SelectValue placeholder="Sort by" />
                     </SelectTrigger>
@@ -495,12 +495,12 @@ export default function DomainsPage() {
                   <span className="text-sm text-gray-600 mr-2">Active filters:</span>
                 )}
                 {activeFilters.type !== "all" && (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  <span className="inline-flex items-center px-2.5 py-0.5 full text-xs font-medium bg-blue-100 text-blue-800">
                     {activeFilters.type === "aged" ? "Aged Domains" : "Traffic Domains"}
                   </span>
                 )}
                 {activeFilters.isHot && (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                  <span className="inline-flex items-center px-2.5 py-0.5 full text-xs font-medium bg-orange-100 text-orange-800">
                     <Flame className="h-3 w-3 mr-1" /> Hot Deals
                   </span>
                 )}

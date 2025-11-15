@@ -126,8 +126,8 @@ export function DomainsShowcase() {
     <section className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute top-20 right-10 w-64 h-64 bg-green-100 dark:bg-green-900/10 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30"></div>
-        <div className="absolute bottom-10 left-10 w-64 h-64 bg-teal-100 dark:bg-teal-900/10 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30"></div>
+        <div className="absolute top-20 right-10 w-64 h-64 bg-green-100 dark:bg-green-900/10 full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30"></div>
+        <div className="absolute bottom-10 left-10 w-64 h-64 bg-teal-100 dark:bg-teal-900/10 full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -143,7 +143,7 @@ export function DomainsShowcase() {
             <motion.div key={tab} variants={fadeInUp}>
               <Button
                 variant={active === tab ? "default" : "outline"}
-                className={`px-6 py-3 rounded-full flex items-center gap-2 transition-all duration-300 ${
+                className={`px-6 py-3 full flex items-center gap-2 transition-all duration-300 ${
                   active === tab 
                     ? "bg-[#33BDC7] text-white shadow-lg hover:shadow-xl" 
                     : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -169,7 +169,7 @@ export function DomainsShowcase() {
           viewport={{ once: true }}
           variants={fadeInUp}
         >
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-[#38C172]/10 to-[#33BDC7]/10 mb-6">
+          <div className="inline-flex items-center justify-center w-16 h-16 full bg-gradient-to-r from-[#38C172]/10 to-[#33BDC7]/10 mb-6">
             <div className="text-[#33BDC7]">
               {meta.icon}
             </div>
@@ -222,7 +222,7 @@ export function DomainsShowcase() {
             viewport={{ once: true }}
             variants={fadeInUp}
           >
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-800 mb-6">
+            <div className="inline-flex items-center justify-center w-20 h-20 full bg-gray-100 dark:bg-gray-800 mb-6">
               <div className="text-gray-400">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -249,7 +249,7 @@ export function DomainsShowcase() {
               {/* Arrows */}
               <button
                 aria-label="Previous"
-                className="absolute -left-3 sm:-left-4 lg:-left-24   top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-2 lg:p-4 shadow hover:shadow-lg disabled:opacity-40"
+                className="absolute -left-3 sm:-left-4 lg:-left-24   top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 full p-2 lg:p-4 shadow hover:shadow-lg disabled:opacity-40"
                 onClick={() => setCurrentIndex((i) => Math.max(0, i - 1))}
                 disabled={currentIndex === 0}
               >
@@ -257,7 +257,7 @@ export function DomainsShowcase() {
               </button>
               <button
                 aria-label="Next"
-                className="absolute -right-3 sm:-right-4 lg:-right-24 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-2 lg:p-4 shadow hover:shadow-lg disabled:opacity-40"
+                className="absolute -right-3 sm:-right-4 lg:-right-24 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 full p-2 lg:p-4 shadow hover:shadow-lg disabled:opacity-40"
                 onClick={() => setCurrentIndex((i) => Math.min(Math.max(0, filtered.length - itemsPerView), i + 1))}
                 disabled={currentIndex >= Math.max(0, filtered.length - itemsPerView)}
               >
@@ -297,7 +297,7 @@ export function DomainsShowcase() {
             >
               <Button 
                 size="lg" 
-                className="px-8 py-3 rounded-full bg-[#33BDC7] text-white hover:shadow-lg transition-all duration-300"
+                className="px-8 py-3 full bg-[#33BDC7] text-white hover:shadow-lg transition-all duration-300"
                 asChild
               >
                 <Link href={meta.viewAllHref}>View All {meta.title}</Link>

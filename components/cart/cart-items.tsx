@@ -72,7 +72,7 @@ export function CartItems({ items, onRemoveItem }: CartItemsProps) {
               
               {/* Sold Item Notice */}
               {item.isSold && (
-                <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20  border border-red-200 dark:border-red-800">
                   <div className="flex items-center text-red-800 dark:text-red-200">
                     <AlertCircle className="h-4 w-4 mr-2 flex-shrink-0" />
                     <span className="text-sm font-medium">This domain has been sold and is no longer available for purchase.</span>
@@ -82,7 +82,7 @@ export function CartItems({ items, onRemoveItem }: CartItemsProps) {
               
               {/* Domain Metrics */}
               {item.domain?.metrics && (
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 p-4 bg-gray-50 dark:bg-gray-700 ">
                   <div className="flex items-center space-x-2 text-sm">
                     <TrendingUp className="h-4 w-4 text-green-500 flex-shrink-0" />
                     <div>

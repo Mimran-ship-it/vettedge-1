@@ -357,7 +357,7 @@ export default function ContactForm({
           >
             {isSubmitting ? (
               <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                <div className="w-4 h-4 border-2 border-white border-t-transparent full animate-spin mr-2" />
                 Sending Message...
               </>
             ) : (

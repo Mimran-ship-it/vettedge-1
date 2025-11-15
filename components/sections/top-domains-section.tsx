@@ -447,15 +447,15 @@ export function TopDomainsSection() {
           ) : (
             <>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div className="bg-cyan-900/30 p-3 rounded-lg">
+                <div className="bg-cyan-900/30 p-3 ">
                   <p className="text-xs text-cyan-300">Trust Flow</p>
                   <p className="text-xl font-bold text-white">{selectedDomain.metrics.trustFlow || 'N/A'}</p>
                 </div>
-                <div className="bg-cyan-900/30 p-3 rounded-lg">
+                <div className="bg-cyan-900/30 p-3 ">
                   <p className="text-xs text-cyan-300">Citation Flow</p>
                   <p className="text-xl font-bold text-white">{selectedDomain.metrics.citationFlow || 'N/A'}</p>
                 </div>
-                <div className="bg-cyan-900/30 p-3 rounded-lg">
+                <div className="bg-cyan-900/30 p-3 ">
                   <p className="text-xs text-cyan-300">Organic Traffic</p>
                   <p className="text-xl font-bold text-white">
                     {selectedDomain.metrics.monthlyTraffic ? selectedDomain.metrics.monthlyTraffic.toLocaleString() : 'N/A'}
@@ -496,8 +496,8 @@ export function TopDomainsSection() {
             <p className="mt-2 text-gray-400">Discover our premium domains with detailed metrics</p>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Skeleton className="h-96 rounded-xl bg-cyan-900/30" />
-            <Skeleton className="h-96 rounded-xl bg-cyan-900/30" />
+            <Skeleton className="h-96  bg-cyan-900/30" />
+            <Skeleton className="h-96  bg-cyan-900/30" />
           </div>
         </div>
       </section>
@@ -673,7 +673,7 @@ export function TopDomainsSection() {
           <div className={`absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300 ${isModalOpen ? 'opacity-100' : 'opacity-0'}`}></div>
           
           <div 
-            className={`relative bg-gradient-to-br from-cyan-950 to-gray-950 rounded-xl p-6 border border-cyan-800/50 max-w-4xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${isModalOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}
+            className={`relative bg-gradient-to-br from-cyan-950 to-gray-950  p-6 border border-cyan-800/50 max-w-4xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${isModalOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}
             onClick={(e) => e.stopPropagation()}
           >
             <button 
@@ -714,7 +714,7 @@ export function TopDomainsSection() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div>
                     <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-                      <div className="w-1.5 h-4 bg-cyan-400 rounded-full mr-2"></div>
+                      <div className="w-1.5 h-4 bg-cyan-400 rounde d-full mr-2"></div>
                       Domain Metrics
                     </h3>
                     <div className="grid grid-cols-2 gap-4">
@@ -800,7 +800,7 @@ export function TopDomainsSection() {
                   </div>
                   
                   <div>
-                    <div className="bg-cyan-900/20 border border-cyan-800/50 rounded-xl p-6 mb-6">
+                    <div className="bg-cyan-900/20 border border-cyan-800/50  p-6 mb-6">
                       <h3 className="text-lg font-semibold text-white mb-4">Pricing Details</h3>
                       <div className="space-y-4">
                         <div className="flex justify-between items-center">
@@ -809,16 +809,14 @@ export function TopDomainsSection() {
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-gray-400">Discount</span>
-                          <span className="text-cyan-400">
-                            {Math.round((1 - selectedDomain.price / selectedDomain.Actualprice) * 100)}% OFF
-                          </span>
+                          <span className="text-cyan-400">{Math.round((1 - selectedDomain.price / selectedDomain.Actualprice) * 100)}% OFF</span>
                         </div>
                         <div className="h-px bg-cyan-800/50 my-2"></div>
                         <div className="flex justify-between items-center">
                           <span className="text-lg font-semibold text-white">Your Price</span>
                           <span className="text-3xl font-bold text-white">${selectedDomain.price}</span>
                         </div>
-                        <div className="flex space-x-3 mt-6">
+                        <div className="flex flex-col sm:flex-row gap-3 mt-6">
                           <Button 
                             className="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white"
                             onClick={() => handleAddToCart(selectedDomain)}
@@ -836,7 +834,7 @@ export function TopDomainsSection() {
                       </div>
                     </div>
                     
-                    <div className="bg-cyan-900/20 border border-cyan-800/50 rounded-xl p-6">
+                    <div className="bg-cyan-900/20 border border-cyan-800/50  p-6">
                       <h3 className="text-lg font-semibold text-white mb-4">Domain Tags</h3>
                       <div className="flex flex-wrap gap-2">
                         {selectedDomain.tags.map((tag) => (

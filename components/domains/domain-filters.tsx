@@ -398,30 +398,30 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
         <Label className="font-medium text-gray-700 dark:text-gray-300">Selected</Label>
         <div className="flex flex-wrap gap-2">
           {selectedTlds.map((tld) => (
-            <Button key={tld} size="sm" variant="secondary" className="rounded-full"
+            <Button key={tld} size="sm" variant="secondary" className="full"
               onClick={() => handleTldChange(tld, false)}>
               {tld}
             </Button>
           ))}
           {selectedTags.map((tag) => (
-            <Button key={tag} size="sm" variant="secondary" className="rounded-full capitalize"
+            <Button key={tag} size="sm" variant="secondary" className="full capitalize"
               onClick={() => handleTagChange(tag, false)}>
               {tag}
             </Button>
           ))}
           {isHot && (
-            <Button size="sm" variant="secondary" className="rounded-full" onClick={handleHotDealToggle}>
+            <Button size="sm" variant="secondary" className="full" onClick={handleHotDealToggle}>
               Hot Deal
             </Button>
           )}
           {availability !== "all" && (
-            <Button size="sm" variant="secondary" className="rounded-full"
+            <Button size="sm" variant="secondary" className="full"
               onClick={() => handleAvailabilityChange("all", true)}>
               {availability}
             </Button>
           )}
           {type !== "all" && (
-            <Button size="sm" variant="secondary" className="rounded-full"
+            <Button size="sm" variant="secondary" className="full"
               onClick={() => handleTypeChange("all", true)}>
               {type}
             </Button>
@@ -537,7 +537,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
         {/* Availability */}
         <div className="space-y-3">
           <Label className="font-medium text-gray-700 dark:text-gray-300">Availability</Label>
-          <div className="space-y-2 dark:bg-gray-800 p-2 rounded-md">
+          <div className="space-y-2 dark:bg-gray-800 p-2 ">
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="availability-all"
