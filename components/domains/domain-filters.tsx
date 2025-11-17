@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
-import { Input } from "@/components/ui/input" 
-import { Flame, Save } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Flame, Save, X } from "lucide-react"
 import { set } from "mongoose"
 import { useAuth } from "@/hooks/use-auth"
 import { useToast } from "@/hooks/use-toast"
@@ -43,13 +43,14 @@ interface DomainFiltersProps {
   currentFilters: ActiveFilters
   onFilterSaved?: () => void // Callback when filter is saved
   tldCounts?: Record<string, number> // Count of domains per TLD
-} 
+  onCloseSidebar?: () => void
+}
 
-export function DomainFilters({ onFilterChange, availableTags, currentFilters, onFilterSaved, tldCounts = {} }: DomainFiltersProps) {
+export function DomainFilters({ onFilterChange, availableTags, currentFilters, onFilterSaved, tldCounts = {}, onCloseSidebar }: DomainFiltersProps) {
   const searchParams = useSearchParams()
   const firstMount = useRef(true)
   const urlParamsSet = useRef<{ type?: boolean; isHot?: boolean }>({})
-  
+
   const [priceRange, setPriceRange] = useState<[number, number]>(currentFilters.priceRange)
   const [selectedTlds, setSelectedTlds] = useState<string[]>(currentFilters.tlds)
   const [availability, setAvailability] = useState<"all" | "available" | "sold">(currentFilters.availability)
@@ -60,27 +61,27 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
   const [scoresRange, setscoresRange] = useState<[number, number] | undefined>(currentFilters.scoresRange)
   const [trustFlowRange, setTrustFlowRange] = useState<[number, number]>(currentFilters.trustFlowRange)
   const [citationFlowRange, setCitationFlowRange] = useState<[number, number]>(currentFilters.citationFlowRange)
-  
+
   const [monthlyTrafficMin, setMonthlyTrafficMin] = useState<number | null>(currentFilters.monthlyTrafficMin)
   const [ageMin, setAgeMin] = useState<number | null>(currentFilters.ageMin)
   const [referringDomainsMin, setReferringDomainsMin] = useState<number | null>(currentFilters.referringDomainsMin)
   const [authorityLinksMin, setAuthorityLinksMin] = useState<number | null>(currentFilters.authorityLinksMin)
-  
+
   const [isHot, setIsHot] = useState<boolean>(currentFilters.isHot)
-  
+
   const [tlds, setTlds] = useState<string[]>([])
   const [tldsLoading, setTldsLoading] = useState(true)
   const [tldCountsState, setTldCountsState] = useState<Record<string, number>>({})
   const [tldQuery, setTldQuery] = useState("")
   const [tagQuery, setTagQuery] = useState("")
-  
+
   // Save filter state
   const [showSaveDialog, setShowSaveDialog] = useState(false)
   const [filterName, setFilterName] = useState("")
   const [saving, setSaving] = useState(false)
   const { user } = useAuth()
   const { toast } = useToast()
-  
+
   // Update TLD counts when props change
   useEffect(() => {
     if (tldCounts && Object.keys(tldCounts).length > 0) {
@@ -117,13 +118,13 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
   // Handle URL parameters on first mount
   useEffect(() => {
     if (!firstMount.current) return
-    
+
     const aged = searchParams?.get('aged') === 'true'
     const traffic = searchParams?.get('traffic') === 'true'
     const isHot = searchParams?.get('isHot') === 'true'
-    
+
     let filtersToApply: Partial<ActiveFilters> = {}
-    
+
     if (aged) {
       setType("aged")
       urlParamsSet.current.type = true
@@ -139,14 +140,14 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
       urlParamsSet.current.isHot = true
       filtersToApply.isHot = true
     }
-    
+
     if (Object.keys(filtersToApply).length > 0) {
       applyFilters(filtersToApply)
     }
-    
+
     firstMount.current = false
   }, [searchParams])
-  
+
   // Update state when currentFilters prop changes
   useEffect(() => {
     setPriceRange(currentFilters.priceRange)
@@ -169,7 +170,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
       setIsHot(currentFilters.isHot)
     }
   }, [currentFilters])
-  
+
   const handleTldChange = (tld: string, checked: boolean) => {
     const newTlds = checked
       ? [...selectedTlds, tld]
@@ -177,7 +178,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
     setSelectedTlds(newTlds)
     applyFilters({ tlds: newTlds })
   }
-  
+
   const handleTagChange = (tag: string, checked: boolean) => {
     const newTags = checked
       ? [...selectedTags, tag]
@@ -185,27 +186,27 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
     setSelectedTags(newTags)
     applyFilters({ tags: newTags })
   }
-  
+
   const handleAvailabilityChange = (value: "all" | "available" | "sold", checked: boolean) => {
     if (checked) {
       setAvailability(value)
       applyFilters({ availability: value })
     }
   }
-  
+
   const handleTypeChange = (value: "all" | "aged" | "traffic", checked: boolean) => {
     if (checked) {
       setType(value)
       applyFilters({ type: value })
     }
   }
-  
+
   const handleHotDealToggle = () => {
     const newIsHot = !isHot
     setIsHot(newIsHot)
     applyFilters({ isHot: newIsHot })
-  } 
-  
+  }
+
   const applyFilters = (overrides = {}) => {
     const filters: ActiveFilters = {
       priceRange,
@@ -227,7 +228,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
     }
     onFilterChange(filters)
   }
-  
+
   const clearFilters = () => {
     const defaultFilterValues: ActiveFilters = {
       priceRange: [0, 100000],
@@ -237,7 +238,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
       tags: [],
       domainRankRange: [0, 100],
       domainAuthorityRange: [0, 100],
-      scoresRange: [0,100],
+      scoresRange: [0, 100],
       trustFlowRange: [0, 100],
       citationFlowRange: [0, 100],
       monthlyTrafficMin: null,
@@ -246,7 +247,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
       authorityLinksMin: null,
       isHot: false
     }
-    
+
     setPriceRange(defaultFilterValues.priceRange)
     setSelectedTlds(defaultFilterValues.tlds)
     setAvailability(defaultFilterValues.availability)
@@ -262,14 +263,14 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
     setReferringDomainsMin(defaultFilterValues.referringDomainsMin)
     setAuthorityLinksMin(defaultFilterValues.authorityLinksMin)
     setIsHot(defaultFilterValues.isHot)
-    
+
     urlParamsSet.current = {}
-    
+
     onFilterChange(defaultFilterValues)
   }
-  
+
   const handleNumericInputChange = (
-    value: string, 
+    value: string,
     setter: (value: number | null) => void,
     filterKey: keyof ActiveFilters
   ) => {
@@ -284,7 +285,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
       }
     }
   }
-   
+
   const handleMonthlyTrafficChange = (value: string) => {
     if (value === '') {
       setMonthlyTrafficMin(null)
@@ -312,10 +313,10 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
       }
     }
   }
-  
+
   const handleSaveFilter = async () => {
     if (!filterName.trim()) return
-    
+
     setSaving(true)
     try {
       const currentFilters = {
@@ -335,7 +336,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
         authorityLinksMin,
         isHot,
       }
-      
+
       const res = await fetch("/api/saved-filters", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -344,7 +345,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
           filters: currentFilters,
         }),
       })
-      
+
       if (res.ok) {
         toast({
           title: "Filter Saved",
@@ -375,7 +376,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
       setSaving(false)
     }
   }
-   
+
   const visibleTlds = tlds.filter(t => t.toLowerCase().includes(tldQuery.toLowerCase()))
   const visibleTags = availableTags.filter(t => t.toLowerCase().includes(tagQuery.toLowerCase()))
 
@@ -392,10 +393,27 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
   }
 
   return (
-    <div className="space-y-6 dark:bg-gray-900 dark:text-gray-100">
-     <p className="sm:flex justify-self-center hidden text-lg font-semibold">Filters</p> 
+    <div className="space-y-6 pt-8 dark:bg-gray-900 dark:text-gray-100">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+          Filters
+        </h2>
+
+        {onCloseSidebar && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onCloseSidebar}
+            className="h-8 flex text-white bg-black hover:text-black items-center"
+          >
+            <X className="h-4 w-4 text-white hover:text-black mr-1" /> Close filters
+          </Button>
+        )}
+      </div>
+
+      {/* <p className="sm:flex justify-self-center hidden text-lg font-semibold">Filters</p>  */}
       <div className="space-y-3">
-        <Label className="font-medium text-gray-700 dark:text-gray-300">Selected</Label>
+        {/* <Label className="font-medium text-gray-700 dark:text-gray-300">Selected</Label> */}
         <div className="flex flex-wrap gap-2">
           {selectedTlds.map((tld) => (
             <Button key={tld} size="sm" variant="secondary" className="full"
@@ -443,7 +461,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
               All
             </Button>
             <Button
-              variant={(type === "aged"  ) ? "default" : "outline"}
+              variant={(type === "aged") ? "default" : "outline"}
               className="w-full"
               onClick={() => handleDomainTypePreset("aged")}
             >
@@ -495,7 +513,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
             onChange={(e) => setTldQuery(e.target.value)}
             className="w-full dark:bg-gray-800 dark:border-gray-700 dark:text-white"
           />
-          {tldsLoading ? ( 
+          {tldsLoading ? (
             <div className="dark:bg-gray-800 p-4 rounded-md text-center">
               <span className="text-sm text-gray-500 dark:text-gray-400">Loading extensions...</span>
             </div>
@@ -747,15 +765,15 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
 
       {/* Action Buttons */}
       <div className="flex flex-col justify-between items-center gap-3 sticky bottom-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm py-3 border-t dark:border-gray-800">
-        <Button 
-          variant="outline" 
-          onClick={clearFilters} 
+        <Button
+          variant="outline"
+          onClick={clearFilters}
           className="flex-1 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
         >
           Clear All Filters
         </Button>
         {user && (
-          <Button 
+          <Button
             onClick={() => setShowSaveDialog(true)}
             className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
           >
@@ -790,23 +808,23 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
               />
             </div>
           </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => {
-            setShowSaveDialog(false)
-            setFilterName("")
-          }}>
-            Cancel
-          </Button>
-          <Button 
-            onClick={handleSaveFilter}
-            disabled={!filterName.trim() || saving}
-            className="bg-blue-600 hover:bg-blue-700"
-          >
-            {saving ? "Saving..." : "Save Filter"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setShowSaveDialog(false)
+              setFilterName("")
+            }}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveFilter}
+              disabled={!filterName.trim() || saving}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              {saving ? "Saving..." : "Save Filter"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

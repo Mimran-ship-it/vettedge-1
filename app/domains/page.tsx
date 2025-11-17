@@ -7,7 +7,7 @@ import { DomainFilters } from "@/components/domains/domain-filters"
 import { SavedFiltersList } from "@/components/domains/saved-filters-list"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, Filter, ArrowUpDown, Flame } from "lucide-react"
+import { Search, Filter, ArrowUpDown, Flame, X, Grid, List } from "lucide-react"
 import type { Domain } from "@/types/domain"
 import { LiveChat } from "@/components/chat/live-chat"
 import { useSearchParams } from "next/navigation"
@@ -24,6 +24,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Badge } from "@/components/ui/badge"
+
 type ActiveFilters = {
   priceRange: [number, number]
   tlds: string[]
@@ -39,9 +41,11 @@ type ActiveFilters = {
   authorityLinksMin: number | null
   monthlyTrafficMin: number | null
   tags: string[]
-  isHot: boolean // Changed to boolean to match DomainFilters component
+  isHot: boolean
 }
+
 type SortOption = "price-asc" | "price-desc" | "domainRank-desc" | "domainAuthority-desc" | "score-desc" | "age-desc" | "referringDomains-desc" | "monthlyTraffic-desc" | "newest" | "oldest"
+
 const defaultFilters: ActiveFilters = {
   priceRange: [0, 100000],
   tlds: [],
@@ -57,20 +61,23 @@ const defaultFilters: ActiveFilters = {
   authorityLinksMin: null,
   monthlyTrafficMin: null,
   tags: [],
-  isHot: false // Changed to boolean
+  isHot: false
 }
+
 export default function DomainsPage() {
   const [domains, setDomains] = useState<Domain[]>([])
   const [filteredDomains, setFilteredDomains] = useState<Domain[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [showFilters, setShowFilters] = useState(false)
+  const [showDesktopSidebar, setShowDesktopSidebar] = useState(true)
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>(defaultFilters)
   const [availableTags, setAvailableTags] = useState<string[]>([])
   const [tldCounts, setTldCounts] = useState<Record<string, number>>({})
   const [sortBy, setSortBy] = useState<SortOption>("price-desc")
   const [showSortSheet, setShowSortSheet] = useState(false)
-  const [refreshTrigger, setRefreshTrigger] = useState(0) // Trigger for saved filters refresh
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const searchParams = useSearchParams()
   
   // Initialize filters from URL parameters
@@ -158,10 +165,8 @@ export default function DomainsPage() {
     
     switch (sortOption) {
       case "price-asc":
-        // Sort from low to high (ascending)
         return sorted.sort((a, b) => Number(a.price) - Number(b.price))
       case "price-desc":
-        // Sort from high to low (descending)
         return sorted.sort((a, b) => Number(b.price) - Number(a.price))
       case "newest":
         return sorted.sort((a, b) => 
@@ -236,12 +241,12 @@ export default function DomainsPage() {
       )
     }
     
-    // isHot filter - Updated to handle boolean value
+    // isHot filter
     if (filters.isHot) {
       result = result.filter((d) => d.isHot)
     }
     
-    // Domain Rank - be lenient with missing data
+    // Domain Rank
     result = result.filter(
       (d) => {
         if (d.metrics?.domainRank === undefined) return true
@@ -249,7 +254,7 @@ export default function DomainsPage() {
       }
     )
     
-    // Domain Authority - be lenient with missing data
+    // Domain Authority
     result = result.filter(
       (d) => {
         if (d.metrics?.domainAuthority === undefined) return true
@@ -264,7 +269,7 @@ export default function DomainsPage() {
         }
       )
     }
-    // Trust Flow - be lenient with missing data
+    // Trust Flow
     result = result.filter(
       (d) => {
         if (d.metrics?.trustFlow === undefined) return true
@@ -272,7 +277,7 @@ export default function DomainsPage() {
       }
     )
     
-    // Citation Flow - be lenient with missing data
+    // Citation Flow
     result = result.filter(
       (d) => {
         if (d.metrics?.citationFlow === undefined) return true
@@ -280,7 +285,7 @@ export default function DomainsPage() {
       }
     )
     
-    // Age - be lenient with missing data
+    // Age
     result = result.filter(
       (d) => {
         if (d.metrics?.age === undefined) return true
@@ -288,7 +293,7 @@ export default function DomainsPage() {
       }
     )
     
-    // Referring Domains - be lenient with missing data
+    // Referring Domains
     result = result.filter(
       (d) => {
         if (d.metrics?.referringDomains === undefined) return true
@@ -296,7 +301,7 @@ export default function DomainsPage() {
       }
     )
     
-    // Authority Links - use authorityLinksCount directly
+    // Authority Links
     result = result.filter(
       (d) => {
         if (d.metrics?.authorityLinksCount === undefined) return true
@@ -304,7 +309,7 @@ export default function DomainsPage() {
       }
     )
     
-    // Monthly Traffic - be lenient with missing data
+    // Monthly Traffic
     result = result.filter(
       (d) => {
         if (d.metrics?.monthlyTraffic === undefined || d.metrics.monthlyTraffic === null) return true
@@ -319,46 +324,52 @@ export default function DomainsPage() {
   
   const applyFiltersWithSorting = (filters: ActiveFilters) => {
     setActiveFilters(filters)
-    // applyFilters will be called automatically by the useEffect
   }
   
   const handleSortChange = (newSortBy: SortOption) => {
     setSortBy(newSortBy)
-    // Sorting will be applied automatically by the useEffect
   }
 
   const openFiltersMobile = () => {
     setShowFilters(true)
-    // Scroll to top of the page for mobile
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
   
   const handleSearchChange = (value: string) => {
     setSearchQuery(value)
-    // Filtering will be applied automatically by the useEffect
   }
   
   const resetFilters = () => {
     setSearchQuery("")
     setActiveFilters(defaultFilters)
     setSortBy("price-desc")
-    // applyFilters will be called automatically by the useEffect
   }
   
   const handleFilterSaved = () => {
-    // Increment trigger to force SavedFiltersList to refetch
     setRefreshTrigger(prev => prev + 1)
   }
   
+  const removeFilter = (filterType: string) => {
+    if (filterType === "type") {
+      setActiveFilters(prev => ({ ...prev, type: "all" }))
+    } else if (filterType === "isHot") {
+      setActiveFilters(prev => ({ ...prev, isHot: false }))
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <Header />
-      <main className="max-w-8xl sm:ms-0  sm:px-6 lg:px-16 pt-24 pb-28 lg:pb-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold  text-center text-gray-900 dark:text-white mb-4">
-          Domain inventory
+      <main className="max-w-8xl sm:ms-0 sm:px-6 lg:px-16 pt-24 pb-28 lg:pb-8">
+        {/* Header Section */}
+        <div className={`mb-10 text-center transition-all duration-300 ease-in-out ${showDesktopSidebar ? "lg:ml-[22%]" : "lg:ml-14"}`}>
+          <h1 className="sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+            Domain Inventory
           </h1>
-          
+          <p className="hidden sm:block text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+  Browse our premium collection of domain names with detailed metrics and analytics
+</p>
+
         </div>
         
         {/* Layout: Sidebar (filters) on the left, results on the right */}
@@ -366,37 +377,26 @@ export default function DomainsPage() {
           {/* Sidebar - Fixed on desktop, hidden on mobile */}
           <aside
             id="filtersSidebar"
-            className="hidden  bg-[#F9FAFB] lg:flex flex-col w-[22%] fixed top-16 left-0 bottom-0 dark:bg-gray-900   overflow-y-scroll hover:overflow-y-scroll"
+            className={`hidden lg:block w-[22%] fixed top-16 left-0 bottom-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto shadow-sm z-10 transition-transform duration-300 ease-in-out ${showDesktopSidebar ? "translate-x-0" : "-translate-x-full"}`}
           >
-            <div className="space-y-6 px-4 py-4">
-              {/* Filters Section */}
-              <div className="bg-[#F9FAFB] dark:bg-gray-800 dark:border-gray-700 p-4 lg:p-5">
-                <div className="mb-4 flex items-center justify-between lg:hidden">
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Filters</h2>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowFilters(!showFilters)}
-                  >
-                    {showFilters ? "Hide" : "Show"}
-                  </Button>
+            <div className="p-5">
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  {/* <h2 className="text-xl font-bold text-gray-900 dark:text-white">Filters</h2> */}
                 </div>
-
-                <div className={`${showFilters ? "block" : "hidden"} lg:block`}>
-                  <DomainFilters
-                    onFilterChange={applyFiltersWithSorting}
-                    availableTags={availableTags}
-                    currentFilters={activeFilters}
-                    onFilterSaved={handleFilterSaved}
-                    tldCounts={tldCounts}
-                  />
-                </div>
+                <DomainFilters
+                  onFilterChange={applyFiltersWithSorting}
+                  availableTags={availableTags}
+                  currentFilters={activeFilters}
+                  onFilterSaved={handleFilterSaved}
+                  tldCounts={tldCounts}
+                  onCloseSidebar={() => setShowDesktopSidebar(false)}
+                />
               </div>
 
-              {/* Saved Filters */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 lg:p-5">
-                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-3">
-                  Saved Filters
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
+                  <span>Saved Filters</span>
                 </h3>
                 <SavedFiltersList
                   onApplyFilter={(filters) => {
@@ -410,32 +410,47 @@ export default function DomainsPage() {
             </div>
           </aside>
 
+          {/* Collapsed rail (desktop) */}
+          {!showDesktopSidebar && (
+            <div className="hidden lg:flex flex-col items-center gap-2 w-14 fixed top-16 left-0 bottom-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 z-10 py-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-10 w-10"
+                onClick={() => setShowDesktopSidebar(true)}
+                title="Open filters"
+              >
+                <Filter className="h-5 w-5" />
+              </Button>
+            </div>
+          )}
+
           {/* Main Content */}
-          <section className="flex-1 lg:ml-[20%] px-4 lg:px-0">
+          <section className={`flex-1 px-4 lg:px-0 transition-all duration-300 ease-in-out ${showDesktopSidebar ? "lg:ml-[22%]" : "lg:ml-14"}`}>
             {/* Mobile Filters - Conditionally shown */}
             {showFilters && (
-              <div className="lg:hidden mb-6">
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 lg:p-5">
-                  <div className="mb-4 flex items-center justify-between">
-                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Filters</h2>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setShowFilters(false)}
-                    >
-                      Hide
-                    </Button>
-                  </div>
-                  <DomainFilters
-                    onFilterChange={applyFiltersWithSorting}
-                    availableTags={availableTags}
-                    currentFilters={activeFilters}
-                    onFilterSaved={handleFilterSaved}
-                    tldCounts={tldCounts}
-                  />
+              <div className="lg:hidden mb-6 bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-5 animate-fadeIn">
+                <div className="mb-4 flex items-center justify-between">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Filters</h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowFilters(false)}
+                    className="h-8 w-8 p-0"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
                 </div>
-                <div className="mt-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 lg:p-5">
-                  <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-3">
+                <DomainFilters
+                  onFilterChange={applyFiltersWithSorting}
+                  availableTags={availableTags}
+                  currentFilters={activeFilters}
+                  onFilterSaved={handleFilterSaved}
+                  tldCounts={tldCounts}
+                  onCloseSidebar={() => setShowFilters(false)}
+                />
+                <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
                     Saved Filters
                   </h3>
                   <SavedFiltersList
@@ -450,102 +465,163 @@ export default function DomainsPage() {
               </div>
             )}
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6 mb-6">
-              {/* Search & Sort */}
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                  <Input
-                    placeholder="Search domains by name or keyword..."
-                    value={searchQuery}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
+            {/* Desktop rail handles opening; no separate button here */}
+{/* Search & Controls Bar - Hidden on mobile */}
+<div className="hidden md:block bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 mb-6">
+  <div className="flex flex-col md:flex-row gap-4">
+    <div className="flex-1 relative">
+      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+      <Input
+        placeholder="Search domains by name or keyword..."
+        value={searchQuery}
+        onChange={(e) => handleSearchChange(e.target.value)}
+        className="pl-10 h-12 rounded-lg border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      />
+    </div>
 
-                <div className="flex flex-col sm:flex-row gap-2 sm:w-auto w-full">
-                  <Select value={sortBy} onValueChange={handleSortChange}>
-                    <SelectTrigger className="w-full sm:w-fit h-10 px-4 py-2 inline-flex items-center justify-center  text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-                      <ArrowUpDown className="h-4 w-4 mr-2" />
-                      <SelectValue placeholder="Sort by" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                      <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                      <SelectItem value="newest">Newest First</SelectItem>
-                      <SelectItem value="oldest">Oldest First</SelectItem>
-                      <SelectItem value="domainRank-desc">Domain Rank: High to Low</SelectItem>
-                      <SelectItem value="domainAuthority-desc">Domain Authority: High to Low</SelectItem>
-                      <SelectItem value="score-desc">Score: High to Low</SelectItem>
-                      <SelectItem value="age-desc">Age: Oldest First</SelectItem>
-                      <SelectItem value="referringDomains-desc">
-                        Referring Domains: High to Low
-                      </SelectItem>
-                      <SelectItem value="monthlyTraffic-desc">
-                        Monthly Traffic: High to Low
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+    <div className="flex gap-2   "> 
+      <Select  value={sortBy} onValueChange={handleSortChange}>
+        <SelectTrigger className="w-full md:w-60 h-12 rounded-lg border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <ArrowUpDown className="h-5 w-5 mr-2" />
+          <SelectValue placeholder="Sort by" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="price-asc">Price: Low to High</SelectItem>
+          <SelectItem value="price-desc">Price: High to Low</SelectItem>
+          <SelectItem value="newest">Newest First</SelectItem>
+          <SelectItem value="oldest">Oldest First</SelectItem>
+          <SelectItem value="domainRank-desc">Domain Rank: High to Low</SelectItem>
+          <SelectItem value="domainAuthority-desc">Domain Authority: High to Low</SelectItem>
+          <SelectItem value="score-desc">Score: High to Low</SelectItem>
+          <SelectItem value="age-desc">Age: Oldest First</SelectItem>
+          <SelectItem value="referringDomains-desc">
+            Referring Domains: High to Low
+          </SelectItem>
+          <SelectItem value="monthlyTraffic-desc">
+            Monthly Traffic: High to Low
+          </SelectItem>
+        </SelectContent>
+      </Select>
 
-              {/* Active Filters Display */}
-              <div className="mt-4 flex flex-wrap gap-2">
-                {(activeFilters.type !== "all" || activeFilters.isHot) && (
-                  <span className="text-sm text-gray-600 mr-2">Active filters:</span>
-                )}
-                {activeFilters.type !== "all" && (
-                  <span className="inline-flex items-center px-2.5 py-0.5 full text-xs font-medium bg-blue-100 text-blue-800">
-                    {activeFilters.type === "aged" ? "Aged Domains" : "Traffic Domains"}
+       
+    </div>
+  </div>
+
+  {/* Active Filters Display */}
+  <div className="mt-4 flex flex-wrap gap-2">
+    {activeFilters.type !== "all" && (
+      <Badge variant="secondary" className="flex items-center gap-1 pl-2 pr-1 py-1">
+        {activeFilters.type === "aged" ? "Aged Domains" : "Traffic Domains"}
+        <button 
+          onClick={() => removeFilter("type")}
+          className="ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+        >
+          <X className="h-3 w-3" />
+        </button>
+      </Badge>
+    )}
+    {activeFilters.isHot && (
+      <Badge variant="destructive" className="flex items-center gap-1 pl-2 pr-1 py-1">
+        <Flame className="h-3 w-3 mr-1" /> Hot Deals
+        <button 
+          onClick={() => removeFilter("isHot")}
+          className="ml-1 rounded-full hover:bg-orange-600"
+        >
+          <X className="h-3 w-3" />
+        </button>
+      </Badge>
+    )}
+    {(activeFilters.type !== "all" || activeFilters.isHot) && (
+      <Button 
+        variant="ghost" 
+        size="sm" 
+        onClick={resetFilters}
+        className="h-6 text-xs px-2"
+      >
+        Clear all
+      </Button>
+    )}
+  </div>
+</div>
+           
+            {/* Results Info */}
+            <div className="mb-6 flex justify-between items-center">
+              <div className="text-gray-600 dark:text-gray-300">
+                <span className="font-medium">{filteredDomains.length}</span> of{" "}
+                <span className="font-medium">{domains.length}</span> domains
+                {filteredDomains.length !== domains.length && (
+                  <span className="ml-2 text-sm text-blue-600 dark:text-blue-400">
+                    (Filtered from {domains.length} total)
                   </span>
                 )}
-                {activeFilters.isHot && (
-                  <span className="inline-flex items-center px-2.5 py-0.5 full text-xs font-medium bg-orange-100 text-orange-800">
-                    <Flame className="h-3 w-3 mr-1" /> Hot Deals
-                  </span>
-                )}
               </div>
-            </div>
-
-            {/* Filtered Info */}
-            <div className="mb-6 text-gray-600 dark:text-gray-300">
-              Showing {filteredDomains.length} of {domains.length} domains
-              {filteredDomains.length !== domains.length && (
-                <span className="ml-2 text-sm text-blue-600 dark:text-blue-400">
-                  (Filtered from {domains.length} total)
-                </span>
-              )}
+              
+              <div className="sm:hidden flex border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                <Button
+                  variant={viewMode === "grid" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("grid")}
+                  className="h-9 rounded-none"
+                >
+                  <Grid className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewMode === "list" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("list")}
+                  className="h-9 rounded-none"
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
 
             {/* Domain Cards */}
             {loading ? (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className={viewMode === "grid" 
+                ? `grid md:grid-cols-2 ${showDesktopSidebar ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-6` 
+                : "space-y-4"
+              }>
                 {[...Array(6)].map((_, i) => (
                   <div
                     key={i}
-                    className="bg-white dark:bg-gray-800 p-6 rounded-lg animate-pulse"
+                    className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 animate-pulse"
                   >
-                    <div className="h-6 bg-gray-200 dark:bg-gray-700 w-3/4 mb-4 rounded"></div>
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 w-1/2 mb-4 rounded"></div>
-                    <div className="space-y-2">
-                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                      <div className="h-4 bg-gray-200 dark:bg-gray-700 w-2/3 rounded"></div>
+                    <div className="h-7 bg-gray-200 dark:bg-gray-700 w-3/4 mb-4 rounded-lg"></div>
+                    <div className="h-5 bg-gray-200 dark:bg-gray-700 w-1/2 mb-6 rounded-lg"></div>
+                    <div className="space-y-3">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 w-2/3 rounded-lg"></div>
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 w-5/6 rounded-lg"></div>
+                    </div>
+                    <div className="mt-6 flex justify-between">
+                      <div className="h-6 bg-gray-200 dark:bg-gray-700 w-20 rounded-lg"></div>
+                      <div className="h-10 bg-gray-200 dark:bg-gray-700 w-24 rounded-lg"></div>
                     </div>
                   </div>
                 ))}
               </div>
             ) : filteredDomains.length > 0 ? (
-              <div className="grid border md:grid-cols-2 lg:grid-cols-3 gap-4 ">
+              <div className={viewMode === "grid" 
+                ? `grid md:grid-cols-2 ${showDesktopSidebar ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-6` 
+                : "space-y-4"
+              }>
                 {filteredDomains.map((domain) => (
-                  <DomainCard key={domain._id} domain={domain} />
+                  <DomainCard key={domain._id} domain={domain} viewMode={viewMode} />
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12">
-                <p className="text-gray-500 dark:text-gray-400 text-lg">
-                  No domains found matching your criteria.
+              <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                <div className="mb-4 text-gray-400">
+                  <Search className="h-16 w-16 mx-auto" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  No domains found
+                </h3>
+                <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
+                  We couldn't find any domains matching your search criteria. Try adjusting your filters or search query.
                 </p>
-                <Button variant="outline" onClick={resetFilters} className="mt-4">
+                <Button onClick={resetFilters} className="px-6">
                   Clear Filters
                 </Button>
               </div>
@@ -555,12 +631,12 @@ export default function DomainsPage() {
       </main>
       
       {/* Mobile sticky actions */}
-      <div className="fixed inset-x-0 bottom-0 mr-16 z-50 lg:hidden   border-t border-gray-200 dark:border-gray-800   px-4 py-3">
+      <div className="fixed inset-x-0 bottom-0 z-50 lg:hidden bg-white/95 dark:bg-gray-900/95 border-t border-gray-200 dark:border-gray-800 backdrop-blur supports-[backdrop-filter]:backdrop-blur px-4 py-3">
         <div className="max-w-8xl mx-auto flex items-center gap-3">
-          <Button className="flex-1 dark:bg-black" variant="outline" onClick={openFiltersMobile}>
+          <Button className="flex-1 h-12 rounded-lg" variant="outline" onClick={openFiltersMobile}>
             <Filter className="h-4 w-4 mr-2" /> Filters
           </Button>
-          <Button className="flex-1" onClick={() => setShowSortSheet(true)}>
+          <Button className="flex-1 h-12 rounded-lg" onClick={() => setShowSortSheet(true)}>
             <ArrowUpDown className="h-4 w-4 mr-2" /> Sort
           </Button>
         </div>
@@ -568,11 +644,11 @@ export default function DomainsPage() {
 
       {/* Mobile Sort Dialog */}
       <Dialog open={showSortSheet} onOpenChange={setShowSortSheet}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md rounded-xl">
           <DialogHeader>
-            <DialogTitle>Sort domains</DialogTitle>
+            <DialogTitle className="text-xl font-bold">Sort domains</DialogTitle>
           </DialogHeader>
-          <div className="grid grid-cols-1 gap-2">
+          <div className="grid grid-cols-1 gap-2 max-h-[70vh] overflow-y-auto py-2">
             {([
               { key: "price-asc", label: "Price: Low to High" },
               { key: "price-desc", label: "Price: High to Low" },
@@ -588,7 +664,7 @@ export default function DomainsPage() {
               <Button
                 key={opt.key}
                 variant={sortBy === opt.key ? 'default' : 'outline'}
-                className="justify-start"
+                className="justify-start h-12 rounded-lg text-left"
                 onClick={() => {
                   handleSortChange(opt.key)
                   setShowSortSheet(false)

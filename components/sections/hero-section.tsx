@@ -235,7 +235,7 @@ export function HeroSection() {
                   {!topDomain ? (
                     <div className="flex flex-col items-center justify-center py-8">
                       {/* Loader spinner */}
-                      <div className="animate-spin full h-8 w-8 border-t-2 border-b-2 border-[#38C172] mb-3"></div>
+                      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#38C172] mb-3"></div>
                       <p className="text-sm text-gray-600 dark:text-gray-300">
                         Fetching the most frequent domain...
                       </p>
