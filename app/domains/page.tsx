@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { DomainCard } from "@/components/domains/domain-card"
@@ -78,6 +78,8 @@ export default function DomainsPage() {
   const [showSortSheet, setShowSortSheet] = useState(false)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
+  const [sidebarBottomOffset, setSidebarBottomOffset] = useState(0)
+  const footerRef = useRef<HTMLElement>(null)
   const searchParams = useSearchParams()
   
   // Initialize filters from URL parameters
@@ -159,6 +161,74 @@ export default function DomainsPage() {
       applyFilters(activeFilters)
     }
   }, [activeFilters, domains, searchQuery, sortBy])
+
+  // Monitor scroll position and adjust sidebar to avoid footer overlap
+  useEffect(() => {
+    let observer: IntersectionObserver | null = null
+    
+    const handleScroll = () => {
+      if (typeof window === 'undefined') return
+      
+      const footer = footerRef.current
+      if (!footer) {
+        setSidebarBottomOffset(0)
+        return
+      }
+
+      const footerRect = footer.getBoundingClientRect()
+      const viewportHeight = window.innerHeight
+      
+      // Calculate how much of the footer is visible in the viewport
+      const footerTop = footerRect.top
+      
+      // If footer is entering the viewport from bottom
+      if (footerTop < viewportHeight) {
+        // Calculate the overlap: how much space the footer takes from the bottom
+        const footerVisibleHeight = Math.max(0, viewportHeight - footerTop)
+        // Add some padding to prevent overlap
+        const offset = footerVisibleHeight + 20 // 20px padding
+        setSidebarBottomOffset(offset)
+      } else {
+        // Footer is below viewport, no offset needed
+        setSidebarBottomOffset(0)
+      }
+    }
+
+    // Wait a bit for DOM to be ready, then set up observers
+    const timeoutId = setTimeout(() => {
+      // Initial check
+      handleScroll()
+
+      // Listen to scroll events
+      window.addEventListener('scroll', handleScroll, { passive: true })
+      window.addEventListener('resize', handleScroll, { passive: true })
+
+      // Use Intersection Observer for better performance
+      observer = new IntersectionObserver(
+        (entries) => {
+          handleScroll()
+        },
+        {
+          root: null,
+          rootMargin: '0px',
+          threshold: [0, 0.1, 0.5, 1]
+        }
+      )
+
+      if (footerRef.current) {
+        observer.observe(footerRef.current)
+      }
+    }, 100)
+
+    return () => {
+      clearTimeout(timeoutId)
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', handleScroll)
+      if (observer) {
+        observer.disconnect()
+      }
+    }
+  }, [loading]) // Re-run when loading completes to ensure footer is rendered
   
   const sortDomains = useCallback((domains: Domain[], sortOption: SortOption): Domain[] => {
     const sorted = [...domains]
@@ -377,9 +447,14 @@ export default function DomainsPage() {
           {/* Sidebar - Fixed on desktop, hidden on mobile */}
           <aside
             id="filtersSidebar"
-            className={`hidden lg:block w-[22%] fixed top-16 left-0 bottom-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto shadow-sm z-10 transition-transform duration-300 ease-in-out ${showDesktopSidebar ? "translate-x-0" : "-translate-x-full"}`}
+            className={`hidden lg:block w-[22%] fixed top-16 left-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto shadow-sm z-10 transition-all duration-300 ease-in-out ${showDesktopSidebar ? "translate-x-0" : "-translate-x-full"}`}
+            style={{ 
+              height: `calc(100vh - 4rem - ${sidebarBottomOffset}px)`, 
+              maxHeight: `calc(100vh - 4rem - ${sidebarBottomOffset}px)`,
+              bottom: sidebarBottomOffset > 0 ? `${sidebarBottomOffset}px` : 'auto'
+            }}
           >
-            <div className="p-5">
+            <div className="p-5 pb-8">
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-4">
                   {/* <h2 className="text-xl font-bold text-gray-900 dark:text-white">Filters</h2> */}
@@ -412,7 +487,14 @@ export default function DomainsPage() {
 
           {/* Collapsed rail (desktop) */}
           {!showDesktopSidebar && (
-            <div className="hidden lg:flex flex-col items-center gap-2 w-14 fixed top-16 left-0 bottom-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 z-10 py-4">
+            <div 
+              className="hidden lg:flex flex-col items-center gap-2 w-14 fixed top-16 left-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 z-10 py-4 transition-all duration-300"
+              style={{ 
+                height: `calc(100vh - 4rem - ${sidebarBottomOffset}px)`, 
+                maxHeight: `calc(100vh - 4rem - ${sidebarBottomOffset}px)`,
+                bottom: sidebarBottomOffset > 0 ? `${sidebarBottomOffset}px` : 'auto'
+              }}
+            >
               <Button
                 variant="ghost"
                 size="icon"
@@ -676,7 +758,9 @@ export default function DomainsPage() {
           </div>
         </DialogContent>
       </Dialog>
-      <Footer/>
+      <footer ref={footerRef}>
+        <Footer/>
+      </footer>
     </div>
   )
 }

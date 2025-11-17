@@ -193,6 +193,7 @@ export function TopDomainsSection() {
   const router = useRouter();
   const { addItem, clearCart } = useCart();
   const { toast } = useToast();
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
     const fetchDomains = async () => {
@@ -214,6 +215,32 @@ export function TopDomainsSection() {
     const filtered = allDomains.filter(domain => domain.isAvailable && !domain.isSold);
     setAvailableDomains(filtered);
   }, [allDomains]);
+
+  // Detect small screens for responsive chart tweaks
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mql = window.matchMedia('(max-width: 640px)');
+    const onChange = (e: MediaQueryListEvent | MediaQueryList) => {
+      setIsSmallScreen('matches' in e ? e.matches : (e as MediaQueryList).matches);
+    };
+    // Set initial
+    setIsSmallScreen(mql.matches);
+    // Subscribe
+    if ('addEventListener' in mql) {
+      mql.addEventListener('change', onChange as (ev: Event) => void);
+    } else {
+      // @ts-ignore older Safari
+      mql.addListener(onChange);
+    }
+    return () => {
+      if ('removeEventListener' in mql) {
+        mql.removeEventListener('change', onChange as (ev: Event) => void);
+      } else {
+        // @ts-ignore older Safari
+        mql.removeListener(onChange);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     // Update chart data when active tab changes
@@ -527,154 +554,195 @@ export function TopDomainsSection() {
 
   return (
     <>
-      <section className="pt-16 px-4 md:px-6  bg-gray-50 dark:from-gray-950 dark:to-cyan-950 dark:bg-gradient-to-br">
+      <section className="pt-16 px-4 md:px-26  bg-gray-50 dark:from-gray-950 dark:to-cyan-950 dark:bg-gradient-to-br">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="sm:text-3xl md:text-4xl font-bold tracking-tight text-[#33BDC7] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-green-400 dark:text-transparent dark:bg-clip-text">
+            <h2 className="sm:text-3xl md:text-5xl font-bold tracking-tight text-[#33BDC7] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-green-400 dark:text-transparent dark:bg-clip-text">
               Domain Analytics Dashboard
             </h2>
             <p className="mt-2 text-black/70 dark:text-gray-400">Discover our premium domains with detailed metrics</p>
           </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 items-stretch">
-  {/* Left Side: Chart */}
-  <Card className="flex flex-col justify-between h-full border border-[#17B89733] bg-white backdrop-blur-sm shadow-sm dark:border-cyan-800/50 dark:bg-cyan-950/30">
-    <CardHeader>
-      <CardTitle className="mt-4 flex items-center text-black dark:text-white">
-        <div className="w-2 h-5 bg-[#17B897] dark:bg-cyan-400 rounded-full mr-2"></div>
-        {getChartTitle(activeTab)} Metrics
-      </CardTitle>
-      <CardDescription className="text-black/60 dark:text-cyan-300">
-        Top 5 domains by {getMetricDescription(activeTab).toLowerCase()}
-      </CardDescription>
-    </CardHeader>
-    <CardContent className="flex-1 flex items-center">
-      <div className="h-[28rem] !w-full">
-        {chartLoading ? (
-          <div className="flex items-center justify-center h-full">
-            <Skeleton className="h-[26rem] w-full bg-gray-200 dark:bg-cyan-900/30" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 items-stretch">
+            {/* Left Side: Chart */}
+            <Card className="flex flex-col justify-between h-full border border-[#17B89733] bg-white backdrop-blur-sm shadow-sm dark:border-cyan-800/50 dark:bg-cyan-950/30">
+              <CardHeader>
+                <CardTitle className="mt-4 flex items-center text-black dark:text-white">
+                  <div className="w-2 h-5 bg-[#17B897] dark:bg-cyan-400 rounded-full mr-2"></div>
+                  {getChartTitle(activeTab)} Metrics
+                </CardTitle>
+                <CardDescription className="text-black/60 dark:text-cyan-300">
+                  Top 5 domains by {getMetricDescription(activeTab).toLowerCase()}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex-1 flex items-center">
+                <div className="h-[28rem] sm:h-[28rem] !w-full">
+                  {chartLoading ? (
+                    <div className="flex items-center justify-center h-full">
+                      <Skeleton className="h-[26rem] w-full bg-gray-200 dark:bg-cyan-900/30" />
+                    </div>
+                  ) : (
+                    <>
+                      {/* Small Screen Chart - Vertical Bar Chart with Horizontal Labels */}
+                      <div className="sm:hidden h-full -mx-6   ">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart
+                            data={chartData}
+                            margin={{ top: 10, right: 10, left: -30, bottom: 40 }}
+                          >
+                            <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" className="dark:stroke-[#1e4a3e]" />
+                            <XAxis
+                              dataKey="name"
+                              stroke="#111827"
+                              tick={{ fontSize: 10 }}
+                              angle={-45}
+                              textAnchor="end"
+                              height={60}
+                                className="dark:[&_*]:fill-white  "
+                              tickFormatter={(value: string) => value.length > 6 ? value.slice(0, 6) + '...' : value}
+                            />
+                            <YAxis
+                              stroke="#111827"
+                                className="dark:[&_*]:fill-white  "
+                              tick={{ fontSize: 10 }}
+                            />
+                            <Tooltip
+                              contentStyle={{
+                                backgroundColor: '#ffffff',
+                                border: '1px solid #cbd5e1',
+                                borderRadius: '0.5rem',
+                              }}
+                              itemStyle={{ color: '#111827' }}
+                              labelStyle={{ color: '#111827' }}
+                              formatter={(value) => [value, chartData[0]?.label || 'Value']}
+                            />
+                            <Bar
+                              dataKey="value"
+                              name={chartData[0]?.label || 'Value'}
+                              fill="#17B897"
+                              radius={[4, 4, 0, 0]}
+                              barSize={24}
+                            />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+
+                      {/* Medium to Large Screen Chart - Vertical Bar Chart */}
+                      <div className="hidden sm:block h-full">
+                        <div className="w-[120%] sm:w-full ms-[-3rem] sm:ms-0 h-full">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
+                              <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" className="dark:stroke-[#1e4a3e]" />
+                              <XAxis
+                                dataKey="name"
+                                stroke="#111827"
+                                tick={{ fontSize: 10, fill: '#111827' }}
+                                
+                              angle={-10}
+                                className="dark:[&_*]:fill-white  "
+                              />
+                              <YAxis
+                                stroke="#111827"
+                                tick={{ fontSize: 12, fill: '#111827' }}
+                                className="dark:[&_*]:fill-white"
+                              />
+                              <Tooltip
+                                contentStyle={{
+                                  backgroundColor: '#ffffff',
+                                  border: '1px solid #cbd5e1',
+                                  borderRadius: '0.5rem',
+                                }}
+                                itemStyle={{ color: '#111827' }}
+                                labelStyle={{ color: '#111827' }}
+                                formatter={(value) => [value, chartData[0]?.label || 'Value']}
+                              />
+                              <Bar
+                                dataKey="value"
+                                name={chartData[0]?.label || 'Value'}
+                                fill="#17B897"
+                                radius={[4, 4, 0, 0]}
+                              />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Right Side: Top Domains */}
+            <Card className="flex flex-col h-full border border-[#17B89733] bg-white backdrop-blur-sm shadow-sm dark:border-cyan-800/50 dark:bg-cyan-950/30">
+              <CardHeader>
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+
+                  <CardTitle className="flex items-center mt-2 text-black dark:text-white">
+                    <div className="w-2 h-5 bg-[#17B897] dark:bg-cyan-400 rounded-full mr-2"></div>
+                    Top Domains
+                  </CardTitle>
+
+                  {/* Custom Dropdown */}
+                  <div className="relative mt-2">
+                    <button
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      className="flex items-center justify-between w-48 px-4 py-2 text-sm font-medium text-black bg-white border border-[#17B89733] rounded-lg hover:bg-[#D4F5E3] focus:outline-none focus:ring-2 focus:ring-[#17B897] dark:text-cyan-300 dark:bg-cyan-900/50 dark:border-cyan-700 dark:hover:bg-cyan-800/50 dark:focus:ring-cyan-500"
+                    >
+                      <span className="flex items-center text-xs">
+                        {metricOptions.find(opt => opt.value === activeTab)?.icon}
+                        <span className="ml-2 text-xs">
+                          {metricOptions.find(opt => opt.value === activeTab)?.label}
+                        </span>
+                      </span>
+                      <ChevronDown
+                        className={`w-4 h-4 ml-2 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+                      />
+                    </button>
+
+                    {isDropdownOpen && (
+                      <div className="absolute right-0 z-10 w-48 mt-1 bg-white border border-[#17B89733] rounded-lg shadow-lg dark:bg-cyan-950 dark:border-cyan-800">
+                        <div className="py-1">
+                          {metricOptions.map((option) => (
+                            <button
+                              key={option.value}
+                              onClick={() => {
+                                setActiveTab(option.value);
+                                setIsDropdownOpen(false);
+                              }}
+                              className={`flex items-center w-full px-4 py-2 text-xs text-left ${activeTab === option.value
+                                  ? 'text-[#17B897] bg-[#D4F5E3] dark:text-cyan-300 dark:bg-cyan-900/50'
+                                  : 'text-black hover:bg-[#D4F5E3] dark:text-gray-300 dark:hover:bg-cyan-900/30'
+                                }`}
+                            >
+                              {option.icon}
+                              <span className="ml-2 ">{option.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <CardDescription className="text-black/60 dark:text-cyan-300">
+                  {getMetricDescription(activeTab)}
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="flex-1 overflow-y-auto">
+                <div className="space-y-3 pr-2">
+                  {activeTab === 'da' && topDomains.da.map((domain, index) => renderDomainCard(domain, index))}
+                  {activeTab === 'dr' && topDomains.dr.map((domain, index) => renderDomainCard(domain, index))}
+                  {activeTab === 'tf' && topDomains.tf.map((domain, index) => renderDomainCard(domain, index))}
+                  {activeTab === 'cf' && topDomains.cf.map((domain, index) => renderDomainCard(domain, index))}
+                  {activeTab === 'score' && topDomains.score.map((domain, index) => renderDomainCard(domain, index))}
+                  {activeTab === 'refDomains' && topDomains.refDomains.map((domain, index) => renderDomainCard(domain, index))}
+                  {activeTab === 'authLinks' && topDomains.authLinks.map((domain, index) => renderDomainCard(domain, index))}
+                  {activeTab === 'traffic' && hasTrafficData && topDomains.traffic.map((domain, index) => renderDomainCard(domain, index))}
+                  {activeTab === 'age' && topDomains.age.map((domain, index) => renderDomainCard(domain, index))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        ) : (
-          <div className="w-full h-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart 
-                data={chartData} 
-                margin={{ top: 10, right: 20, left: 0, bottom: 10 }}
-              >
-                <CartesianGrid 
-                  strokeDasharray="3 3" 
-                  stroke="#cbd5e1" 
-                  className="dark:stroke-[#1e4a3e]" 
-                />
-                <XAxis
-                  dataKey="name"
-                  stroke="#111827"
-                  tick={{ fill: "#111827", fontSize: 12 }}
-                  className="dark:[&_*]:fill-white  "
-                />
-                <YAxis
-                  stroke="#111827"
-                  tick={{ fill: "#111827", fontSize: 12 }}
-                  className="dark:[&_*]:fill-white  "
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #cbd5e1',
-                    borderRadius: '0.5rem',
-                  }}
-                  itemStyle={{ color: '#111827' }}
-                  labelStyle={{ color: '#111827' }}
-                  formatter={(value) => [value, chartData[0]?.label || 'Value']}
-                  wrapperClassName="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                />
-                <Bar
-                  dataKey="value"
-                  name={chartData[0]?.label || 'Value'}
-                  fill="#17B897"
-                  radius={[4, 4, 0, 0]}
-
-                  // Add these props to prevent hover effect
-                  isAnimationActive={false}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        )}
-      </div>
-    </CardContent>
-  </Card>
-
-  {/* Right Side: Top Domains */}
-  <Card className="flex flex-col h-full border border-[#17B89733] bg-white backdrop-blur-sm shadow-sm dark:border-cyan-800/50 dark:bg-cyan-950/30">
-    <CardHeader>
-      <div className="flex justify-between items-center">
-        <CardTitle className="flex items-center text-black dark:text-white">
-          <div className="w-2 h-5 bg-[#17B897] dark:bg-cyan-400 rounded-full mr-2"></div>
-          Top Domains
-        </CardTitle>
-
-        {/* Custom Dropdown */}
-        <div className="relative mt-2">
-          <button
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="flex items-center justify-between w-48 px-4 py-2 text-sm font-medium text-black bg-white border border-[#17B89733] rounded-lg hover:bg-[#D4F5E3] focus:outline-none focus:ring-2 focus:ring-[#17B897] dark:text-cyan-300 dark:bg-cyan-900/50 dark:border-cyan-700 dark:hover:bg-cyan-800/50 dark:focus:ring-cyan-500"
-          >
-            <span className="flex items-center">
-              {metricOptions.find(opt => opt.value === activeTab)?.icon}
-              <span className="ml-2">
-                {metricOptions.find(opt => opt.value === activeTab)?.label}
-              </span>
-            </span>
-            <ChevronDown
-              className={`w-4 h-4 ml-2 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
-            />
-          </button>
-
-          {isDropdownOpen && (
-            <div className="absolute right-0 z-10 w-48 mt-1 bg-white border border-[#17B89733] rounded-lg shadow-lg dark:bg-cyan-950 dark:border-cyan-800">
-              <div className="py-1">
-                {metricOptions.map((option) => (
-                  <button
-                    key={option.value}
-                    onClick={() => {
-                      setActiveTab(option.value);
-                      setIsDropdownOpen(false);
-                    }}
-                    className={`flex items-center w-full px-4 py-2 text-sm text-left ${activeTab === option.value
-                        ? 'text-[#17B897] bg-[#D4F5E3] dark:text-cyan-300 dark:bg-cyan-900/50'
-                        : 'text-black hover:bg-[#D4F5E3] dark:text-gray-300 dark:hover:bg-cyan-900/30'
-                      }`}
-                  >
-                    {option.icon}
-                    <span className="ml-2">{option.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-      <CardDescription className="text-black/60 dark:text-cyan-300">
-        {getMetricDescription(activeTab)}
-      </CardDescription>
-    </CardHeader>
-
-    <CardContent className="flex-1 overflow-y-auto">
-      <div className="space-y-3 pr-2">
-        {activeTab === 'da' && topDomains.da.map((domain, index) => renderDomainCard(domain, index))}
-        {activeTab === 'dr' && topDomains.dr.map((domain, index) => renderDomainCard(domain, index))}
-        {activeTab === 'tf' && topDomains.tf.map((domain, index) => renderDomainCard(domain, index))}
-        {activeTab === 'cf' && topDomains.cf.map((domain, index) => renderDomainCard(domain, index))}
-        {activeTab === 'score' && topDomains.score.map((domain, index) => renderDomainCard(domain, index))}
-        {activeTab === 'refDomains' && topDomains.refDomains.map((domain, index) => renderDomainCard(domain, index))}
-        {activeTab === 'authLinks' && topDomains.authLinks.map((domain, index) => renderDomainCard(domain, index))}
-        {activeTab === 'traffic' && hasTrafficData && topDomains.traffic.map((domain, index) => renderDomainCard(domain, index))}
-        {activeTab === 'age' && topDomains.age.map((domain, index) => renderDomainCard(domain, index))}
-      </div>
-    </CardContent>
-  </Card>
-</div>
 
 
 
@@ -816,7 +884,7 @@ export function TopDomainsSection() {
                   </div>
 
                   <div>
-                    <div className="bg-white border border-[#33BDC7]/50 p-6 mb-6 dark:bg-cyan-900/20 dark:border-cyan-800/50">
+                    <div className="bg-[#D4F5E3] border border-[#33BDC7]/50 p-6 mb-6 dark:bg-cyan-900/20 dark:border-cyan-800/50">
                       <h3 className="text-lg font-semibold text-black dark:text-white mb-4">Pricing Details</h3>
                       <div className="space-y-4">
                         <div className="flex justify-between items-center">
@@ -850,7 +918,7 @@ export function TopDomainsSection() {
                       </div>
                     </div>
 
-                    <div className="bg-white border border-[#33BDC7]/50 p-6 dark:bg-cyan-900/20 dark:border-cyan-800/50">
+                    <div className="bg-[#D4F5E3] border border-[#33BDC7]/50 p-6 dark:bg-cyan-900/20 dark:border-cyan-800/50">
                       <h3 className="text-lg font-semibold text-black dark:text-white mb-4">Domain Tags</h3>
                       <div className="flex flex-wrap gap-2">
                         {selectedDomain.tags.map((tag) => (

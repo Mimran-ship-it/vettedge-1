@@ -393,7 +393,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
   }
 
   return (
-    <div className="space-y-6 pt-8 dark:bg-gray-900 dark:text-gray-100">
+    <div className="space-y-6 pt-8 dark:bg-gray-800 dark:text-gray-100">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white">
           Filters
@@ -404,7 +404,7 @@ export function DomainFilters({ onFilterChange, availableTags, currentFilters, o
             variant="ghost"
             size="sm"
             onClick={onCloseSidebar}
-            className="h-8 flex text-white bg-black hover:text-black items-center"
+            className="h-8 flex text-white bg-black dark:bg-gray-700 hover:text-black items-center"
           >
             <X className="h-4 w-4 text-white hover:text-black mr-1" /> Close filters
           </Button>
