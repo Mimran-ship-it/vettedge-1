@@ -628,44 +628,58 @@ export function TopDomainsSection() {
                       </div>
 
                       {/* Medium to Large Screen Chart - Vertical Bar Chart */}
-                      <div className="hidden sm:block h-full">
-                        <div className="w-[120%] sm:w-full ms-[-3rem] sm:ms-0 h-full">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
-                              <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" className="dark:stroke-[#1e4a3e]" />
-                              <XAxis
-                                dataKey="name"
-                                stroke="#111827"
-                                tick={{ fontSize: 10, fill: '#111827' }}
-                                
-                              angle={-10}
-                                className="dark:[&_*]:fill-white  "
-                              />
-                              <YAxis
-                                stroke="#111827"
-                                tick={{ fontSize: 12, fill: '#111827' }}
-                                className="dark:[&_*]:fill-white"
-                              />
-                              <Tooltip
-                                contentStyle={{
-                                  backgroundColor: '#ffffff',
-                                  border: '1px solid #cbd5e1',
-                                  borderRadius: '0.5rem',
-                                }}
-                                itemStyle={{ color: '#111827' }}
-                                labelStyle={{ color: '#111827' }}
-                                formatter={(value) => [value, chartData[0]?.label || 'Value']}
-                              />
-                              <Bar
-                                dataKey="value"
-                                name={chartData[0]?.label || 'Value'}
-                                fill="#17B897"
-                                radius={[4, 4, 0, 0]}
-                              />
-                            </BarChart>
-                          </ResponsiveContainer>
-                        </div>
-                      </div>
+                      <div className="hidden sm:block mb-10 h-full">
+  <div className="w-[120%] sm:w-full ms-[-3rem] sm:ms-0 h-full">
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart
+        data={chartData}
+        margin={{ top: 20, right: 20, left: 0, bottom: 50 }} // extra bottom margin for vertical labels
+      >
+        <CartesianGrid
+          strokeDasharray="3 3"
+          stroke="#cbd5e1"
+          className="dark:stroke-[#1e4a3e]"
+        />
+        <XAxis
+          dataKey="name"
+          stroke="#111827"
+          tick={{ fontSize: 10, fill: '#111827' }}
+          angle={-90} // rotate labels 90 degrees (negative for upward rotation)
+          textAnchor="end" // align the text properly
+          interval={0} // show all labels
+          dy={3} // push labels slightly down
+          className="dark:[&_*]:fill-white"
+          tickFormatter={(name) =>
+            name.length > 10 ? `${name.slice(0, 8)}...` : name
+          } // truncate long names
+        />
+        <YAxis
+          stroke="#111827"
+          tick={{ fontSize: 12, fill: '#111827' }}
+          className="dark:[&_*]:fill-white"
+        />
+        <Tooltip
+          contentStyle={{
+            backgroundColor: '#ffffff',
+            border: '1px solid #cbd5e1',
+            borderRadius: '0.5rem',
+          }}
+          itemStyle={{ color: '#111827' }}
+          labelStyle={{ color: '#111827' }}
+          formatter={(value) => [value, chartData[0]?.label || 'Value']}
+        />
+        <Bar
+          dataKey="value"
+          name={chartData[0]?.label || 'Value'}
+          fill="#17B897"
+          radius={[4, 4, 0, 0]}
+          barSize={40} // thin bars
+        />
+      </BarChart>
+    </ResponsiveContainer>
+  </div>
+</div>
+
                     </>
                   )}
                 </div>
