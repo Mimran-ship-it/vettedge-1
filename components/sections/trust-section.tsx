@@ -141,101 +141,105 @@ export function TrustSection() {
           {/* Features Grid - Right side on large screens */}
           <div className="lg:w-3/5">
             {/* Mobile L-shaped layout */}
-            <div className="sm:hidden space-y-0.5">
+            <div className="sm:hidden space-y-0">
   {/* L-shape 1: Green theme */}
   <motion.div
     initial="hidden"
     whileInView="show"
     viewport={{ once: true }}
     variants={fadeUp}
-    className="relative min-h-[220px] w-full  rounded-none p-0 overflow-hidden bg-white dark:bg-gray-800 "
+    className="relative min-h-[220px] w-full z-[99999]  rounded-none p-0 overflow-hidden "
   >
-    <div className="absolute top-0 left-0 w-1/2 h-1/2 p-6 border-r-2 border-b-2 border-[#36C374] flex items-center justify-center ">
+    <div className="absolute border-r-2 border-l-2 border-t-2 border-[#33BDC7] top-0 left-0 w-full h-1/2 p-6 flex items-center">
+      <p className="text-base text-gray-700 dark:text-gray-200 leading-relaxed font-sans">
+        {features[0].description}
+      </p>
+    </div>
+    <div className="absolute bottom-0 right-0 w-2/3 h-1/2 p-6  border-t-2 border-[#33BDC7] flex items-center justify-center ">
       <h3 className="text-xl font-bold text-[#36C374] text-center font-serif leading-tight">
        
       </h3>
     </div>
-    <div className="absolute top-0 right-0 w-1/2 h-1/2 p-6 border-r-2 border-t-2 border-[#36C374] flex items-center justify-center ">
-      <h3 className="text-xl font-bold text-[#36C374] text-center font-serif leading-tight">
+    <div className="absolute bottom-0 left-0 w-1/3   h-1/2 p-6 border-l-2 border-b-2 border-r-2 border-[#33BDC7] flex items-center justify-center ">
+      <h3 className="text-lg p-2 font-bold text-[#33BDC7] text-center font-serif leading-tight">
         {features[0].title}
+      </h3>
+      
+    </div>
+    
+  </motion.div>
+  <motion.div
+    initial="hidden"
+    whileInView="show"
+    viewport={{ once: true }}
+    variants={fadeUp}
+    className="relative mt-[-5rem] min-h-[220px] w-full  rounded-none p-0 overflow-hidden  "
+  >
+    <div className="absolute top-0 left-0 w-2/3 h-1/2 p-6 border-r-2 border-b-2 border-[#36C374] flex items-center justify-center ">
+      <h3 className="text-xl font-bold text-[#36C374] text-center font-serif leading-tight">
+       
+      </h3>
+    </div>
+    <div className="absolute top-0 right-0 w-1/3   h-1/2 p-6 border-r-2 border-t-2 border-[#36C374] flex items-center justify-center ">
+      <h3 className="text-xl font-bold text-[#36C374] text-center font-serif leading-tight">
+        {features[1].title}
       </h3>
       
     </div>
     <div className="absolute border-r-2 border-l-2 border-b-2 border-[#36C374] bottom-0 left-0 w-full h-1/2 p-6 flex items-center">
       <p className="text-base text-gray-700 dark:text-gray-200 leading-relaxed font-sans">
-        {features[0].description}
+        {features[1].description}
       </p>
     </div>
   </motion.div>
-
   {/* L-shape 2: Cyan theme */}
   <motion.div
     initial="hidden"
     whileInView="show"
     viewport={{ once: true }}
     variants={fadeUp}
-    custom={0.15}
-    className="relative min-h-[220px] w-full border-t-2  border-l-2 border-[#33BDC7] rounded-none p-0 overflow-hidden bg-white dark:bg-gray-800  -mt-0.5"
+    className="relative min-h-[220px] mt-5 w-full z-[99999]  rounded-none p-0 overflow-hidden "
   >
-    <div className="absolute border-r-2 border-[#33BDC7] top-0 left-0 w-full h-1/2 p-6 flex items-center">
-      <p className="text-base text-gray-700 dark:text-gray-200 leading-relaxed font-sans">
-        {features[1].description}
-      </p>
-    </div>
-    
-    <div className="absolute bottom-0 right-0 w-1/2 h-1/2 p-6  border-t-2 border-l-2 border-r-2 border-[#36C374] flex items-center justify-center ">
-    <h3 className="text-xl font-bold  text-[#36C374] text-center font-serif leading-tight">
-        {features[2].title}
-      </h3>
-    </div>
-      <div className="absolute bottom-0 left-0 w-1/2 h-1/2 p-6 border-b-2 border-[#33BDC7] flex items-center justify-center ">
-      <h3 className="text-xl font-bold text-[#33BDC7] text-center font-serif leading-tight">
-        {features[1].title}
-      </h3>
-    </div>
-  </motion.div>
-
-  {/* L-shape 3: Green theme */}
-  <motion.div
-    initial="hidden"
-    whileInView="show"
-    viewport={{ once: true }}
-    variants={fadeUp}
-    custom={0.3}
-    className="relative   min-h-[110px] w-full  rounded-none p-0 overflow-hidden bg-white dark:bg-gray-800 -mt-0.5"
-  >
-   
-    
-    <div className="absolute border-[#36C374] border-l-2 border-r-2 border-b-2 top-0 left-0 w-full h-full p-6 flex items-center">
+    <div className="absolute border-r-2 border-l-2 border-t-2 border-[#33BDC7] top-0 left-0 w-full h-1/2 p-6 flex items-center">
       <p className="text-base text-gray-700 dark:text-gray-200 leading-relaxed font-sans">
         {features[2].description}
       </p>
     </div>
+    <div className="absolute bottom-0 right-0 w-2/3 h-1/2 p-6  border-t-2 border-[#33BDC7] flex items-center justify-center ">
+      <h3 className="text-xl font-bold text-[#33BDC7] text-center font-serif leading-tight">
+       
+      </h3>
+    </div>
+    <div className="absolute bottom-0 left-0 w-1/3   h-1/2 p-6 border-l-2 border-b-2 border-r-2 border-[#33BDC7] flex items-center justify-center ">
+      <h3 className="text-xl font-bold text-[#33BDC7] text-center font-serif leading-tight">
+        {features[2].title}
+      </h3>
+      
+    </div>
+    
   </motion.div>
-
-  {/* L-shape 4: Cyan theme */}
   <motion.div
     initial="hidden"
     whileInView="show"
     viewport={{ once: true }}
     variants={fadeUp}
-    custom={0.45}
-    className="relative min-h-[220px] w-full rounded-none p-0 overflow-hidden bg-white dark:bg-gray-800 -mt-0.5"
+    className="relative mt-[-5rem] min-h-[220px] w-full  rounded-none p-0 overflow-hidden  "
   >
-    <div className="absolute top-0 left-0 border-t-2 border-r-2 border-l-2 border-[#33BDC7]  w-full h-1/2 p-6 flex items-center">
+    <div className="absolute top-0 left-0 w-2/3 h-1/2 p-6 border-r-2 border-b-2 border-[#36C374] flex items-center justify-center ">
+      <h3 className="text-xl font-bold text-[#36C374] text-center font-serif leading-tight">
+       
+      </h3>
+    </div>
+    <div className="absolute top-0 right-0 w-1/3   h-1/2 p-6 border-r-2 border-t-2 border-[#36C374] flex items-center justify-center ">
+      <h3 className="text-xl font-bold text-[#36C374] text-center font-serif leading-tight">
+        {features[3].title}
+      </h3>
+      
+    </div>
+    <div className="absolute border-r-2 border-l-2 border-b-2 border-[#36C374] bottom-0 left-0 w-full h-1/2 p-6 flex items-center">
       <p className="text-base text-gray-700 dark:text-gray-200 leading-relaxed font-sans">
         {features[3].description}
       </p>
-    </div>
-    <div className="absolute bottom-0 right-0 w-1/2 h-1/2 p-6 border-t-2 border-l-2 border-[#33BDC7] flex items-center justify-center ">
-      <h3 className="text-xl font-bold text-[#33BDC7] text-center font-serif leading-tight">
-      
-      </h3>
-    </div>
-    <div className="absolute bottom-0 left-0 w-1/2 h-1/2 p-6 border-l-2 border-b-2  border-[#33BDC7] flex items-center justify-center ">
-      <h3 className="text-xl font-bold text-[#33BDC7] text-center font-serif leading-tight">
-        {features[3].title}
-      </h3>
     </div>
   </motion.div>
 </div>

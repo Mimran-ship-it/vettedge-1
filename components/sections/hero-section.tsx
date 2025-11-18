@@ -104,31 +104,35 @@ export function HeroSection() {
 
             {/* Search Bar */}
             <motion.div
-              className="p-6 max-w-2xl mx-auto lg:mx-0"
+              className="px-3 max-w-2xl mx-auto lg:mx-0"
               variants={fadeUp}
               custom={0.4}
             >
-              <form onSubmit={handleSearch} className="space-y-4">
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 h-6 w-6" />
-                  <Input
-                    placeholder="Search your domain... (e.g., tech, marketing, health)"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-12 h-14 text-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-[#33BDC7]"
-                  />
-                </div>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="w-full sm:w-auto flex-1 bg-[#38C172] hover:bg-[#30c97c] text-white font-semibold h-12 text-lg shadow hover:shadow-md transition-all duration-200"
-                  >
-                    <Search className="h-5 w-5 mr-2 py-2" />
-                    Search Domains
-                  </Button>
-                </div>
-              </form>
+         <form onSubmit={handleSearch} className="w-full">
+  <div className="relative w-full">
+    {/* Search Icon */}
+    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 h-6 w-6" />
+
+    {/* Input Field */}
+    <input
+      type="text"
+      placeholder="Search your domain... (e.g., tech, marketing, health)"
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      className="w-full h-14 pl-12 pr-32 text-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 placeholder:text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#33BDC7] transition-all"
+    />
+
+    {/* Inline Search Button */}
+    <button
+      type="submit"
+      className="absolute right-1 top-1/2 transform -translate-y-1/2 sm:h-10 h-9 px-4 bg-[#33BDC7] hover:bg-[#2ba9b8] text-white font-semibold rounded-lg flex items-center justify-center text-lg shadow-md transition-all duration-200"
+    >
+      <Search className="sm:h-4 sm:w-4 h-3 w-3 mr-2" />
+      Search
+    </button>
+  </div>
+</form>
+
             </motion.div>
           </motion.div>
 
@@ -243,7 +247,7 @@ export function HeroSection() {
                   ) : (
                     <>
                       <Button
-                        className="w-full bg-[#38C172] hover:bg-[#30c97c] text-white font-semibold h-12 sm:h-14 text-base sm:text-lg shadow hover:shadow-md transform hover:scale-[1.02] transition-all duration-200"
+                        className="w-full  text-black bg-transparent hover:bg-transparent font-semibold h-12 sm:h-14 text-base sm:text-lg  transform hover:scale-[1.02] transition-all duration-200"
                         size="lg"
                         asChild
                       >

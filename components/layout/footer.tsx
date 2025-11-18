@@ -44,18 +44,18 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* Logo & Social */}
           <div className="lg:col-span-2 flex flex-col gap-4 pb-0">
-            <Link href="/" className="flex items-center space-x-">
-              <Image
-                src="/logo.png"
-                alt="Vettedge Logo"
-                width={55}
-                height={60}
-                className=" scale-125"
-              />
-              <h2 className="text-xl text-black dark:text-white transition-all duration-300 tracking-wide">
-                Vettedge.domains
-              </h2>
-            </Link>
+          <div className="flex items-center">
+                <Image
+                  src="/shihlogo.png"
+                  alt="Vettedge Logo"
+                  width={40}
+                  height={30}
+                  className="object-contain"
+                />
+                <span className="text-sm sm:text-sm md:text-xl font-semibold text-gray-900 dark:text-white ml-">
+                  Vettedge.domains
+                </span>
+              </div>
 
             <div className="border-l-4 border-[#38C172] pl-4 mt-2 text-sm italic text-gray-700 dark:text-gray-400">
               <p>
