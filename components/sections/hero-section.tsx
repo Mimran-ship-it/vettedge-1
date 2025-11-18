@@ -74,7 +74,7 @@ export function HeroSection() {
     <section className="relative bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col overflow-hidden text-gray-800 dark:text-gray-100">
       <div className="relative flex-1 flex items-center justify-center px-4 sm:px-2 lg:px-8 py-12">
         <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-y-16 gap-x-10 items-center">
-          
+
           {/* Left Content */}
           <motion.div
             className="space-y-10 text-center lg:text-left"
@@ -84,7 +84,7 @@ export function HeroSection() {
             custom={0}
           >
             <motion.div className="space-y-6" variants={fadeUp} custom={0.2}>
-              <Badge 
+              <Badge
                 variant="outline"
                 className="mb-4 px-4 py-2 border-[#38C172] text-[#38C172] font-medium"
               >
@@ -108,30 +108,30 @@ export function HeroSection() {
               variants={fadeUp}
               custom={0.4}
             >
-         <form onSubmit={handleSearch} className="w-full">
-  <div className="relative w-full">
-    {/* Search Icon */}
-    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 h-6 w-6" />
+              <form onSubmit={handleSearch} className="w-full">
+                <div className="relative w-full">
+                  {/* Search Icon */}
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 h-6 w-6" />
 
-    {/* Input Field */}
-    <input
-      type="text"
-      placeholder="Search your domain... (e.g., tech, marketing, health)"
-      value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
-      className="w-full h-14 pl-12 pr-32 text-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 placeholder:text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#33BDC7] transition-all"
-    />
+                  {/* Input Field */}
+                  <input
+                    type="text"
+                    placeholder="Search your domain... (e.g., tech, marketing, health)"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full h-14 pl-12 pr-32 text-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 placeholder:text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#33BDC7] transition-all"
+                  />
 
-    {/* Inline Search Button */}
-    <button
-      type="submit"
-      className="absolute right-1 top-1/2 transform -translate-y-1/2 sm:h-10 h-9 px-4 bg-[#33BDC7] hover:bg-[#2ba9b8] text-white font-semibold rounded-lg flex items-center justify-center text-lg shadow-md transition-all duration-200"
-    >
-      <Search className="sm:h-4 sm:w-4 h-3 w-3 mr-2" />
-      Search
-    </button>
-  </div>
-</form>
+                  {/* Inline Search Button */}
+                  <button
+                    type="submit"
+                    className="absolute right-1 top-1/2 transform -translate-y-1/2 sm:h-10 h-9 px-4 bg-[#33BDC7] hover:bg-[#2ba9b8] text-white font-semibold rounded-lg flex items-center justify-center text-lg shadow-md transition-all duration-200"
+                  >
+                    <Search className="sm:h-4 sm:w-4 h-3 w-3 mr-2" />
+                    Search
+                  </button>
+                </div>
+              </form>
 
             </motion.div>
           </motion.div>
@@ -145,7 +145,7 @@ export function HeroSection() {
           >
             <Card className="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02]">
               <CardContent className="p-4 sm:p-6 md:p-8 space-y-2 md:space-y-8">
-                
+
                 {/* Features */}
                 <motion.div
                   className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-3"
@@ -247,7 +247,7 @@ export function HeroSection() {
                   ) : (
                     <>
                       <Button
-                        className="w-full  text-black bg-transparent hover:bg-transparent font-semibold h-12 sm:h-14 text-base sm:text-lg  transform hover:scale-[1.02] transition-all duration-200"
+                        className="w-full  text- dark:text-white bg-transparent hover:bg-transparent font-semibold h-12 sm:h-14 text-base sm:text-lg  transform hover:scale-[1.02] transition-all duration-200"
                         size="lg"
                         asChild
                       >

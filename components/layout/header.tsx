@@ -178,8 +178,8 @@ export function Header() {
               
               {/* Wishlist */}
               <Link href="/wishlist" className="relative">
-                <Button variant="ghost" size="sm">
-                  <Heart className="h-5 w-5" />
+                <Button variant="ghost" size="sm" className="rounded-full">
+                  <Heart className="h-5 w-5 " />
                   {wishlistCount > 0 && (
                     <Badge className="absolute bg-[#33BDC7] -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
                       {wishlistCount}
@@ -190,8 +190,8 @@ export function Header() {
               
               {/* Cart */}
               <Link href="/cart" className="relative">
-                <Button variant="ghost" size="sm">
-                  <ShoppingCart className="h-5 w-5" />
+                <Button variant="ghost" size="sm" className="rounded-full">
+                  <ShoppingCart className="h-5 w-5 " />
                   {cartItemsCount > 0 && (
                     <Badge className="absolute bg-[#33BDC7] -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
                       {cartItemsCount}

@@ -81,16 +81,16 @@ export default function DomainsPage() {
   const [sidebarBottomOffset, setSidebarBottomOffset] = useState(0)
   const footerRef = useRef<HTMLElement>(null)
   const searchParams = useSearchParams()
-  
+
   // Initialize filters from URL parameters
   useEffect(() => {
     const aged = searchParams?.get('aged') === 'true'
     const traffic = searchParams?.get('traffic') === 'true'
     const isHot = searchParams?.get('isHot') === 'true'
-    
+
     let newFilters = { ...defaultFilters }
     let shouldShowFilters = false
-    
+
     if (aged) {
       newFilters.type = 'aged'
       shouldShowFilters = true
@@ -103,31 +103,31 @@ export default function DomainsPage() {
       newFilters.isHot = true
       shouldShowFilters = true
     }
-    
+
     if (shouldShowFilters) {
       setActiveFilters(newFilters)
       setShowFilters(true)
     }
-    
+
   }, [searchParams])
-  
+
   useEffect(() => {
     const urlSearch = searchParams?.get("search")
     if (urlSearch) setSearchQuery(urlSearch)
     fetchDomains()
   }, [searchParams])
-  
+
   const fetchDomains = async () => {
     try {
       const res = await fetch("/api/domains")
       if (!res.ok) throw new Error(`HTTP error: ${res.status}`)
       const data: Domain[] = await res.json()
       setDomains(data)
-      
+
       // Extract unique tags dynamically
       const tagsSet = new Set<string>()
       const tldCountMap: Record<string, number> = {}
-      
+
       data.forEach((d) => {
         // Extract TLD (everything after the last dot)
         const parts = d.name.split('.')
@@ -135,14 +135,14 @@ export default function DomainsPage() {
           const tld = parts[parts.length - 1].toLowerCase()
           tldCountMap[tld] = (tldCountMap[tld] || 0) + 1
         }
-        
+
         // Handle tags
         d.tags?.forEach((tag) => tagsSet.add(tag))
       })
-      
+
       setAvailableTags(Array.from(tagsSet))
       setTldCounts(tldCountMap)
-      
+
       // Apply initial sorting without filters
       const sorted = sortDomains(data, sortBy)
       setFilteredDomains(sorted)
@@ -154,7 +154,7 @@ export default function DomainsPage() {
       setLoading(false)
     }
   }
-  
+
   // Apply filters whenever activeFilters, domains, searchQuery, or sortBy changes
   useEffect(() => {
     if (domains.length > 0) {
@@ -165,10 +165,10 @@ export default function DomainsPage() {
   // Monitor scroll position and adjust sidebar to avoid footer overlap
   useEffect(() => {
     let observer: IntersectionObserver | null = null
-    
+
     const handleScroll = () => {
       if (typeof window === 'undefined') return
-      
+
       const footer = footerRef.current
       if (!footer) {
         setSidebarBottomOffset(0)
@@ -177,10 +177,10 @@ export default function DomainsPage() {
 
       const footerRect = footer.getBoundingClientRect()
       const viewportHeight = window.innerHeight
-      
+
       // Calculate how much of the footer is visible in the viewport
       const footerTop = footerRect.top
-      
+
       // If footer is entering the viewport from bottom
       if (footerTop < viewportHeight) {
         // Calculate the overlap: how much space the footer takes from the bottom
@@ -229,21 +229,21 @@ export default function DomainsPage() {
       }
     }
   }, [loading]) // Re-run when loading completes to ensure footer is rendered
-  
+
   const sortDomains = useCallback((domains: Domain[], sortOption: SortOption): Domain[] => {
     const sorted = [...domains]
-    
+
     switch (sortOption) {
       case "price-asc":
         return sorted.sort((a, b) => Number(a.price) - Number(b.price))
       case "price-desc":
         return sorted.sort((a, b) => Number(b.price) - Number(a.price))
       case "newest":
-        return sorted.sort((a, b) => 
+        return sorted.sort((a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         )
       case "oldest":
-        return sorted.sort((a, b) => 
+        return sorted.sort((a, b) =>
           new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
         )
       case "domainRank-desc":
@@ -266,10 +266,10 @@ export default function DomainsPage() {
         return sorted
     }
   }, [])
-  
+
   const applyFilters = useCallback((filters: ActiveFilters) => {
     let result = [...domains]
-    
+
     // Search query filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase()
@@ -279,43 +279,43 @@ export default function DomainsPage() {
           (d.description && d.description.toLowerCase().includes(q))
       )
     }
-    
+
     // Price range
     result = result.filter(
       (d) => d.price >= filters.priceRange[0] && d.price <= filters.priceRange[1]
     )
-    
+
     // TLDs
     if (filters.tlds.length > 0) {
       result = result.filter((d) =>
         filters.tlds.some((tld) => d.name.toLowerCase().endsWith(tld.toLowerCase()))
       )
     }
-    
+
     // Availability
     if (filters.availability === "available") {
       result = result.filter((d) => d.isAvailable && !d.isSold)
     } else if (filters.availability === "sold") {
       result = result.filter((d) => d.isSold)
     }
-    
+
     // Type
     if (filters.type !== "all") {
       result = result.filter((d) => d.type?.toLowerCase() === filters.type)
     }
-    
+
     // Tags filter
     if (filters.tags.length > 0) {
       result = result.filter((d) =>
         d.tags?.some((tag) => filters.tags.includes(tag))
       )
     }
-    
+
     // isHot filter
     if (filters.isHot) {
       result = result.filter((d) => d.isHot)
     }
-    
+
     // Domain Rank
     result = result.filter(
       (d) => {
@@ -323,7 +323,7 @@ export default function DomainsPage() {
         return d.metrics.domainRank >= filters.domainRankRange[0] && d.metrics.domainRank <= filters.domainRankRange[1]
       }
     )
-    
+
     // Domain Authority
     result = result.filter(
       (d) => {
@@ -346,7 +346,7 @@ export default function DomainsPage() {
         return d.metrics.trustFlow >= filters.trustFlowRange[0] && d.metrics.trustFlow <= filters.trustFlowRange[1]
       }
     )
-    
+
     // Citation Flow
     result = result.filter(
       (d) => {
@@ -354,7 +354,7 @@ export default function DomainsPage() {
         return d.metrics.citationFlow >= filters.citationFlowRange[0] && d.metrics.citationFlow <= filters.citationFlowRange[1]
       }
     )
-    
+
     // Age
     result = result.filter(
       (d) => {
@@ -362,7 +362,7 @@ export default function DomainsPage() {
         return d.metrics.age >= (filters.ageMin || 0)
       }
     )
-    
+
     // Referring Domains
     result = result.filter(
       (d) => {
@@ -370,7 +370,7 @@ export default function DomainsPage() {
         return d.metrics.referringDomains >= (filters.referringDomainsMin || 0)
       }
     )
-    
+
     // Authority Links
     result = result.filter(
       (d) => {
@@ -378,7 +378,7 @@ export default function DomainsPage() {
         return (d.metrics.authorityLinksCount || 0) >= (filters.authorityLinksMin || 0)
       }
     )
-    
+
     // Monthly Traffic
     result = result.filter(
       (d) => {
@@ -386,16 +386,16 @@ export default function DomainsPage() {
         return d.metrics.monthlyTraffic >= (filters.monthlyTrafficMin || 0)
       }
     )
-    
+
     // Apply sorting
     const sorted = sortDomains(result, sortBy)
     setFilteredDomains(sorted)
   }, [domains, searchQuery, sortBy, sortDomains])
-  
+
   const applyFiltersWithSorting = (filters: ActiveFilters) => {
     setActiveFilters(filters)
   }
-  
+
   const handleSortChange = (newSortBy: SortOption) => {
     setSortBy(newSortBy)
   }
@@ -404,21 +404,21 @@ export default function DomainsPage() {
     setShowFilters(true)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
-  
+
   const handleSearchChange = (value: string) => {
     setSearchQuery(value)
   }
-  
+
   const resetFilters = () => {
     setSearchQuery("")
     setActiveFilters(defaultFilters)
     setSortBy("price-desc")
   }
-  
+
   const handleFilterSaved = () => {
     setRefreshTrigger(prev => prev + 1)
   }
-  
+
   const removeFilter = (filterType: string) => {
     if (filterType === "type") {
       setActiveFilters(prev => ({ ...prev, type: "all" }))
@@ -433,23 +433,23 @@ export default function DomainsPage() {
       <main className="max-w-8xl sm:ms-0 sm:px-6 lg:px-16 pt-24 pb-28 lg:pb-8">
         {/* Header Section */}
         <div className={`mb-10 text-center transition-all duration-300 ease-in-out ${showDesktopSidebar ? "lg:ml-[22%]" : "lg:ml-14"}`}>
-          <h1 className="sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+          <h1 className="text-2xl  sm:text-4xl font-bold text-gray-900 dark:text-white mb-3">
             Domain Inventory
           </h1>
           <p className="hidden sm:block text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-  Browse our premium collection of domain names with detailed metrics and analytics
-</p>
+            Browse our premium collection of domain names with detailed metrics and analytics
+          </p>
 
         </div>
-        
+
         {/* Layout: Sidebar (filters) on the left, results on the right */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar - Fixed on desktop, hidden on mobile */}
           <aside
             id="filtersSidebar"
             className={`hidden lg:block w-[22%] fixed top-16 left-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto shadow-sm z-10 transition-all duration-300 ease-in-out ${showDesktopSidebar ? "translate-x-0" : "-translate-x-full"}`}
-            style={{ 
-              height: `calc(100vh - 4rem - ${sidebarBottomOffset}px)`, 
+            style={{
+              height: `calc(100vh - 4rem - ${sidebarBottomOffset}px)`,
               maxHeight: `calc(100vh - 4rem - ${sidebarBottomOffset}px)`,
               bottom: sidebarBottomOffset > 0 ? `${sidebarBottomOffset}px` : 'auto'
             }}
@@ -487,10 +487,10 @@ export default function DomainsPage() {
 
           {/* Collapsed rail (desktop) */}
           {!showDesktopSidebar && (
-            <div 
+            <div
               className="hidden lg:flex flex-col items-center gap-2 w-14 fixed top-16 left-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 z-10 py-4 transition-all duration-300"
-              style={{ 
-                height: `calc(100vh - 4rem - ${sidebarBottomOffset}px)`, 
+              style={{
+                height: `calc(100vh - 4rem - ${sidebarBottomOffset}px)`,
                 maxHeight: `calc(100vh - 4rem - ${sidebarBottomOffset}px)`,
                 bottom: sidebarBottomOffset > 0 ? `${sidebarBottomOffset}px` : 'auto'
               }}
@@ -548,84 +548,84 @@ export default function DomainsPage() {
             )}
 
             {/* Desktop rail handles opening; no separate button here */}
-{/* Search & Controls Bar - Hidden on mobile */}
-<div className="hidden md:block bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 mb-6">
-  <div className="flex flex-col md:flex-row gap-4">
-    <div className="flex-1 relative">
-      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-      <Input
-        placeholder="Search domains by name or keyword..."
-        value={searchQuery}
-        onChange={(e) => handleSearchChange(e.target.value)}
-        className="pl-10 h-12 rounded-lg border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-      />
-    </div>
+            {/* Search & Controls Bar - Hidden on mobile */}
+            <div className="hidden md:block bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 mb-6">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                  <Input
+                    placeholder="Search domains by name or keyword..."
+                    value={searchQuery}
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                    className="pl-10 h-12 rounded-lg border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
 
-    <div className="flex gap-2   "> 
-      <Select  value={sortBy} onValueChange={handleSortChange}>
-        <SelectTrigger className="w-full md:w-60 h-12 rounded-lg border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-          <ArrowUpDown className="h-5 w-5 mr-2" />
-          <SelectValue placeholder="Sort by" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="price-asc">Price: Low to High</SelectItem>
-          <SelectItem value="price-desc">Price: High to Low</SelectItem>
-          <SelectItem value="newest">Newest First</SelectItem>
-          <SelectItem value="oldest">Oldest First</SelectItem>
-          <SelectItem value="domainRank-desc">Domain Rank: High to Low</SelectItem>
-          <SelectItem value="domainAuthority-desc">Domain Authority: High to Low</SelectItem>
-          <SelectItem value="score-desc">Score: High to Low</SelectItem>
-          <SelectItem value="age-desc">Age: Oldest First</SelectItem>
-          <SelectItem value="referringDomains-desc">
-            Referring Domains: High to Low
-          </SelectItem>
-          <SelectItem value="monthlyTraffic-desc">
-            Monthly Traffic: High to Low
-          </SelectItem>
-        </SelectContent>
-      </Select>
+                <div className="flex gap-2   ">
+                  <Select value={sortBy} onValueChange={handleSortChange}>
+                    <SelectTrigger className="w-full md:w-60 h-12 rounded-lg border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                      <ArrowUpDown className="h-5 w-5 mr-2" />
+                      <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                      <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                      <SelectItem value="newest">Newest First</SelectItem>
+                      <SelectItem value="oldest">Oldest First</SelectItem>
+                      <SelectItem value="domainRank-desc">Domain Rank: High to Low</SelectItem>
+                      <SelectItem value="domainAuthority-desc">Domain Authority: High to Low</SelectItem>
+                      <SelectItem value="score-desc">Score: High to Low</SelectItem>
+                      <SelectItem value="age-desc">Age: Oldest First</SelectItem>
+                      <SelectItem value="referringDomains-desc">
+                        Referring Domains: High to Low
+                      </SelectItem>
+                      <SelectItem value="monthlyTraffic-desc">
+                        Monthly Traffic: High to Low
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
 
-       
-    </div>
-  </div>
 
-  {/* Active Filters Display */}
-  <div className="mt-4 flex flex-wrap gap-2">
-    {activeFilters.type !== "all" && (
-      <Badge variant="secondary" className="flex items-center gap-1 pl-2 pr-1 py-1">
-        {activeFilters.type === "aged" ? "Aged Domains" : "Traffic Domains"}
-        <button 
-          onClick={() => removeFilter("type")}
-          className="ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
-        >
-          <X className="h-3 w-3" />
-        </button>
-      </Badge>
-    )}
-    {activeFilters.isHot && (
-      <Badge variant="destructive" className="flex items-center gap-1 pl-2 pr-1 py-1">
-        <Flame className="h-3 w-3 mr-1" /> Hot Deals
-        <button 
-          onClick={() => removeFilter("isHot")}
-          className="ml-1 rounded-full hover:bg-orange-600"
-        >
-          <X className="h-3 w-3" />
-        </button>
-      </Badge>
-    )}
-    {(activeFilters.type !== "all" || activeFilters.isHot) && (
-      <Button 
-        variant="ghost" 
-        size="sm" 
-        onClick={resetFilters}
-        className="h-6 text-xs px-2"
-      >
-        Clear all
-      </Button>
-    )}
-  </div>
-</div>
-           
+                </div>
+              </div>
+
+              {/* Active Filters Display */}
+              <div className="mt-4 flex flex-wrap gap-2">
+                {activeFilters.type !== "all" && (
+                  <Badge variant="secondary" className="flex items-center gap-1 pl-2 pr-1 py-1">
+                    {activeFilters.type === "aged" ? "Aged Domains" : "Traffic Domains"}
+                    <button
+                      onClick={() => removeFilter("type")}
+                      className="ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </Badge>
+                )}
+                {activeFilters.isHot && (
+                  <Badge variant="destructive" className="flex items-center gap-1 pl-2 pr-1 py-1">
+                    <Flame className="h-3 w-3 mr-1" /> Hot Deals
+                    <button
+                      onClick={() => removeFilter("isHot")}
+                      className="ml-1 rounded-full hover:bg-orange-600"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </Badge>
+                )}
+                {(activeFilters.type !== "all" || activeFilters.isHot) && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={resetFilters}
+                    className="h-6 text-xs px-2"
+                  >
+                    Clear all
+                  </Button>
+                )}
+              </div>
+            </div>
+
             {/* Results Info */}
             <div className="mb-6 flex justify-between items-center">
               <div className="text-gray-600 dark:text-gray-300">
@@ -637,31 +637,14 @@ export default function DomainsPage() {
                   </span>
                 )}
               </div>
-              
-              <div className="sm:hidden flex border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-                <Button
-                  variant={viewMode === "grid" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("grid")}
-                  className="h-9 rounded-none"
-                >
-                  <Grid className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant={viewMode === "list" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("list")}
-                  className="h-9 rounded-none"
-                >
-                  <List className="h-4 w-4" />
-                </Button>
-              </div>
+
+               
             </div>
 
             {/* Domain Cards */}
             {loading ? (
-              <div className={viewMode === "grid" 
-                ? `grid md:grid-cols-2 ${showDesktopSidebar ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-6` 
+              <div className={viewMode === "grid"
+                ? `grid md:grid-cols-2 ${showDesktopSidebar ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-6`
                 : "space-y-4"
               }>
                 {[...Array(6)].map((_, i) => (
@@ -684,8 +667,8 @@ export default function DomainsPage() {
                 ))}
               </div>
             ) : filteredDomains.length > 0 ? (
-              <div className={viewMode === "grid" 
-                ? `grid md:grid-cols-2 ${showDesktopSidebar ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-6` 
+              <div className={viewMode === "grid"
+                ? `grid md:grid-cols-2 ${showDesktopSidebar ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-6`
                 : "space-y-4"
               }>
                 {filteredDomains.map((domain) => (
@@ -711,11 +694,11 @@ export default function DomainsPage() {
           </section>
         </div>
       </main>
-      
+
       {/* Mobile sticky actions */}
-      <div className="fixed inset-x-0 bottom-0 z-50 lg:hidden   px-4 py-3">
+      <div className="fixed inset-x-0 bottom-0 z-50 lg:hidden mr-16   px-4 py-3 mb-1">
         <div className="max-w-8xl mx-auto flex items-center gap-3">
-          <Button className="flex-1 h-12 rounded-lg" variant="outline" onClick={openFiltersMobile}>
+          <Button className="flex-1 h-12 bg-white dark:bg-black rounded-lg" variant="outline" onClick={openFiltersMobile}>
             <Filter className="h-4 w-4 mr-2" /> Filters
           </Button>
           <Button className="flex-1 h-12 rounded-lg" onClick={() => setShowSortSheet(true)}>
@@ -759,7 +742,7 @@ export default function DomainsPage() {
         </DialogContent>
       </Dialog>
       <footer ref={footerRef}>
-        <Footer/>
+        <Footer />
       </footer>
     </div>
   )

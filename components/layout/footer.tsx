@@ -52,7 +52,7 @@ export function Footer() {
                   height={30}
                   className="object-contain"
                 />
-                <span className="text-sm sm:text-sm md:text-xl font-semibold text-gray-900 dark:text-white ml-">
+                <span className=" text-lg md:text-xl font-semibold text-gray-700 dark:text-white ml-">
                   Vettedge.domains
                 </span>
               </div>

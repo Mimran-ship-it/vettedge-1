@@ -213,9 +213,9 @@ export default function DomainDetailsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <Header />
-      <main className="max-w-7xl mx-auto px-2 sm:px-16 pb-8 pt-24">
+      <main className="max-w-7xl mx-auto px-1 sm:px-16 pb-8 pt-20">
         {/* Hero Section */}
-        <div className="bg-white dark:bg-gray-800  shadow-xl p-6 mb-8 border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800  shadow-xl p-4 mb-8 border border-gray-200 dark:border-gray-700">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
@@ -276,7 +276,7 @@ export default function DomainDetailsPage() {
     value="overview"
     className="
       bg-[#33BDC7]/20 text-black dark:text-white
-      data-[state=active]:bg-[#33BDC7] 
+      data-[state=active]:bg-[#30C97C]
       data-[state=active]:text-white
       rounded-lg py-2
       transition
@@ -301,8 +301,8 @@ export default function DomainDetailsPage() {
   <TabsTrigger
     value="history"
     className="
-      bg-[#33BDC7]/20 text-black dark:text-white
-      data-[state=active]:bg-[#33BDC7]
+      bg-yellow-200 text-black dark:text-white
+      data-[state=active]:bg-[#30C97C]
       data-[state=active]:text-white
       rounded-lg py-2
       transition
@@ -313,7 +313,7 @@ export default function DomainDetailsPage() {
 </TabsList>
 
                 <TabsContent value="overview" className="mt-4 ">
-                  <Card className="dark:bg-gray-700   dark:border-gray-600">
+                  <Card className="dark:bg-gray-700   dark:border-gray-600 -mx-4 sm:-mx-8">
                     <CardHeader>
                       <CardTitle className="flex items-center mt-2  gap-2 dark:text-white"><Info className="h-5 w-5" /> Domain Information</CardTitle>
                     </CardHeader>
@@ -367,7 +367,7 @@ export default function DomainDetailsPage() {
                 </TabsContent>
 
                 <TabsContent value="metrics" className="mt-4">
-                  <Card className=" dark:bg-gray-700 dark:border-gray-600">
+                  <Card className=" dark:bg-gray-700 dark:border-gray-600 -mx-4 sm:-mx-8">
                     <CardHeader>
                       <CardTitle className="flex items-center  mt-2 gap-2 dark:text-white"><BarChart3 className="h-5 w-5" /> SEO Metrics</CardTitle>
                     </CardHeader>
@@ -415,19 +415,19 @@ export default function DomainDetailsPage() {
                 </TabsContent>
 
                 <TabsContent value="history" className="mt-4">
-                  <Card className=" dark:bg-gray-700 dark:border-gray-600">
+                  <Card className=" dark:bg-gray-800 dark:border-gray-600 -mx-4 sm:-mx-8">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2  mt-2 dark:text-white"><Clock className="h-5 w-5" /> Domain History</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        <div className="p-4 bg-gray-50 dark:bg-gray-600 ">
+                        <div className="p-2 sm:p-4  bg-gray-50 dark:bg-gray-600 ">
                           <h3 className="font-medium text-gray-900 dark:text-white mb-2">Registration Details</h3>
                           <p className="text-sm text-gray-600 dark:text-gray-300">This domain was first registered in {domain.metrics.year} and has been maintained for {domain.metrics.age} years.</p>
                         </div>
 
                         {domain.metrics.authorityLinksCount > 0 && (
-                          <div className="p-4 bg-gray-50 dark:bg-gray-600 ">
+                          <div className="p-2 sm:p-4  bg-gray-50 dark:bg-gray-600 ">
                             <h3 className="font-medium text-gray-900 dark:text-white mb-2">Authority Backlinks</h3>
 
                             {/* If links exist, show details */}
@@ -490,7 +490,7 @@ export default function DomainDetailsPage() {
                         )}
 
 
-                        <div className="p-4 bg-gray-50 dark:bg-gray-600 ">
+                        <div className="p-2 sm:p-4  bg-gray-50 dark:bg-gray-600 ">
                           <h3 className="font-medium text-gray-900 dark:text-white mb-2">Domain Value</h3>
                           <p className="text-sm text-gray-600 dark:text-gray-300">Based on its age, authority metrics, and traffic, this domain represents a valuable digital asset with strong SEO potential.</p>
                         </div>
