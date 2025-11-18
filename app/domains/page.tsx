@@ -713,7 +713,7 @@ export default function DomainsPage() {
       </main>
       
       {/* Mobile sticky actions */}
-      <div className="fixed inset-x-0 bottom-0 z-50 lg:hidden bg-white/95 dark:bg-gray-900/95 border-t border-gray-200 dark:border-gray-800 backdrop-blur supports-[backdrop-filter]:backdrop-blur px-4 py-3">
+      <div className="fixed inset-x-0 bottom-0 z-50 lg:hidden   px-4 py-3">
         <div className="max-w-8xl mx-auto flex items-center gap-3">
           <Button className="flex-1 h-12 rounded-lg" variant="outline" onClick={openFiltersMobile}>
             <Filter className="h-4 w-4 mr-2" /> Filters
