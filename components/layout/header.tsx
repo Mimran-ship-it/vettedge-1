@@ -214,18 +214,36 @@ export function Header() {
                 ) : user ? (
                   renderUserMenu()
                 ) : (
-                  <div className="hidden md:flex items-center space-x-2">
-                    <Button variant="ghost" size="sm" asChild>
-                      <Link href="/auth/signin" className={linkClass("/auth/signin")}>
-                        Sign In
-                      </Link>
-                    </Button>
-                    <Button size="sm" asChild>
-                      <Link href="/auth/signup" className='hover:text-white'>
-                        Sign Up
-                      </Link>
-                    </Button>
-                  </div>
+              <div className="flex items-center justify-center" >{/* User Auth Dropdown (when not logged in) */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="hidden md:flex items-center justify-center rounded-full"
+                  >
+                    <User className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                  </Button>
+                </DropdownMenuTrigger>
+              
+                <DropdownMenuContent align="end" className="w-40">
+                  <DropdownMenuItem asChild>
+                    <Link href="/auth/signin" className="cursor-pointer">
+                      Sign In
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/auth/signup" className="cursor-pointer">
+                      Sign Up
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Link href={'/domains'}><button className="px-2 py-2 text-sm rounded-md bg-[#1FCAD3] text-white font-semibold shadow-md hover:opacity-90 transition">
+  Find Your Domain
+</button></Link>
+
+              </div>
                 )}
               </div>
               
