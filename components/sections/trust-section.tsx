@@ -150,13 +150,13 @@ export function TrustSection() {
                 variants={fadeUp}
                 className="relative min-h-[220px] w-full z-[99999]  rounded-none p-0 overflow-hidden "
               >
-                <div className="absolute border-r-2 border-l-2 border-t-2 border-[#33BDC7] top-0 left-0 w-full h-1/2 p-6 flex items-center">
+                <div className="absolute border-r-2 border-l-2 border-t-2 border-[#33BDC7] top-0 left-0 w-full h-3/5 p-6 flex items-center">
                   <p className="text-base text-gray-700 dark:text-gray-200 leading-relaxed font-sans">
                     {features[0].description}
                   </p>
                 </div>
                 {/* BOTTOM ROW - FLEX REPLACEMENT */}
-<div className="absolute bottom-0 left-0 flex w-full h-1/2">
+<div className="absolute bottom-0 left-0 flex w-full h-2/5">
 
 {/* LEFT TITLE (previously w-2/5) */}
 <div className="w-[45%] h-full justify-center p-1 border-l-2 border-b-2 border-r-2 border-[#33BDC7] flex items-center  ">
@@ -182,7 +182,7 @@ export function TrustSection() {
                 className="relative mt-[-5rem] min-h-[220px] w-full  rounded-none p-0 overflow-hidden  "
               >
                {/* TOP ROW — FLEX REPLACEMENT */}
-<div className="absolute top-0 left-0 flex w-full h-1/2">
+<div className="absolute top-0 left-0 flex w-full h-2/5">
 
 {/* LEFT BOX (previously w-3/5) */}
 <div className="w-[55%] h-full p-6 border-r-2 border-b-2 border-[#36C374] flex items-center justify-center">
@@ -198,7 +198,7 @@ export function TrustSection() {
 
 </div>
 
-                <div className="absolute border-r-2 border-l-2 border-b-2 border-[#36C374] bottom-0 left-0 w-full h-1/2 p-6 flex items-center">
+                <div className="absolute border-r-2 border-l-2 border-b-2 border-[#36C374] bottom-0 left-0 w-full h-3/5 p-6 flex items-center">
                   <p className="text-base text-gray-700 dark:text-gray-200 leading-relaxed font-sans">
                     {features[1].description}
                   </p>
@@ -212,13 +212,13 @@ export function TrustSection() {
                 variants={fadeUp}
                 className="relative min-h-[220px] mt-5 w-full z-[99999]  rounded-none p-0 overflow-hidden "
               >
-                <div className="absolute border-r-2 border-l-2 border-t-2 border-[#33BDC7] top-0 left-0 w-full h-1/2 p-6 flex items-center">
+                <div className="absolute border-r-2 border-l-2 border-t-2 border-[#33BDC7] top-0 left-0 w-full h-3/5 p-6 flex items-center">
                   <p className="text-base text-gray-700 dark:text-gray-200 leading-relaxed font-sans">
                     {features[2].description}
                   </p>
                 </div>
                {/* BOTTOM ROW — FLEX BASED */}
-<div className="absolute bottom-0 left-0 flex w-full h-1/2">
+<div className="absolute bottom-0 left-0 flex w-full h-2/5">
 
 {/* LEFT TITLE (previously w-2/5) */}
 <div className="w-[45%] h-full p-1 justify-center border-l-2 border-b-2 border-r-2 border-[#33BDC7] flex items-center ">
@@ -243,7 +243,7 @@ export function TrustSection() {
                 variants={fadeUp}
                 className="relative mt-[-5rem] min-h-[220px] w-full  rounded-none p-0 overflow-hidden  "
               >
-                <div className="absolute top-0 left-0 flex w-full h-1/2">
+                <div className="absolute top-0 left-0 flex w-full h-2/5">
   {/* Left Section */}
   <div className="w-[55%] h-full p-6 border-r-2 border-b-2 border-[#36C374] flex items-center justify-center">
     <h3 className="text-xl font-bold text-[#36C374] text-center font-serif leading-tight"></h3>
@@ -257,7 +257,7 @@ export function TrustSection() {
   </div>
 </div>
 
-                <div className="absolute border-r-2 border-l-2 border-b-2 border-[#36C374] bottom-0 left-0 w-full h-1/2 p-6 flex items-center">
+                <div className="absolute border-r-2 border-l-2 border-b-2 border-[#36C374] bottom-0 left-0 w-full h-3/5 p-6 flex items-center">
                   <p className="text-base text-gray-700 dark:text-gray-200 leading-relaxed font-sans">
                     {features[3].description}
                   </p>

@@ -127,8 +127,7 @@ export function HeroSection() {
                     type="submit"
                     className="absolute right-1 top-1/2 transform -translate-y-1/2 sm:h-10 h-9 px-4 bg-[#33BDC7] hover:bg-[#2ba9b8] text-white font-semibold rounded-lg flex items-center justify-center text-lg shadow-md transition-all duration-200"
                   >
-                    <Search className="sm:h-4 sm:w-4 h-3 w-3 mr-2" />
-                    Search
+                       Search
                   </button>
                 </div>
               </form>

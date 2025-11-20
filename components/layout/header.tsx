@@ -239,7 +239,7 @@ export function Header() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Link href={'/domains'}><button className="px-2 py-2 text-sm rounded-md bg-[#1FCAD3] text-white font-semibold shadow-md hover:opacity-90 transition">
+              <Link href={'/domains'}><button className="px-2 sm:flex hidden py-2 text-sm rounded-md bg-[#1FCAD3] text-white font-semibold shadow-md hover:opacity-90 transition">
   Find Your Domain
 </button></Link>
 
