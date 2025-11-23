@@ -169,11 +169,6 @@ export function DomainsShowcase() {
           viewport={{ once: true }}
           variants={fadeInUp}
         >
-          <div className="inline-flex items-center justify-center w-16 h-16 full bg-gradient-to-r from-[#38C172]/10 to-[#33BDC7]/10 mb-6">
-            <div className="text-[#33BDC7]">
-              {meta.icon}
-            </div>
-          </div>
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             <span className="bg-[#33BDC7] bg-clip-text text-transparent">
               {meta.title}
@@ -249,7 +244,7 @@ export function DomainsShowcase() {
               {/* Arrows */}
               <button
                 aria-label="Previous"
-                className="absolute -left-3 sm:-left-4 lg:-left-24   top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 full p-2 lg:p-4 shadow hover:shadow-lg disabled:opacity-40"
+                className="absolute -left-3 sm:-left-4 lg:-left-24  text-red-600 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 full p-2 lg:p-4 shadow hover:shadow-lg disabled:opacity-40"
                 onClick={() => setCurrentIndex((i) => Math.max(0, i - 1))}
                 disabled={currentIndex === 0}
               >
@@ -257,7 +252,7 @@ export function DomainsShowcase() {
               </button>
               <button
                 aria-label="Next"
-                className="absolute -right-3 sm:-right-4 lg:-right-24 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 full p-2 lg:p-4 shadow hover:shadow-lg disabled:opacity-40"
+                className="absolute -right-3 sm:-right-4 lg:-right-24 top-1/2 text-red-600 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 full p-2 lg:p-4 shadow hover:shadow-lg disabled:opacity-40"
                 onClick={() => setCurrentIndex((i) => Math.min(Math.max(0, filtered.length - itemsPerView), i + 1))}
                 disabled={currentIndex >= Math.max(0, filtered.length - itemsPerView)}
               >

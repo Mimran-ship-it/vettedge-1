@@ -93,8 +93,8 @@ export function TrustSection() {
   ]
 
   const trustIndicators = [
-    { icon: Globe, label: "Domains Sold", value: stats ? `${stats.soldDomains}+` : '...' },
-    { icon: ListChecks, label: "Total Listings", value: stats ? `${stats.totalDomains}+` : '...' },
+    { icon: Globe, label: "Domains Sold", value: stats ? `${stats.soldDomains}` : '...' },
+    { icon: ListChecks, label: "Total Listings", value: stats ? `${stats.totalDomains}` : '...' },
     { icon: Store, label: "Years on Market", value: stats ? `${stats.yearsInMarket}+` : '...' },
   ]
 
@@ -140,130 +140,44 @@ export function TrustSection() {
 
           {/* Features Grid - Right side on large screens */}
           <div className="lg:w-3/5 lg:order-1 lg:mr-6">
-            {/* Mobile L-shaped layout */}
-            <div className="sm:hidden space-y-0">
-              {/* L-shape 1: Green theme */}
-              <motion.div
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true }}
-                variants={fadeUp}
-                className="relative min-h-[220px] w-full z-[99999]  rounded-none p-0 overflow-hidden "
-              >
-                <div className="absolute border-r-2 border-l-2 border-t-2 border-[#33BDC7] top-0 left-0 w-full h-3/5 p-6 flex items-center">
-                  <p className="text-base text-gray-700 dark:text-gray-200 leading-relaxed font-sans">
-                    {features[0].description}
-                  </p>
-                </div>
-                {/* BOTTOM ROW - FLEX REPLACEMENT */}
-<div className="absolute bottom-0 left-0 flex w-full h-2/5">
+          
+  {/* Mobile L-shaped layout */}
+  <div className="sm:hidden space-y-6">
+  {features.map((feature, index) => {
+    const Icon = feature.icon;
+    return (
+      <motion.div
+        key={feature.title}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true }}
+        variants={fadeUp}
+        className="feature-card group relative overflow-hidden   backdrop-blur-xl p-2 opacity-0 transition-transform duration-500 hover:-translate-y-1 hover:border-blue-400/60"
+        style={{ animationDelay: `${index * 120}ms` }}
+      >
+        <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.25),_transparent_55%)]" />
 
-{/* LEFT TITLE (previously w-2/5) */}
-<div className="w-[45%] h-full justify-center p-1 border-l-2 border-b-2 border-r-2 border-[#33BDC7] flex items-center  ">
-  <h3 className="text-lg p-2 font-bold text-[#33BDC7] text-center font-serif leading-tight">
-    {features[0].title}
-  </h3>
-</div>
-
-{/* RIGHT EMPTY TITLE (previously w-3/5) */}
-<div className="w-[55%] h-full p-6 border-t-2 border-[#33BDC7] flex items-center justify-center">
-  <h3 className="text-xl font-bold text-[#36C374] text-center font-serif leading-tight"></h3>
-</div>
-
-</div>
-
-
-              </motion.div>
-              <motion.div
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true }}
-                variants={fadeUp}
-                className="relative mt-[-5rem] min-h-[220px] w-full  rounded-none p-0 overflow-hidden  "
-              >
-               {/* TOP ROW — FLEX REPLACEMENT */}
-<div className="absolute top-0 left-0 flex w-full h-2/5">
-
-{/* LEFT BOX (previously w-3/5) */}
-<div className="w-[55%] h-full p-6 border-r-2 border-b-2 border-[#36C374] flex items-center justify-center">
-  <h3 className="text-xl font-bold text-[#36C374] text-center font-serif leading-tight"></h3>
-</div>
-
-{/* RIGHT TITLE (previously w-2/5) */}
-<div className="w-[45%] h-full p-1 justify-center border-r-2 border-t-2 border-[#36C374] flex items-center ">
-  <h3 className="text-xl font-bold text-[#36C374] text-center font-serif leading-tight">
-    {features[1].title}
-  </h3>
-</div>
-
-</div>
-
-                <div className="absolute border-r-2 border-l-2 border-b-2 border-[#36C374] bottom-0 left-0 w-full h-3/5 p-6 flex items-center">
-                  <p className="text-base text-gray-700 dark:text-gray-200 leading-relaxed font-sans">
-                    {features[1].description}
-                  </p>
-                </div>
-              </motion.div>
-              {/* L-shape 2: Cyan theme */}
-              <motion.div
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true }}
-                variants={fadeUp}
-                className="relative min-h-[220px] mt-5 w-full z-[99999]  rounded-none p-0 overflow-hidden "
-              >
-                <div className="absolute border-r-2 border-l-2 border-t-2 border-[#33BDC7] top-0 left-0 w-full h-3/5 p-6 flex items-center">
-                  <p className="text-base text-gray-700 dark:text-gray-200 leading-relaxed font-sans">
-                    {features[2].description}
-                  </p>
-                </div>
-               {/* BOTTOM ROW — FLEX BASED */}
-<div className="absolute bottom-0 left-0 flex w-full h-2/5">
-
-{/* LEFT TITLE (previously w-2/5) */}
-<div className="w-[45%] h-full p-1 justify-center border-l-2 border-b-2 border-r-2 border-[#33BDC7] flex items-center ">
-  <h3 className="text-xl font-bold text-[#33BDC7] text-center font-serif leading-tight">
-    {features[2].title}
-  </h3>
-</div>
-
-{/* RIGHT BOX (previously w-3/5) */}
-<div className="w-[55%] h-full p-6 border-t-2 border-[#33BDC7] flex items-center justify-center">
-  <h3 className="text-xl font-bold text-[#33BDC7] text-center font-serif leading-tight"></h3>
-</div>
-
-</div>
-
-
-              </motion.div>
-              <motion.div
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true }}
-                variants={fadeUp}
-                className="relative mt-[-5rem] min-h-[220px] w-full  rounded-none p-0 overflow-hidden  "
-              >
-                <div className="absolute top-0 left-0 flex w-full h-2/5">
-  {/* Left Section */}
-  <div className="w-[55%] h-full p-6 border-r-2 border-b-2 border-[#36C374] flex items-center justify-center">
-    <h3 className="text-xl font-bold text-[#36C374] text-center font-serif leading-tight"></h3>
-  </div>
-
-  {/* Right Section */}
-  <div className="w-[45%] h-full p-1 justify-center border-t-2 border-r-2 border-[#36C374] flex items-center ">
-    <h3 className="text-xl font-bold text-[#36C374] text-center font-serif leading-tight">
-      {features[3].title}
-    </h3>
-  </div>
-</div>
-
-                <div className="absolute border-r-2 border-l-2 border-b-2 border-[#36C374] bottom-0 left-0 w-full h-3/5 p-6 flex items-center">
-                  <p className="text-base text-gray-700 dark:text-gray-200 leading-relaxed font-sans">
-                    {features[3].description}
-                  </p>
-                </div>
-              </motion.div>
+        <div className="relative flex items-start gap-1">
+          {/* <div className="shrink-0">
+            <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#33BDC7]">
+              <Icon className="h-6 w-6" />
             </div>
+          </div> */}
+          <div>
+            <h3 className="text-lg font-semibold mb-0 text-gray-800 dark:text-[#33BDC7]">
+              {feature.title}
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+              {feature.description}
+            </p>
+          </div>
+        </div>
+      </motion.div>
+    );
+  })}
+</div>
+
+
             {/* Desktop layout (unchanged) */}
             <div className="hidden sm:grid grid-cols-2 gap-4 sm:gap-6">
               {features.map((feature, index) => (
