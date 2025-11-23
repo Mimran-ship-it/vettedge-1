@@ -131,7 +131,7 @@ export default function DomainDetailsPage() {
           url: url,
         })
         toast({
-          title: "Shared successfully",
+          title: "Shared successfully", 
           description: "Domain details have been shared.",
         })
       } catch (error) {

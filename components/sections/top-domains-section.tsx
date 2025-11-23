@@ -524,7 +524,7 @@ export function TopDomainsSection() {
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold tracking-tight text-[#33BDC7] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-green-400 dark:text-transparent dark:bg-clip-text">
-              Domain Analytics Dashboard 
+              Domain Analytics Dashboard   
             </h2>
             <p className="mt-2 text-black/70 dark:text-gray-400">Discover our premium domains with detailed metrics</p>
           </div>
@@ -554,10 +554,10 @@ export function TopDomainsSection() {
 
   return (
     <>
-      <section className="pt-16 px-4 md:px-26  bg-gray-50 dark:bg-gray-900 ">
+      <section className="pt-4 px-4 md:px-26  bg-gray-50 dark:bg-gray-900 ">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="sm:text-3xl md:text-5xl font-bold tracking-tight text-[#33BDC7] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-green-400 dark:text-transparent dark:bg-clip-text">
+            <h2 className="sm:text-3xl text-2xl md:text-5xl font-bold tracking-tight text-[#33BDC7] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-green-400 dark:text-transparent dark:bg-clip-text">
               Domain Analytics Dashboard
             </h2>
             <p className="mt-2 text-black/70 dark:text-gray-400">Discover our premium domains with detailed metrics</p>
@@ -569,7 +569,7 @@ export function TopDomainsSection() {
               <CardHeader>
                 <CardTitle className="mt-4 flex items-center text-black dark:text-white">
                   <div className="w-2 h-5 bg-[#17B897] dark:bg-cyan-400 rounded-full mr-2"></div>
-                  {getChartTitle(activeTab)} Metrics
+                  {getChartTitle(activeTab)}
                 </CardTitle>
                 <CardDescription className="text-black/60 dark:text-cyan-300">
                   Top 5 domains by {getMetricDescription(activeTab).toLowerCase()}

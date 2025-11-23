@@ -172,7 +172,7 @@ export function Header() {
             </nav>
             
             {/* Right Side Actions */}
-            <div className="flex items-center space-x-0  ">
+            <div className="flex items-center  ms-1 space-x-0  ">
               {/* Theme Toggle */}
               <ThemeToggle />
               
