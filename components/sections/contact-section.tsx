@@ -37,7 +37,7 @@ export function ContactSection() {
   ]
 
   return (
-    <section className="pt-20 pb-4 bg-gray-50 dark:bg-gray-800">
+    <section className="pt-20  bg-gray-50 dark:bg-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Heading */}
         <motion.div
@@ -63,7 +63,7 @@ export function ContactSection() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start ">
           {/* Contact Form */}
           <motion.div
             initial="hidden"

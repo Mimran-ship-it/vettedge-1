@@ -234,7 +234,7 @@ export default function ContactForm({
             {variant === "contact" && <Send className="h-6 w-6 mr-2 text-[#33BDC7]" />}
             {headerTitle}
           </CardTitle>
-          <p className={variant === "contact" ? "text-gray-600" : "text-gray-600 text-center"}>
+          <p className={variant === "contact" ? "text-gray-600 dark:text-white" : "text-gray-600 dark:text-white text-center"}>
             {headerDescription}
           </p>
         </CardHeader>

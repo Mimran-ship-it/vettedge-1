@@ -524,7 +524,7 @@ export function TopDomainsSection() {
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold tracking-tight text-[#33BDC7] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-green-400 dark:text-transparent dark:bg-clip-text">
-              Domain Analytics Dashboard
+              Domain Analytics Dashboard 
             </h2>
             <p className="mt-2 text-black/70 dark:text-gray-400">Discover our premium domains with detailed metrics</p>
           </div>
@@ -554,7 +554,7 @@ export function TopDomainsSection() {
 
   return (
     <>
-      <section className="pt-16 px-4 md:px-26  bg-gray-50 dark:from-gray-950 dark:to-cyan-950 dark:bg-gradient-to-br">
+      <section className="pt-16 px-4 md:px-26  bg-gray-50 dark:bg-gray-900 ">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
             <h2 className="sm:text-3xl md:text-5xl font-bold tracking-tight text-[#33BDC7] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-green-400 dark:text-transparent dark:bg-clip-text">

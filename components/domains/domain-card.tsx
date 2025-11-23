@@ -214,10 +214,7 @@ View full details:`;
           text: shareText,
           url: url,
         });
-        toast({
-          title: "Shared Successfully",
-          description: "Domain details have been shared.",
-        });
+       
       } catch (error) {
         console.error('Error sharing:', error);
       }
