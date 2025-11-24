@@ -432,16 +432,16 @@ export function TopDomainsSection() {
     <div
       key={domain._id}
       className={`p-0 rounded-lg cursor-pointer transition-all border ${selectedDomain?._id === domain._id
-          ? 'border-[#17B897] bg-[#D4F5E3] dark:border-cyan-400 dark:bg-cyan-900/20'
-          : 'border-[#17B89733] bg-white dark:border-cyan-800/40 dark:bg-cyan-900/30'
+          ? 'border-[#2BA9B8] bg-[#E6F7F5] dark:border-cyan-400 dark:bg-cyan-900/20'
+          : 'border-[#2BA9B8]/20 bg-white dark:border-cyan-800/40 dark:bg-cyan-900/30'
         }`}
     >
       <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 rounded-lg transition-all ${selectedDomain?._id === domain._id
-          ? 'bg-[#D4F5E3]'
-          : 'bg-white hover:bg-[#D4F5E3]'
+          ? 'bg-[#E6F7F5]'
+          : 'bg-white hover:bg-[#E6F7F5]'
         } dark:border-cyan-800/40 dark:bg-cyan-900/30 dark:hover:bg-cyan-900/40`}>
         <div className="flex items-center space-x-4">
-          <div className="w-10 h-10 rounded-full bg-[#17B89722] flex items-center justify-center text-[#17B897] font-bold dark:bg-cyan-900/50 dark:text-cyan-400">
+          <div className="w-10 h-10 rounded-full bg-[#2BA9B8]/10 flex items-center justify-center text-[#2BA9B8] font-bold dark:bg-cyan-900/50 dark:text-cyan-400">
             {index + 1}
           </div>
           <div>
@@ -456,7 +456,7 @@ export function TopDomainsSection() {
         <Button
           variant="outline"
           size="sm"
-          className="mt-2 sm:mt-0 w-full sm:w-auto border border-[#17B897] hover:bg-[#D4F5E3] text-[#17B897] text-sm px-4 py-2 rounded-lg transition-all dark:border-[#53EAFD] dark:bg-cyan-700/60 dark:hover:bg-cyan-700 dark:text-[#53EAFD]"
+          className="mt-2 sm:mt-0 w-full sm:w-auto border border-[#2BA9B8] hover:bg-[#E6F7F5] text-[#2BA9B8] text-sm px-4 py-2 rounded-lg transition-all dark:border-[#53EAFD] dark:bg-cyan-700/60 dark:hover:bg-cyan-700 dark:text-[#53EAFD]"
           onClick={(e) => {
             e.stopPropagation();
             fetchDomainDetails(domain._id);
@@ -480,15 +480,15 @@ export function TopDomainsSection() {
           ) : (
             <>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div className="p-3 bg-[#D4F5E3] dark:bg-cyan-900/30">
+                <div className="p-3 bg-[#E6F7F5] dark:bg-cyan-900/30">
                   <p className="text-xs text-black/70 dark:text-cyan-300">Trust Flow</p>
                   <p className="text-xl font-bold text-black dark:text-white">{selectedDomain.metrics.trustFlow || 'N/A'}</p>
                 </div>
-                <div className="p-3 bg-[#D4F5E3] dark:bg-cyan-900/30">
+                <div className="p-3 bg-[#E6F7F5] dark:bg-cyan-900/30">
                   <p className="text-xs text-black/70 dark:text-cyan-300">Citation Flow</p>
                   <p className="text-xl font-bold text-black dark:text-white">{selectedDomain.metrics.citationFlow || 'N/A'}</p>
                 </div>
-                <div className="p-3 bg-[#D4F5E3] dark:bg-cyan-900/30">
+                <div className="p-3 bg-[#E6F7F5] dark:bg-cyan-900/30">
                   <p className="text-xs text-black/70 dark:text-cyan-300">Organic Traffic</p>
                   <p className="text-xl font-bold text-black dark:text-white">
                     {selectedDomain.metrics.monthlyTraffic ? selectedDomain.metrics.monthlyTraffic.toLocaleString() : 'N/A'}
@@ -504,7 +504,7 @@ export function TopDomainsSection() {
                   </p>
                 </div>
                 <Button
-                  className="bg-cyan-600 hover:bg-cyan-700 text-white"
+                  className="bg-[#2BA9B8] hover:bg-[#2BA9B8]/90 text-white"
                   onClick={() => handleAddToCart(selectedDomain)}
                 >
                   <ShoppingCart className="h-4 w-4 mr-1" />
@@ -523,14 +523,14 @@ export function TopDomainsSection() {
       <section className="py-16 px-4 md:px-6 bg-gray-50 dark:from-gray-950 dark:to-cyan-950 dark:bg-gradient-to-br">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-tight text-[#33BDC7] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-green-400 dark:text-transparent dark:bg-clip-text">
+            <h2 className="text-3xl font-bold tracking-tight text-[#2BA9B8] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-green-400 dark:text-transparent dark:bg-clip-text">
               Domain Analytics Dashboard   
             </h2>
             <p className="mt-2 text-black/70 dark:text-gray-400">Discover our premium domains with detailed metrics</p>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Skeleton className="h-96 bg-[#D4F5E3] dark:bg-cyan-900/30" />
-            <Skeleton className="h-96 bg-[#D4F5E3] dark:bg-cyan-900/30" />
+            <Skeleton className="h-96 bg-[#E6F7F5] dark:bg-cyan-900/30" />
+            <Skeleton className="h-96 bg-[#E6F7F5] dark:bg-cyan-900/30" />
           </div>
         </div>
       </section>
@@ -557,7 +557,7 @@ export function TopDomainsSection() {
       <section className="pt-4 px-4 md:px-26  bg-gray-50 dark:bg-gray-900 ">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="sm:text-3xl text-2xl md:text-5xl font-bold tracking-tight text-[#33BDC7] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-green-400 dark:text-transparent dark:bg-clip-text">
+            <h2 className="sm:text-3xl text-2xl md:text-5xl font-bold tracking-tight text-[#2BA9B8] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-green-400 dark:text-transparent dark:bg-clip-text">
               Domain Analytics Dashboard
             </h2>
             <p className="mt-2 text-black/70 dark:text-gray-400">Discover our premium domains with detailed metrics</p>
@@ -565,10 +565,10 @@ export function TopDomainsSection() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 items-stretch">
             {/* Left Side: Chart */}
-            <Card className="flex flex-col justify-between h-full border border-[#17B89733] bg-white backdrop-blur-sm shadow-sm dark:border-cyan-800/50 dark:bg-cyan-950/30">
+            <Card className="flex flex-col justify-between h-full border border-[#2BA9B8]/20 bg-white backdrop-blur-sm shadow-sm dark:border-cyan-800/50 dark:bg-cyan-950/30">
               <CardHeader>
                 <CardTitle className="mt-4 flex items-center text-black dark:text-white">
-                  <div className="w-2 h-5 bg-[#17B897] dark:bg-cyan-400 rounded-full mr-2"></div>
+                  <div className="w-2 h-5 bg-[#2BA9B8] dark:bg-cyan-400 rounded-full mr-2"></div>
                   {getChartTitle(activeTab)}
                 </CardTitle>
                 <CardDescription className="text-black/60 dark:text-cyan-300">
@@ -619,7 +619,7 @@ export function TopDomainsSection() {
                             <Bar
                               dataKey="value"
                               name={chartData[0]?.label || 'Value'}
-                              fill="#17B897"
+                              fill="#2BA9B8"
                               radius={[4, 4, 0, 0]}
                               barSize={24}
                             />
@@ -671,7 +671,7 @@ export function TopDomainsSection() {
         <Bar
           dataKey="value"
           name={chartData[0]?.label || 'Value'}
-          fill="#17B897"
+          fill="#2BA9B8"
           radius={[4, 4, 0, 0]}
           barSize={40} // thin bars
         />
@@ -687,12 +687,12 @@ export function TopDomainsSection() {
             </Card>
 
             {/* Right Side: Top Domains */}
-            <Card className="flex flex-col h-full border border-[#17B89733] bg-white backdrop-blur-sm shadow-sm dark:border-cyan-800/50 dark:bg-cyan-950/30">
+            <Card className="flex flex-col h-full border border-[#2BA9B8]/20 bg-white backdrop-blur-sm shadow-sm dark:border-cyan-800/50 dark:bg-cyan-950/30">
               <CardHeader>
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
 
                   <CardTitle className="flex items-center mt-2 text-black dark:text-white">
-                    <div className="w-2 h-5 bg-[#17B897] dark:bg-cyan-400 rounded-full mr-2"></div>
+                    <div className="w-2 h-5 bg-[#2BA9B8] dark:bg-cyan-400 rounded-full mr-2"></div>
                     Top Domains
                   </CardTitle>
 
@@ -700,7 +700,7 @@ export function TopDomainsSection() {
                   <div className="relative mt-2">
                     <button
                       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                      className="flex items-center justify-between w-48 px-4 py-2 text-sm font-medium text-black bg-white border border-[#17B89733] rounded-lg hover:bg-[#D4F5E3] focus:outline-none focus:ring-2 focus:ring-[#17B897] dark:text-cyan-300 dark:bg-cyan-900/50 dark:border-cyan-700 dark:hover:bg-cyan-800/50 dark:focus:ring-cyan-500"
+                      className="flex items-center justify-between w-48 px-4 py-2 text-sm font-medium text-black bg-white border border-[#2BA9B8]/20 rounded-lg hover:bg-[#E6F7F5] focus:outline-none focus:ring-2 focus:ring-[#2BA9B8] dark:text-cyan-300 dark:bg-cyan-900/50 dark:border-cyan-700 dark:hover:bg-cyan-800/50 dark:focus:ring-cyan-500"
                     >
                       <span className="flex items-center text-xs">
                         {metricOptions.find(opt => opt.value === activeTab)?.icon}
@@ -714,7 +714,7 @@ export function TopDomainsSection() {
                     </button>
 
                     {isDropdownOpen && (
-                      <div className="absolute right-0 z-10 w-48 mt-1 bg-white border border-[#17B89733] rounded-lg shadow-lg dark:bg-cyan-950 dark:border-cyan-800">
+                      <div className="absolute right-0 z-10 w-48 mt-1 bg-white border border-[#2BA9B8]/20 rounded-lg shadow-lg dark:bg-cyan-950 dark:border-cyan-800">
                         <div className="py-1">
                           {metricOptions.map((option) => (
                             <button
@@ -724,8 +724,8 @@ export function TopDomainsSection() {
                                 setIsDropdownOpen(false);
                               }}
                               className={`flex items-center w-full px-4 py-2 text-xs text-left ${activeTab === option.value
-                                  ? 'text-[#17B897] bg-[#D4F5E3] dark:text-cyan-300 dark:bg-cyan-900/50'
-                                  : 'text-black hover:bg-[#D4F5E3] dark:text-gray-300 dark:hover:bg-cyan-900/30'
+                                  ? 'text-[#2BA9B8] bg-[#E6F7F5] dark:text-cyan-300 dark:bg-cyan-900/50'
+                                  : 'text-black hover:bg-[#E6F7F5] dark:text-gray-300 dark:hover:bg-cyan-900/30'
                                 }`}
                             >
                               {option.icon}
@@ -813,7 +813,7 @@ export function TopDomainsSection() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                      <div className="w-1.5 h-4 bg-[#33BDC7] dark:bg-cyan-400 rounded-full mr-2"></div>
+                      <div className="w-1.5 h-4 bg-[#2BA9B8] dark:bg-cyan-400 rounded-full mr-2"></div>
                       Domain Metrics
                     </h3>
                     <div className="grid grid-cols-2 gap-4">
@@ -898,7 +898,7 @@ export function TopDomainsSection() {
                   </div>
 
                   <div>
-                    <div className="bg-[#D4F5E3] border border-[#33BDC7]/50 p-6 mb-6 dark:bg-cyan-900/20 dark:border-cyan-800/50">
+                    <div className="bg-[#E6F7F5] border border-[#2BA9B8]/50 p-6 mb-6 dark:bg-cyan-900/20 dark:border-cyan-800/50">
                       <h3 className="text-lg font-semibold text-black dark:text-white mb-4">Pricing Details</h3>
                       <div className="space-y-4">
                         <div className="flex justify-between items-center">
@@ -907,16 +907,16 @@ export function TopDomainsSection() {
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-black/70 dark:text-gray-400">Discount</span>
-                          <span className="text-[#33BDC7] dark:text-cyan-400">{Math.round((1 - selectedDomain.price / selectedDomain.Actualprice) * 100)}% OFF</span>
+                          <span className="text-[#2BA9B8] dark:text-cyan-400">{Math.round((1 - selectedDomain.price / selectedDomain.Actualprice) * 100)}% OFF</span>
                         </div>
-                        <div className="h-px bg-[#33BDC7]/50 dark:bg-cyan-800/50 my-2"></div>
+                        <div className="h-px bg-[#2BA9B8]/50 dark:bg-cyan-800/50 my-2"></div>
                         <div className="flex justify-between items-center">
                           <span className="text-lg font-semibold text-black dark:text-white">Your Price</span>
                           <span className="text-3xl font-bold text-black dark:text-white">${selectedDomain.price}</span>
                         </div>
                         <div className="flex flex-col sm:flex-row gap-3 mt-6">
                           <Button
-                            className="flex-1 bg-[#33BDC7] hover:bg-[#33BDC7]/90 dark:bg-cyan-600 dark:hover:bg-cyan-700 text-white"
+                            className="flex-1 bg-[#2BA9B8] hover:bg-[#2BA9B8]/90 dark:bg-cyan-600 dark:hover:bg-cyan-700 text-white"
                             onClick={() => handleAddToCart(selectedDomain)}
                           >
                             <ShoppingCart className="h-4 w-4 mr-1" />
@@ -932,13 +932,13 @@ export function TopDomainsSection() {
                       </div>
                     </div>
 
-                    <div className="bg-[#D4F5E3] border border-[#33BDC7]/50 p-6 dark:bg-cyan-900/20 dark:border-cyan-800/50">
+                    <div className="bg-[#E6F7F5] border border-[#2BA9B8]/50 p-6 dark:bg-cyan-900/20 dark:border-cyan-800/50">
                       <h3 className="text-lg font-semibold text-black dark:text-white mb-4">Domain Tags</h3>
                       <div className="flex flex-wrap gap-2">
                         {selectedDomain.tags.map((tag) => (
                           <Badge
                             key={tag}
-                            className="bg-[#33BDC7]/50 text-black hover:bg-[#33BDC7]/70 border-[#33BDC7] dark:bg-cyan-800/50 dark:text-cyan-300 dark:hover:bg-cyan-700/50 dark:border-cyan-700"
+                            className="bg-[#2BA9B8]/50 text-black hover:bg-[#2BA9B8]/70 border-[#2BA9B8] dark:bg-cyan-800/50 dark:text-cyan-300 dark:hover:bg-cyan-700/50 dark:border-cyan-700"
                           >
                             {tag}
                           </Badge>
@@ -955,7 +955,7 @@ export function TopDomainsSection() {
                           <div>
                             <p className="text-sm text-black/70 dark:text-gray-400">Status</p>
                             <div className="flex items-center">
-                              <span className="w-2 h-2 rounded-full bg-[#33BDC7] dark:bg-cyan-500 mr-2"></span>
+                              <span className="w-2 h-2 rounded-full bg-[#2BA9B8] dark:bg-cyan-500 mr-2"></span>
                               <span className="text-black dark:text-white">Available</span>
                             </div>
                           </div>
@@ -991,33 +991,55 @@ const MetricCard = ({
 }) => {
   const getColorClass = () => {
     switch (color) {
-      case 'cyan': return 'bg-cyan-900/30 border-cyan-700';
-      case 'blue': return 'bg-blue-900/30 border-blue-700';
-      case 'purple': return 'bg-purple-900/30 border-purple-700';
-      case 'teal': return 'bg-teal-900/30 border-teal-700';
-      case 'orange': return 'bg-orange-900/30 border-orange-700';
-      case 'pink': return 'bg-pink-900/30 border-pink-700';
-      case 'red': return 'bg-red-900/30 border-red-700';
-      case 'green': return 'bg-green-900/30 border-green-700';
-      case 'yellow': return 'bg-yellow-900/30 border-yellow-700';
-      case 'indigo': return 'bg-indigo-900/30 border-indigo-700';
-      default: return 'bg-cyan-900/30 border-cyan-700';
+      case 'cyan': 
+        return 'bg-white dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-700';
+      case 'blue': 
+        return 'bg-white dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700';
+      case 'purple': 
+        return 'bg-white dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700';
+      case 'teal': 
+        return 'bg-white dark:bg-teal-900/30 border border-teal-200 dark:border-teal-700';
+      case 'orange': 
+        return 'bg-white dark:bg-orange-900/30 border border-orange-200 dark:border-orange-700';
+      case 'pink': 
+        return 'bg-white dark:bg-pink-900/30 border border-pink-200 dark:border-pink-700';
+      case 'red': 
+        return 'bg-white dark:bg-red-900/30 border border-red-200 dark:border-red-700';
+      case 'green': 
+        return 'bg-white dark:bg-green-900/30 border border-green-200 dark:border-green-700';
+      case 'yellow': 
+        return 'bg-white dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700';
+      case 'indigo': 
+        return 'bg-white dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700';
+      default: 
+        return 'bg-white dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-700';
     }
   };
 
   const getProgressColor = () => {
     switch (color) {
-      case 'cyan': return 'bg-gradient-to-r from-cyan-500 to-cyan-400';
-      case 'blue': return 'bg-gradient-to-r from-blue-500 to-blue-400';
-      case 'purple': return 'bg-gradient-to-r from-purple-500 to-purple-400';
-      case 'teal': return 'bg-gradient-to-r from-teal-500 to-teal-400';
-      case 'orange': return 'bg-gradient-to-r from-orange-500 to-orange-400';
-      case 'pink': return 'bg-gradient-to-r from-pink-500 to-pink-400';
-      case 'red': return 'bg-gradient-to-r from-red-500 to-red-400';
-      case 'green': return 'bg-gradient-to-r from-green-500 to-green-400';
-      case 'yellow': return 'bg-gradient-to-r from-yellow-500 to-yellow-400';
-      case 'indigo': return 'bg-gradient-to-r from-indigo-500 to-indigo-400';
-      default: return 'bg-gradient-to-r from-cyan-500 to-cyan-400';
+      case 'cyan': 
+        return 'bg-gradient-to-r from-cyan-500 to-cyan-600 dark:from-cyan-400 dark:to-cyan-500';
+      case 'blue': 
+        return 'bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500';
+      case 'purple': 
+        return 'bg-gradient-to-r from-purple-500 to-purple-600 dark:from-purple-400 dark:to-purple-500';
+      case 'teal': 
+        return 'bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500';
+      case 'orange': 
+        return 'bg-gradient-to-r from-orange-500 to-orange-600 dark:from-orange-400 dark:to-orange-500';
+      case 'pink': 
+        return 'bg-gradient-to-r from-pink-500 to-pink-600 dark:from-pink-400 dark:to-pink-500';
+      case 'red': 
+        return 'bg-gradient-to-r from-red-500 to-red-600 dark:from-red-400 dark:to-red-500';
+      case 'green': 
+        return 'bg-gradient-to-r from-green-500 to-green-600 dark:from-green-400 dark:to-green-500';
+      case 'yellow': 
+        return 'bg-gradient-to-r from-yellow-500 to-yellow-600 dark:from-yellow-400 dark:to-yellow-500';
+      case 'indigo': 
+        return 'bg-gradient-to-r from-indigo-500 to-indigo-600 dark:from-indigo-400 dark:to-indigo-500';
+      default: 
+        return 'bg-gradient-to-r from-cyan-500 to-cyan-600 dark:from-cyan-400 dark:to-cyan-500';
     }
   };
 
@@ -1029,17 +1051,16 @@ const MetricCard = ({
   return (
     <div className={`${getColorClass()} p-3 rounded-lg border`}>
       <div className="flex items-center justify-between mb-1">
-        <p className="text-xs text-cyan-300 flex items-center">
+        <p className="text-xs text-gray-600 dark:text-cyan-300 font-medium flex items-center">
           {icon && <span className="mr-1">{icon}</span>}
           {title}
         </p>
-
       </div>
-      <p className="text-xl font-bold text-white">{value}</p>
+      <p className="text-xl font-bold text-gray-800 dark:text-white">{value}</p>
       {typeof value === 'number' && max !== undefined && (
-        <div className="mt-2 h-1.5 w-full bg-cyan-900/50 rounded-full overflow-hidden">
+        <div className="mt-2 h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
           <div
-            className={`h-full ${getProgressColor()} rounded-full`}
+            className={`h-full ${getProgressColor()} rounded-full transition-all duration-300`}
             style={{ width: `${progress}%` }}
           ></div>
         </div>
