@@ -44,18 +44,18 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* Logo & Social */}
           <div className="lg:col-span-2 flex flex-col gap-4 pb-0">
-          <div className="flex items-center">
-                <Image
-                  src="/shihlogo.png"
-                  alt="Vettedge Logo"
-                  width={40}
-                  height={30}
-                  className="object-contain"
-                />
-                <span className=" text-lg md:text-xl font-semibold text-gray-700 dark:text-white ml-">
-                  Vettedge.domains
-                </span>
-              </div>
+            <div className="flex items-center">
+              <Image
+                src="/shihlogo.png"
+                alt="Vettedge Logo"
+                width={40}
+                height={30}
+                className="object-contain"
+              />
+              <span className=" text-lg md:text-xl font-semibold text-gray-700 dark:text-white ml-">
+                Vettedge.domains
+              </span>
+            </div>
 
             <div className="border-l-4 border-[#38C172] pl-4 mt-2 text-sm italic text-gray-700 dark:text-gray-400">
               <p>
@@ -65,26 +65,27 @@ export function Footer() {
                 — VettEdge Team
               </p>
             </div>
-        <div className="flex space-x-0 mt-4">
-  <Link href="https://www.facebook.com/share/1AAwdxxvBD/?mibextid=wwXIfr" target="_blank">
-    <Button variant="ghost" className="p-0 hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
-    <Facebook  className="!w-5 !h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
-    </Button>
-  </Link>
+            <div className="flex space-x-0 mt-4">
+              <Link href="https://www.facebook.com/share/1AAwdxxvBD/?mibextid=wwXIfr" target="_blank">
+                <Button variant="ghost" className="p-0 hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
+                  <Facebook className="!w-5 !h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
+                </Button>
+              </Link>
 
-  <Link href="https://www.linkedin.com/company/vettedge-domains/" target="_blank">
-    <Button variant="ghost" className="p-0 hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
-      <Linkedin className="!w-5 !h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
-    </Button>
-  </Link>
+              <Link href="https://www.linkedin.com/company/vettedge-domains/" target="_blank">
+                <Button variant="ghost" className="p-0 hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
+                  <Linkedin className="!w-5 !h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
+                </Button>
+              </Link>
 
-  <Link href="https://whatsapp.com/channel/0029VbBLngqJpe8n9JJLzu3x" target="_blank">
-    <Button variant="ghost" className="p-0 hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
-      <MessageCircle className="!w-5 !h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
-    </Button>
-  </Link>
-</div>
-</div>
+              <Link href="https://whatsapp.com/channel/0029VbBLngqJpe8n9JJLzu3x" target="_blank">
+                <Button variant="ghost" className="p-0 hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
+                  <MessageCircle className="!w-5 !h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+
 
           {/* Domains */}
           <div>
@@ -125,11 +126,11 @@ export function Footer() {
               <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Contact Details</h4>
               <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
                 <li className="flex items-center gap-2">
-                  <Mail className="w-5 h-5 text-[#38C172]" />
+                  {/* <Mail className="w-5 h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" /> */}
                   <span>support@vettedge.domains</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-[#38C172]" />
+                  {/* <MapPin className="w-5 h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" /> */}
                   <span>Available Worldwide</span>
                 </li>
               </ul>
@@ -164,14 +165,33 @@ export function Footer() {
         </div>
 
         {/* Footer Bottom */}
-        <div className="text-center mt-6 text-xs text-gray-600 dark:text-gray-300 border-t border-gray-200 dark:border-gray-700 pt-2">
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-3">
-            <div className="flex items-center gap-1">
-              <Code2 className="w-3 h-3" />
+        <div className="w-full mt-6 border-t border-gray-200 dark:border-gray-700 pt-4">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-2 text-center text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+
+            {/* Copyright */}
+            <div className="flex items-center gap-2">
+              <Code2 className="w-4 h-4" />
               <span>© 2025 Vettedge.domains. All rights reserved.</span>
+            </div>
+
+            {/* Divider */}
+            <span className="hidden sm:inline">|</span>
+
+            {/* Developer Credit */}
+            <div className="flex items-center gap-1">
+              <span>Developed by</span>
+              <a
+                href="https://techcognify.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline text-[#33BDC7] dark:text-[#33BDC7]/80 font-medium"
+              >
+                TechCognify
+              </a>
             </div>
           </div>
         </div>
+
       </div>
     </footer>
   )

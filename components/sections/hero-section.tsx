@@ -119,16 +119,16 @@ export function HeroSection() {
                     placeholder="Search your domain..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full h-14 pl-12 pr-32 text-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 placeholder:text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#33BDC7] transition-all"
+                    className="w-full h-14 pl-12 pr-2 text-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 placeholder:text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#33BDC7] transition-all"
                   />
 
                   {/* Inline Search Button */}
                   <button
                     type="submit"
-                    className="absolute right-1 top-1/2 transform -translate-y-1/2 sm:h-10 h-9 px-4 bg-[#33BDC7] hover:bg-[#2ba9b8] text-white font-semibold rounded-lg flex items-center justify-center text-lg shadow-md transition-all duration-200"
+                    className="absolute right-1 top-1/2 transform -translate-y-1/2 sm:h-10 h-9 px-4 sm:px-6 bg-[#33BDC7] hover:bg-[#2ba9b8] text-white font-semibold rounded-lg flex items-center justify-center text-lg shadow-md transition-all duration-200"
                   >
-                    <Search className="sm:h-4 sm:w-4 h-4 w-4 " />
-                    {/* Search */}
+                    {/* <Search className="sm:h-4 sm:w-4 h-4 w-4 " /> */}
+                    Search
                   </button>
                 </div>
               </form>
