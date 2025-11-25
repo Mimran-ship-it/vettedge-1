@@ -334,10 +334,7 @@ export function TopDomainsSection() {
       isSold: domain.isSold,
     });
 
-    toast({
-      title: "Added to Cart",
-      description: `${domain.name} has been added to your cart.`,
-    });
+  
   };
 
   const handleBuyNow = (domain: Domain) => {
@@ -359,10 +356,7 @@ export function TopDomainsSection() {
       isSold: domain.isSold,
     });
 
-    toast({
-      title: "Added to Cart",
-      description: `${domain.name} has been added to your cart. Redirecting to checkout...`,
-    });
+
 
     if (!user) {
       router.push("/auth/signin?redirect=/checkout");

@@ -132,10 +132,7 @@ export function DomainCard({ domain }: DomainCardProps) {
       domain: parsedDomain,
       isSold: parsedDomain.isSold,
     })
-    toast({
-      title: "Added to Cart",
-      description: `${domain.name} has been added to your cart.`,
-    })
+  
   }
 
   const handleBuyNow = () => {
@@ -155,10 +152,7 @@ export function DomainCard({ domain }: DomainCardProps) {
       domain: parsedDomain,
       isSold: parsedDomain.isSold,
     })
-    toast({
-      title: "Added to Cart",
-      description: `${domain.name} has been added to your cart. Redirecting to checkout...`,
-    })
+    
     if (!user) {
       router.push("/auth/signin?redirect=/checkout")
       return

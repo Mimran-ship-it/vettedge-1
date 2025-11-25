@@ -174,12 +174,12 @@ export function Header() {
             {/* Right Side Actions */}
             <div className="flex items-center  ms-1 space-x-0  ">
               {/* Theme Toggle */}
-              <ThemeToggle />
+              <ThemeToggle  />
               
               {/* Wishlist */}
               <Link href="/wishlist" className="relative">
                 <Button variant="ghost" size="sm" className="rounded-full">
-                  <Heart className="h-5 w-5 " />
+                  <Heart className="!h-5 !w-5 " />
                   {wishlistCount > 0 && (
                     <Badge className="absolute bg-[#33BDC7] -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
                       {wishlistCount}
@@ -191,7 +191,7 @@ export function Header() {
               {/* Cart */}
               <Link href="/cart" className="relative">
                 <Button variant="ghost" size="sm" className="rounded-full">
-                  <ShoppingCart className="h-5 w-5 " />
+                  <ShoppingCart className="!h-5 !w-5 " />
                   {cartItemsCount > 0 && (
                     <Badge className="absolute bg-[#33BDC7] -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
                       {cartItemsCount}
@@ -202,17 +202,10 @@ export function Header() {
               
               {/* Profile or Auth Buttons */}
               <div className="flex items-center space-x-2">
-                {loading ? (
-                  <span className="flex items-center text-gray-500 dark:text-gray-400 text-sm ms-4">
-                    <span className="hidden sm:inline">Loading</span>
-                    <span className="ml-1 flex space-x-1">
-                      <span className="w-1 h-1 bg-gray-500 dark:bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                      <span className="w-1 h-1 bg-gray-500 dark:bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                      <span className="w-1 h-1 bg-gray-500 dark:bg-gray-400 rounded-full animate-bounce"></span>
-                    </span>
-                  </span>
-                ) : user ? (
-                  renderUserMenu()
+                {user ? (
+                  <div className="hidden lg:block">
+                    {renderUserMenu()}
+                  </div>
                 ) : (
               <div className="flex items-center justify-center" >{/* User Auth Dropdown (when not logged in) */}
               <DropdownMenu>
@@ -254,7 +247,7 @@ export function Header() {
                 className="lg:hidden"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
-                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu  className="!h-5 !w-5" />}
               </Button>
             </div>
           </div>
@@ -283,8 +276,8 @@ export function Header() {
             >
               <div className="p-5">
                 <div className="flex justify-between items-center mb-6">
-                  <Link href="/" className="flex items-center ">
-                    <div className="w-16 h-16  overflow-hidden flex items-center justify-center">
+                  <Link href="/" className="flex items-center">
+                    <div className="w-16 h-16 overflow-hidden flex items-center justify-center">
                       <Image
                         src="/shihlogo.png"
                         alt="Vettedge Logo"
@@ -301,10 +294,35 @@ export function Header() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setIsMenuOpen(false)}
+                    className="p-2"
                   >
-                    <X className="h-6 w-6" />
+                    <X className="h-5 w-5" />
                   </Button>
                 </div>
+                
+                {/* User Profile Section - Mobile */}
+                {user && (
+                  <div className="flex items-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg my-4">
+                    {user?.image ? (
+                      <div className="relative h-12 w-12 rounded-full overflow-hidden border-2 border-gray-200 dark:border-gray-600 mr-3">
+                        <Image
+                          src={user.image}
+                          alt={user.name || 'User'}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center mr-3">
+                        <User className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                      </div>
+                    )}
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-white">{user.name}</p>
+                     
+                    </div>
+                  </div>
+                )}
                 
                 {/* Tablet Navigation - Visible only in tablet view */}
                 <nav className="hidden md:flex flex-col space-y-4 mb-6 p-4 bg-gray-50 dark:bg-gray-800 ">
@@ -347,23 +365,32 @@ export function Header() {
                 {/* User menu for mobile and tablet */}
                 {user && (
                   <div className="pt-4 border-t mt-4">
-                    <div className="flex items-center space-x-2 mb-4">
-                      <User className="h-5 w-5" />
-                      <span className="font-medium">{user.name}</span>
-                    </div>
                     <div className="flex flex-col space-y-3">
-                      <Link href="/dashboard" className={linkClass("/dashboard")} onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
-                      <Link href="/dashboard/settings" className={linkClass("/dashboard/settings")} onClick={() => setIsMenuOpen(false)}>Account Settings</Link>
-                      <Link href="/wishlist" className={linkClass("/wishlist")} onClick={() => setIsMenuOpen(false)}>Wishlist</Link>
+                      <Link href="/dashboard" className={`flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 ${linkClass("/dashboard")}`} onClick={() => setIsMenuOpen(false)}>
+                        <span>Dashboard</span>
+                      </Link>
+                      <Link href="/dashboard/settings" className={`flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 ${linkClass("/dashboard/settings")}`} onClick={() => setIsMenuOpen(false)}>
+                        <span>Account Settings</span>
+                      </Link>
+                      <Link href="/wishlist" className={`flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 ${linkClass("/wishlist")}`} onClick={() => setIsMenuOpen(false)}>
+                        <span>Wishlist</span>
+                      </Link>
                       {user?.role === "admin" && (
-                        <Link href="/admin" className={linkClass("/admin")} onClick={() => setIsMenuOpen(false)}>Admin Panel</Link>
+                        <Link href="/admin" className={`flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 ${linkClass("/admin")}`} onClick={() => setIsMenuOpen(false)}>
+                          <span>Admin Panel</span>
+                        </Link>
                       )}
-                      <Button variant="ghost" className="justify-start p-0 h-auto" onClick={() => { signOut(); setIsMenuOpen(false); }}>Sign Out</Button>
+                      <button 
+                        onClick={() => { signOut(); setIsMenuOpen(false); }} 
+                        className="flex items-center px-3 py-2 text-left text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg w-full"
+                      >
+                        <span>Sign Out</span>
+                      </button>
                     </div>
                   </div>
                 )}
                 
-                {!loading && !user && (
+                {!user && (
                   <div className="pt-4 flex flex-col space-y-3 border-t mt-4">
                     <Link href="/auth/signin" className={linkClass("/auth/signin")} onClick={() => setIsMenuOpen(false)}>
                       Sign In

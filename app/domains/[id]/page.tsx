@@ -92,10 +92,7 @@ export default function DomainDetailsPage() {
       return
     }
     addItem({ id: domain._id, name: domain.name, price: domain.price, domain, isSold: domain.isSold })
-    toast({
-      title: "Added to Cart",
-      description: `${domain.name} has been added to your cart.`,
-    })
+   
   }
 
   const handleWishlistToggle = () => {
