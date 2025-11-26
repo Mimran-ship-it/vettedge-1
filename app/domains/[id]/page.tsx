@@ -298,7 +298,7 @@ export default function DomainDetailsPage() {
   <TabsTrigger
     value="history"
     className="
-      bg-yellow-200 text-black dark:text-white dark:bg-yellow-700
+      bg-yellow-700 text-black dark:text-white dark:bg-yellow-700
       data-[state=active]:bg-[#30C97C]
       data-[state=active]:text-white
       rounded-lg py-2

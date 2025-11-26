@@ -334,7 +334,7 @@ export function TopDomainsSection() {
       isSold: domain.isSold,
     });
 
-  
+
   };
 
   const handleBuyNow = (domain: Domain) => {
@@ -426,13 +426,13 @@ export function TopDomainsSection() {
     <div
       key={domain._id}
       className={`p-0 rounded-lg cursor-pointer transition-all border ${selectedDomain?._id === domain._id
-          ? 'border-[#2BA9B8] bg-[#E6F7F5] dark:border-cyan-400 dark:bg-cyan-900/20'
-          : 'border-[#2BA9B8]/20 bg-white dark:border-cyan-800/40 dark:bg-cyan-900/30'
+        ? 'border-[#2BA9B8] bg-[#E6F7F5] dark:border-cyan-400 dark:bg-cyan-900/20'
+        : 'border-[#2BA9B8]/20 bg-white dark:border-cyan-800/40 dark:bg-cyan-900/30'
         }`}
     >
       <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 rounded-lg transition-all ${selectedDomain?._id === domain._id
-          ? 'bg-[#E6F7F5]'
-          : 'bg-white hover:bg-[#E6F7F5]'
+        ? 'bg-[#E6F7F5]'
+        : 'bg-white hover:bg-[#E6F7F5]'
         } dark:border-cyan-800/40 dark:bg-cyan-900/30 dark:hover:bg-cyan-900/40`}>
         <div className="flex items-center space-x-4">
           <div className="w-10 h-10 rounded-full bg-[#2BA9B8]/10 flex items-center justify-center text-[#2BA9B8] font-bold dark:bg-cyan-900/50 dark:text-cyan-400">
@@ -518,7 +518,7 @@ export function TopDomainsSection() {
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold tracking-tight text-[#2BA9B8] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-green-400 dark:text-transparent dark:bg-clip-text">
-              Domain Analytics Dashboard   
+              Domain Analytics Dashboard
             </h2>
             <p className="mt-2 text-black/70 dark:text-gray-400">Discover our premium domains with detailed metrics</p>
           </div>
@@ -592,12 +592,12 @@ export function TopDomainsSection() {
                               angle={-45}
                               textAnchor="end"
                               height={60}
-                                className="dark:[&_*]:fill-white  "
+                              className="dark:[&_*]:fill-white  "
                               tickFormatter={(value: string) => value.length > 6 ? value.slice(0, 6) + '...' : value}
                             />
                             <YAxis
                               stroke="#111827"
-                                className="dark:[&_*]:fill-white  "
+                              className="dark:[&_*]:fill-white  "
                               tick={{ fontSize: 10 }}
                             />
                             <Tooltip
@@ -623,56 +623,56 @@ export function TopDomainsSection() {
 
                       {/* Medium to Large Screen Chart - Vertical Bar Chart */}
                       <div className="hidden sm:block mb-10 h-full">
-  <div className="w-[120%] sm:w-full ms-[-3rem] sm:ms-0 h-full">
-    <ResponsiveContainer width="100%" height="100%">
-      <BarChart
-        data={chartData}
-        margin={{ top: 20, right: 20, left: 0, bottom: 50 }} // extra bottom margin for vertical labels
-      >
-        <CartesianGrid
-          strokeDasharray="3 3"
-          stroke="#cbd5e1"
-          className="dark:stroke-[#1e4a3e]"
-        />
-        <XAxis
-          dataKey="name"
-          stroke="#111827"
-          tick={{ fontSize: 10, fill: '#111827' }}
-          angle={-90} // rotate labels 90 degrees (negative for upward rotation)
-          textAnchor="end" // align the text properly
-          interval={0} // show all labels
-          dy={3} // push labels slightly down
-          className="dark:[&_*]:fill-white"
-          tickFormatter={(name) =>
-            name.length > 10 ? `${name.slice(0, 8)}...` : name
-          } // truncate long names
-        />
-        <YAxis
-          stroke="#111827"
-          tick={{ fontSize: 12, fill: '#111827' }}
-          className="dark:[&_*]:fill-white"
-        />
-        <Tooltip
-          contentStyle={{
-            backgroundColor: '#ffffff',
-            border: '1px solid #cbd5e1',
-            borderRadius: '0.5rem',
-          }}
-          itemStyle={{ color: '#111827' }}
-          labelStyle={{ color: '#111827' }}
-          formatter={(value) => [value, chartData[0]?.label || 'Value']}
-        />
-        <Bar
-          dataKey="value"
-          name={chartData[0]?.label || 'Value'}
-          fill="#2BA9B8"
-          radius={[4, 4, 0, 0]}
-          barSize={40} // thin bars
-        />
-      </BarChart>
-    </ResponsiveContainer>
-  </div>
-</div>
+                        <div className="w-[120%] sm:w-full ms-[-3rem] sm:ms-0 h-full">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                              data={chartData}
+                              margin={{ top: 20, right: 20, left: 0, bottom: 50 }} // extra bottom margin for vertical labels
+                            >
+                              <CartesianGrid
+                                strokeDasharray="3 3"
+                                stroke="#cbd5e1"
+                                className="dark:stroke-[#1e4a3e]"
+                              />
+                              <XAxis
+                                dataKey="name"
+                                stroke="#111827"
+                                tick={{ fontSize: 10, fill: '#111827' }}
+                                angle={-90} // rotate labels 90 degrees (negative for upward rotation)
+                                textAnchor="end" // align the text properly
+                                interval={0} // show all labels
+                                dy={3} // push labels slightly down
+                                className="dark:[&_*]:fill-white"
+                                tickFormatter={(name) =>
+                                  name.length > 10 ? `${name.slice(0, 8)}...` : name
+                                } // truncate long names
+                              />
+                              <YAxis
+                                stroke="#111827"
+                                tick={{ fontSize: 12, fill: '#111827' }}
+                                className="dark:[&_*]:fill-white"
+                              />
+                              <Tooltip
+                                contentStyle={{
+                                  backgroundColor: '#ffffff',
+                                  border: '1px solid #cbd5e1',
+                                  borderRadius: '0.5rem',
+                                }}
+                                itemStyle={{ color: '#111827' }}
+                                labelStyle={{ color: '#111827' }}
+                                formatter={(value) => [value, chartData[0]?.label || 'Value']}
+                              />
+                              <Bar
+                                dataKey="value"
+                                name={chartData[0]?.label || 'Value'}
+                                fill="#2BA9B8"
+                                radius={[4, 4, 0, 0]}
+                                barSize={40} // thin bars
+                              />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
 
                     </>
                   )}
@@ -718,12 +718,12 @@ export function TopDomainsSection() {
                                 setIsDropdownOpen(false);
                               }}
                               className={`flex items-center w-full px-4 py-2 text-xs text-left ${activeTab === option.value
-                                  ? 'text-[#2BA9B8] bg-[#E6F7F5] dark:text-cyan-300 dark:bg-cyan-900/50'
-                                  : 'text-black hover:bg-[#E6F7F5] dark:text-gray-300 dark:hover:bg-cyan-900/30'
+                                ? 'text-[#2BA9B8] bg-[#E6F7F5] dark:text-cyan-300 dark:bg-cyan-900/50'
+                                : 'text-black hover:bg-[#E6F7F5] dark:text-gray-300 dark:hover:bg-cyan-900/30'
                                 }`}
                             >
                               {option.icon}
-                              <span className="ml- ">{option.label}</span>
+                              <span className="ml-2 ">{option.label}</span>
                             </button>
                           ))}
                         </div>
@@ -737,7 +737,7 @@ export function TopDomainsSection() {
               </CardHeader>
 
               <CardContent className="flex-1 overflow-y-auto">
-                <div className="space-y-3 pr-2">
+                <div className="space-y-3">
                   {activeTab === 'da' && topDomains.da.map((domain, index) => renderDomainCard(domain, index))}
                   {activeTab === 'dr' && topDomains.dr.map((domain, index) => renderDomainCard(domain, index))}
                   {activeTab === 'tf' && topDomains.tf.map((domain, index) => renderDomainCard(domain, index))}
@@ -985,54 +985,54 @@ const MetricCard = ({
 }) => {
   const getColorClass = () => {
     switch (color) {
-      case 'cyan': 
+      case 'cyan':
         return 'bg-white dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-700';
-      case 'blue': 
+      case 'blue':
         return 'bg-white dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700';
-      case 'purple': 
+      case 'purple':
         return 'bg-white dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700';
-      case 'teal': 
+      case 'teal':
         return 'bg-white dark:bg-teal-900/30 border border-teal-200 dark:border-teal-700';
-      case 'orange': 
+      case 'orange':
         return 'bg-white dark:bg-orange-900/30 border border-orange-200 dark:border-orange-700';
-      case 'pink': 
+      case 'pink':
         return 'bg-white dark:bg-pink-900/30 border border-pink-200 dark:border-pink-700';
-      case 'red': 
+      case 'red':
         return 'bg-white dark:bg-red-900/30 border border-red-200 dark:border-red-700';
-      case 'green': 
+      case 'green':
         return 'bg-white dark:bg-green-900/30 border border-green-200 dark:border-green-700';
-      case 'yellow': 
+      case 'yellow':
         return 'bg-white dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700';
-      case 'indigo': 
+      case 'indigo':
         return 'bg-white dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700';
-      default: 
+      default:
         return 'bg-white dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-700';
     }
   };
 
   const getProgressColor = () => {
     switch (color) {
-      case 'cyan': 
+      case 'cyan':
         return 'bg-gradient-to-r from-cyan-500 to-cyan-600 dark:from-cyan-400 dark:to-cyan-500';
-      case 'blue': 
+      case 'blue':
         return 'bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500';
-      case 'purple': 
+      case 'purple':
         return 'bg-gradient-to-r from-purple-500 to-purple-600 dark:from-purple-400 dark:to-purple-500';
-      case 'teal': 
+      case 'teal':
         return 'bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500';
-      case 'orange': 
+      case 'orange':
         return 'bg-gradient-to-r from-orange-500 to-orange-600 dark:from-orange-400 dark:to-orange-500';
-      case 'pink': 
+      case 'pink':
         return 'bg-gradient-to-r from-pink-500 to-pink-600 dark:from-pink-400 dark:to-pink-500';
-      case 'red': 
+      case 'red':
         return 'bg-gradient-to-r from-red-500 to-red-600 dark:from-red-400 dark:to-red-500';
-      case 'green': 
+      case 'green':
         return 'bg-gradient-to-r from-green-500 to-green-600 dark:from-green-400 dark:to-green-500';
-      case 'yellow': 
+      case 'yellow':
         return 'bg-gradient-to-r from-yellow-500 to-yellow-600 dark:from-yellow-400 dark:to-yellow-500';
-      case 'indigo': 
+      case 'indigo':
         return 'bg-gradient-to-r from-indigo-500 to-indigo-600 dark:from-indigo-400 dark:to-indigo-500';
-      default: 
+      default:
         return 'bg-gradient-to-r from-cyan-500 to-cyan-600 dark:from-cyan-400 dark:to-cyan-500';
     }
   };
