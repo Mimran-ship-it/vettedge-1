@@ -723,7 +723,7 @@ export function TopDomainsSection() {
                                 }`}
                             >
                               {option.icon}
-                              <span className="ml-2 ">{option.label}</span>
+                              <span className="ml- ">{option.label}</span>
                             </button>
                           ))}
                         </div>

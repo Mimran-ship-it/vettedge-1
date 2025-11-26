@@ -18,8 +18,8 @@ import {
   CreditCard,
   Headset,
 } from "lucide-react"
-import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
+import { motion, useInView } from "framer-motion"
+import { useEffect, useState, useRef, useMemo } from "react"
 
 interface DomainStats {
   totalDomains: number
@@ -28,9 +28,81 @@ interface DomainStats {
   yearsInMarket: number
 }
 
+interface TrustIndicator {
+  icon: any
+  label: string
+  value: string
+}
+
+// Fixed Animated Counter Component
+const AnimatedCounter = ({ value, duration = 2, trigger }: { value: string; duration?: number; trigger: boolean }) => {
+  const [count, setCount] = useState(0);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const [prevValue, setPrevValue] = useState(value);
+
+  // Reset animation when value changes
+  useEffect(() => {
+    if (prevValue !== value) {
+      setCount(0);
+      setHasAnimated(false);
+      setPrevValue(value);
+    }
+  }, [value, prevValue]);
+
+  // Start animation when trigger is true
+  useEffect(() => {
+    if (!trigger || hasAnimated) return;
+
+    // Skip animation if value is "..." or not a number
+    if (value === '...' || !value.match(/(\d+)/)) {
+      return;
+    }
+
+    // Extract numeric value and suffix
+    const numericMatch = value.match(/(\d+)/);
+    if (!numericMatch) return;
+
+    const numericValue = parseInt(numericMatch[0]);
+    const suffix = value.replace(numericMatch[0], '');
+
+    let startTime: number | null = null;
+    let animationFrame: number;
+
+    const animateCount = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
+      const currentCount = Math.floor(progress * numericValue);
+      setCount(currentCount);
+
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(animateCount);
+      } else {
+        setHasAnimated(true);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(animateCount);
+
+    return () => cancelAnimationFrame(animationFrame);
+  }, [trigger, value, duration, hasAnimated]);
+
+  // If value is "..." or not a number, just show the value
+  if (value === '...' || !value.match(/(\d+)/)) {
+    return <span>{value}</span>;
+  }
+
+  return (
+    <span>
+      {count}{value.replace(/\d+/g, '')}
+    </span>
+  );
+};
+
 export function TrustSection() {
   const [stats, setStats] = useState<DomainStats | null>(null)
   const [loading, setLoading] = useState(true)
+  const mobileTrustRef = useRef(null);
+  const isMobileInView = useInView(mobileTrustRef, { once: true, margin: "-100px" });
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -92,24 +164,53 @@ export function TrustSection() {
     },
   ]
 
-  const trustIndicators = [
+  // Use useMemo to prevent recreating the array on every render
+  const trustIndicators = useMemo<TrustIndicator[]>(() => [
     { icon: Globe, label: "Domains Sold", value: stats ? `${stats.soldDomains}` : '...' },
     { icon: ListChecks, label: "Total Listings", value: stats ? `${stats.totalDomains}` : '...' },
     { icon: Store, label: "Years on Market", value: stats ? `${stats.yearsInMarket}+` : '...' },
-  ]
+  ], [stats]);
 
   return (
     <section className="py-10 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-      <div className="flex flex-col lg:flex-row gap-8 mb-10 sm:mb-20">
+        <div className="flex flex-col lg:flex-row gap-8 mb-10 sm:mb-20">
           {/* Trust Indicators - Right side on large screens */}
           <div className="lg:w-2/5 lg:mt-26 lg:order-2">
-            <div className="">
+            {/* Mobile View - Fixed to use AnimatedCounter with shared trigger */}
+            <div className="lg:hidden" ref={mobileTrustRef}>
+              <motion.div
+                className="flex items-center justify-between gap-2 sm:gap-4 bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg shadow-md border border-gray-100 dark:border-gray-700"
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true }}
+                variants={fadeUp}
+              >
+                {trustIndicators.map((indicator, index) => (
+                  <div key={indicator.label} className="contents">
+                    <div className="flex-1 text-center min-w-0">
+                      <div className="text-xl sm:text-2xl md:text-3xl font-bold text-[#33BDC7] leading-tight">
+                        <AnimatedCounter value={indicator.value} trigger={isMobileInView} />
+                      </div>
+                      <div className="text-[10px] sm:text-xs md:text-sm text-[#33BDC7] font-medium mt-0.5 sm:mt-1 break-words">
+                        {indicator.label}
+                      </div>
+                    </div>
+                    {index < trustIndicators.length - 1 && (
+                      <div className="w-px h-10 sm:h-12 bg-gray-200 dark:bg-gray-600 flex-shrink-0"></div>
+                    )}
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+
+            {/* Desktop View */}
+            <div className="hidden lg:block">
               <div className="space-y-6">
                 {trustIndicators.map((indicator, index) => (
                   <motion.div
                     key={index}
-                    className="bg-white dark:bg-gray-800 2xl p-5 shadow-md border border-gray-100 dark:border-gray-700 flex items-center"
+                    className="bg-white dark:bg-gray-800 p-5 shadow-md border border-gray-100 dark:border-gray-700 flex items-center"
                     initial="hidden"
                     whileInView="show"
                     viewport={{ once: true }}
@@ -140,43 +241,36 @@ export function TrustSection() {
 
           {/* Features Grid - Right side on large screens */}
           <div className="lg:w-3/5 lg:order-1 lg:mr-6">
-          
-  {/* Mobile L-shaped layout */}
-  <div className="sm:hidden space-y-6">
-  {features.map((feature, index) => {
-    const Icon = feature.icon;
-    return (
-      <motion.div
-        key={feature.title}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true }}
-        variants={fadeUp}
-        className="feature-card group relative overflow-hidden   backdrop-blur-xl p-2 opacity-0 transition-transform duration-500 hover:-translate-y-1 hover:border-blue-400/60"
-        style={{ animationDelay: `${index * 120}ms` }}
-      >
-        <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.25),_transparent_55%)]" />
+            {/* Mobile L-shaped layout */}
+            <div className="sm:hidden space-y-6">
+              {features.map((feature, index) => {
+                const Icon = feature.icon;
+                return (
+                  <motion.div
+                    key={feature.title}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true }}
+                    variants={fadeUp}
+                    className="feature-card group relative overflow-hidden backdrop-blur-xl p-2 opacity-0 transition-transform duration-500 hover:-translate-y-1 hover:border-blue-400/60"
+                    style={{ animationDelay: `${index * 120}ms` }}
+                  >
+                    <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.25),_transparent_55%)]" />
 
-        <div className="relative flex items-start gap-1">
-          {/* <div className="shrink-0">
-            <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#33BDC7]">
-              <Icon className="h-6 w-6" />
+                    <div className="relative flex items-start gap-1">
+                      <div>
+                        <h3 className="text-lg font-semibold mb-0 text-gray-800 dark:text-[#33BDC7]">
+                          {feature.title}
+                        </h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                          {feature.description}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
-          </div> */}
-          <div>
-            <h3 className="text-lg font-semibold mb-0 text-gray-800 dark:text-[#33BDC7]">
-              {feature.title}
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-              {feature.description}
-            </p>
-          </div>
-        </div>
-      </motion.div>
-    );
-  })}
-</div>
-
 
             {/* Desktop layout (unchanged) */}
             <div className="hidden sm:grid grid-cols-2 gap-4 sm:gap-6">

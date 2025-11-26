@@ -40,7 +40,7 @@ export function Footer() {
 
   return (
     <footer className=" z-[999999] bg-white  dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-      <div className="relative z-0 w-11/12 sm:w-5/6 mx-auto ps-0 pe-3 pt-10 pb-2 rounded-xl">
+      <div className="relative z-0 w-11/12 sm:w-5/6 mx-auto ps-0 pe-3   pt-4  sm:pt-10 pb-2 rounded-xl">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* Logo & Social */}
           <div className="lg:col-span-2 flex flex-col gap-4 pb-0">

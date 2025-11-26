@@ -37,7 +37,7 @@ export function ContactSection() {
   ]
 
   return (
-    <section className="pt-20  bg-gray-50 dark:bg-gray-800">
+    <section className=" py-8   sm:py-12   bg-gray-50 dark:bg-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Heading */}
         <motion.div
@@ -158,75 +158,11 @@ export function ContactSection() {
                 </Card>
               </motion.div>
 
-              {/* Office Hours */}
-              {/* <motion.div
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                variants={fadeInUp}
-              >
-                <Card className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600">
-                  <CardContent className="pt-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 border border-[#38C172] xl flex items-center justify-center">
-                        <Clock className="h-6 w-6 text-[#38C172]" />
-                      </div>
-                      <div>
-                        <h4 className="text-lg font-semibold mb-2" style={{ color: "#33BDC7" }}>
-                          Business Hours
-                        </h4>
-                        <div className="space-y-1 text-gray-600 dark:text-gray-300">
-                          <p>Monday - Friday: 9:00 AM - 6:00 PM PST</p>
-                          <p>Saturday: 10:00 AM - 4:00 PM PST</p>
-                          <p>Sunday: Emergency support only</p>
-                          <p className="font-medium mt-2" style={{ color: "#33BDC7" }}>
-                            Live chat available 24/7
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div> */}
+               
             </div>
           </motion.div>
         </div>
-
-        {/* Can't find what you're looking for? */}
-        <motion.div
-          className="mt-16"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }} // triggers reliably
-          transition={{ duration: 0.6 }}
-          variants={fadeInUp}
-        >
-
-          {/* <div className="max-w-4xl my-6 mx-auto">
-            <Card style={{   border: "1px solid #e9ecef" }} className="dark:bg-gray-700 dark:border-gray-600">
-              <CardContent className="pt-8 pb-8">
-                <h3 className="text-2xl md:text-3xl font-bold mb-6 text-center" style={{ color: "#33BDC7" }}>
-                  Can't find what you're looking for?
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="text-center">
-                    <h4 className="font-semibold mb-2" style={{ color: "#33BDC7" }}>Pre-Sales Assistance</h4>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm">Need help choosing the right domain? Looking for niche-specific names or bulk deals?</p>
-                  </div>
-                  <div className="text-center">
-                    <h4 className="font-semibold mb-2" style={{ color: "#33BDC7" }}>Post-Purchase Help</h4>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm">Get help with domain access, transfer guidance, and account-related questions.</p>
-                  </div>
-                  <div className="text-center">
-                    <h4 className="font-semibold mb-2" style={{ color: "#33BDC7" }}>Response Time</h4>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm">We aim to respond to all support and sales inquiries within 1 business day.</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div> */}
-        </motion.div>
+ 
       </div>
     </section>
   )

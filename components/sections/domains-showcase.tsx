@@ -123,7 +123,7 @@ export function DomainsShowcase() {
   }
 
   return (
-    <section className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
+    <section className="py-10 md:py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-20 right-10 w-64 h-64 bg-green-100 dark:bg-green-900/10 full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30"></div>
@@ -133,7 +133,7 @@ export function DomainsShowcase() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Tabs */}
         <motion.div 
-          className="flex flex-wrap justify-center gap-3 mb-12"
+          className="flex flex-wrap justify-center gap-3 mb-6  sm:mb-12 "
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
@@ -163,7 +163,7 @@ export function DomainsShowcase() {
 
         {/* Header */}
         <motion.div 
-          className="text-center mb-16"
+          className="text-center  mb-6  sm:mb-12"
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
