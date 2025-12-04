@@ -156,7 +156,7 @@ export function HeroSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
           >
-            <Card className="bg-transparent backdrop-blur-xs text-gray-800 border border-white/20 shadow-2xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02]">
+            <Card className="bg-transparent backdrop-blur-sm text-gray-800 border border-white/20 shadow-2xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02]">
               <CardContent className="p-4 sm:p-6 md:p-8 space-y-2 md:space-y-8">
 
                 {/* Features */}
