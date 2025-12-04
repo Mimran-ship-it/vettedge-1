@@ -179,7 +179,7 @@ export function Header() {
               {/* Wishlist */}
               <Link href="/wishlist" className="relative">
                 <Button variant="ghost" size="sm" className="rounded-full">
-                  <Heart className="!h-5 !w-5 " />
+                  <Heart className="!h-4 !w-4 " />
                   {wishlistCount > 0 && (
                     <Badge className="absolute bg-[#33BDC7] -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
                       {wishlistCount}
@@ -191,7 +191,7 @@ export function Header() {
               {/* Cart */}
               <Link href="/cart" className="relative">
                 <Button variant="ghost" size="sm" className="rounded-full">
-                  <ShoppingCart className="!h-5 !w-5 " />
+                  <ShoppingCart className="!h-4 !w-4 " />
                   {cartItemsCount > 0 && (
                     <Badge className="absolute bg-[#33BDC7] -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
                       {cartItemsCount}
@@ -215,7 +215,7 @@ export function Header() {
                     size="sm" 
                     className="hidden md:flex items-center justify-center rounded-full"
                   >
-                    <User className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                    <User className="!h-4 !w-4 text-gray-700 dark:text-gray-300" />
                   </Button>
                 </DropdownMenuTrigger>
               
@@ -247,7 +247,7 @@ export function Header() {
                 className="lg:hidden"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
-                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu  className="!h-5 !w-5" />}
+                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu  className="!h-4 !w-4" />}
               </Button>
             </div>
           </div>
@@ -314,7 +314,7 @@ export function Header() {
                       </div>
                     ) : (
                       <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center mr-3">
-                        <User className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                        <User className="!h-4 !w-4 text-gray-500 dark:text-gray-400" />
                       </div>
                     )}
                     <div>

@@ -71,8 +71,21 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col overflow-hidden text-gray-800 dark:text-gray-100">
-      <div className="relative flex-1 flex items-center justify-center px-4 sm:px-2 lg:px-8 py-12">
+    <section className="relative min-h-screen flex flex-col overflow-hidden text-white">
+      {/* Background Image with Overlay */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/herosection.jpg"
+          alt="Hero background"
+          fill
+          priority
+          className="object-cover"
+          quality={100}
+        />
+        <div className="absolute inset-0 bg-black/30 sm:backdrop-blur-xs backdrop-blur-sm "></div>
+      </div>
+      
+      <div className="relative z-10 flex-1 flex items-center justify-center px-4 sm:px-2 lg:px-8 py-12">
         <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-y-16 gap-x-10 items-center">
 
           {/* Left Content */}
@@ -86,17 +99,17 @@ export function HeroSection() {
             <motion.div className="space-y-6" variants={fadeUp} custom={0.2}>
               <Badge
                 variant="outline"
-                className="mb-4 px-4 py-2 border-[#38C172] text-[#38C172] font-medium"
+                className="mb-4 px-4 py-2 border-[#33BDC8] bg-[#2A9CA3] text-white font-medium"
               >
                 🔥Premium Aged Domains
               </Badge>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl font-bold leading-tight break-words">
-                <span className="block">Vetted Aged Domains With</span>
-                <span className="block text-[#33BDC7]">Real Authority</span>
+                <span className="block dark:text-gray-700">Vetted Aged Domains With</span>
+                <span className="block text-[#33BDC8]">Real Authority</span>
               </h1>
 
-              <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+              <p className="text-base sm:text-lg md:text-xl dark:text-gray-600 text-gray-100 leading-relaxed max-w-2xl mx-auto lg:mx-0">
                 Get the edge with VettEdge — where Aged Domains mean business.
                 Supercharge your brand with SEO-rich domains.
               </p>
@@ -119,13 +132,13 @@ export function HeroSection() {
                     placeholder="Search your domain..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full h-14 pl-12 pr-2 text-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 placeholder:text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#33BDC7] transition-all"
+                    className="w-full h-14 pl-12 pr-2 text-lg bg-white/90 border border-white/20 text-gray-800 placeholder:text-sm placeholder:text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#33BDC7] transition-all"
                   />
 
                   {/* Inline Search Button */}
                   <button
                     type="submit"
-                    className="absolute right-1 top-1/2 transform -translate-y-1/2 sm:h-10 h-9 px-4 sm:px-6 bg-[#33BDC7] hover:bg-[#2ba9b8] text-white font-semibold rounded-lg flex items-center justify-center text-lg shadow-md transition-all duration-200"
+                    className="absolute dark:text-gray-700 right-1 top-1/2 transform -translate-y-1/2 sm:h-10 h-9 px-4 sm:px-6 bg-[#33BDC7] hover:bg-[#2ba9b8] text-white font-semibold rounded-lg flex items-center justify-center text-lg shadow-md transition-all duration-200"
                   >
                     {/* <Search className="sm:h-4 sm:w-4 h-4 w-4 " /> */}
                     Search
@@ -143,7 +156,7 @@ export function HeroSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
           >
-            <Card className="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02]">
+            <Card className="bg-transparent backdrop-blur-xs text-gray-800 border border-white/20 shadow-2xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02]">
               <CardContent className="p-4 sm:p-6 md:p-8 space-y-2 md:space-y-8">
 
                 {/* Features */}
@@ -195,7 +208,7 @@ export function HeroSection() {
                         <Icon className={`h-5 w-5 sm:h-8 sm:w-8 ${color}`} />
                       </div>
                       <h4 className="font-semibold text-sm sm:text-base">{title}</h4>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{desc}</p>
+                      <p className="text-xs text-gray-600">{desc}</p>
                     </motion.div>
                   ))}
                 </motion.div>
@@ -240,24 +253,24 @@ export function HeroSection() {
                     <div className="flex flex-col items-center justify-center py-8">
                       {/* Loader spinner */}
                       <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#38C172] mb-3"></div>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                      <p className="text-sm text-gray-600 dark:text-gray-600">
                         Fetching the most frequent domain...
                       </p>
                     </div>
                   ) : (
                     <>
                       <Button
-                        className="w-full  text- dark:text-white bg-transparent hover:bg-transparent font-semibold h-12 sm:h-14 text-base sm:text-lg  transform hover:scale-[1.02] transition-all duration-200"
+                        className="w-full   bg-transparent hover:bg-transparent font-semibold h-12 sm:h-14 text-base sm:text-lg  transform hover:scale-[1.02] transition-all duration-200"
                         size="lg"
                         asChild
                       >
-                        <Link href={`/domains/${topDomain.id}`}>
+                        <Link className="dark:text-gray-700" href={`/domains/${topDomain.id}`}>
                           {topDomain.name}
                           <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 ml-2" />
                         </Link>
                       </Button>
 
-                      <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
+                      <p className="mt-2 dark:text-gray-600 text-center text-sm text-gray-900 ">
                         This domain is mostly watched and frequently added to carts — check it out.
                       </p>
                     </>
