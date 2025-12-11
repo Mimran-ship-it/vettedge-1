@@ -178,8 +178,8 @@ export function Header() {
               
               {/* Wishlist */}
               <Link href="/wishlist" className="relative">
-                <Button variant="ghost" size="sm" className="rounded-full">
-                  <Heart className="!h-4 !w-4 " />
+                <Button variant="ghost" size="sm" className="rounded-full hover:bg-transparent ">
+                  <Heart className="!h-4  !w-4 " />
                   {wishlistCount > 0 && (
                     <Badge className="absolute bg-[#33BDC7] -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
                       {wishlistCount}
@@ -190,7 +190,7 @@ export function Header() {
               
               {/* Cart */}
               <Link href="/cart" className="relative">
-                <Button variant="ghost" size="sm" className="rounded-full">
+                <Button variant="ghost" size="sm" className="rounded-full hover:bg-transparent">
                   <ShoppingCart className="!h-4 !w-4 " />
                   {cartItemsCount > 0 && (
                     <Badge className="absolute bg-[#33BDC7] -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
@@ -213,7 +213,7 @@ export function Header() {
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="hidden md:flex items-center justify-center rounded-full"
+                    className="hidden hover:bg-transparent md:flex items-center justify-center rounded-full"
                   >
                     <User className="!h-4 !w-4 text-gray-700 dark:text-gray-300" />
                   </Button>
@@ -232,9 +232,7 @@ export function Header() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Link href={'/domains'}><button className="px-2 sm:flex hidden py-2 text-sm rounded-md bg-[#1FCAD3] text-white font-semibold shadow-md hover:opacity-90 transition">
-  Find Your Domain
-</button></Link>
+            
 
               </div>
                 )}

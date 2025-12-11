@@ -176,7 +176,7 @@ export function TrustSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex flex-col lg:flex-row gap-8 mb-10 sm:mb-20">
           {/* Trust Indicators - Right side on large screens */}
-          <div className="lg:w-2/5 lg:mt-26 lg:order-2">
+          <div className="lg:w-2/5 lg:mt-8 lg:order-2">
             {/* Mobile View - Fixed to use AnimatedCounter with shared trigger */}
             <div className="lg:hidden" ref={mobileTrustRef}>
               <motion.div
@@ -206,7 +206,7 @@ export function TrustSection() {
 
             {/* Desktop View */}
             <div className="hidden lg:block">
-              <div className="space-y-6">
+              <div className="space-y-6 ">
                 {trustIndicators.map((indicator, index) => (
                   <motion.div
                     key={index}
@@ -288,9 +288,7 @@ export function TrustSection() {
                   <Card className="h-full bg-white dark:bg-gray-800 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group">
                     <div className="h-2 bg-gradient-to-r from-[#38C172] to-[#33BDC7] w-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
                     <CardContent className="pt-6 pb-4 px-4 sm:pt-8 sm:pb-6 sm:px-6 flex flex-col h-full">
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-[#38C172]/10 to-[#33BDC7]/10 2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 group-hover:from-[#38C172]/20 group-hover:to-[#33BDC7]/20 transition-all duration-300">
-                        <feature.icon className="h-6 w-6 sm:h-7 sm:w-7 text-[#38C172] group-hover:text-[#33BDC7] transition-colors duration-300" />
-                      </div>
+                      
                       <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-white mb-2 sm:mb-3 group-hover:text-[#33BDC7] transition-colors duration-300">
                         {feature.title}
                       </h3>

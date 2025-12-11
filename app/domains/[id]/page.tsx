@@ -102,14 +102,14 @@ export default function DomainDetailsPage() {
       removeFromWishlist(domain._id)
       toast({
         title: "Removed",
-        description: `${domain.name} removed from wishlist.`
+        description: `${domain.name} t.`
       })
     } else {
       addToWishlist(domain._id)
-      toast({
-        title: "Wishlisted",
-        description: `${domain.name} added to wishlist.`
-      })
+      //toast({
+      //  title: "Wishlisted",
+      // description: `${domain.name} added to wishlist.`
+     // })
     }
   }
 
@@ -298,7 +298,7 @@ export default function DomainDetailsPage() {
   <TabsTrigger
     value="history"
     className="
-      bg-yellow-700 text-black dark:text-white dark:bg-yellow-700
+      bg-[#FFF7ED] text-black dark:text-white dark:bg-yellow-600
       data-[state=active]:bg-[#30C97C]
       data-[state=active]:text-white
       rounded-lg py-2

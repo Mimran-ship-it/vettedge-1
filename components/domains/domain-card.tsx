@@ -18,12 +18,12 @@ import {
   Languages,
   Hourglass,
   Building,
-  Tag,
   BarChart3,
   ShoppingBag,
   CheckCircle,
   Eye,
   Share2,
+  Lock, // Added Lock icon
 } from "lucide-react"
 import {
   Tooltip,
@@ -115,9 +115,12 @@ export function DomainCard({ domain }: DomainCardProps) {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
   const { toast } = useToast()
   const isWishlisted = isInWishlist(domain._id)
+  
+  // Helper to determine state
+  const isUnavailable = domain.isSold || !domain.isAvailable;
 
   const handleAddToCart = () => {
-    if (domain.isSold || !domain.isAvailable) {
+    if (isUnavailable) {
       toast({
         title: "Domain Unavailable",
         description: "This domain is no longer available for purchase.",
@@ -132,11 +135,10 @@ export function DomainCard({ domain }: DomainCardProps) {
       domain: parsedDomain,
       isSold: parsedDomain.isSold,
     })
-  
   }
 
   const handleBuyNow = () => {
-    if (domain.isSold || !domain.isAvailable) {
+    if (isUnavailable) {
       toast({
         title: "Domain Unavailable",
         description: "This domain is no longer available for purchase.",
@@ -164,27 +166,18 @@ export function DomainCard({ domain }: DomainCardProps) {
   const handleWishlistToggle = () => {
     if (isWishlisted) {
       removeFromWishlist(domain._id)
-      toast({
-        title: "Removed",
-        description: `${domain.name} removed from wishlist.`,
-      })
     } else {
       addToWishlist(domain._id)
-      toast({
-        title: "Wishlisted",
-        description: `${domain.name} added to wishlist.`,
-      })
     }
   }
 
   const handleShare = async () => {
-    if (domain.isSold || !domain.isAvailable) {
-      return; // Don't allow sharing for sold or unavailable domains
+    if (isUnavailable) {
+      return; 
     }
     
     const url = `${window.location.origin}/domains/${domain._id}`;
 
-    // Create shareable text with all key domain information
     const shareText = `Check out this premium domain: ${domain.name}
 Key Metrics:
 • Domain Rank (DR): ${domain.metrics.domainRank}
@@ -208,12 +201,10 @@ View full details:`;
           text: shareText,
           url: url,
         });
-       
       } catch (error) {
         console.error('Error sharing:', error);
       }
     } else {
-      // Fallback: copy to clipboard
       try {
         await navigator.clipboard.writeText(shareText);
         toast({
@@ -233,38 +224,39 @@ View full details:`;
 
   return (
     <motion.div
-      whileHover={{ y: -5 }}
+      whileHover={isUnavailable ? {} : { y: -5 }}
       transition={{ duration: 0.2 }}
       className="h-full"
     >
       <Card className={cn(
-        "relative group h-full flex flex-col  overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200",
-        (domain.isSold||(!domain.isAvailable)) && "opacity-70"
+        "relative group h-full flex flex-col overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm transition-all duration-200",
+        !isUnavailable && "hover:shadow-md",
+        isUnavailable && "bg-gray-50/50 dark:bg-gray-900/50 border-gray-100 dark:border-gray-800"
       )}>
         {/* Top Image - Responsive Aspect Ratio */}
         {domain.image?.length > 0 && (
           <div className="relative w-full aspect-video overflow-hidden bg-gray-100 dark:bg-gray-700">
-            <Link href={domain.isSold || !domain.isAvailable ? '#' : `/domains/${domain._id}`}>
+            <Link href={isUnavailable ? '#' : `/domains/${domain._id}`} className={cn(isUnavailable && "pointer-events-none")}>
               <Image
                 src={domain.image[0]}
                 alt={domain.name}
                 fill
                 className={cn(
                   "object-cover transition duration-300",
-                  (domain.isSold || !domain.isAvailable) ? "blur-[40px] brightness-50" : ""
+                  isUnavailable ? "blur-[8px] brightness-[0.8] grayscale" : ""
                 )}
               />
             </Link>
             
-            {(domain.isSold || !domain.isAvailable) && (
-              <div className="absolute inset-0 flex items-center justify-center z-10">
-                <Badge variant="destructive" className="text-sm px-3 py-1">
+            {isUnavailable && (
+              <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/10 backdrop-blur-[2px]">
+                <Badge variant="destructive" className="text-sm px-4 py-1.5 font-bold shadow-lg">
                   {domain.isSold ? "SOLD" : "UNAVAILABLE"}
                 </Badge>
               </div>
             )}
             
-            {domain.isHot && (
+            {domain.isHot && !isUnavailable && (
               <Badge className="absolute top-3 right-3 bg-orange-500 hover:bg-orange-600">
                 HOT
               </Badge>
@@ -277,10 +269,12 @@ View full details:`;
           <CardHeader className="p-0 pb-3">
             <div className="flex items-start justify-between">
               <div className="flex-1 min-w-0">
-                {(domain.isSold||(!domain.isAvailable)) ? (
-                  <div className="relative">
-                    <div className="absolute inset-0 blur-[30px] bg-gradient-to-r from-gray-300 to-gray-400 opacity-70"></div>
-                    <div className="relative text-transparent">███████████████████</div>
+                {isUnavailable ? (
+                  <div className="relative select-none">
+                     <div className="absolute inset-0 blur-[8px] bg-gray-400 dark:bg-gray-600 opacity-50 rounded"></div>
+                    <div className="relative text-transparent bg-clip-text bg-gradient-to-r from-gray-400 to-gray-500 font-bold">
+                       ██████████
+                    </div>
                   </div>
                 ) : (
                   <CardTitle className="text-lg font-bold text-gray-900 dark:text-white truncate pr-2">
@@ -289,7 +283,7 @@ View full details:`;
                 )}
               </div>
               <div className="flex gap-1 flex-shrink-0">
-                {!domain.isSold && domain.isAvailable && (
+                {!isUnavailable && (
                   <Button
                     variant="ghost"
                     size="icon"
@@ -304,7 +298,7 @@ View full details:`;
                   size="icon"
                   onClick={handleWishlistToggle}
                   className={cn("p-1 h-7 w-7 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300", isWishlisted && "text-red-500 hover:text-red-500 dark:text-red-400 dark:hover:text-red-400")}
-                  disabled={domain.isSold || !domain.isAvailable}
+                  disabled={isUnavailable}
                 >
                   <Heart className={cn("h-4 w-4", isWishlisted && "fill-current")} />
                 </Button>
@@ -336,186 +330,208 @@ View full details:`;
 
             {/* Price & Availability */}
             <div className="flex items-center justify-between">
-               <div className="flex items-center gap-2">
-    <span className="text-xl font-bold text-gray-900 dark:text-white">
-      ${domain.price.toLocaleString()}
-    </span>
+               <div className={cn("flex items-center gap-2", isUnavailable && "opacity-50 grayscale")}>
+                <span className="text-xl font-bold text-gray-900 dark:text-white">
+                  ${domain.price.toLocaleString()}
+                </span>
 
-    {domain.Actualprice && domain.Actualprice > domain.price && (
-      <>
-        <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
-          ${domain.Actualprice.toLocaleString()}
-        </span>
-        <span className="text-sm font-semibold text-[#38C172]">
-          {Math.round(((domain.Actualprice - domain.price) / domain.Actualprice) * 100)}% off
-        </span>
-      </>
-    )}
-  </div>
+                {domain.Actualprice && domain.Actualprice > domain.price && (
+                  <>
+                    <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
+                      ${domain.Actualprice.toLocaleString()}
+                    </span>
+                    {!isUnavailable && (
+                        <span className="text-sm font-semibold text-[#38C172]">
+                        {Math.round(((domain.Actualprice - domain.price) / domain.Actualprice) * 100)}% off
+                        </span>
+                    )}
+                  </>
+                )}
+              </div>
               <Badge 
-                variant={domain.isAvailable && !domain.isSold ? "default" : "secondary"}
+                variant={!isUnavailable ? "default" : "secondary"}
                 className={cn(
                   "text-xs",
-                  domain.isAvailable && !domain.isSold 
+                  !isUnavailable
                     ? "bg-[#38C172]/10 text-[#38C172]" 
-                    : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
+                    : "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400"
                 )}
               >
-                {domain.isAvailable && !domain.isSold ? "Available" : domain.isSold ? "Sold" : "Unavailable"}
+                {!isUnavailable ? "Available" : domain.isSold ? "Sold" : "Unavailable"}
               </Badge>
             </div>
 
-            {/* Overall Score Section */}
-            <div className="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-md border border-gray-200 dark:border-gray-600 shadow-sm">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="h-5 w-5 text-[#33BDC7]" />
-                  <span className="text-sm font-semibold text-gray-800 dark:text-gray-100">Overall Score</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-lg font-bold text-gray-900 dark:text-white">
-                    {domain.metrics.score}
-                  </span>
-                  <div className="relative w-16 h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
-                    <div 
-                      className="absolute top-0 left-0 h-full bg-[#33BDC7] rounded-full"
-                      style={{ width: `${Math.min(100, domain.metrics.score)}%` }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Score Description */}
-              <div className="text-xs text-gray-600 dark:text-gray-300">
-                {domain.metrics.score >= 80 ? (
-                  <span className="text-[#33BDC7] font-medium">Exceptional domain score</span>
-                ) : domain.metrics.score >= 60 ? (
-                  <span className="text-[#33BDC7] font-medium">Strong domain score</span>
-                ) : domain.metrics.score >= 40 ? (
-                  <span className="text-yellow-600 dark:text-yellow-400 font-medium">Moderate domain score</span>
-                ) : (
-                  <span className="text-orange-600 dark:text-orange-400 font-medium">Developing domain score</span>
+            {/* BLUR CONTAINER FOR METRICS */}
+            <div className="relative flex-1 flex flex-col space-y-3">
+                {/* The Overlay for Sold Items */}
+                {isUnavailable && (
+                    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center">
+                        <div className="p-3 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 shadow-sm">
+                             <Lock className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                        </div>
+                        <span className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-2 bg-white/50 dark:bg-black/50 px-2 py-0.5 rounded">
+                            Metrics Hidden
+                        </span>
+                    </div>
                 )}
-              </div>
+
+                {/* The Actual Content (Blurred if unavailable) */}
+                <div className={cn(
+                    "space-y-3 flex-1 flex flex-col transition-all duration-300",
+                    isUnavailable && "filter blur-[5px] opacity-40 grayscale pointer-events-none select-none"
+                )}>
+                    {/* Overall Score Section */}
+                    <div className="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-md border border-gray-200 dark:border-gray-600 shadow-sm">
+                    <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                        <ShieldCheck className="h-5 w-5 text-[#33BDC7]" />
+                        <span className="text-sm font-semibold text-gray-800 dark:text-gray-100">Overall Score</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                        <span className="text-lg font-bold text-gray-900 dark:text-white">
+                            {domain.metrics.score}
+                        </span>
+                        <div className="relative w-16 h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                            <div 
+                            className="absolute top-0 left-0 h-full bg-[#33BDC7] rounded-full"
+                            style={{ width: `${Math.min(100, domain.metrics.score)}%` }}
+                            ></div>
+                        </div>
+                        </div>
+                    </div>
+
+                    {/* Score Description */}
+                    <div className="text-xs text-gray-600 dark:text-gray-300">
+                        {domain.metrics.score >= 80 ? (
+                        <span className="text-[#33BDC7] font-medium">Exceptional domain score</span>
+                        ) : domain.metrics.score >= 60 ? (
+                        <span className="text-[#33BDC7] font-medium">Strong domain score</span>
+                        ) : domain.metrics.score >= 40 ? (
+                        <span className="text-yellow-600 dark:text-yellow-400 font-medium">Moderate domain score</span>
+                        ) : (
+                        <span className="text-orange-600 dark:text-orange-400 font-medium">Developing domain score</span>
+                        )}
+                    </div>
+                    </div>
+
+                    <TooltipProvider>
+                    <div className="grid grid-cols-3 gap-2 text-xs">
+                        {/* Column 1 */}
+                        <div className="space-y-2">
+                        <CustomTooltip tooltipKey="domainRank" content={<p className="font-semibold">Domain Rank (DR)</p>}>
+                            <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                            <TrendingUp className="h-3 w-3" />
+                            <span>DR: {domain.metrics.domainRank}</span>
+                            </div>
+                        </CustomTooltip>
+
+                        <CustomTooltip tooltipKey="trustFlow" content={<p className="font-semibold">Trust Flow (TF)</p>}>
+                            <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                            <Activity className="h-3 w-3" />
+                            <span>TF: {domain.metrics.trustFlow}</span>
+                            </div>
+                        </CustomTooltip>
+
+                        <CustomTooltip tooltipKey="authorityLinks" content={<p className="font-semibold">Authority Links (ALs)</p>}>
+                            <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                            <LinkIcon className="h-3 w-3" />
+                            <span>{domain.metrics.authorityLinksCount} ALs</span>
+                            </div>
+                        </CustomTooltip>
+                        </div>
+
+                        {/* Column 2 */}
+                        <div className="space-y-2">
+                        <CustomTooltip tooltipKey="referringDomains" content={<p className="font-semibold">Referring Domains (RDs)</p>}>
+                            <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                            <LinkIcon className="h-3 w-3" />
+                            <span>{domain.metrics.referringDomains} RDs</span>
+                            </div>
+                        </CustomTooltip>
+
+                        <CustomTooltip tooltipKey="citationFlow" content={<p className="font-semibold">Citation Flow (CF)</p>}>
+                            <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                            <Flag className="h-3 w-3" />
+                            <span>CF: {domain.metrics.citationFlow}</span>
+                            </div>
+                        </CustomTooltip>
+
+                        <CustomTooltip tooltipKey="domainAge" content={<p className="font-semibold">Domain Age</p>}>
+                            <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                            <Hourglass className="h-3 w-3" />
+                            <span>{domain.metrics.age} yrs</span>
+                            </div>
+                        </CustomTooltip>
+                        </div>
+
+                        {/* Column 3 */}
+                        <div className="space-y-2">
+                        <CustomTooltip tooltipKey="domainAuthority" content={<p className="font-semibold">Domain Authority (DA)</p>}>
+                            <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                            <Building className="h-3 w-3" />
+                            <span>DA: {domain.metrics.domainAuthority}</span>
+                            </div>
+                        </CustomTooltip>
+
+                        {domain.type === "traffic" && domain.metrics.monthlyTraffic && (
+                            <CustomTooltip tooltipKey="monthlyTraffic" content={<p className="font-semibold">Monthly Traffic</p>}>
+                            <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                                <Globe className="h-3 w-3" />
+                                <span>{domain.metrics.monthlyTraffic.toLocaleString()}</span>
+                            </div>
+                            </CustomTooltip>
+                        )}
+
+                        <CustomTooltip tooltipKey="language" content={<p className="font-semibold">Primary Language</p>}>
+                            <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
+                            <Languages className="h-3 w-3" />
+                            <span>{domain.metrics.language}</span>
+                            </div>
+                        </CustomTooltip>
+                        </div>
+                    </div>
+                    </TooltipProvider>
+
+                    {/* Tags */}
+                    {domain.tags?.length > 0 && (
+                    <div className="flex flex-wrap gap-1 pt-1">
+                        {domain.tags.slice(0, 3).map((tag, idx) => (
+                        <Badge
+                            key={idx}
+                            variant="outline"
+                            className="text-xs px-2 py-0.5 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300"
+                        >
+                            {tag}
+                        </Badge>
+                        ))}
+                    </div>
+                    )}
+                </div>
             </div>
-
-            <TooltipProvider>
-              <div className="grid grid-cols-3 gap-2 text-xs">
-                {/* Column 1 */}
-                <div className="space-y-2">
-                  <CustomTooltip tooltipKey="domainRank" content={<p className="font-semibold">Domain Rank (DR)</p>}>
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
-                      <TrendingUp className="h-3 w-3" />
-                      <span>DR: {domain.metrics.domainRank}</span>
-                    </div>
-                  </CustomTooltip>
-
-                  <CustomTooltip tooltipKey="trustFlow" content={<p className="font-semibold">Trust Flow (TF)</p>}>
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
-                      <Activity className="h-3 w-3" />
-                      <span>TF: {domain.metrics.trustFlow}</span>
-                    </div>
-                  </CustomTooltip>
-
-                  <CustomTooltip tooltipKey="authorityLinks" content={<p className="font-semibold">Authority Links (ALs)</p>}>
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
-                      <LinkIcon className="h-3 w-3" />
-                      <span>{domain.metrics.authorityLinksCount} ALs</span>
-                    </div>
-                  </CustomTooltip>
-                </div>
-
-                {/* Column 2 */}
-                <div className="space-y-2">
-                  <CustomTooltip tooltipKey="referringDomains" content={<p className="font-semibold">Referring Domains (RDs)</p>}>
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
-                      <LinkIcon className="h-3 w-3" />
-                      <span>{domain.metrics.referringDomains} RDs</span>
-                    </div>
-                  </CustomTooltip>
-
-                  <CustomTooltip tooltipKey="citationFlow" content={<p className="font-semibold">Citation Flow (CF)</p>}>
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
-                      <Flag className="h-3 w-3" />
-                      <span>CF: {domain.metrics.citationFlow}</span>
-                    </div>
-                  </CustomTooltip>
-
-                  <CustomTooltip tooltipKey="domainAge" content={<p className="font-semibold">Domain Age</p>}>
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
-                      <Hourglass className="h-3 w-3" />
-                      <span>{domain.metrics.age} yrs</span>
-                    </div>
-                  </CustomTooltip>
-                </div>
-
-                {/* Column 3 */}
-                <div className="space-y-2">
-                  <CustomTooltip tooltipKey="domainAuthority" content={<p className="font-semibold">Domain Authority (DA)</p>}>
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
-                      <Building className="h-3 w-3" />
-                      <span>DA: {domain.metrics.domainAuthority}</span>
-                    </div>
-                  </CustomTooltip>
-
-                  {domain.type === "traffic" && domain.metrics.monthlyTraffic && (
-                    <CustomTooltip tooltipKey="monthlyTraffic" content={<p className="font-semibold">Monthly Traffic</p>}>
-                      <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
-                        <Globe className="h-3 w-3" />
-                        <span>{domain.metrics.monthlyTraffic.toLocaleString()}</span>
-                      </div>
-                    </CustomTooltip>
-                  )}
-
-                  <CustomTooltip tooltipKey="language" content={<p className="font-semibold">Primary Language</p>}>
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 cursor-help">
-                      <Languages className="h-3 w-3" />
-                      <span>{domain.metrics.language}</span>
-                    </div>
-                  </CustomTooltip>
-                </div>
-              </div>
-            </TooltipProvider>
-
-            {/* Tags */}
-            {domain.tags?.length > 0 && (
-              <div className="flex flex-wrap gap-1 pt-1">
-                {domain.tags.slice(0, 3).map((tag, idx) => (
-                  <Badge
-                    key={idx}
-                    variant="outline"
-                    className="text-xs px-2 py-0.5 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300"
-                  >
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            )}
             
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 pt-2 mt-auto">
               <Button
-                className="flex-1 h-9 bg-[#33BDC7] hover:bg-[#2caab4] text-white"
+                className="flex-1 h-9 bg-[#33BDC7] hover:bg-[#2caab4] text-white disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-gray-700"
                 onClick={handleAddToCart}
-                disabled={domain.isSold || !domain.isAvailable}
+                disabled={isUnavailable}
               >
-                <ShoppingCart className="h-4 w-4 mr-1" />
-                Add
+                <ShoppingCart className="h-4 w-4 " />
               </Button>
               <Button
-                className="h-9 px-3 bg-red-600 hover:bg-red-700 text-white"
+                className="h-9 px-3 bg-red-600 hover:bg-red-700 text-white disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-gray-700"
                 onClick={handleBuyNow}
-                disabled={domain.isSold || !domain.isAvailable}
+                disabled={isUnavailable}
               >
                 Buy Now
               </Button>
               <Button
                 variant="outline"
-                className="h-9 px-3 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                disabled={domain.isSold || !domain.isAvailable}
+                className="h-9 px-3 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
+                disabled={isUnavailable}
               >
                 <Link
-                  href={`/domains/${domain._id}`}
+                  href={isUnavailable ? '#' : `/domains/${domain._id}`}
                   className="flex items-center gap-1"
                 >
                   <Eye className="h-4 w-4" />
@@ -524,7 +540,7 @@ View full details:`;
               </Button>
             </div>
            
-            <div className="flex gap-4 pt-2 text-sm text-gray-600 dark:text-gray-300">
+            <div className={cn("flex gap-4 pt-2 text-sm text-gray-600 dark:text-gray-300", isUnavailable && "opacity-30")}>
               <div className="flex items-center gap-1">
                 <CheckCircle className="h-4 w-4 text-[#33BDC7]" />
                 <span>Search engine indexed</span>

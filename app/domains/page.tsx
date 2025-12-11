@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Search, Filter, ArrowUpDown, Flame, X, Grid, List } from "lucide-react"
 import type { Domain } from "@/types/domain"
 import { LiveChat } from "@/components/chat/live-chat"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation" 
 import {
   Select,
   SelectContent,
@@ -644,7 +644,7 @@ export default function DomainsPage() {
             {/* Domain Cards */}
             {loading ? (
               <div className={viewMode === "grid"
-                ? `grid md:grid-cols-2 ${showDesktopSidebar ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-6`
+                ? `grid md:grid-cols-2 ${showDesktopSidebar ? "lg:grid-cols-3" : "lg:grid-cols-3"} gap-6`
                 : "space-y-4"
               }>
                 {[...Array(6)].map((_, i) => (
@@ -668,7 +668,7 @@ export default function DomainsPage() {
               </div>
             ) : filteredDomains.length > 0 ? (
               <div className={viewMode === "grid"
-                ? `grid md:grid-cols-2 ${showDesktopSidebar ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-6`
+                ? `grid md:grid-cols-2 ${showDesktopSidebar ? "lg:grid-cols-3" : "lg:grid-cols-3"} gap-6`
                 : "space-y-4"
               }>
                 {filteredDomains.map((domain) => (
