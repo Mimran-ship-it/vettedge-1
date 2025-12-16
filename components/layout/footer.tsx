@@ -1,42 +1,53 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useState } from "react"
-import { Facebook, Instagram, Mail, Phone, MapPin, Code2, Twitter, Linkedin, MessageCircle, Star } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Image from "next/image"
+import Link from "next/link";
+import { useState } from "react";
+import {
+  Facebook,
+  Instagram,
+  Mail,
+  Phone,
+  MapPin,
+  Code2,
+  Twitter,
+  Linkedin,
+  MessageCircle,
+  Star,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export function Footer() {
-  const [email, setEmail] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleSubscribe = async () => {
-    if (!email) return
+    if (!email) return;
 
-    setIsLoading(true)
-    setSuccess(false)
+    setIsLoading(true);
+    setSuccess(false);
 
     try {
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
-      })
+      });
 
       if (res.ok) {
-        setSuccess(true)
-        setEmail("")
+        setSuccess(true);
+        setEmail("");
       } else {
-        alert("Something went wrong. Please try again.")
+        alert("Something went wrong. Please try again.");
       }
     } catch (error) {
-      console.error(error)
-      alert("Failed to subscribe.")
+      console.error(error);
+      alert("Failed to subscribe.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <footer className=" z-[999999] bg-white  dark:bg-gray-900 text-gray-800 dark:text-gray-200">
@@ -59,71 +70,181 @@ export function Footer() {
 
             <div className="border-l-4 border-[#38C172] pl-4 mt-2 text-sm italic text-gray-700 dark:text-gray-400">
               <p>
-                "We're passionate about providing high-quality Aged Domains to help your business succeed online."
+                "We're passionate about providing high-quality Aged <br />
+                Domains to help your business succeed online."
               </p>
               <p className="mt-1 font-semibold not-italic text-[#33BDC7] dark:text-[#33BDC7]/80">
                 — VettEdge Team
               </p>
             </div>
             <div className="flex space-x-0 mt-4">
-              <Link href="https://www.facebook.com/share/1AAwdxxvBD/?mibextid=wwXIfr" target="_blank">
-                <Button variant="ghost" className="p-0 hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
+              <Link
+                href="https://www.facebook.com/share/1AAwdxxvBD/?mibextid=wwXIfr"
+                target="_blank"
+              >
+                <Button
+                  variant="ghost"
+                  className="p-0 hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20"
+                >
                   <Facebook className="!w-5 !h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
                 </Button>
               </Link>
 
-              <Link href="https://www.linkedin.com/company/vettedge-domains/" target="_blank">
-                <Button variant="ghost" className="p-0 hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
+              <Link
+                href="https://www.linkedin.com/company/vettedge-domains/"
+                target="_blank"
+              >
+                <Button
+                  variant="ghost"
+                  className="p-0 hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20"
+                >
                   <Linkedin className="!w-5 !h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
                 </Button>
               </Link>
 
-              <Link href="https://whatsapp.com/channel/0029VbBLngqJpe8n9JJLzu3x" target="_blank">
-                <Button variant="ghost" className="p-0 hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20">
+              <Link
+                href="https://whatsapp.com/channel/0029VbBLngqJpe8n9JJLzu3x"
+                target="_blank"
+              >
+                <Button
+                  variant="ghost"
+                  className="p-0 hover:bg-[#33BDC7]/10 dark:hover:bg-[#33BDC7]/20"
+                >
                   <MessageCircle className="!w-5 !h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" />
                 </Button>
               </Link>
             </div>
           </div>
 
-
           {/* Domains */}
           <div>
-            <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Domains</h4>
+            <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">
+              Domains
+            </h4>
             <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-              <li><Link href="/domains" className="hover:text-[#33BDC7] hover:underline">Browse All</Link></li>
-              <li><Link href="/hot-deals" className="hover:text-[#33BDC7] hover:underline">Hot Deals</Link></li>
-              <li><Link href="/vetting-process" className="hover:text-[#33BDC7] hover:underline">Vetting Process</Link></li>
-              <li><Link href="/return-policy" className="hover:text-[#33BDC7] hover:underline">Return Policy</Link></li>
+              <li>
+                <Link
+                  href="/domains"
+                  className="hover:text-[#33BDC7] hover:underline"
+                >
+                  Browse All
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/hot-deals"
+                  className="hover:text-[#33BDC7] hover:underline"
+                >
+                  Hot Deals
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/vetting-process"
+                  className="hover:text-[#33BDC7] hover:underline"
+                >
+                  Vetting Process
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/return-policy"
+                  className="hover:text-[#33BDC7] hover:underline"
+                >
+                  Return Policy
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Support */}
           <div>
-            <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Support</h4>
+            <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">
+              Support
+            </h4>
             <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-              <li><Link href="/transfer-process" className="hover:text-[#33BDC7] hover:underline">Transfer Process</Link></li>
-              <li><Link href="/contact" className="hover:text-[#33BDC7] hover:underline">Help Center</Link></li>
-              <li><Link href="/contact#faq" className="hover:text-[#33BDC7] hover:underline">FAQ</Link></li>
-              <li><Link href="/contact" className="hover:text-[#33BDC7] hover:underline">Contact Us</Link></li>
+              <li>
+                <Link
+                  href="/transfer-process"
+                  className="hover:text-[#33BDC7] hover:underline"
+                >
+                  Transfer Process
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/contact"
+                  className="hover:text-[#33BDC7] hover:underline"
+                >
+                  Help Center
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/contact#faq"
+                  className="hover:text-[#33BDC7] hover:underline"
+                >
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/contact"
+                  className="hover:text-[#33BDC7] hover:underline"
+                >
+                  Contact Us
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Company */}
           <div>
-            <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Company</h4>
+            <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">
+              Company
+            </h4>
             <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-              <li><Link href="/about" className="hover:text-[#33BDC7] hover:underline">About Us</Link></li>
-              <li><Link href="/blog" className="hover:text-[#33BDC7] hover:underline">Blog</Link></li>
-              <li><Link href="/terms" className="hover:text-[#33BDC7] hover:underline">Terms</Link></li>
-              <li><Link href="/privacy" className="hover:text-[#33BDC7] hover:underline">Privacy</Link></li>
+              <li>
+                <Link
+                  href="/about"
+                  className="hover:text-[#33BDC7] hover:underline"
+                >
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/blog"
+                  className="hover:text-[#33BDC7] hover:underline"
+                >
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/terms"
+                  className="hover:text-[#33BDC7] hover:underline"
+                >
+                  Terms
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/privacy"
+                  className="hover:text-[#33BDC7] hover:underline"
+                >
+                  Privacy
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Contact Details & Trustpilot */}
           <div className="flex flex-col gap-6">
             <div>
-              <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">Contact Details</h4>
+              <h4 className="text-sm font-semibold mb-4 text-[#33BDC7] dark:text-[#33BDC7]/80">
+                Contact Details
+              </h4>
               <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
                 <li className="flex items-center gap-2">
                   {/* <Mail className="w-5 h-5 text-[#33BDC7] dark:text-[#33BDC7]/80" /> */}
@@ -138,7 +259,9 @@ export function Footer() {
 
             {/* Trustpilot Review Section */}
             <div>
-              <h4 className="text-sm font-semibold mb-2 text-[#33BDC7] dark:text-[#33BDC7]/80">Your Feedback</h4>
+              <h4 className="text-sm font-semibold mb-2 text-[#33BDC7] dark:text-[#33BDC7]/80">
+                Your Feedback
+              </h4>
               <div className="bg-white dark:bg-gray-800  shadow-md p-1 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-lg">
                 <div
                   data-locale="en-GB"
@@ -167,7 +290,6 @@ export function Footer() {
         {/* Footer Bottom */}
         <div className="w-full mt-6 border-t border-gray-200 dark:border-gray-700 pt-4">
           <div className="flex flex-col sm:flex-row justify-center items-center gap-2 text-center text-xs sm:text-sm text-gray-600 dark:text-gray-300">
-
             {/* Copyright */}
             <div className="flex items-center gap-2">
               <Code2 className="w-4 h-4" />
@@ -191,8 +313,7 @@ export function Footer() {
             </div>
           </div>
         </div>
-
       </div>
     </footer>
-  )
+  );
 }
