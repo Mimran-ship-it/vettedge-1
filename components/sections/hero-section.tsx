@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Variants } from "framer-motion"
-import Image from "next/image"
+import type React from "react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Variants } from "framer-motion";
+import Image from "next/image";
 import {
   Search,
   ListChecks,
@@ -19,46 +19,51 @@ import {
   Globe,
   Star,
   ArrowRight,
-} from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useCart } from "@/components/providers/cart-provider"
+} from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCart } from "@/components/providers/cart-provider";
 
 export function HeroSection() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const router = useRouter()
-  const { getMostFrequentDomain } = useCart()
-  const [topDomain, setTopDomain] = useState<{ id: string; name: string } | null>(null)
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+  const { getMostFrequentDomain } = useCart();
+  const [topDomain, setTopDomain] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
   useEffect(() => {
-    let cancelled = false
+    let cancelled = false;
     const loadTop = async () => {
       try {
-        const res = await fetch('/api/frequency/top', { cache: 'no-store' })
+        const res = await fetch("/api/frequency/top", { cache: "no-store" });
         if (res.ok) {
-          const data = await res.json()
+          const data = await res.json();
           if (!cancelled && data && data.id) {
-            setTopDomain({ id: data.id, name: data.name })
-            return
+            setTopDomain({ id: data.id, name: data.name });
+            return;
           }
         }
       } catch {
         // ignore and fallback
       }
       // Fallback to localStorage-based frequency
-      const topLocal = getMostFrequentDomain()
-      if (!cancelled) setTopDomain(topLocal)
-    }
-    loadTop()
-    return () => { cancelled = true }
-  }, [getMostFrequentDomain])
+      const topLocal = getMostFrequentDomain();
+      if (!cancelled) setTopDomain(topLocal);
+    };
+    loadTop();
+    return () => {
+      cancelled = true;
+    };
+  }, [getMostFrequentDomain]);
 
   const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/domains?search=${encodeURIComponent(searchQuery)}`)
+      router.push(`/domains?search=${encodeURIComponent(searchQuery)}`);
     }
-  }
+  };
 
   // Animation variants
   const fadeUp: Variants = {
@@ -66,16 +71,17 @@ export function HeroSection() {
     visible: (custom: number = 0) => ({
       opacity: 1,
       y: 0,
-      transition: { delay: custom, duration: 0.6, ease: "easeOut" }
-    })
-  }
+      transition: { delay: custom, duration: 0.6, ease: "easeOut" },
+    }),
+  };
 
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden text-white">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/herosection.jpg"
+          // src="/herosection.jpg"
+          src="/vettedge-mobile-bg.jpg"
           alt="Hero background"
           fill
           priority
@@ -84,10 +90,9 @@ export function HeroSection() {
         />
         <div className="absolute inset-0 bg-black/30 sm:backdrop-blur-xs backdrop-blur-sm "></div>
       </div>
-      
+
       <div className="relative z-10 flex-1 flex items-center justify-center px-4 sm:px-2 lg:px-8 py-12">
         <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-y-16 gap-x-10 items-center">
-
           {/* Left Content */}
           <motion.div
             className="space-y-10 text-center lg:text-left"
@@ -105,7 +110,9 @@ export function HeroSection() {
               </Badge>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl font-bold leading-tight break-words">
-                <span className="block dark:text-gray-700">Vetted Aged Domains With</span>
+                <span className="block dark:text-gray-700">
+                  Vetted Aged Domains With
+                </span>
                 <span className="block text-[#33BDC8]">Real Authority</span>
               </h1>
 
@@ -145,7 +152,6 @@ export function HeroSection() {
                   </button>
                 </div>
               </form>
-
             </motion.div>
           </motion.div>
 
@@ -158,15 +164,13 @@ export function HeroSection() {
           >
             <Card className="bg-transparent backdrop-blur-sm text-gray-800 border border-white/20 shadow-2xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02]">
               <CardContent className="p-4 sm:p-6 md:p-8 space-y-2 md:space-y-8">
-
                 {/* Features */}
                 <motion.div
                   className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-3"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6, duration: 0.5 }}
-                >
-                </motion.div>
+                ></motion.div>
 
                 <motion.div
                   className="grid grid-cols-1 sm:grid-cols-3 gap-4"
@@ -179,35 +183,43 @@ export function HeroSection() {
                     },
                   }}
                 >
-                  {[{
-                    Icon: Search,
-                    color: "text-[#33BDC7]",
-                    bg: "from-[#33BDC7]/10 to-[#33BDC7]/20",
-                    title: "Search Aged Domains",
-                    desc: "Browse hundreds of valuable domains"
-                  }, {
-                    Icon: TrendingUp,
-                    color: "text-purple-500",
-                    bg: "from-purple-500/10 to-purple-500/20",
-                    title: "View Domain Metrics",
-                    desc: "Check SEO, backlinks & authority"
-                  }, {
-                    Icon: ShoppingBag,
-                    color: "text-green-500",
-                    bg: "from-green-500/10 to-green-500/20",
-                    title: "Buy Instantly",
-                    desc: "Secure the perfect domain for your brand"
-                  }].map(({ Icon, color, bg, title, desc }, i) => (
+                  {[
+                    {
+                      Icon: Search,
+                      color: "text-[#33BDC7]",
+                      bg: "from-[#33BDC7]/10 to-[#33BDC7]/20",
+                      title: "Search Aged Domains",
+                      desc: "Browse hundreds of valuable domains",
+                    },
+                    {
+                      Icon: TrendingUp,
+                      color: "text-purple-500",
+                      bg: "from-purple-500/10 to-purple-500/20",
+                      title: "View Domain Metrics",
+                      desc: "Check SEO, backlinks & authority",
+                    },
+                    {
+                      Icon: ShoppingBag,
+                      color: "text-green-500",
+                      bg: "from-green-500/10 to-green-500/20",
+                      title: "Buy Instantly",
+                      desc: "Secure the perfect domain for your brand",
+                    },
+                  ].map(({ Icon, color, bg, title, desc }, i) => (
                     <motion.div
                       key={i}
                       className="text-center space-y-3 group"
                       variants={fadeUp}
                       custom={i * 0.2}
                     >
-                      <div className={`w-8 h-8 sm:w-16 sm:h-10 flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-200`}>
+                      <div
+                        className={`w-8 h-8 sm:w-16 sm:h-10 flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-200`}
+                      >
                         <Icon className={`h-5 w-5 sm:h-8 sm:w-8 ${color}`} />
                       </div>
-                      <h4 className="font-semibold text-sm sm:text-base">{title}</h4>
+                      <h4 className="font-semibold text-sm sm:text-base">
+                        {title}
+                      </h4>
                       <p className="text-xs text-gray-600">{desc}</p>
                     </motion.div>
                   ))}
@@ -231,17 +243,37 @@ export function HeroSection() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {[
-                      { label: "Domain Authority:", value: "65", color: "text-green-600" },
-                      { label: "Authority Links:", value: "4", color: "text-[#33BDC7]" },
-                      { label: "Monthly Traffic:", value: "15K", color: "text-purple-500" },
-                      { label: "Domain Age:", value: "5+ years", color: "text-orange-500" },
+                      {
+                        label: "Domain Authority:",
+                        value: "65",
+                        color: "text-green-600",
+                      },
+                      {
+                        label: "Authority Links:",
+                        value: "4",
+                        color: "text-[#33BDC7]",
+                      },
+                      {
+                        label: "Monthly Traffic:",
+                        value: "15K",
+                        color: "text-purple-500",
+                      },
+                      {
+                        label: "Domain Age:",
+                        value: "5+ years",
+                        color: "text-orange-500",
+                      },
                     ].map((metric, index) => (
                       <div
                         key={index}
                         className="flex justify-between items-center bg-white dark:bg-gray-700/50 p-3 rounded-md"
                       >
-                        <span className="text-gray-600 dark:text-gray-300 text-sm font-medium">{metric.label}</span>
-                        <span className={`${metric.color} font-bold text-base`}>{metric.value}</span>
+                        <span className="text-gray-600 dark:text-gray-300 text-sm font-medium">
+                          {metric.label}
+                        </span>
+                        <span className={`${metric.color} font-bold text-base`}>
+                          {metric.value}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -264,14 +296,18 @@ export function HeroSection() {
                         size="lg"
                         asChild
                       >
-                        <Link className="dark:text-gray-700" href={`/domains/${topDomain.id}`}>
+                        <Link
+                          className="dark:text-gray-700"
+                          href={`/domains/${topDomain.id}`}
+                        >
                           {topDomain.name}
                           <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 ml-2" />
                         </Link>
                       </Button>
 
                       <p className="mt-2 dark:text-gray-600 text-center text-sm text-gray-900 ">
-                        This domain is mostly watched and frequently added to carts — check it out.
+                        This domain is mostly watched and frequently added to
+                        carts — check it out.
                       </p>
                     </>
                   )}
@@ -282,5 +318,5 @@ export function HeroSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   Shield,
   CheckCircle,
@@ -17,25 +17,33 @@ import {
   Star,
   CreditCard,
   Headset,
-} from "lucide-react"
-import { motion, useInView } from "framer-motion"
-import { useEffect, useState, useRef, useMemo } from "react"
+} from "lucide-react";
+import { motion, useInView } from "framer-motion";
+import { useEffect, useState, useRef, useMemo } from "react";
 
 interface DomainStats {
-  totalDomains: number
-  soldDomains: number
-  availableDomains: number
-  yearsInMarket: number
+  totalDomains: number;
+  soldDomains: number;
+  availableDomains: number;
+  yearsInMarket: number;
 }
 
 interface TrustIndicator {
-  icon: any
-  label: string
-  value: string
+  icon: any;
+  label: string;
+  value: string;
 }
 
 // Fixed Animated Counter Component
-const AnimatedCounter = ({ value, duration = 2, trigger }: { value: string; duration?: number; trigger: boolean }) => {
+const AnimatedCounter = ({
+  value,
+  duration = 2,
+  trigger,
+}: {
+  value: string;
+  duration?: number;
+  trigger: boolean;
+}) => {
   const [count, setCount] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
   const [prevValue, setPrevValue] = useState(value);
@@ -54,7 +62,7 @@ const AnimatedCounter = ({ value, duration = 2, trigger }: { value: string; dura
     if (!trigger || hasAnimated) return;
 
     // Skip animation if value is "..." or not a number
-    if (value === '...' || !value.match(/(\d+)/)) {
+    if (value === "..." || !value.match(/(\d+)/)) {
       return;
     }
 
@@ -63,7 +71,7 @@ const AnimatedCounter = ({ value, duration = 2, trigger }: { value: string; dura
     if (!numericMatch) return;
 
     const numericValue = parseInt(numericMatch[0]);
-    const suffix = value.replace(numericMatch[0], '');
+    const suffix = value.replace(numericMatch[0], "");
 
     let startTime: number | null = null;
     let animationFrame: number;
@@ -87,46 +95,55 @@ const AnimatedCounter = ({ value, duration = 2, trigger }: { value: string; dura
   }, [trigger, value, duration, hasAnimated]);
 
   // If value is "..." or not a number, just show the value
-  if (value === '...' || !value.match(/(\d+)/)) {
+  if (value === "..." || !value.match(/(\d+)/)) {
     return <span>{value}</span>;
   }
 
   return (
     <span>
-      {count}{value.replace(/\d+/g, '')}
+      {count}
+      {value.replace(/\d+/g, "")}
     </span>
   );
 };
 
 export function TrustSection() {
-  const [stats, setStats] = useState<DomainStats | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState<DomainStats | null>(null);
+  const [loading, setLoading] = useState(true);
   const mobileTrustRef = useRef(null);
-  const isMobileInView = useInView(mobileTrustRef, { once: true, margin: "-100px" });
+  const desktopTrustRef = useRef(null);
+  const isMobileInView = useInView(mobileTrustRef, {
+    once: true,
+    margin: "-100px",
+  });
+  const isDesktopInView = useInView(desktopTrustRef, {
+    once: true,
+    margin: "-100px",
+  });
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch('/api/domains/stats')
-        if (!response.ok) throw new Error('Failed to fetch domain stats')
-        const data = await response.json()
-        setStats(data)
+        const response = await fetch("/api/domains/stats");
+        if (!response.ok) throw new Error("Failed to fetch domain stats");
+        const data = await response.json();
+        setStats(data);
       } catch (error) {
-        console.error('Error fetching domain stats:', error)
+        console.error("Error fetching domain stats:", error);
         // Fallback to default values
         setStats({
           totalDomains: 100,
           soldDomains: 50,
           availableDomains: 50,
           yearsInMarket: 5,
-        })
+        });
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchStats()
-  }, [])
+    fetchStats();
+  }, []);
 
   const fadeUp = {
     hidden: { opacity: 0, y: 40 },
@@ -135,7 +152,7 @@ export function TrustSection() {
       y: 0,
       transition: { duration: 0.6, delay },
     }),
-  }
+  };
 
   const features = [
     {
@@ -162,14 +179,29 @@ export function TrustSection() {
       description:
         "Memorable, niche-relevant names perfect for startups, agencies, and investment portfolios.",
     },
-  ]
+  ];
 
   // Use useMemo to prevent recreating the array on every render
-  const trustIndicators = useMemo<TrustIndicator[]>(() => [
-    { icon: Globe, label: "Domains Sold", value: stats ? `${stats.soldDomains}` : '...' },
-    { icon: ListChecks, label: "Total Listings", value: stats ? `${stats.totalDomains}` : '...' },
-    { icon: Store, label: "Years on Market", value: stats ? `${stats.yearsInMarket}+` : '...' },
-  ], [stats]);
+  const trustIndicators = useMemo<TrustIndicator[]>(
+    () => [
+      {
+        icon: Globe,
+        label: "Domains Sold",
+        value: stats ? `${stats.soldDomains}` : "...",
+      },
+      {
+        icon: ListChecks,
+        label: "Total Listings",
+        value: stats ? `${stats.totalDomains}` : "...",
+      },
+      {
+        icon: Store,
+        label: "Years on Market",
+        value: stats ? `${stats.yearsInMarket}+` : "...",
+      },
+    ],
+    [stats]
+  );
 
   return (
     <section className="py-10 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
@@ -190,7 +222,10 @@ export function TrustSection() {
                   <div key={indicator.label} className="contents">
                     <div className="flex-1 text-center min-w-0">
                       <div className="text-xl sm:text-2xl md:text-3xl font-bold text-[#33BDC7] leading-tight">
-                        <AnimatedCounter value={indicator.value} trigger={isMobileInView} />
+                        <AnimatedCounter
+                          value={indicator.value}
+                          trigger={isMobileInView}
+                        />
                       </div>
                       <div className="text-[10px] sm:text-xs md:text-sm text-[#33BDC7] font-medium mt-0.5 sm:mt-1 break-words">
                         {indicator.label}
@@ -205,7 +240,7 @@ export function TrustSection() {
             </div>
 
             {/* Desktop View */}
-            <div className="hidden lg:block">
+            <div className="hidden lg:block" ref={desktopTrustRef}>
               <div className="space-y-6 ">
                 {trustIndicators.map((indicator, index) => (
                   <motion.div
@@ -218,7 +253,8 @@ export function TrustSection() {
                     variants={fadeUp}
                     whileHover={{
                       y: -5,
-                      boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+                      boxShadow:
+                        "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
                     }}
                     transition={{ duration: 0.3 }}
                   >
@@ -227,7 +263,10 @@ export function TrustSection() {
                     </div>
                     <div className="ml-4">
                       <div className="text-3xl font-bold text-[#33BDC7]">
-                        {indicator.value}
+                        <AnimatedCounter
+                          value={indicator.value}
+                          trigger={isDesktopInView}
+                        />
                       </div>
                       <div className="text-[#33BDC7] font-medium">
                         {indicator.label}
@@ -288,7 +327,6 @@ export function TrustSection() {
                   <Card className="h-full bg-white dark:bg-gray-800 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group">
                     <div className="h-2 bg-gradient-to-r from-[#38C172] to-[#33BDC7] w-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
                     <CardContent className="pt-6 pb-4 px-4 sm:pt-8 sm:pb-6 sm:px-6 flex flex-col h-full">
-                      
                       <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-white mb-2 sm:mb-3 group-hover:text-[#33BDC7] transition-colors duration-300">
                         {feature.title}
                       </h3>
@@ -396,5 +434,5 @@ export function TrustSection() {
         }
       `}</style>
     </section>
-  )
+  );
 }
