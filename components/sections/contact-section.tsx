@@ -1,44 +1,55 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Mail, Phone, MessageSquare, Send, Clock, Headphones, CheckCircle } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
-import ContactForm from "@/components/contact-form"
+import type React from "react";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import {
+  Mail,
+  Phone,
+  MessageSquare,
+  Send,
+  Clock,
+  Headphones,
+  CheckCircle,
+} from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import ContactForm from "@/components/contact-form";
 
 // Animation variants
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0 },
-}
+};
 
 const fadeInLeft = {
   hidden: { opacity: 0, x: -50 },
   visible: { opacity: 1, x: 0 },
-}
+};
 
 const fadeInRight = {
   hidden: { opacity: 0, x: 50 },
   visible: { opacity: 1, x: 0 },
-}
+};
 
 export function ContactSection() {
-
   const contactMethods = [
-    { icon: Mail, title: "Email Support", description: "support@vettedge.domains" }, 
+    {
+      icon: Mail,
+      title: "Email Support",
+      description: "support@vettedge.domains",
+    },
     { icon: MessageSquare, title: "Live Chat", description: "Available 24/7" },
-  ]
+  ];
 
   return (
     <section className=" py-8   sm:py-12   bg-gray-50 dark:bg-gray-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4">
         {/* Section Heading */}
         <motion.div
           className="text-center mb-12 md:mb-16"
@@ -48,18 +59,26 @@ export function ContactSection() {
           transition={{ duration: 0.6 }}
           variants={fadeInUp}
         >
-          <Badge variant="outline" className="mb-4 px-4 py-2" style={{ borderColor: "#33BDC7", color: "#33BDC7" }}>
+          <Badge
+            variant="outline"
+            className="mb-4 px-4 py-2"
+            style={{ borderColor: "#33BDC7", color: "#33BDC7" }}
+          >
             Get In Touch
           </Badge>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6" style={{ color: "#33BDC7" }}>
+          <h2
+            className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6"
+            style={{ color: "#33BDC7" }}
+          >
             Ready to Find Your
             <span className="block" style={{ color: "#33BDC7" }}>
               Perfect Domain ?
             </span>
           </h2>
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Our domain experts are here to help you find the perfect aged domain for your business. Get personalized
-            recommendations and expert guidance.
+            Our domain experts are here to help you find the perfect aged domain
+            for your business. Get personalized recommendations and expert
+            guidance.
           </p>
         </motion.div>
 
@@ -72,7 +91,7 @@ export function ContactSection() {
             transition={{ duration: 0.6 }}
             variants={fadeInLeft}
           >
-            <ContactForm 
+            <ContactForm
               variant="home"
               headerTitle="Send us a Message"
               headerDescription="Get expert advice on domain selection and SEO potential"
@@ -89,12 +108,15 @@ export function ContactSection() {
           >
             <div className="space-y-6 md:space-y-8">
               <div>
-                <h3 className="text-xl md:text-2xl font-bold mb-4" style={{ color: "#33BDC7" }}>
+                <h3
+                  className="text-xl md:text-2xl font-bold mb-4"
+                  style={{ color: "#33BDC7" }}
+                >
                   Multiple Ways to Connect
                 </h3>
                 <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 mb-6 md:mb-8">
-                  Choose the contact method that works best for you. Our team is available 24/7 to assist with your
-                  domain investment needs.
+                  Choose the contact method that works best for you. Our team is
+                  available 24/7 to assist with your domain investment needs.
                 </p>
               </div>
 
@@ -108,17 +130,25 @@ export function ContactSection() {
                     transition={{ duration: 0.5, delay: index * 0.15 }}
                     variants={fadeInUp}
                   >
-                    <Card className="border-l-4 hover:shadow-lg transition-shadow bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600" style={{ borderLeftColor: "#33BDC7" }}>
+                    <Card
+                      className="border-l-4 hover:shadow-lg transition-shadow bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600"
+                      style={{ borderLeftColor: "#33BDC7" }}
+                    >
                       <CardContent className="pt-6">
                         <div className="flex items-center space-x-4">
                           <div className="w-12 h-12 border border-[#3BD17A] xl flex items-center justify-center">
                             <method.icon className="h-6 w-6 text-[#3BD17A]" />
                           </div>
                           <div>
-                            <h4 className="text-lg font-semibold" style={{ color: "#33BDC7" }}>
+                            <h4
+                              className="text-lg font-semibold"
+                              style={{ color: "#33BDC7" }}
+                            >
                               {method.title}
                             </h4>
-                            <p className="text-gray-600 dark:text-gray-300">{method.description}</p>
+                            <p className="text-gray-600 dark:text-gray-300">
+                              {method.description}
+                            </p>
                           </div>
                         </div>
                       </CardContent>
@@ -135,7 +165,14 @@ export function ContactSection() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 variants={fadeInUp}
               >
-                <Card style={{ backgroundColor: "#33BDC7", color: "white", border: "none" }} className="dark:bg-[#33BDC7]">
+                <Card
+                  style={{
+                    backgroundColor: "#33BDC7",
+                    color: "white",
+                    border: "none",
+                  }}
+                  className="dark:bg-[#33BDC7]"
+                >
                   <CardContent className="pt-6">
                     <h4 className="text-xl font-semibold mb-4 flex items-center">
                       <Headphones className="h-6 w-6 mr-2" />
@@ -157,13 +194,10 @@ export function ContactSection() {
                   </CardContent>
                 </Card>
               </motion.div>
-
-               
             </div>
           </motion.div>
         </div>
- 
       </div>
     </section>
-  )
+  );
 }

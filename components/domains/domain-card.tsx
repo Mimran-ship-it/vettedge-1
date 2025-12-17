@@ -257,7 +257,7 @@ View full details:`;
                 fill
                 className={cn(
                   "object-cover transition duration-300",
-                  isUnavailable ? "blur-[8px] brightness-[0.8] grayscale" : ""
+                  isUnavailable ? "blur-[3px] brightness-[0.8] grayscale" : ""
                 )}
               />
             </Link>
@@ -288,7 +288,7 @@ View full details:`;
               <div className="flex-1 min-w-0">
                 {isUnavailable ? (
                   <div className="relative select-none">
-                    <div className="absolute inset-0 blur-[8px] bg-gray-400 dark:bg-gray-600 opacity-50 rounded"></div>
+                    <div className="absolute inset-0 blur-[2px] bg-gray-400 dark:bg-gray-600 opacity-50 rounded"></div>
                     <div className="relative text-transparent bg-clip-text bg-gradient-to-r from-gray-400 to-gray-500 font-bold">
                       ██████████
                     </div>
@@ -403,7 +403,7 @@ View full details:`;
               {/* The Overlay for Sold Items */}
               {isUnavailable && (
                 <div className="absolute inset-0 z-20 flex flex-col items-center justify-center">
-                  <div className="p-3 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 shadow-sm">
+                  <div className="p-3 rounded-full bg-white/20 backdrop-blur-2xl border border-white/30 shadow-sm">
                     <Lock className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                   </div>
                   <span className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-2 bg-white/50 dark:bg-black/50 px-2 py-0.5 rounded">
@@ -417,17 +417,39 @@ View full details:`;
                 className={cn(
                   "space-y-3 flex-1 flex flex-col transition-all duration-300",
                   isUnavailable &&
-                    "filter blur-[5px] opacity-40 grayscale pointer-events-none select-none"
+                    "filter blur-[2px] opacity-40 grayscale pointer-events-none select-none"
                 )}
               >
                 {/* Overall Score Section */}
                 <div className="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-md border border-gray-200 dark:border-gray-600 shadow-sm">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <ShieldCheck className="h-5 w-5 text-[#33BDC7]" />
-                      <span className="text-sm font-semibold text-gray-800 dark:text-gray-100">
-                        Overall Score
-                      </span>
+                  <div className="flex items-center justify-between">
+                    <div className="left flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <ShieldCheck className="h-5 w-5 text-[#33BDC7]" />
+                        <span className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+                          Overall Score
+                        </span>
+                      </div>
+                      {/* Score Description */}
+                      <div className="text-xs text-gray-600 dark:text-gray-300">
+                        {domain.metrics.score >= 80 ? (
+                          <span className="text-[#33BDC7] font-medium">
+                            Exceptional domain score
+                          </span>
+                        ) : domain.metrics.score >= 60 ? (
+                          <span className="text-[#33BDC7] font-medium">
+                            Strong domain score
+                          </span>
+                        ) : domain.metrics.score >= 40 ? (
+                          <span className="text-yellow-600 dark:text-yellow-400 font-medium">
+                            Moderate domain score
+                          </span>
+                        ) : (
+                          <span className="text-orange-600 dark:text-orange-400 font-medium">
+                            Developing domain score
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-lg font-bold text-gray-900 dark:text-white">
@@ -442,27 +464,6 @@ View full details:`;
                         ></div>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Score Description */}
-                  <div className="text-xs text-gray-600 dark:text-gray-300">
-                    {domain.metrics.score >= 80 ? (
-                      <span className="text-[#33BDC7] font-medium">
-                        Exceptional domain score
-                      </span>
-                    ) : domain.metrics.score >= 60 ? (
-                      <span className="text-[#33BDC7] font-medium">
-                        Strong domain score
-                      </span>
-                    ) : domain.metrics.score >= 40 ? (
-                      <span className="text-yellow-600 dark:text-yellow-400 font-medium">
-                        Moderate domain score
-                      </span>
-                    ) : (
-                      <span className="text-orange-600 dark:text-orange-400 font-medium">
-                        Developing domain score
-                      </span>
-                    )}
                   </div>
                 </div>
 
