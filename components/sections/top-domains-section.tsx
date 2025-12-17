@@ -784,6 +784,7 @@ export function TopDomainsSection() {
                               tick={{ fontSize: 10 }}
                             />
                             <Tooltip
+                              cursor={false}
                               contentStyle={{
                                 backgroundColor: "#ffffff",
                                 border: "1px solid #cbd5e1",
@@ -846,6 +847,7 @@ export function TopDomainsSection() {
                                 className="dark:[&_*]:fill-white"
                               />
                               <Tooltip
+                                cursor={false}
                                 contentStyle={{
                                   backgroundColor: "#ffffff",
                                   border: "1px solid #cbd5e1",

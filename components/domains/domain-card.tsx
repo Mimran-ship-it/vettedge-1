@@ -263,7 +263,7 @@ View full details:`;
             </Link>
 
             {isUnavailable && (
-              <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/10 backdrop-blur-[2px]">
+              <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/10 ">
                 <Badge
                   variant="destructive"
                   className="text-sm px-4 py-1.5 font-bold shadow-lg"
@@ -286,18 +286,18 @@ View full details:`;
           <CardHeader className="p-0 pb-3">
             <div className="flex items-start justify-between">
               <div className="flex-1 min-w-0">
-                {isUnavailable ? (
+                {/* {isUnavailable ? (
                   <div className="relative select-none">
-                    <div className="absolute inset-0 blur-[2px] bg-gray-400 dark:bg-gray-600 opacity-50 rounded"></div>
+                    <div className="absolute inset-0 bg-gray-400 dark:bg-gray-600 opacity-50 rounded"></div>
                     <div className="relative text-transparent bg-clip-text bg-gradient-to-r from-gray-400 to-gray-500 font-bold">
                       ██████████
                     </div>
                   </div>
-                ) : (
-                  <CardTitle className="text-lg font-bold text-gray-900 dark:text-white truncate pr-2">
-                    {domain.name}
-                  </CardTitle>
-                )}
+                ) : ( */}
+                <CardTitle className="text-lg font-bold text-gray-900 dark:text-white truncate pr-2">
+                  {domain.name}
+                </CardTitle>
+                {/* )} */}
               </div>
               <div className="flex gap-1 flex-shrink-0">
                 {!isUnavailable && (
@@ -403,12 +403,12 @@ View full details:`;
               {/* The Overlay for Sold Items */}
               {isUnavailable && (
                 <div className="absolute inset-0 z-20 flex flex-col items-center justify-center">
-                  <div className="p-3 rounded-full bg-white/20 backdrop-blur-2xl border border-white/30 shadow-sm">
+                  {/* <div className="p-3 rounded-full bg-white/20 backdrop-blur-2xl border border-white/30 shadow-sm">
                     <Lock className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                   </div>
                   <span className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-2 bg-white/50 dark:bg-black/50 px-2 py-0.5 rounded">
                     Metrics Hidden
-                  </span>
+                  </span> */}
                 </div>
               )}
 
@@ -417,7 +417,7 @@ View full details:`;
                 className={cn(
                   "space-y-3 flex-1 flex flex-col transition-all duration-300",
                   isUnavailable &&
-                    "filter blur-[2px] opacity-40 grayscale pointer-events-none select-none"
+                    "opacity-40 grayscale pointer-events-none select-none"
                 )}
               >
                 {/* Overall Score Section */}
