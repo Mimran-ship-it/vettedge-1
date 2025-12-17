@@ -123,7 +123,8 @@ export function CheckoutForm() {
   const handlePaymentSubmit = async () => {
     setLoading(true)
     try {
-      // ✅ Create checkout session on backend
+      // ✅ Create checkout session on backend (Stripe)
+      // Stripe metadata limit is 500 chars, so sending billingInfo here is safe.
       const response = await fetch("/api/checkout_sessions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -134,7 +135,7 @@ export function CheckoutForm() {
             price: item.price,
             quantity: item.quantity,
           })),
-          billingInfo,
+          billingInfo, 
           userId: user?.id,
         }),
       })
@@ -167,7 +168,10 @@ export function CheckoutForm() {
             price: item.price,
             quantity: item.quantity,
           })),
-          billingInfo,
+          // ⚠️ FIX: REMOVED billingInfo from PayPal payload
+          // The PayPal 'custom_id' field has a 127-char limit.
+          // Sending the full billing object causes the "INVALID_STRING_LENGTH" error.
+          // We only send userId to maintain the order link.
           userId: user?.id,
           currency: "USD",
         }),
@@ -328,10 +332,6 @@ export function CheckoutForm() {
                   <span className="text-gray-900 dark:text-white">Subtotal</span>
                   <span className="text-gray-900 dark:text-white">${total.toFixed(2)}</span>
                 </div>
-                {/* <div className="flex justify-between items-center text-base">
-                  <span className="text-gray-900 dark:text-white">Tax (8%)</span>
-                  <span className="text-gray-900 dark:text-white">${(total * 0.08).toFixed(2)}</span>
-                </div> */}
                 <div className="flex justify-between items-center text-lg font-bold mt-2">
                   <span className="text-gray-900 dark:text-white">Total</span>
                   <span className="text-gray-900 dark:text-white">${(total ).toFixed(2)}</span>

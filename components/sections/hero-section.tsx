@@ -79,17 +79,29 @@ export function HeroSection() {
     <section className="relative min-h-screen flex flex-col overflow-hidden text-white">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
-        <Image
-          // src="/herosection.jpg"
-          src="/vettedge-mobile-bg.jpg"
-          alt="Hero background"
-          fill
-          priority
-          className="object-cover"
-          quality={100}
-        />
-        <div className="absolute inset-0 bg-black/30 sm:backdrop-blur-xs backdrop-blur-sm "></div>
-      </div>
+  {/* Mobile Image: Visible on small screens, hidden on desktop (md and up) */}
+  <Image
+    src="/vettedge-mobile-bg.jpg"
+    alt="Hero background mobile"
+    fill
+    priority
+    className="object-cover md:hidden"
+    quality={100}
+  />
+
+  {/* Desktop Image: Hidden on mobile, visible on desktop (md and up) */}
+  <Image
+    src="/herosection.jpg"
+    alt="Hero background desktop"
+    fill
+    priority
+    className="object-cover hidden md:block"
+    quality={100}
+  />
+
+  {/* Shared Overlay */}
+  <div className="absolute inset-0 bg-black/30 sm:backdrop-blur-xs backdrop-blur-sm"></div>
+</div>
 
       <div className="relative z-10 flex-1 flex items-center justify-center px-4 sm:px-2 lg:px-8 py-12">
         <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-y-16 gap-x-10 items-center">

@@ -212,7 +212,7 @@ export function TopDomainsSection() {
   }, []);
 
   useEffect(() => {
-    const filtered = allDomains.filter(domain => domain.isAvailable && !domain.isSold);
+    const filtered = allDomains?.filter(domain => domain.isAvailable && !domain.isSold);
     setAvailableDomains(filtered);
   }, [allDomains]);
 

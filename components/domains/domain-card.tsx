@@ -401,23 +401,14 @@ View full details:`;
             {/* BLUR CONTAINER FOR METRICS */}
             <div className="relative flex-1 flex flex-col space-y-3">
               {/* The Overlay for Sold Items */}
-              {isUnavailable && (
-                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center">
-                  <div className="p-3 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 shadow-sm">
-                    <Lock className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                  </div>
-                  <span className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-2 bg-white/50 dark:bg-black/50 px-2 py-0.5 rounded">
-                    Metrics Hidden
-                  </span>
-                </div>
-              )}
+         
 
               {/* The Actual Content (Blurred if unavailable) */}
               <div
                 className={cn(
                   "space-y-3 flex-1 flex flex-col transition-all duration-300",
                   isUnavailable &&
-                    "filter blur-[5px] opacity-40 grayscale pointer-events-none select-none"
+                    "filter blur-[0px] opacity-100 grayscale pointer-events-none select-none"
                 )}
               >
                 {/* Overall Score Section */}
@@ -610,37 +601,45 @@ View full details:`;
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-row space-y-2 sm:space-y-0 gap-2 pt-2 mt-auto">
-              <Button
-                className="flex-1 h-9 bg-[#33BDC7] hover:bg-[#2caab4] text-white disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-gray-700"
-                onClick={handleAddToCart}
-                disabled={isUnavailable}
-              >
-                {/* <ShoppingCart className="h-4 w-4 " /> */}
-                Add to Cart
-              </Button>
-              <Button
-                className="flex-1 h-9 px-3 bg-red-600 hover:bg-red-700 text-white disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-gray-700"
-                onClick={handleBuyNow}
-                disabled={isUnavailable}
-              >
-                Buy Now
-              </Button>
-              <Button
-                variant="outline"
-                className="flex-1 h-9 px-3 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
-                disabled={isUnavailable}
-              >
-                <Link
-                  href={isUnavailable ? "#" : `/domains/${domain._id}`}
-                  className="flex items-center gap-1"
-                >
-                  <Eye className="h-4 w-4" />
-                  <span>Details</span>
-                </Link>
-              </Button>
-            </div>
-
+     {/* Action Buttons */}
+<div className="flex flex-wrap gap-2 pt-2 mt-auto">
+  <Button
+    className="flex-1 h-9 px-2 bg-[#33BDC7] hover:bg-[#2caab4] text-white text-xs sm:text-sm disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-gray-700"
+    onClick={handleAddToCart}
+    disabled={isUnavailable}
+  >
+    Add to Cart
+  </Button>
+  <Button
+    className="flex-1 h-9 px-2 bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-gray-700"
+    onClick={handleBuyNow}
+    disabled={isUnavailable}
+  >
+    Buy Now
+  </Button>
+  <Button
+  variant="outline"
+  asChild
+  // We manually apply the disabled styles via 'cn' because 'disabled' 
+  // on a Button with 'asChild' doesn't always propagate to the Link's CSS
+  className={cn(
+    "flex-1 h-9 px-3 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700",
+    isUnavailable && "opacity-50 pointer-events-none cursor-not-allowed bg-gray-100 dark:bg-gray-800"
+  )}
+>
+  <Link
+    // Prevent navigation if unavailable
+    href={isUnavailable ? "#" : `/domains/${domain._id}`}
+    className="flex items-center gap-1"
+    // Accessibility: tell screen readers it's disabled
+    aria-disabled={isUnavailable}
+    tabIndex={isUnavailable ? -1 : undefined}
+  >
+    <Eye className="h-4 w-4" />
+    <span>Details</span>
+  </Link>
+</Button>
+</div>
             <div
               className={cn(
                 "flex justify-between pt-2 text-sm text-gray-600 dark:text-gray-300",
