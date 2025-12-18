@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button"
 import { useCart } from "@/components/providers/cart-provider"
 import { ShoppingBag, AlertCircle, X } from "lucide-react"
 import Link from "next/link"
-import { LiveChat } from "@/components/chat/live-chat"
 import { motion } from "framer-motion"
 import type { CartItem } from "@/types/domain"
 
@@ -18,13 +17,31 @@ export default function CartPage() {
   const [unavailableItems, setUnavailableItems] = useState<CartItem[]>([])
   const [availableItems, setAvailableItems] = useState<CartItem[]>([])
   
+  // New state to track if we've finished the initial client-side hydration
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  // 1. Wait for mount and a small tick for localStorage to populate
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsHydrated(true)
+    }, 100) // Small buffer to allow useCart to read from localStorage
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  // 2. Main Logic: Check availability only after hydration or if items exist
   useEffect(() => {
     async function checkItemAvailability() {
+      // If we have items, we know we are loaded. 
+      // If we don't have items, we must wait for 'isHydrated' to be true before assuming it's empty.
       if (items.length === 0) {
-        setIsLoading(false)
+        if (isHydrated) {
+          setIsLoading(false)
+        }
         return
       }
-      
+
+      // If items exist, we can proceed with checking them immediately
       try {
         const ids = items.map(item => item.id)
         const res = await fetch(`/api/domains?ids=${ids.join(",")}`)
@@ -42,9 +59,8 @@ export default function CartPage() {
         items.forEach(cartItem => {
           const domain = domains.find((d: any) => d._id === cartItem.id)
           
-          // Check if domain exists and is not sold
-          // This is the key fix - we're checking for isSold property
-          if (domain && !domain.isSold&&domain.isAvailable) {
+          // Check if domain exists, is not sold, and is marked available
+          if (domain && !domain.isSold && domain.isAvailable) {
             available.push(cartItem)
           } else {
             unavailable.push(cartItem)
@@ -55,7 +71,7 @@ export default function CartPage() {
         setUnavailableItems(unavailable)
       } catch (error) {
         console.error('Error checking domain availability:', error)
-        // If API fails, assume all items are available
+        // If API fails, assume all items are available to prevent blocking purchase (or handle differently)
         setAvailableItems(items)
         setUnavailableItems([])
       } finally {
@@ -64,7 +80,7 @@ export default function CartPage() {
     }
     
     checkItemAvailability()
-  }, [items])
+  }, [items, isHydrated]) // Re-run when items change or hydration finishes
   
   const handleRemoveUnavailable = () => {
     unavailableItems.forEach(item => removeItem(item.id))
@@ -97,7 +113,7 @@ export default function CartPage() {
         {/* Unavailable Items Alert */}
         {unavailableItems.length > 0 && (
           <motion.div
-            className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800  p-4"
+            className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}

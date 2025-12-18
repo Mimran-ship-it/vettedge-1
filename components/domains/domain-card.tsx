@@ -611,17 +611,16 @@ View full details:`;
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-row space-y-2 sm:space-y-0 gap-2 pt-2 mt-auto">
+            <div className="flex flex-wrap gap-2 pt-2 mt-auto">
               <Button
-                className="flex-1 h-9 bg-[#33BDC7] hover:bg-[#2caab4] text-white disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-gray-700"
+                className="flex-1 h-9 px-2 bg-[#33BDC7] hover:bg-[#2caab4] text-white text-xs sm:text-sm disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-gray-700"
                 onClick={handleAddToCart}
                 disabled={isUnavailable}
               >
-                {/* <ShoppingCart className="h-4 w-4 " /> */}
                 Add to Cart
               </Button>
               <Button
-                className="flex-1 h-9 px-3 bg-red-600 hover:bg-red-700 text-white disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-gray-700"
+                className="flex-1 h-9 px-2 bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-gray-700"
                 onClick={handleBuyNow}
                 disabled={isUnavailable}
               >
@@ -629,19 +628,28 @@ View full details:`;
               </Button>
               <Button
                 variant="outline"
-                className="flex-1 h-9 px-3 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
-                disabled={isUnavailable}
+                asChild
+                // We manually apply the disabled styles via 'cn' because 'disabled'
+                // on a Button with 'asChild' doesn't always propagate to the Link's CSS
+                className={cn(
+                  "flex-1 h-9 px-3 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700",
+                  isUnavailable &&
+                    "opacity-50 pointer-events-none cursor-not-allowed bg-gray-100 dark:bg-gray-800"
+                )}
               >
                 <Link
+                  // Prevent navigation if unavailable
                   href={isUnavailable ? "#" : `/domains/${domain._id}`}
                   className="flex items-center gap-1"
+                  // Accessibility: tell screen readers it's disabled
+                  aria-disabled={isUnavailable}
+                  tabIndex={isUnavailable ? -1 : undefined}
                 >
                   <Eye className="h-4 w-4" />
                   <span>Details</span>
                 </Link>
               </Button>
             </div>
-
             <div
               className={cn(
                 "flex justify-between pt-2 text-sm text-gray-600 dark:text-gray-300",
