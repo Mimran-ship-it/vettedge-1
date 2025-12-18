@@ -79,29 +79,29 @@ export function HeroSection() {
     <section className="relative min-h-screen flex flex-col overflow-hidden text-white">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
-  {/* Mobile Image: Visible on small screens, hidden on desktop (md and up) */}
-  <Image
-    src="/vettedge-mobile-bg.jpg"
-    alt="Hero background mobile"
-    fill
-    priority
-    className="object-cover md:hidden"
-    quality={100}
-  />
+        {/* Mobile Image: Visible on small screens, hidden on desktop (md and up) */}
+        <Image
+          src="/vettedge-mobile-bg.jpg"
+          alt="Hero background mobile"
+          fill
+          priority
+          className="object-cover md:hidden"
+          quality={100}
+        />
 
-  {/* Desktop Image: Hidden on mobile, visible on desktop (md and up) */}
-  <Image
-    src="/herosection.jpg"
-    alt="Hero background desktop"
-    fill
-    priority
-    className="object-cover hidden md:block"
-    quality={100}
-  />
+        {/* Desktop Image: Hidden on mobile, visible on desktop (md and up) */}
+        <Image
+          src="/herosection.jpg"
+          alt="Hero background desktop"
+          fill
+          priority
+          className="object-cover hidden md:block"
+          quality={100}
+        />
 
-  {/* Shared Overlay */}
-  <div className="absolute inset-0 bg-black/30 sm:backdrop-blur-xs backdrop-blur-sm"></div>
-</div>
+        {/* Shared Overlay */}
+        <div className="absolute inset-0 bg-black/30 sm:backdrop-blur-xs backdrop-blur-sm"></div>
+      </div>
 
       <div className="relative z-10 flex-1 flex items-center justify-center px-4 sm:px-2 lg:px-8 py-12">
         <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-y-16 gap-x-10 items-center">
@@ -303,6 +303,11 @@ export function HeroSection() {
                     </div>
                   ) : (
                     <>
+                      <p className="mt-2 dark:text-gray-600 text-center text-sm text-gray-900 ">
+                        This domain is mostly watched and frequently added to
+                        carts — check it out.
+                      </p>
+
                       <Button
                         className="w-full   bg-transparent hover:bg-transparent font-semibold h-12 sm:h-14 text-base sm:text-lg  transform hover:scale-[1.02] transition-all duration-200"
                         size="lg"
@@ -316,11 +321,6 @@ export function HeroSection() {
                           <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 ml-2" />
                         </Link>
                       </Button>
-
-                      <p className="mt-2 dark:text-gray-600 text-center text-sm text-gray-900 ">
-                        This domain is mostly watched and frequently added to
-                        carts — check it out.
-                      </p>
                     </>
                   )}
                 </motion.div>
