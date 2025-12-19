@@ -23,7 +23,6 @@ import {
   CheckCircle,
   Eye,
   Share2,
-  Lock, // Added Lock icon
 } from "lucide-react";
 import {
   Tooltip,
@@ -172,10 +171,6 @@ export function DomainCard({ domain }: DomainCardProps) {
   };
 
   const handleShare = async () => {
-    if (isUnavailable) {
-      return;
-    }
-
     const url = `${window.location.origin}/domains/${domain._id}`;
 
     const shareText = `Check out this premium domain: ${domain.name}
@@ -240,16 +235,16 @@ View full details:`;
         className={cn(
           "relative group h-full flex flex-col overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm transition-all duration-200",
           !isUnavailable && "hover:shadow-md",
-          isUnavailable &&
-            "bg-gray-50/50 dark:bg-gray-900/50 border-gray-100 dark:border-gray-800"
+          // Only change background slightly for sold items, do NOT reduce opacity of content
+          isUnavailable && "bg-gray-50 dark:bg-gray-800/80"
         )}
       >
         {/* Top Image - Responsive Aspect Ratio */}
         {domain.image?.length > 0 && (
           <div className="relative w-full aspect-video overflow-hidden bg-gray-100 dark:bg-gray-700">
             <Link
-              href={isUnavailable ? "#" : `/domains/${domain._id}`}
-              className={cn(isUnavailable && "pointer-events-none")}
+              href={`/domains/${domain._id}`}
+              className={cn("block w-full h-full")}
             >
               <Image
                 src={domain.image[0]}
@@ -257,13 +252,16 @@ View full details:`;
                 fill
                 className={cn(
                   "object-cover transition duration-300",
-                  isUnavailable ? "blur-[3px] brightness-[0.8] grayscale" : ""
+                  // HEAVY BLUR on image if unavailable
+                  isUnavailable ? "blur-xl scale-110" : ""
                 )}
               />
             </Link>
 
             {isUnavailable && (
-              <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/10 ">
+              <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/5">
+                {/* Optional: You can keep or remove the Sold Badge. The example image has a price, but often sold cards have a badge. 
+                    I'll keep it but make it cleaner. */}
                 <Badge
                   variant="destructive"
                   className="text-sm px-4 py-1.5 font-bold shadow-lg"
@@ -286,30 +284,25 @@ View full details:`;
           <CardHeader className="p-0 pb-3">
             <div className="flex items-start justify-between">
               <div className="flex-1 min-w-0">
-                {/* {isUnavailable ? (
-                  <div className="relative select-none">
-                    <div className="absolute inset-0 bg-gray-400 dark:bg-gray-600 opacity-50 rounded"></div>
-                    <div className="relative text-transparent bg-clip-text bg-gradient-to-r from-gray-400 to-gray-500 font-bold">
-                      ██████████
-                    </div>
-                  </div>
-                ) : ( */}
-                <CardTitle className="text-lg font-bold text-gray-900 dark:text-white truncate pr-2">
+                <CardTitle
+                  className={cn(
+                    "text-lg font-bold text-gray-900 dark:text-white truncate pr-2",
+                    // BLUR THE TEXT if unavailable
+                    isUnavailable && "blur-md select-none opacity-60"
+                  )}
+                >
                   {domain.name}
                 </CardTitle>
-                {/* )} */}
               </div>
               <div className="flex gap-1 flex-shrink-0">
-                {!isUnavailable && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleShare}
-                    className="p-1 h-7 w-7 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                  >
-                    <Share2 className="h-4 w-4" />
-                  </Button>
-                )}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleShare}
+                  className="p-1 h-7 w-7 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                >
+                  <Share2 className="h-4 w-4" />
+                </Button>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -319,10 +312,12 @@ View full details:`;
                     isWishlisted &&
                       "text-red-500 hover:text-red-500 dark:text-red-400 dark:hover:text-red-400"
                   )}
-                  disabled={isUnavailable}
                 >
                   <Heart
-                    className={cn("h-4 w-4", isWishlisted && "fill-current")}
+                    className={cn(
+                      "h-4 w-4",
+                      isWishlisted && "fill-current"
+                    )}
                   />
                 </Button>
               </div>
@@ -351,14 +346,9 @@ View full details:`;
               </div>
             </div>
 
-            {/* Price & Availability */}
+            {/* Price & Availability - VISIBLE EVEN IF SOLD */}
             <div className="flex items-center justify-between">
-              <div
-                className={cn(
-                  "flex items-center gap-2",
-                  isUnavailable && "opacity-50 grayscale"
-                )}
-              >
+              <div className="flex items-center gap-2">
                 <span className="text-xl font-bold text-gray-900 dark:text-white">
                   ${domain.price.toLocaleString()}
                 </span>
@@ -381,6 +371,8 @@ View full details:`;
                   </>
                 )}
               </div>
+              {/* Optional: Hide availability badge or keep it. Odys style keeps it clean. 
+                  I'll keep the badge but ensure it doesn't look disabled. */}
               <Badge
                 variant={!isUnavailable ? "default" : "secondary"}
                 className={cn(
@@ -398,28 +390,9 @@ View full details:`;
               </Badge>
             </div>
 
-            {/* BLUR CONTAINER FOR METRICS */}
+            {/* METRICS CONTAINER - NO BLUR, NO LOCK, FULL VISIBILITY */}
             <div className="relative flex-1 flex flex-col space-y-3">
-              {/* The Overlay for Sold Items */}
-              {isUnavailable && (
-                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center">
-                  {/* <div className="p-3 rounded-full bg-white/20 backdrop-blur-2xl border border-white/30 shadow-sm">
-                    <Lock className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                  </div>
-                  <span className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-2 bg-white/50 dark:bg-black/50 px-2 py-0.5 rounded">
-                    Metrics Hidden
-                  </span> */}
-                </div>
-              )}
-
-              {/* The Actual Content (Blurred if unavailable) */}
-              <div
-                className={cn(
-                  "space-y-3 flex-1 flex flex-col transition-all duration-300",
-                  isUnavailable &&
-                    "opacity-40 grayscale pointer-events-none select-none"
-                )}
-              >
+              <div className="space-y-3 flex-1 flex flex-col transition-all duration-300">
                 {/* Overall Score Section */}
                 <div className="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-md border border-gray-200 dark:border-gray-600 shadow-sm">
                   <div className="flex items-center justify-between">
@@ -627,33 +600,29 @@ View full details:`;
                 Buy Now
               </Button>
               <Button
-                variant="outline"
-                asChild
-                // We manually apply the disabled styles via 'cn' because 'disabled'
-                // on a Button with 'asChild' doesn't always propagate to the Link's CSS
-                className={cn(
-                  "flex-1 h-9 px-3 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700",
-                  isUnavailable &&
-                    "opacity-50 pointer-events-none cursor-not-allowed bg-gray-100 dark:bg-gray-800"
-                )}
-              >
-                <Link
-                  // Prevent navigation if unavailable
-                  href={isUnavailable ? "#" : `/domains/${domain._id}`}
-                  className="flex items-center gap-1"
-                  // Accessibility: tell screen readers it's disabled
-                  aria-disabled={isUnavailable}
-                  tabIndex={isUnavailable ? -1 : undefined}
-                >
-                  <Eye className="h-4 w-4" />
-                  <span>Details</span>
-                </Link>
-              </Button>
+  variant="outline"
+  asChild
+  className={cn(
+    "flex-1 h-9 px-3 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700",
+    // Re-added disabled styles for unavailable/sold items
+    isUnavailable &&
+      "opacity-50 pointer-events-none cursor-not-allowed bg-gray-100 dark:bg-gray-800 text-gray-400 border-gray-200"
+  )}
+>
+  <Link
+    href={isUnavailable ? "#" : `/domains/${domain._id}`}
+    className="flex items-center gap-1"
+    aria-disabled={isUnavailable}
+    tabIndex={isUnavailable ? -1 : undefined}
+  >
+    <Eye className="h-4 w-4" />
+    <span>Details</span>
+  </Link>
+</Button>
             </div>
             <div
               className={cn(
-                "flex justify-between pt-2 text-sm text-gray-600 dark:text-gray-300",
-                isUnavailable && "opacity-30"
+                "flex justify-between pt-2 text-sm text-gray-600 dark:text-gray-300"
               )}
             >
               <div className="flex items-center gap-1">
