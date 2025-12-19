@@ -1,53 +1,55 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import Link from "next/link"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
-import { motion } from "framer-motion"
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface Blog {
-  _id: string
-  slug: string
-  title: string
-  excerpt: string
-  publishedAt: string
-  readingTime: number
-  category: string
-  featured: boolean
-  image?: string
+  _id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  publishedAt: string;
+  readingTime: number;
+  category: string;
+  featured: boolean;
+  image?: string;
   author: {
-    name: string
-    avatar?: string
-  }
+    name: string;
+    avatar?: string;
+  };
 }
 
 export function BlogPreview() {
-  const [blogs, setBlogs] = useState<Blog[]>([])
-  const [loading, setLoading] = useState(true)
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await fetch("/api/blogs")
-        const data: Blog[] = await res.json()
-        setBlogs(data)
+        const res = await fetch("/api/blogs");
+        const data: Blog[] = await res.json();
+        setBlogs(data);
       } catch (error) {
-        console.error("Error fetching blogs:", error)
+        console.error("Error fetching blogs:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchBlogs()
-  }, [])
+    fetchBlogs();
+  }, []);
 
-  const featuredPosts = blogs?.filter((post) => post.featured).sort(
+  const featuredPosts = blogs
+    ?.filter((post) => post.featured)
+    .sort(
       (a, b) =>
         new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     )
-    .slice(0, 3)
+    .slice(0, 3);
 
   return (
     <section className=" py-0  sm:py-12 bg-white dark:bg-gray-800">
@@ -139,9 +141,7 @@ export function BlogPreview() {
                         variant="default"
                         className="bg-[#33BDC7] hover:bg-[#2da9b2] text-white font-medium"
                       >
-                        <Link href={`/blog/${post.slug}`}>
-                          Read More
-                        </Link>
+                        <Link href={`/blog/${post.slug}`}>Read More</Link>
                       </Button>
                       <div className="text-xs text-gray-500 dark:text-gray-400">
                         {post.category}
@@ -175,5 +175,5 @@ export function BlogPreview() {
         </motion.div>
       </div>
     </section>
-  )
+  );
 }
