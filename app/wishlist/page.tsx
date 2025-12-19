@@ -1,142 +1,108 @@
-"use client"
-import { useState, useEffect, useMemo } from "react"
-import { useAuth } from "@/hooks/use-auth"
-import { useRouter } from "next/navigation"
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
-import { DomainCard } from "@/components/domains/domain-card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Search, Heart, ShoppingBag, AlertCircle, Trash2 } from "lucide-react"
-import Link from "next/link"
-import { motion } from "framer-motion"
-import { useWishlist } from "@/components/providers/wishlist-provider"
+"use client";
+import { useState, useEffect, useMemo } from "react";
+import { useAuth } from "@/hooks/use-auth";
+import { useRouter } from "next/navigation";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+import { DomainCard } from "@/components/domains/domain-card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search, Heart, ShoppingBag } from "lucide-react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { useWishlist } from "@/components/providers/wishlist-provider";
 
-import type { Domain } from "@/types/domain"
+import type { Domain } from "@/types/domain";
 
 export default function WishlistPage() {
-  const { user } = useAuth()
-  const router = useRouter()
-  const { wishlistIds, removeFromWishlist } = useWishlist()
-  const [domains, setDomains] = useState<Domain[]>([])
-  const [unavailableDomains, setUnavailableDomains] = useState<Domain[]>([])
-  const [searchQuery, setSearchQuery] = useState("")
-  const [isLoading, setIsLoading] = useState(true)
+  const { user } = useAuth();
+  const router = useRouter();
+  const { wishlistIds, removeFromWishlist } = useWishlist();
+  const [domains, setDomains] = useState<Domain[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   // Get wishlist IDs for comparison
-  const wishlistIdsMemo = useMemo(() => wishlistIds, [wishlistIds])
+  const wishlistIdsMemo = useMemo(() => wishlistIds, [wishlistIds]);
 
   // Compute filtered domains based on search query
   const filteredDomains = useMemo(() => {
-    if (!searchQuery) return domains
+    if (!searchQuery) return domains;
 
-    return domains.filter(domain =>
-      domain.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      domain.description?.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  }, [domains, searchQuery])
+    return domains.filter(
+      (domain) =>
+        domain.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        domain.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [domains, searchQuery]);
 
   useEffect(() => {
     async function fetchLatestDomains() {
-      setIsLoading(true)
+      setIsLoading(true);
 
       // Check if wishlist has items
       if (!wishlistIds || wishlistIds.length === 0) {
-        setDomains([])
-        setUnavailableDomains([])
-        setIsLoading(false)
-        return
+        setDomains([]);
+        setIsLoading(false);
+        return;
       }
 
       try {
-        const ids = wishlistIds
-        const res = await fetch(`/api/domains?ids=${ids.join(",")}`)
+        const ids = wishlistIds;
+        const res = await fetch(`/api/domains?ids=${ids.join(",")}`);
 
         if (!res.ok) {
-          throw new Error('Failed to fetch domains')
+          throw new Error("Failed to fetch domains");
         }
 
-        const freshDomains = await res.json()
+        const freshDomains = await res.json();
 
-        // Separate available and unavailable domains
-        const available: Domain[] = []
-        const unavailable: Domain[] = []
+        // Filter to only available domains and automatically remove unavailable ones from wishlist
+        const availableDomains: Domain[] = [];
+        const unavailableIds: string[] = [];
 
         freshDomains.forEach((domain: Domain) => {
           if (ids.includes(domain._id)) {
             // Check if domain is sold or not available
             if (domain.isSold || !domain.isAvailable) {
-              unavailable.push(domain)
+              unavailableIds.push(domain._id);
             } else {
-              available.push(domain)
+              availableDomains.push(domain);
             }
           }
-        })
+        });
 
-        // Find IDs that didn't return a domain (deleted)
-        const missingIds = ids.filter(id => !freshDomains.some((fetched: Domain) => fetched._id === id))
-        const missingDomains: Domain[] = missingIds.map((id: string) => ({
-          _id: id,
-          name: "Unavailable domain",
-          description: "This domain is no longer available.",
-          price: 0,
-          Actualprice: 0,
-          type: "",
-          registrar: "",
-          tags: [],
-          image: [],
-          isAvailable: false,
-          isSold: true,
-          isHot: false,
-          metrics: {
-            domainRank: 0,
-            referringDomains: 0,
-            authorityLinks: [],
-            authorityLinksCount: 0,
-            avgAuthorityDR: 0,
-            domainAuthority: 0,
-            score: 0,
-            trustFlow: 0,
-            citationFlow: 0,
-            monthlyTraffic: null,
-            year: 0,
-            age: 0,
-            language: ""
-          },
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        } as Domain))
+        // Find IDs that didn't return a domain (deleted) and remove them
+        const missingIds = ids.filter(
+          (id) => !freshDomains.some((fetched: Domain) => fetched._id === id)
+        );
+        const allUnavailableIds = [...unavailableIds, ...missingIds];
 
-        setDomains(available)
-        setUnavailableDomains([...unavailable, ...missingDomains])
+        // Automatically remove unavailable domains from wishlist
+        allUnavailableIds.forEach((id) => {
+          removeFromWishlist(id);
+        });
+
+        setDomains(availableDomains);
       } catch (error) {
-        console.error('Error fetching wishlist domains:', error)
-        // Fallback: show nothing but keep count
-        setDomains([])
-        setUnavailableDomains([])
+        console.error("Error fetching wishlist domains:", error);
+        // Fallback: show nothing
+        setDomains([]);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
 
-    fetchLatestDomains()
-  }, [wishlistIdsMemo])
+    fetchLatestDomains();
+  }, [wishlistIdsMemo]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.15 }
+      transition: { staggerChildren: 0.15 },
     },
-  }
-
-  const handleRemoveUnavailable = () => {
-    if (confirm(`Are you sure you want to remove ${unavailableDomains.length} unavailable domain${unavailableDomains.length > 1 ? 's' : ''} from your wishlist?`)) {
-      unavailableDomains.forEach(domain => {
-        removeFromWishlist(domain._id)
-      })
-    }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -150,14 +116,12 @@ export default function WishlistPage() {
         >
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">My Wishlist</h1>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                My Wishlist
+              </h1>
               <p className="text-lg text-gray-600 dark:text-gray-300">
-                Keep track of domains you're interested in ({wishlistIds?.length || 0} domains)
-                {unavailableDomains.length > 0 && (
-                  <span className="text-sm text-orange-500 ml-2">
-                    ({unavailableDomains.length} no longer available)
-                  </span>
-                )}
+                Keep track of domains you're interested in ({domains.length}{" "}
+                domains)
               </p>
             </div>
           </div>
@@ -185,45 +149,12 @@ export default function WishlistPage() {
         {isLoading ? (
           <div className="text-center py-16">
             <div className="animate-spin full h-12 w-12 border-b-2 border-gray-900 dark:border-gray-300 mx-auto mb-4"></div>
-            <p className="text-gray-600 dark:text-gray-300">Loading your wishlist...</p>
+            <p className="text-gray-600 dark:text-gray-300">
+              Loading your wishlist...
+            </p>
           </div>
         ) : (
           <>
-            {/* Show unavailable domains section */}
-            {unavailableDomains.length > 0 && (
-              <motion.div
-                className="mb-8"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800  p-4">
-                  <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
-                    <div className="flex items-start">
-                      <AlertCircle className="h-5 w-5 text-orange-500 mt-0.5 mr-2" />
-                      <div>
-                        <h3 className="font-medium text-orange-800 dark:text-orange-300 mb-1">
-                          {unavailableDomains.length} domain{unavailableDomains.length > 1 ? 's' : ''} no longer available
-                        </h3>
-                        <p className="text-sm text-orange-700 dark:text-orange-400 mb-2">
-                          {unavailableDomains.length > 1 ? 'These domains are' : 'This domain is'} no longer available for purchase.
-                        </p>
-                      </div>
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={handleRemoveUnavailable}
-                      className="flex items-center gap-1"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      Remove
-                    </Button>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
             {/* Show available domains */}
             {filteredDomains.length > 0 ? (
               <motion.div
@@ -238,23 +169,31 @@ export default function WishlistPage() {
                   </motion.div>
                 ))}
               </motion.div>
-            ) : (wishlistIds && wishlistIds.length > 0) ? (
-              // Only show "no domains found" if there are no unavailable domains
-              unavailableDomains.length === 0 && (
-                <div className="text-center py-12">
-                  <Search className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No domains found</h3>
-                  <p className="text-gray-500 dark:text-gray-400">Try adjusting your search terms</p>
-                </div>
-              )
+            ) : wishlistIds && wishlistIds.length > 0 ? (
+              <div className="text-center py-12">
+                <Search className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                  No domains found
+                </h3>
+                <p className="text-gray-500 dark:text-gray-400">
+                  Try adjusting your search terms
+                </p>
+              </div>
             ) : (
               <div className="text-center py-16">
                 <Heart className="h-24 w-24 text-gray-300 dark:text-gray-600 mx-auto mb-6" />
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Your wishlist is empty</h2>
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+                  Your wishlist is empty
+                </h2>
                 <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-md mx-auto">
-                  Start adding domains to your wishlist to keep track of the ones you're interested in purchasing.
+                  Start adding domains to your wishlist to keep track of the
+                  ones you're interested in purchasing.
                 </p>
-                <Button size="lg" asChild className="dark:bg-blue-600 dark:hover:bg-blue-700">
+                <Button
+                  size="lg"
+                  asChild
+                  className="dark:bg-blue-600 dark:hover:bg-blue-700"
+                >
                   <Link href="/domains">
                     <ShoppingBag className="h-5 w-5 mr-2" />
                     Browse Domains
@@ -267,5 +206,5 @@ export default function WishlistPage() {
       </main>
       <Footer />
     </div>
-  )
+  );
 }
