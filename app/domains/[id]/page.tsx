@@ -262,7 +262,7 @@ export default function DomainDetailsPage() {
                 {domain.isAvailable ? "Available Now" : "Unavailable"}
               </Badge>
               <Badge className="px-3 py-1 dark:border-gray-600">
-                {domain.type === "traffic" ? "High Traffic" : "Aged Domain"}
+                {domain.type === "traffic" ? "Traffic Domain" : "Aged Domain"}
               </Badge>
             </div>
           </div>
@@ -575,8 +575,8 @@ export default function DomainDetailsPage() {
                             Domain Value
                           </h3>
                           <p className="text-sm text-gray-600 dark:text-gray-300">
-                            Based on its age, authority metrics, and traffic,
-                            this domain represents a valuable digital asset with
+                            Based on its age, authority links, and traffic, this
+                            domain represents a valuable digital asset with
                             strong SEO potential.
                           </p>
                         </div>
@@ -610,7 +610,7 @@ export default function DomainDetailsPage() {
                 </div>
                 <div className="space-y-4">
                   <Button
-                    className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md"
+                    className="w-full py-3 text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md"
                     onClick={handleAddToCart}
                     disabled={!domain.isAvailable || domain.isSold}
                   >
@@ -716,22 +716,21 @@ export default function DomainDetailsPage() {
                         {domain.isAvailable ? "Available" : "Unavailable"}
                       </Badge>
                     </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600 dark:text-gray-300">
-                        Hot Deal
-                      </span>
-                      <Badge
-                        variant={domain.isHot ? "default" : "outline"}
-                        className={
-                          domain.isHot
-                            ? "dark:bg-orange-900/30 dark:text-orange-300"
-                            : "dark:bg-gray-600 dark:text-gray-300"
-                        }
-                      >
-                        {domain.isHot ? "Yes" : "No"}
-                      </Badge>
-                    </div>
+                    {domain.isHot && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-600 dark:text-gray-300">
+                          Hot Deal
+                        </span>
+                        <Badge
+                          variant={domain.isHot ? "default" : "outline"}
+                          className={
+                            "dark:bg-orange-900/30 dark:text-orange-300"
+                          }
+                        >
+                          Yes
+                        </Badge>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -953,7 +952,7 @@ const MetricCard = ({
     >
       <div className="flex items-center justify-between mb-2">
         <div className="text-gray-500 dark:text-gray-400">{icon}</div>
-        <div className="text-xs font-medium bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 px-2 py-1 ">
+        <div className="text-xs shadow-lg border font-medium bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 px-2 py-1 ">
           {title}
         </div>
       </div>

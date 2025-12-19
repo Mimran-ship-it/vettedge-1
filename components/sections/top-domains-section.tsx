@@ -251,7 +251,9 @@ export function TopDomainsSection() {
   }, []);
 
   useEffect(() => {
-    const filtered = allDomains?.filter(domain => domain.isAvailable && !domain.isSold);
+    const filtered = allDomains?.filter(
+      (domain) => domain.isAvailable && !domain.isSold
+    );
     setAvailableDomains(filtered);
   }, [allDomains]);
 
@@ -754,7 +756,7 @@ export function TopDomainsSection() {
                               top: 10,
                               right: 10,
                               left: -30,
-                              bottom: 40,
+                              bottom: 0,
                             }}
                           >
                             <CartesianGrid
