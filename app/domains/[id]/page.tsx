@@ -227,7 +227,7 @@ export default function DomainDetailsPage() {
       <Header />
       <main className="max-w-7xl mx-auto px-1 sm:px-16 pb-8 pt-20">
         {/* Hero Section */}
-        <div className="bg-white dark:bg-gray-800  shadow-xl p-4 mb-8 border border-gray-200 dark:border-gray-700">
+        <div className="bg-white max-w-7xl mx-auto dark:bg-gray-800  shadow-xl p-4 mb-8 border border-gray-200 dark:border-gray-700">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
@@ -341,7 +341,10 @@ export default function DomainDetailsPage() {
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="overview" className="mt-4 ">
+                <TabsContent
+                  value="overview"
+                  className="mt-4 max-w-3xl mx-auto "
+                >
                   <Card className="dark:bg-gray-700   dark:border-gray-600 -mx-4 sm:-mx-8">
                     <CardHeader>
                       <CardTitle className="flex items-center mt-2  gap-2 dark:text-white">
@@ -415,7 +418,10 @@ export default function DomainDetailsPage() {
                   </Card>
                 </TabsContent>
 
-                <TabsContent value="metrics" className="mt-4">
+                <TabsContent
+                  value="metrics"
+                  className="mt-4 w-full max-w-3xl mx-auto"
+                >
                   <Card className=" dark:bg-gray-700 dark:border-gray-600 -mx-4 sm:-mx-8">
                     <CardHeader>
                       <CardTitle className="flex items-center  mt-2 gap-2 dark:text-white">
@@ -470,7 +476,10 @@ export default function DomainDetailsPage() {
                   </Card>
                 </TabsContent>
 
-                <TabsContent value="history" className="mt-4">
+                <TabsContent
+                  value="history"
+                  className="mt-4 w-full max-w-3xl mx-auto"
+                >
                   <Card className=" dark:bg-gray-800 dark:border-gray-600 -mx-4 sm:-mx-8">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2  mt-2 dark:text-white">
@@ -738,7 +747,7 @@ export default function DomainDetailsPage() {
           </div>
         </div>
         {/* Additional Sections */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="mt-12 grid grid-cols-1 max-w-7xl mx-auto md:grid-cols-3 gap-6">
           {domain?.metrics.monthlyTraffic && (
             <Card className="border-blue-100 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20 ">
               <CardHeader>
@@ -809,7 +818,7 @@ export default function DomainDetailsPage() {
         </div>
         {/* Similar Domains Section */}
         {similarDomains.length > 0 && (
-          <div className="mt-12">
+          <div className="mt-12 max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold dark:text-white">
                 Similar Domains You May Like
