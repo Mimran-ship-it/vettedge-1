@@ -618,7 +618,7 @@ View full details:`;
     <Eye className="h-4 w-4" />
     <span>Details</span>
   </Link>
-</Button>
+</Button> 
             </div>
             <div
               className={cn(
