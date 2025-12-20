@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { motion } from "framer-motion";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Shield,
   Store,
@@ -16,64 +16,96 @@ import {
   Star,
   Target,
   Zap,
-  ListChecks
-} from "lucide-react"
-import Link from "next/link"
-import { LiveChat } from "@/components/chat/live-chat"
-import { useEffect, useState } from "react"
+  ListChecks,
+} from "lucide-react";
+import Link from "next/link";
+import { LiveChat } from "@/components/chat/live-chat";
+import { useEffect, useState } from "react";
 
 interface DomainStats {
-  totalDomains: number
-  soldDomains: number
-  availableDomains: number
-  yearsInMarket: number
+  totalDomains: number;
+  soldDomains: number;
+  availableDomains: number;
+  yearsInMarket: number;
 }
 
 export default function AboutPage() {
-  const [stats, setStats] = useState<DomainStats | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState<DomainStats | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch('/api/domains/stats')
-        if (!response.ok) throw new Error('Failed to fetch domain stats')
-        const data = await response.json()
-        setStats(data)
+        const response = await fetch("/api/domains/stats");
+        if (!response.ok) throw new Error("Failed to fetch domain stats");
+        const data = await response.json();
+        setStats(data);
       } catch (error) {
-        console.error('Error fetching domain stats:', error)
+        console.error("Error fetching domain stats:", error);
         // Fallback to default values
         setStats({
           totalDomains: 100,
           soldDomains: 50,
           availableDomains: 50,
           yearsInMarket: 5,
-        })
+        });
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchStats()
-  }, [])
+    fetchStats();
+  }, []);
 
   const fadeUp = {
     hidden: { opacity: 0, y: 40 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-  }
+    show: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  };
 
   const statsData = [
-    { icon: Globe, label: "Domains Sold", value: stats ? stats.soldDomains.toString() : '...' },
-    { icon: ListChecks, label: "Total Listings", value: stats ? stats.totalDomains.toString() : '...' },
-    { icon: Store, label: "Years on Market", value: stats ? `${stats.yearsInMarket.toString()}+` : '...' },
-  ]
+    {
+      icon: Globe,
+      label: "Domains Sold",
+      value: stats ? stats.soldDomains.toString() : "...",
+    },
+    {
+      icon: ListChecks,
+      label: "Total Listings",
+      value: stats ? stats.totalDomains.toString() : "...",
+    },
+    {
+      icon: Store,
+      label: "Years on Market",
+      value: stats ? `${stats.yearsInMarket.toString()}+` : "...",
+    },
+  ];
 
   const values = [
-    { icon: Shield, title: "100% Vetted Domains", description: "No spammy or penalized names. We research metrics, backlink profiles, and archive history before listing." },
-    { icon: Target, title: "Age Matters", description: "Older domains tend to rank faster and are often favored by search engines." },
-    { icon: Zap, title: "Niche-Relevant Portfolios", description: "Whether you’re in health, tech, finance, or lifestyle — we’ve got targeted domains ready." },
-    { icon: Star, title: "Transparency-First Approach", description: "We clearly list key SEO stats and registrar info. No surprises." },
-  ]
+    {
+      icon: Shield,
+      title: "100% Vetted Domains",
+      description:
+        "No spammy or penalized names. We research metrics, backlink profiles, and archive history before listing.",
+    },
+    {
+      icon: Target,
+      title: "Age Matters",
+      description:
+        "Older domains tend to rank faster and are often favored by search engines.",
+    },
+    {
+      icon: Zap,
+      title: "Niche-Relevant Portfolios",
+      description:
+        "Whether you’re in health, tech, finance, or lifestyle — we’ve got targeted domains ready.",
+    },
+    {
+      icon: Star,
+      title: "Transparency-First Approach",
+      description:
+        "We clearly list key SEO stats and registrar info. No surprises.",
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -89,21 +121,25 @@ export default function AboutPage() {
         variants={fadeUp}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-
-            <Badge variant="outline" className="mb-4 border-[#33BDC7] text-[#33BDC7]">
-              About Vettedge.domains
-            </Badge>
+          <Badge
+            variant="outline"
+            className="mb-4 border-[#33BDC7] text-[#33BDC7]"
+          >
+            About Vettedge.domains
+          </Badge>
           <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
             Premium Vetted Aged Domains
-            <span className="block text-[#3BD17A]">Curated for Your Success</span>
+            <span className="block text-[#3BD17A]">
+              Curated for Your Success
+            </span>
           </h1>
           <p className="text-md lg:text-xl max-w-3xl mx-auto leading-relaxed">
-            Your trusted source for premium vetted, aged, and aged domain names — helping you launch brands, grow SEO authority, and invest with confidence.
+            Your trusted source for premium vetted, aged, and aged domain names
+            — helping you launch brands, grow SEO authority, and invest with
+            confidence.
           </p>
         </div>
       </motion.section>
-
-
 
       {/* Why Choose Section */}
       <motion.section
@@ -115,11 +151,16 @@ export default function AboutPage() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center">
-            <Badge variant="outline" className="mb-4 border-[#33BDC7] text-[#33BDC7]">
+            <Badge
+              variant="outline"
+              className="mb-4 border-[#33BDC7] text-[#33BDC7]"
+            >
               Why Choose VettEdge?
             </Badge>
             <p className="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
-              Unlike generic domain marketplaces, we focus exclusively on high-potential aged and Aged Domains vetted by real humans — not bots.
+              Unlike generic domain marketplaces, we focus exclusively on
+              high-potential aged and Aged Domains vetted by real humans — not
+              bots.
             </p>
           </div>
 
@@ -138,8 +179,12 @@ export default function AboutPage() {
                     <div className="w-16 h-16 border border-[#4dd184] 2xl flex items-center justify-center mx-auto mb-4">
                       <value.icon className="h-8 w-8 text-[#4dd184]" />
                     </div>
-                    <h3 className="text-xl font-semibold text-[#33BDC7] mb-3">{value.title}</h3>
-                    <p className="text-gray-700 dark:text-gray-300 flex-1">{value.description}</p>
+                    <h3 className="text-xl font-semibold text-[#33BDC7] mb-3">
+                      {value.title}
+                    </h3>
+                    <p className="text-gray-700 dark:text-gray-300 flex-1">
+                      {value.description}
+                    </p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -173,21 +218,23 @@ export default function AboutPage() {
 
       {/* Who We Serve */}
       <motion.section
-        className="py-20 bg-white dark:bg-gray-800"
+        className="py-20 bg-white dark:bg-gray-900"
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}
         variants={fadeUp}
       >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-[#33BDC7] mb-8 text-center">Who We Serve</h2>
+          <h2 className="text-3xl font-bold text-[#33BDC7] mb-8 text-center">
+            Who We Serve
+          </h2>
           <ul className="grid md:grid-cols-2 gap-6 text-lg text-gray-700 dark:text-gray-300">
             {[
               "Entrepreneurs looking for brandable names",
               "SEO specialists and agencies",
               "Domain investors flipping high-value names",
               "Affiliate marketers building authority sites",
-              "Startups who know the value of a strong domain foundation"
+              "Startups who know the value of a strong domain foundation",
             ].map((item, i) => (
               <li key={i} className="flex items-start space-x-3">
                 <CheckCircle className="h-6 w-6 text-[#38C172] shrink-0" />
@@ -207,12 +254,17 @@ export default function AboutPage() {
         variants={fadeUp}
       >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-          <h2 className="text-3xl font-bold text-[#33BDC7]">Peace of Mind: Our Refund & Return Policy</h2>
+          <h2 className="text-3xl font-bold text-[#33BDC7]">
+            Peace of Mind: Our Refund & Return Policy
+          </h2>
           <p className="text-lg text-gray-700 dark:text-gray-300">
-            If you're not satisfied, we offer a 14-day refund window. Just let us know your reason, return the domain, and we'll refund your purchase (minus a 5% handling fee and payment processor costs).
+            If you're not satisfied, we offer a 14-day refund window. Just let
+            us know your reason, return the domain, and we'll refund your
+            purchase (minus a 5% handling fee and payment processor costs).
           </p>
           <p className="text-lg text-gray-700 dark:text-gray-300">
-            Returning a domain is simple — either push it back to our registrar account or share the EPP/Auth code so we can transfer it back.
+            Returning a domain is simple — either push it back to our registrar
+            account or share the EPP/Auth code so we can transfer it back.
           </p>
           <Link href="/return-policy" className="text-[#33BDC7] underline">
             Learn more about our Refund Policy »
@@ -221,44 +273,43 @@ export default function AboutPage() {
       </motion.section>
 
       {/* CTA */}
-  {/* CTA Section */}
-<motion.section
-  className="py-20 bg-white dark:bg-gray-800"
-  initial="hidden"
-  whileInView="show"
-  viewport={{ once: true }}
-  variants={fadeUp}
->
-  <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-[#33BDC7]">
-      Let’s Get You a Winning Domain
-    </h2>
-    <p className="text-xl mb-8 leading-relaxed text-gray-700 dark:text-gray-300">
-      Whether you’re launching a new brand or growing an SEO empire, your next
-      opportunity starts with the right domain name.
-    </p>
-    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-      <Button
-        size="lg"
-        className="bg-[#33BDC7] text-white hover:bg-[rgb(59,209,122)]"
-        asChild
+      {/* CTA Section */}
+      <motion.section
+        className="py-20 bg-white dark:bg-gray-800"
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true }}
+        variants={fadeUp}
       >
-        <Link href="/domains">Browse Our Live Portfolio</Link>
-      </Button>
-      <Button
-        size="lg"
-        className="bg-[#33BDC7] text-white hover:bg-[rgb(59,209,122)]"
-        asChild
-      >
-        <Link href="/contact">Contact Us for Bulk Deals</Link>
-      </Button>
-    </div>
-  </div>
-</motion.section>
-
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-[#33BDC7]">
+            Let’s Get You a Winning Domain
+          </h2>
+          <p className="text-xl mb-8 leading-relaxed text-gray-700 dark:text-gray-300">
+            Whether you’re launching a new brand or growing an SEO empire, your
+            next opportunity starts with the right domain name.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              size="lg"
+              className="bg-[#33BDC7] text-white hover:bg-[rgb(59,209,122)]"
+              asChild
+            >
+              <Link href="/domains">Browse Our Live Portfolio</Link>
+            </Button>
+            <Button
+              size="lg"
+              className="bg-[#33BDC7] text-white hover:bg-[rgb(59,209,122)]"
+              asChild
+            >
+              <Link href="/contact">Contact Us for Bulk Deals</Link>
+            </Button>
+          </div>
+        </div>
+      </motion.section>
 
       <Footer />
       <LiveChat />
     </div>
-  )
+  );
 }

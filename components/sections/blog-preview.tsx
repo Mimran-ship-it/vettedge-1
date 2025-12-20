@@ -52,7 +52,7 @@ export function BlogPreview() {
     .slice(0, 3);
 
   return (
-    <section className=" py-0  sm:py-12 bg-white dark:bg-gray-800">
+    <section className=" py-0  sm:py-12 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Animation */}
         <motion.div

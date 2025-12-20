@@ -477,7 +477,7 @@ export default function DomainsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       <Header />
       <main className="max-w-8xl sm:ms-0 sm:px-6 lg:px-16 pt-24 pb-28 lg:pb-8">
         {/* Header Section */}

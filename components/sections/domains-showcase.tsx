@@ -133,7 +133,7 @@ export function DomainsShowcase() {
   };
 
   return (
-    <section className="py-10 md:py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
+    <section className="py-10 md:py-20 bg-white dark:bg-slate-900 relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-20 right-10 w-64 h-64 bg-green-100 dark:bg-green-900/10 full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30"></div>

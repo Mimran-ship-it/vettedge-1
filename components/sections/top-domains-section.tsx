@@ -718,7 +718,7 @@ export function TopDomainsSection() {
       <section className="pt-4 px-4 md:py-12  bg-gray-50 dark:bg-gray-900 ">
         <div className=" mx-auto max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="sm:text-3xl text-2xl md:text-5xl font-bold tracking-tight text-[#2BA9B8] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-green-400 dark:text-transparent dark:bg-clip-text">
+            <h2 className="sm:text-3xl mt-4 text-2xl md:text-5xl font-bold tracking-tight text-[#2BA9B8] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-green-400 dark:text-transparent dark:bg-clip-text">
               Domain Analytics Dashboard
             </h2>
             <p className="mt-2 text-black/70 dark:text-gray-400">

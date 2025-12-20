@@ -48,7 +48,7 @@ export function ContactSection() {
   ];
 
   return (
-    <section className=" py-8   sm:py-12   bg-gray-50 dark:bg-gray-800">
+    <section className=" py-8   sm:py-12   bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4">
         {/* Section Heading */}
         <motion.div
