@@ -100,7 +100,7 @@ export function HeroSection() {
         />
 
         {/* Shared Overlay */}
-        <div className="absolute inset-0 bg-black/30 sm:backdrop-blur-xs backdrop-blur-sm"></div>
+        <div className="absolute inset-0 bg-black/10 dark:bg-black/20 sm:backdrop-blur-xs "></div>
       </div>
 
       <div className="relative z-10 flex-1 flex items-center justify-center px-4 sm:px-2 lg:px-8 py-12">

@@ -204,7 +204,7 @@ export function TrustSection() {
   );
 
   return (
-    <section className="py-10 px-4 bg-white  dark:bg-slate-900 relative overflow-hidden">
+    <section className="py-8  px-4 bg-white  dark:bg-slate-900 relative overflow-hidden">
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="flex flex-col lg:flex-row gap-8 mb-10 sm:mb-20">
           {/* Trust Indicators - Right side on large screens */}
