@@ -229,11 +229,11 @@ View full details:`;
     <motion.div
       whileHover={isUnavailable ? {} : { y: -5 }}
       transition={{ duration: 0.2 }}
-      className="h-full"
+      className="md:h-full"
     >
       <Card
         className={cn(
-          "relative group h-full flex flex-col overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm transition-all duration-200",
+          "relative group md:h-full flex flex-col overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm transition-all duration-200",
           !isUnavailable && "hover:shadow-md",
           // Only change background slightly for sold items, do NOT reduce opacity of content
           isUnavailable && "bg-gray-50 dark:bg-gray-800/80"
@@ -314,10 +314,7 @@ View full details:`;
                   )}
                 >
                   <Heart
-                    className={cn(
-                      "h-4 w-4",
-                      isWishlisted && "fill-current"
-                    )}
+                    className={cn("h-4 w-4", isWishlisted && "fill-current")}
                   />
                 </Button>
               </div>
@@ -600,25 +597,25 @@ View full details:`;
                 Buy Now
               </Button>
               <Button
-  variant="outline"
-  asChild
-  className={cn(
-    "flex-1 h-9 px-3 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700",
-    // Re-added disabled styles for unavailable/sold items
-    isUnavailable &&
-      "opacity-50 pointer-events-none cursor-not-allowed bg-gray-100 dark:bg-gray-800 text-gray-400 border-gray-200"
-  )}
->
-  <Link
-    href={isUnavailable ? "#" : `/domains/${domain._id}`}
-    className="flex items-center gap-1"
-    aria-disabled={isUnavailable}
-    tabIndex={isUnavailable ? -1 : undefined}
-  >
-    <Eye className="h-4 w-4" />
-    <span>Details</span>
-  </Link>
-</Button>
+                variant="outline"
+                asChild
+                className={cn(
+                  "flex-1 h-9 px-3 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700",
+                  // Re-added disabled styles for unavailable/sold items
+                  isUnavailable &&
+                    "opacity-50 pointer-events-none cursor-not-allowed bg-gray-100 dark:bg-gray-800 text-gray-400 border-gray-200"
+                )}
+              >
+                <Link
+                  href={isUnavailable ? "#" : `/domains/${domain._id}`}
+                  className="flex items-center gap-1"
+                  aria-disabled={isUnavailable}
+                  tabIndex={isUnavailable ? -1 : undefined}
+                >
+                  <Eye className="h-4 w-4" />
+                  <span>Details</span>
+                </Link>
+              </Button>
             </div>
             <div
               className={cn(
