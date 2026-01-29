@@ -1,53 +1,61 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { DomainCard } from "@/components/domains/domain-card"
-import type { Domain } from "@/types/domain"
-import Link from "next/link"
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { DomainCard } from "@/components/domains/domain-card";
+import type { Domain } from "@/types/domain";
+import Link from "next/link";
 
 export function IsHot() {
-  const [domains, setDomains] = useState<Domain[]>([])
-  const [visibleCount, setVisibleCount] = useState(6)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [domains, setDomains] = useState<Domain[]>([]);
+  const [visibleCount, setVisibleCount] = useState(6);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchHotDomains = async () => {
       try {
-        const response = await fetch("/api/domains")
-        if (!response.ok) throw new Error(`Server returned ${response.status}`)
+        const response = await fetch("/api/domains");
+        if (!response.ok) throw new Error(`Server returned ${response.status}`);
 
-        const data: Domain[] = await response.json()
+        const data: Domain[] = await response.json();
 
         // Filter only available isHot domains
-        const hotDomains = data.filter((domain) => domain.isHot === true && domain.isAvailable === true && domain.isSold === false)
+        const hotDomains = data.filter(
+          (domain) =>
+            domain.isHot === true &&
+            domain.isAvailable === true &&
+            domain.isSold === false
+        );
 
-        setDomains(hotDomains)
+        setDomains(hotDomains);
       } catch (err: any) {
-        console.error("Failed to fetch hot domains:", err)
-        setError("Unable to load hot deals at the moment.")
-        setDomains([])
+        console.error("Failed to fetch hot domains:", err);
+        setError("Unable to load hot deals at the moment.");
+        setDomains([]);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchHotDomains()
-  }, [])
+    fetchHotDomains();
+  }, []);
 
   const handleShowMore = () => {
-    setVisibleCount((prev) => prev + 6)
-  }
+    setVisibleCount((prev) => prev + 6);
+  };
 
   return (
-    <section className="py-16 bg-blue-100 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-16  bg-blue-100 dark:bg-gray-900">
+      <div className="max-w-7xl mx-auto px-4  sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-4xl lg:text-5xl font-bold text-[#33BDC7] mb-4">🔥 Hot Deals</h2>
+          <h2 className="text-4xl lg:text-5xl font-bold  text-[#33BDC7] mb-4">
+            🔥 Hot Deals
+          </h2>
           <p className="text-lg text-gray-600 dark:text-gray-300">
-          Discover premium Aged Domains with proven authority — now available at 20–80% off
+            Discover premium Aged Domains with proven authority — now available
+            at 20–80% off
           </p>
         </div>
 
@@ -55,7 +63,10 @@ export function IsHot() {
         {loading && (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <Card key={i} className="animate-pulse bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+              <Card
+                key={i}
+                className="animate-pulse bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+              >
                 <CardHeader>
                   <div className="h-6 bg-gray-200 dark:bg-gray-600 rounded w-3/4"></div>
                   <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-1/2 mt-2"></div>
@@ -104,7 +115,11 @@ export function IsHot() {
                   Show More
                 </Button>
               )}
-              <Button size="lg" className="bg-[#3BD17A] text-white hover:bg-[rgb(59,209,122)]" asChild>
+              <Button
+                size="lg"
+                className="bg-[#3BD17A] text-white hover:bg-[rgb(59,209,122)]"
+                asChild
+              >
                 <Link href="/domains?isHot=true">View All </Link>
               </Button>
             </div>
@@ -112,5 +127,5 @@ export function IsHot() {
         )}
       </div>
     </section>
-  )
+  );
 }

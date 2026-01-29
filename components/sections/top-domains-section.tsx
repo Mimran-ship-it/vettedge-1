@@ -678,10 +678,10 @@ export function TopDomainsSection() {
 
   if (loading) {
     return (
-      <section className="py-16 px-4 md:px-6 bg-gray-50 dark:from-gray-950 dark:to-cyan-950 dark:bg-gradient-to-br">
+      <section className="py-16 max-w-7xl! mx-auto px-4 md:px-6 dark:from-gray-950 dark:to-cyan-950 dark:bg-gradient-to-br">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-tight text-[#2BA9B8] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-green-400 dark:text-transparent dark:bg-clip-text">
+            <h2 className="text-3xl font-bold md:text-5xl tracking-tight text-[#2BA9B8] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-green-400 dark:text-transparent dark:bg-clip-text">
               Domain Analytics Dashboard
             </h2>
             <p className="mt-2 text-black/70 dark:text-gray-400">
@@ -699,7 +699,7 @@ export function TopDomainsSection() {
 
   if (availableDomains.length === 0) {
     return (
-      <section className="py-16 px-4 md:px-6   bg-gray-50 dark:from-gray-950 dark:to-cyan-950 dark:bg-gradient-to-br">
+      <section className="py-16 px-4 md:px-6 dark:from-gray-950 dark:to-cyan-950 dark:bg-gradient-to-br">
         <div className="container mx-auto max-w-7xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-black dark:bg-gradient-to-r dark:from-cyan-400 dark:to-green-400 dark:text-transparent dark:bg-clip-text mb-4">
             No Available Domains
@@ -715,7 +715,7 @@ export function TopDomainsSection() {
 
   return (
     <>
-      <section className="pt-4 px-4 md:py-12  bg-gray-50 dark:bg-gray-900 ">
+      <section className="pt-4 px-4 md:py-8   dark:bg-gray-900 ">
         <div className=" mx-auto max-w-7xl">
           <div className="text-center mb-12">
             <h2 className="sm:text-3xl mt-4 text-2xl md:text-5xl font-bold tracking-tight text-[#2BA9B8] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-green-400 dark:text-transparent dark:bg-clip-text">
@@ -1137,7 +1137,7 @@ export function TopDomainsSection() {
                   </div>
 
                   <div>
-                    <div className="bg-[#E6F7F5] border border-[#2BA9B8]/50 p-6 mb-6 dark:bg-cyan-900/20 dark:border-cyan-800/50">
+                    <div className="bg-[#F0FDF9] border border-[#2BA9B8]/50 p-6 mb-6 dark:bg-cyan-900/20 dark:border-cyan-800/50">
                       <h3 className="text-lg font-semibold text-black dark:text-white mb-4">
                         Pricing Details
                       </h3>
@@ -1191,9 +1191,9 @@ export function TopDomainsSection() {
                       </div>
                     </div>
 
-                    <div className="bg-[#E6F7F5] border border-[#2BA9B8]/50 p-6 dark:bg-cyan-900/20 dark:border-cyan-800/50">
+                    <div className="bg-[#F0FDF9] border border-[#2BA9B8]/50 p-6 dark:bg-cyan-900/20 dark:border-cyan-800/50">
                       <h3 className="text-lg font-semibold text-black dark:text-white mb-4">
-                        Domain Tags
+                        Domain Industry
                       </h3>
                       <div className="flex flex-wrap gap-2">
                         {selectedDomain.tags.map((tag) => (

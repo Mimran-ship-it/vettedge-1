@@ -2,7 +2,6 @@
 
 import type React from "react";
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,22 +20,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import ContactForm from "@/components/contact-form";
 
-// Animation variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0 },
-};
-
-const fadeInLeft = {
-  hidden: { opacity: 0, x: -50 },
-  visible: { opacity: 1, x: 0 },
-};
-
-const fadeInRight = {
-  hidden: { opacity: 0, x: 50 },
-  visible: { opacity: 1, x: 0 },
-};
-
 export function ContactSection() {
   const contactMethods = [
     {
@@ -48,17 +31,10 @@ export function ContactSection() {
   ];
 
   return (
-    <section className=" py-8   sm:py-12   bg-gray-50 dark:bg-gray-900">
+    <section className=" py-8   sm:py-12   dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4">
         {/* Section Heading */}
-        <motion.div
-          className="text-center mb-12 md:mb-16"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          variants={fadeInUp}
-        >
+        <div className="text-center mb-12 md:mb-16">
           <Badge
             variant="outline"
             className="mb-4 px-4 py-2"
@@ -80,32 +56,20 @@ export function ContactSection() {
             for your business. Get personalized recommendations and expert
             guidance.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start ">
           {/* Contact Form */}
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            variants={fadeInLeft}
-          >
+          <div>
             <ContactForm
               variant="home"
               headerTitle="Send us a Message"
               headerDescription="Get expert advice on domain selection and SEO potential"
             />
-          </motion.div>
+          </div>
 
           {/* Contact Information */}
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            variants={fadeInRight}
-          >
+          <div>
             <div className="space-y-6 md:space-y-8">
               <div>
                 <h3
@@ -122,14 +86,7 @@ export function ContactSection() {
 
               <div className="space-y-4 md:space-y-6">
                 {contactMethods.map((method, index) => (
-                  <motion.div
-                    key={index}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: index * 0.15 }}
-                    variants={fadeInUp}
-                  >
+                  <div key={index}>
                     <Card
                       className="border-l-4 hover:shadow-lg transition-shadow bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600"
                       style={{ borderLeftColor: "#33BDC7" }}
@@ -153,18 +110,12 @@ export function ContactSection() {
                         </div>
                       </CardContent>
                     </Card>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
 
               {/* Why Choose Us */}
-              <motion.div
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                variants={fadeInUp}
-              >
+              <div>
                 <Card
                   style={{
                     backgroundColor: "#33BDC7",
@@ -193,9 +144,9 @@ export function ContactSection() {
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
