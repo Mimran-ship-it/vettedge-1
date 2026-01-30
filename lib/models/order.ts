@@ -92,7 +92,7 @@ const OrderSchema = new Schema<IOrder>(
       },
     ],
     totalAmount: { type: Number, required: true },
-    paymentStatus: { type: String, enum: ["open", "COMPLETED"], required: true },
+    paymentStatus: { type: String, enum: ["open", "Completed"], required: true },
     billingInfo: {
       type: billingInfoSchema,
       required: true,
@@ -104,7 +104,7 @@ const OrderSchema = new Schema<IOrder>(
         return value;
       }
     },
-    domainTransfer: { type: String, enum: ["pending", "completed"], default: "pending" } // Added domainTransfer field
+    domainTransfer: { type: String, enum: ["pending", "Completed"], default: "pending" } // Added domainTransfer field
   },
   { timestamps: true }
 );

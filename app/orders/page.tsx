@@ -73,7 +73,7 @@ export default function OrdersPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "completed":
+      case "Completed":
         return "default"
       case "pending":
         return "secondary"
@@ -120,7 +120,7 @@ export default function OrdersPage() {
                   <SelectItem value="all">All Orders</SelectItem>
                   <SelectItem value="pending">Pending</SelectItem>
                   <SelectItem value="processing">Processing</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="Completed">Completed</SelectItem>
                   <SelectItem value="failed">Failed</SelectItem>
                   <SelectItem value="refunded">Refunded</SelectItem>
                 </SelectContent>

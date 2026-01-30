@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
       },
       orders: {
         total: 0,
-        completed: 0,
+        Completed: 0,
         pending: 0
       },
       chat: {

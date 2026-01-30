@@ -67,7 +67,7 @@ type SortOption =
 const defaultFilters: ActiveFilters = {
   priceRange: [0, 100000],
   tlds: [],
-  availability: "all",
+  availability: "available",
   type: "all",
   domainRankRange: [0, 100],
   domainAuthorityRange: [0, 100],
@@ -482,9 +482,8 @@ export default function DomainsPage() {
       <main className="max-w-8xl sm:ms-0 sm:px-6 lg:px-16 pt-24 pb-28 lg:pb-8">
         {/* Header Section */}
         <div
-          className={`mb-10 text-center transition-all duration-300 ease-in-out ${
-            showDesktopSidebar ? "lg:ml-[22%]" : "lg:ml-14"
-          }`}
+          className={`mb-10 text-center transition-all duration-300 ease-in-out ${showDesktopSidebar ? "lg:ml-[22%]" : "lg:ml-14"
+            }`}
         >
           <h1 className="text-2xl  sm:text-4xl font-bold text-gray-900 dark:text-white mb-3">
             Domain Inventory
@@ -499,9 +498,8 @@ export default function DomainsPage() {
           {/* Sidebar - Fixed on desktop, hidden on mobile */}
           <aside
             id="filtersSidebar"
-            className={`hidden lg:block w-[22%] fixed top-16 left-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto shadow-sm z-10 transition-all duration-300 ease-in-out ${
-              showDesktopSidebar ? "translate-x-0" : "-translate-x-full"
-            }`}
+            className={`hidden lg:block w-[22%] fixed top-16 left-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto shadow-sm z-10 transition-all duration-300 ease-in-out ${showDesktopSidebar ? "translate-x-0" : "-translate-x-full"
+              }`}
             style={{
               height: `calc(100vh - 4rem - ${sidebarBottomOffset}px)`,
               maxHeight: `calc(100vh - 4rem - ${sidebarBottomOffset}px)`,
@@ -565,9 +563,8 @@ export default function DomainsPage() {
 
           {/* Main Content */}
           <section
-            className={`flex-1 px-4 lg:px-0 transition-all duration-300 ease-in-out ${
-              showDesktopSidebar ? "lg:ml-[22%]" : "lg:ml-14"
-            }`}
+            className={`flex-1 px-4 lg:px-0 transition-all duration-300 ease-in-out ${showDesktopSidebar ? "lg:ml-[22%]" : "lg:ml-14"
+              }`}
           >
             {/* Mobile Filters - Conditionally shown */}
             {showFilters && (
@@ -724,16 +721,15 @@ export default function DomainsPage() {
               <div
                 className={
                   viewMode === "grid"
-                    ? `grid md:grid-cols-2 ${
-                        showDesktopSidebar ? "lg:grid-cols-3" : "lg:grid-cols-3"
-                      } gap-6`
+                    ? `grid md:grid-cols-2 ${showDesktopSidebar ? "lg:grid-cols-3" : "lg:grid-cols-3"
+                    } gap-6`
                     : "space-y-4"
                 }
               >
                 {[...Array(6)].map((_, i) => (
                   <div
                     key={i}
-                    className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 animate-pulse"
+                    className="bg-white dark:bg-gray-800  shadow-sm border border-gray-200 dark:border-gray-700 p-6 animate-pulse"
                   >
                     <div className="h-7 bg-gray-200 dark:bg-gray-700 w-3/4 mb-4 rounded-lg"></div>
                     <div className="h-5 bg-gray-200 dark:bg-gray-700 w-1/2 mb-6 rounded-lg"></div>
@@ -753,9 +749,8 @@ export default function DomainsPage() {
               <div
                 className={
                   viewMode === "grid"
-                    ? `grid md:grid-cols-2 ${
-                        showDesktopSidebar ? "lg:grid-cols-3" : "lg:grid-cols-3"
-                      } gap-6`
+                    ? `grid md:grid-cols-2 ${showDesktopSidebar ? "lg:grid-cols-3" : "lg:grid-cols-3"
+                    } gap-6`
                     : "space-y-4"
                 }
               >

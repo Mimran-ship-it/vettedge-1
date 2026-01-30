@@ -47,7 +47,7 @@ export function TestimonialsSection() {
       role: "Brand Manager",
       company: "Creative Studios",
       content:
-        "Fast, secure, and professional. The domain transfer was completed in 24 hours exactly as promised. Will definitely use again.",
+        "Fast, secure, and professional. The domain transfer was Completed in 24 hours exactly as promised. Will definitely use again.",
       rating: 5,
       avatar: "LT",
     },

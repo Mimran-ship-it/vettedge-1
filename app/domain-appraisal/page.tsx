@@ -285,7 +285,7 @@ export default function DomainAppraisal() {
                 <Clock className="w-8 h-8 text-[#38C172] mb-2" />
                 <h4 className="font-semibold mb-2 text-[#33BDC7]">Fast Turnaround</h4>
                 <p className="text-gray-600 dark:text-gray-400 text-sm">
-                  Most appraisals completed within 24-48 hours
+                  Most appraisals Completed within 24-48 hours
                 </p>
               </div>
               <div className="flex flex-col items-center">

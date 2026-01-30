@@ -388,7 +388,7 @@ export default function ContactPage() {
               {
                 question: "How long does the transfer take?",
                 answer:
-                  "Registrar push transfers are usually completed within a few hours. Traditional transfers (via EPP code) may take up to 5–7 days depending on the registrar.",
+                  "Registrar push transfers are usually Completed within a few hours. Traditional transfers (via EPP code) may take up to 5–7 days depending on the registrar.",
               },
               {
                 question: "Are the domains clean and free of penalties?",

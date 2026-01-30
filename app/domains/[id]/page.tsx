@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ShoppingCart,
+  CreditCard,
   Heart,
   TrendingUp,
   LinkIcon,
@@ -24,7 +25,6 @@ import {
   Award,
   CheckCircle,
   Zap,
-  Tag,
   Info,
   ArrowRight,
   FileText,
@@ -36,20 +36,24 @@ import {
 import type { Domain } from "@/types/domain";
 import { useCart } from "@/components/providers/cart-provider";
 import { useWishlist } from "@/components/providers/wishlist-provider";
+import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { LiveChat } from "@/components/chat/live-chat";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function DomainDetailsPage() {
+  const router = useRouter();
   const params = useParams();
+  const { user } = useAuth();
   const [domain, setDomain] = useState<Domain | null>(null);
   const [similarDomains, setSimilarDomains] = useState<Domain[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
-  const { addItem } = useCart();
+  const { addItem, clearCart } = useCart();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -60,20 +64,18 @@ export default function DomainDetailsPage() {
         const matchedDomain = data.find((d) => d._id === params?.id);
         setDomain(matchedDomain || null);
 
-        // Fetch similar domains if we have a domain with tags
         if (
           matchedDomain &&
           matchedDomain.tags &&
           matchedDomain.tags.length > 0
         ) {
-          // Filter similar domains by tags and exclude sold/unavailable domains
           const similar = data.filter(
             (d) =>
               d._id !== matchedDomain._id &&
               d.tags &&
               d.tags.some((tag) => matchedDomain.tags?.includes(tag)) &&
-              !d.isSold && // Exclude sold domains
-              d.isAvailable // Include only available domains
+              !d.isSold &&
+              d.isAvailable
           );
           setSimilarDomains(similar);
         }
@@ -105,6 +107,34 @@ export default function DomainDetailsPage() {
     });
   };
 
+  const handleBuyNow = () => {
+    if (!domain || domain.isSold || !domain.isAvailable) {
+      toast({
+        title: "Domain Unavailable",
+        description: "This domain is no longer available for purchase.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    clearCart();
+
+    addItem({
+      id: domain._id,
+      name: domain.name,
+      price: domain.price,
+      domain,
+      isSold: domain.isSold,
+    });
+
+    if (!user) {
+      router.push("/auth/signin?redirect=/checkout");
+      return;
+    } else {
+      router.push("/checkout");
+    }
+  };
+
   const handleWishlistToggle = () => {
     if (!domain) return;
     const wishlisted = isInWishlist(domain._id);
@@ -112,10 +142,6 @@ export default function DomainDetailsPage() {
       removeFromWishlist(domain._id);
     } else {
       addToWishlist(domain._id);
-      //toast({
-      //  title: "Wishlisted",
-      // description: `${domain.name} added to wishlist.`
-      // })
     }
   };
 
@@ -125,7 +151,6 @@ export default function DomainDetailsPage() {
     const url = window.location.href;
     const title = `Check out this domain: ${domain.name}`;
 
-    // Check if Web Share API is available
     if (navigator.share) {
       try {
         await navigator.share({
@@ -140,7 +165,6 @@ export default function DomainDetailsPage() {
           description: "Domain details have been shared.",
         });
       } catch (error) {
-        // User cancelled or error occurred
         if ((error as Error).name !== "AbortError") {
           console.error("Error sharing:", error);
           toast({
@@ -151,7 +175,6 @@ export default function DomainDetailsPage() {
         }
       }
     } else {
-      // Fallback: Copy to clipboard
       try {
         await navigator.clipboard.writeText(url);
         toast({
@@ -207,6 +230,48 @@ export default function DomainDetailsPage() {
             <Button asChild className="px-6 py-3">
               <a href="/domains">Browse All Domains</a>
             </Button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (domain.isSold || !domain.isAvailable) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+        <Header />
+        <main className="max-w-7xl mx-auto px-4 pb-8 pt-24 text-center">
+          <div className="bg-white dark:bg-gray-800 shadow-xl p-8 max-w-2xl mx-auto rounded-xl border border-gray-200 dark:border-gray-700">
+            <div className="text-[#33BDC7] mx-auto w-16 h-16 mb-4 flex items-center justify-center bg-[#33BDC7]/10 rounded-full">
+              <Info size={32} />
+            </div>
+            <h1 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+              Domain Sold Out
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-md mx-auto">
+              We're sorry, but{" "}
+              <span className="font-semibold text-gray-900 dark:text-white">
+                {domain.name}
+              </span>{" "}
+              has already been sold or is no longer available.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                asChild
+                className="px-8 py-6 text-lg bg-[#33BDC7] hover:bg-[#2da9b2] text-white"
+              >
+                <Link href="/domains">Find Similar Domains</Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="px-8 py-6 text-lg border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
+              >
+                <Link href="/contact">Contact Us</Link>
+              </Button>
+            </div>
           </div>
         </main>
         <Footer />
@@ -352,9 +417,11 @@ export default function DomainDetailsPage() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 ">
-                          <Globe className="h-5 w-5 text-blue-500" />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-500">
+                            <Globe className="h-5 w-5" />
+                          </div>
                           <div>
                             <p className="text-sm text-gray-500 dark:text-gray-300">
                               Domain Type
@@ -366,8 +433,10 @@ export default function DomainDetailsPage() {
                             </p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 ">
-                          <Calendar className="h-5 w-5 text-green-500" />
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-full bg-green-50 dark:bg-green-900/20 text-green-500">
+                            <Calendar className="h-5 w-5" />
+                          </div>
                           <div>
                             <p className="text-sm text-gray-500 dark:text-gray-300">
                               Domain Age
@@ -377,8 +446,10 @@ export default function DomainDetailsPage() {
                             </p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 ">
-                          <Clock className="h-5 w-5 text-purple-500" />
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-500">
+                            <Clock className="h-5 w-5" />
+                          </div>
                           <div>
                             <p className="text-sm text-gray-500 dark:text-gray-300">
                               Industry
@@ -402,8 +473,10 @@ export default function DomainDetailsPage() {
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-600 ">
-                          <Users className="h-5 w-5 text-orange-500" />
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-full bg-orange-50 dark:bg-orange-900/20 text-orange-500">
+                            <Users className="h-5 w-5" />
+                          </div>
                           <div>
                             <p className="text-sm text-gray-500 dark:text-gray-300">
                               Language
@@ -429,17 +502,18 @@ export default function DomainDetailsPage() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {/* Updated Metric Cards - No borders/bgs */}
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-y-8 gap-x-4">
                         <MetricCard
                           title="Domain Rank"
                           value={domain.metrics.domainRank}
-                          icon={<TrendingUp className="h-5 w-5" />}
+                          icon={<TrendingUp />}
                           color="blue"
                         />
                         <MetricCard
                           title="Referring Domains"
                           value={domain.metrics.referringDomains}
-                          icon={<LinkIcon className="h-5 w-5" />}
+                          icon={<LinkIcon />}
                           color="green"
                         />
                         {domain?.metrics.monthlyTraffic && (
@@ -449,26 +523,26 @@ export default function DomainDetailsPage() {
                               domain.metrics.monthlyTraffic?.toLocaleString() ||
                               "N/A"
                             }
-                            icon={<Users className="h-5 w-5" />}
+                            icon={<Users />}
                             color="purple"
                           />
                         )}
                         <MetricCard
                           title="Domain Authority"
                           value={domain.metrics.domainAuthority}
-                          icon={<Award className="h-5 w-5" />}
+                          icon={<Award />}
                           color="yellow"
                         />
                         <MetricCard
                           title="Trust Flow"
                           value={domain.metrics.trustFlow}
-                          icon={<Shield className="h-5 w-5" />}
+                          icon={<Shield />}
                           color="red"
                         />
                         <MetricCard
                           title="Citation Flow"
                           value={domain.metrics.citationFlow}
-                          icon={<Search className="h-5 w-5" />}
+                          icon={<Search />}
                           color="indigo"
                         />
                       </div>
@@ -487,8 +561,9 @@ export default function DomainDetailsPage() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-4">
-                        <div className="p-2 sm:p-4  bg-gray-50 dark:bg-gray-600 ">
+                      <div className="space-y-6">
+                        {/* Removed inner bg and padding, using separators */}
+                        <div className="pb-4 border-b border-gray-100 dark:border-gray-700">
                           <h3 className="font-medium text-gray-900 dark:text-white mb-2">
                             Registration Details
                           </h3>
@@ -500,8 +575,8 @@ export default function DomainDetailsPage() {
                         </div>
 
                         {domain.metrics.authorityLinksCount > 0 && (
-                          <div className="p-2 sm:p-4  bg-gray-50 dark:bg-gray-600 ">
-                            <h3 className="font-medium text-gray-900 dark:text-white mb-2">
+                          <div className="pb-4 border-b border-gray-100 dark:border-gray-700">
+                            <h3 className="font-medium text-gray-900 dark:text-white mb-3">
                               Authority Backlinks
                             </h3>
 
@@ -509,7 +584,7 @@ export default function DomainDetailsPage() {
                             {Array.isArray(domain.metrics.authorityLinks) &&
                             domain.metrics.authorityLinks.length > 0 ? (
                               <>
-                                <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                                <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                                   This domain has{" "}
                                   <span className="font-semibold">
                                     {domain.metrics.authorityLinksCount}
@@ -517,7 +592,7 @@ export default function DomainDetailsPage() {
                                   backlinks from the following authoritative
                                   sources:
                                 </p>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                   {domain.metrics.authorityLinks.map(
                                     (link, idx) => {
                                       const trimmedLink = link.trim();
@@ -539,27 +614,23 @@ export default function DomainDetailsPage() {
                                       }
 
                                       return (
+                                        // Removed borders and bg boxes from links
                                         <a
                                           key={idx}
                                           href={href}
                                           target="_blank"
                                           rel="noopener noreferrer"
-                                          className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700  hover:bg-blue-50 dark:hover:bg-gray-600 hover:border-blue-300 dark:hover:border-blue-500 transition-colors group"
+                                          className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group"
                                         >
-                                          <div className="flex items-center">
-                                            <div className="flex-shrink-0 w-10 h-10  bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/50 transition-colors">
-                                              <ExternalLink className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                                            </div>
-                                            <div>
-                                              <div className="font-medium text-gray-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
+                                          <div className="flex items-center gap-3">
+                                            <ExternalLink className="h-4 w-4 text-blue-500 flex-shrink-0" />
+                                            <div className="truncate">
+                                              <div className="font-medium text-sm text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
                                                 {displayText}
-                                              </div>
-                                              <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px]">
-                                                {href}
                                               </div>
                                             </div>
                                           </div>
-                                          <ArrowRight className="h-4 w-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+                                          <ArrowRight className="h-4 w-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex-shrink-0ml-2" />
                                         </a>
                                       );
                                     }
@@ -579,7 +650,7 @@ export default function DomainDetailsPage() {
                           </div>
                         )}
 
-                        <div className="p-2 sm:p-4  bg-gray-50 dark:bg-gray-600 ">
+                        <div>
                           <h3 className="font-medium text-gray-900 dark:text-white mb-2">
                             Domain Value
                           </h3>
@@ -629,6 +700,15 @@ export default function DomainDetailsPage() {
                       : domain.isAvailable
                       ? "Add to Cart"
                       : "Unavailable"}
+                  </Button>
+
+                  <Button
+                    className="w-full py-3 text-white bg-[#33BDC7] hover:bg-[#2da9b2] shadow-md dark:bg-[#33BDC7] dark:hover:bg-[#2da9b2] dark:text-white"
+                    onClick={handleBuyNow}
+                    disabled={!domain.isAvailable || domain.isSold}
+                  >
+                    <CreditCard className="h-4 w-4 mr-2" />
+                    Buy Now
                   </Button>
 
                   <div className="flex gap-3">
@@ -929,6 +1009,7 @@ export default function DomainDetailsPage() {
   );
 }
 
+// Redesigned MetricCard - No borders or backgrounds
 const MetricCard = ({
   title,
   value,
@@ -940,32 +1021,30 @@ const MetricCard = ({
   icon: React.ReactNode;
   color: string;
 }) => {
-  const colorClasses =
+  // Only map colors for text, no backgrounds or borders
+  const iconColorClass =
     {
-      blue: "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700",
-      green:
-        "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700",
-      purple:
-        "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700",
-      yellow:
-        "bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700",
-      red: "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-700",
-      indigo:
-        "bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700",
-    }[color] ||
-    "bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600";
+      blue: "text-blue-600 dark:text-blue-400",
+      green: "text-green-600 dark:text-green-400",
+      purple: "text-purple-600 dark:text-purple-400",
+      yellow: "text-yellow-600 dark:text-yellow-400",
+      red: "text-red-600 dark:text-red-400",
+      indigo: "text-indigo-600 dark:text-indigo-400",
+    }[color] || "text-gray-600 dark:text-gray-400";
 
   return (
-    <div
-      className={`p-4  border ${colorClasses} transition-all hover:shadow-md dark:hover:shadow-lg`}
-    >
-      <div className="flex items-center justify-between mb-2">
-        <div className="text-gray-500 dark:text-gray-400">{icon}</div>
-        <div className="text-xs shadow-lg border font-medium bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 px-2 py-1 ">
+    <div className="flex flex-col items-start p-2">
+      <div className="flex items-center gap-2 mb-2">
+        <span className={`${iconColorClass} [&>svg]:h-5 [&>svg]:w-5`}>
+          {icon}
+        </span>
+        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
           {title}
-        </div>
+        </span>
       </div>
-      <div className="text-2xl font-bold dark:text-white">{value}</div>
+      <div className="text-3xl font-bold text-gray-900 dark:text-white pl-1">
+        {value}
+      </div>
     </div>
   );
 };

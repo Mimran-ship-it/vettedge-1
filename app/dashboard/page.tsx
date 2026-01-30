@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic'
 
 // Dynamically import the dashboard component with no SSR
-const UserDashboard = dynamic(() => import('@/components/user-dashboard').then(mod => mod.UserDashboard), {
+const UserDashboard = dynamic(() => import('@/components/user-dashboard-professional').then(mod => mod.UserDashboardProfessional), {
   ssr: false,
   loading: () => (
     <div className="flex items-center justify-center h-64">

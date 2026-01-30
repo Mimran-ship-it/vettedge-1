@@ -103,7 +103,7 @@ export default function TransferProcessPage() {
 
   const fetchLatestOrder = useCallback(async () => {
     try {
-      // Get session_id from URL params (user just completed checkout)
+      // Get session_id from URL params (user just Completed checkout)
       const sessionIdFromUrl = searchParams?.get('session_id') || null
       
       // Check localStorage for stored order email and session
@@ -215,7 +215,7 @@ export default function TransferProcessPage() {
                     </div>
                     <div>
                       <CardTitle className="text-2xl text-[#33BDC7] dark:text-[#33BDC7]">
-                        🎉 Order Confirmed!
+                        Order Confirmed!
                       </CardTitle>
                       <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                         Order Number: <span className="font-bold text-[#33BDC7]">#{orderNumber}</span>

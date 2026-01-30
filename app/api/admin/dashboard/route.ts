@@ -114,8 +114,8 @@ export async function GET(request: NextRequest) {
               $group: {
                 _id: null,
                 totalOrders: { $sum: 1 },
-                completedOrders: {
-                  $sum: { $cond: [{ $eq: ["$paymentStatus", "COMPLETED"] }, 1, 0] }
+                CompletedOrders: {
+                  $sum: { $cond: [{ $eq: ["$paymentStatus", "Completed"] }, 1, 0] }
                 },
                 pendingOrders: {
                   $sum: { $cond: [{ $eq: ["$paymentStatus", "pending"] }, 1, 0] }
@@ -123,7 +123,7 @@ export async function GET(request: NextRequest) {
                 totalRevenue: {
                   $sum: {
                     $cond: [
-                      { $eq: ["$paymentStatus", "COMPLETED"] },
+                      { $eq: ["$paymentStatus", "Completed"] },
                       "$totalAmount",
                       0
                     ]
@@ -133,10 +133,10 @@ export async function GET(request: NextRequest) {
             }
           ])
           console.log("Order stats:", stats)
-          return stats[0] || { totalOrders: 0, completedOrders: 0, pendingOrders: 0, totalRevenue: 0 }
+          return stats[0] || { totalOrders: 0, CompletedOrders: 0, pendingOrders: 0, totalRevenue: 0 }
         } catch (error) {
           console.error("Error fetching order stats:", error)
-          return { totalOrders: 0, completedOrders: 0, pendingOrders: 0, totalRevenue: 0 }
+          return { totalOrders: 0, CompletedOrders: 0, pendingOrders: 0, totalRevenue: 0 }
         }
       })(),
       
@@ -167,7 +167,7 @@ export async function GET(request: NextRequest) {
           const result = await Order.aggregate([
             {
               $match: {
-                paymentStatus: "COMPLETED",
+                paymentStatus: "Completed",
                 createdAt: { $gte: startOfMonth, $lte: endOfMonth }
               }
             },
@@ -193,7 +193,7 @@ export async function GET(request: NextRequest) {
           const result = await Order.aggregate([
             {
               $match: {
-                paymentStatus: "COMPLETED",
+                paymentStatus: "Completed",
                 createdAt: { $gte: startOfLastMonth, $lte: endOfLastMonth }
               }
             },
@@ -261,7 +261,7 @@ export async function GET(request: NextRequest) {
       },
       orders: {
         total: orderStats.totalOrders,
-        completed: orderStats.completedOrders,
+        Completed: orderStats.CompletedOrders,
         pending: orderStats.pendingOrders
       },
       chat: {

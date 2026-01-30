@@ -15,7 +15,7 @@ export default async function Success({ searchParams }) {
   let customerEmail = ""
   let items = []
   let totalAmount = 0
-  let status = "COMPLETED"
+  let status = "Completed"
   let billingInfo = null
   let metaFromReturn = null
 
@@ -43,8 +43,8 @@ export default async function Success({ searchParams }) {
     const line_items = session.line_items
 
     if (payment_status !== "paid") {
-      console.error("❌ Payment not completed. Current status:", payment_status)
-      throw new Error(`Stripe payment not completed. Current status: ${payment_status}`)
+      console.error("❌ Payment not Completed. Current status:", payment_status)
+      throw new Error(`Stripe payment not Completed. Current status: ${payment_status}`)
     }
 
     customerEmail = email
@@ -55,7 +55,7 @@ export default async function Success({ searchParams }) {
       quantity: li.quantity,
     }))
     totalAmount = line_items.data.reduce((acc, li) => acc + li.amount_total / 100, 0)
-    status = "COMPLETED"
+    status = "Completed"
   } else {
     // ✅ PAYPAL LOGIC
     const capRes = await fetch(`${origin}/api/paypal/capture-order`, {
@@ -112,7 +112,7 @@ export default async function Success({ searchParams }) {
       ? parseFloat(firstUnit.amount.value)
       : items.reduce((s, it) => s + it.price * it.quantity, 0)
 
-    status = capture?.status || "COMPLETED"
+    status = capture?.status || "Completed"
 
     // ✅ Use metadata (checkout form) billing info if present, fallback to PayPal data
     billingInfo = {

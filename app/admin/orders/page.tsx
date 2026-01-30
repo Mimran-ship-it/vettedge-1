@@ -25,8 +25,8 @@ interface Order {
     _id: string
   }[]
   totalAmount: number
-  paymentStatus: "COMPLETED" | "pending" | "cancelled" | "failed"
-  domainTransfer: "pending" | "completed" // Added domainTransfer field
+  paymentStatus: "Completed" | "pending" | "cancelled" | "failed"
+  domainTransfer: "pending" | "Completed" // Added domainTransfer field
   createdAt: string
   updatedAt: string
   orderNumber?: number
@@ -127,7 +127,7 @@ export default function AdminOrdersPage() {
     }
   }
 
-  const updateDomainTransferStatus = async (orderId: string, newStatus: "pending" | "completed") => {
+  const updateDomainTransferStatus = async (orderId: string, newStatus: "pending" | "Completed") => {
     try {
       const response = await fetch(`/api/orders`, {
         method: "PATCH",
@@ -159,7 +159,7 @@ export default function AdminOrdersPage() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "COMPLETED":
+      case "Completed":
         return <CheckCircle className="h-4 w-4 text-green-600" />
       case "pending":
         return <Clock className="h-4 w-4 text-yellow-600" />
@@ -174,7 +174,7 @@ export default function AdminOrdersPage() {
 
   const getDomainTransferIcon = (status: string) => {
     switch (status) {
-      case "completed":
+      case "Completed":
         return <CheckCircle className="h-4 w-4 text-green-600" />
       case "pending":
         return <Clock className="h-4 w-4 text-yellow-600" />
@@ -185,7 +185,7 @@ export default function AdminOrdersPage() {
 
   const getStatusBadge = (status: string) => {
     const variants = {
-      COMPLETED: "default",
+      Completed: "default",
       pending: "secondary",
       cancelled: "destructive",
       failed: "destructive",
@@ -199,7 +199,7 @@ export default function AdminOrdersPage() {
 
   const getDomainTransferBadge = (status: string) => {
     return (
-      <Badge variant={status === "completed" ? "default" : "secondary"}>
+      <Badge variant={status === "Completed" ? "default" : "secondary"}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </Badge>
     )
@@ -234,7 +234,7 @@ export default function AdminOrdersPage() {
                 },
                 { 
                   title: "Completed", 
-                  count: orders.filter((o) => o.paymentStatus === "COMPLETED").length, 
+                  count: orders.filter((o) => o.paymentStatus === "Completed").length, 
                   icon: CheckCircle,
                   color: "text-green-600" 
                 },
@@ -246,7 +246,7 @@ export default function AdminOrdersPage() {
                 },
                 { 
                   title: "Domain Transfers Completed", 
-                  count: orders.filter((o) => o.domainTransfer === "completed").length, 
+                  count: orders.filter((o) => o.domainTransfer === "Completed").length, 
                   icon: CheckCircle,
                   color: "text-green-600" 
                 },
@@ -289,7 +289,7 @@ export default function AdminOrdersPage() {
                   >
                     <option value="all">All Payment Status</option>
                     <option value="pending">Pending</option>
-                    <option value="COMPLETED">Completed</option>
+                    <option value="Completed">Completed</option>
                     <option value="cancelled">Cancelled</option>
                     <option value="failed">Failed</option>
                   </select>
@@ -300,7 +300,7 @@ export default function AdminOrdersPage() {
                   >
                     <option value="all">All Domain Transfers</option>
                     <option value="pending">Pending</option>
-                    <option value="completed">Completed</option>
+                    <option value="Completed">Completed</option>
                   </select>
                 </div>
               </CardContent>
@@ -439,14 +439,14 @@ export default function AdminOrdersPage() {
                                               {getDomainTransferIcon(order.domainTransfer)}
                                               <Select
                                                 value={order.domainTransfer}
-                                                onValueChange={(value) => updateDomainTransferStatus(order._id, value as "pending" | "completed")}
+                                                onValueChange={(value) => updateDomainTransferStatus(order._id, value as "pending" | "Completed")}
                                               >
                                                 <SelectTrigger className="w-32">
                                                   <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                   <SelectItem value="pending">Pending</SelectItem>
-                                                  <SelectItem value="completed">Completed</SelectItem>
+                                                  <SelectItem value="Completed">Completed</SelectItem>
                                                 </SelectContent>
                                               </Select>
                                             </div>
@@ -586,14 +586,14 @@ export default function AdminOrdersPage() {
                                             {getDomainTransferIcon(order.domainTransfer)}
                                             <Select
                                               value={order.domainTransfer}
-                                              onValueChange={(value) => updateDomainTransferStatus(order._id, value as "pending" | "completed")}
+                                              onValueChange={(value) => updateDomainTransferStatus(order._id, value as "pending" | "Completed")}
                                             >
                                               <SelectTrigger className="w-32">
                                                 <SelectValue />
                                               </SelectTrigger>
                                               <SelectContent>
                                                 <SelectItem value="pending">Pending</SelectItem>
-                                                <SelectItem value="completed">Completed</SelectItem>
+                                                <SelectItem value="Completed">Completed</SelectItem>
                                               </SelectContent>
                                             </Select>
                                           </div>

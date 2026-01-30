@@ -13,7 +13,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const mockOrder = mockOrders[orderId] || {
       id: orderId,
       total: 2500,
-      status: "completed",
+      status: "Completed",
       createdAt: new Date().toISOString(),
       items: [
         {

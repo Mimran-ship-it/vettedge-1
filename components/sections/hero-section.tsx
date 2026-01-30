@@ -2,22 +2,15 @@
 
 import type React from "react";
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Variants } from "framer-motion";
 import Image from "next/image";
 import {
   Search,
-  ListChecks,
-  Store,
   TrendingUp,
   ShoppingBag,
-  Zap,
-  Globe,
-  Star,
   ArrowRight,
 } from "lucide-react";
 import Link from "next/link";
@@ -48,7 +41,6 @@ export function HeroSection() {
       } catch {
         // ignore and fallback
       }
-      // Fallback to localStorage-based frequency
       const topLocal = getMostFrequentDomain();
       if (!cancelled) setTopDomain(topLocal);
     };
@@ -65,7 +57,6 @@ export function HeroSection() {
     }
   };
 
-  // Animation variants
   const fadeUp: Variants = {
     hidden: { opacity: 0, y: 30 },
     visible: (custom: number = 0) => ({
@@ -76,59 +67,45 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative min-h-screen flex flex-col overflow-hidden text-white">
+    <section className="relative min-h-screen flex flex-col overflow-hidden bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
-        {/* Mobile Image: Visible on small screens, hidden on desktop (md and up) */}
         <Image
-          src="/vettedge-mobile-bg.jpg"
-          alt="Hero background mobile"
+          src="/hero.png"
+          alt="Hero background"
           fill
           priority
-          className="object-cover md:hidden"
-          quality={100}
+          className="object-cover opacity-100 dark:opacity-80"
+          quality={80}
         />
-
-        {/* Desktop Image: Hidden on mobile, visible on desktop (md and up) */}
-        <Image
-          src="/herosection.jpg"
-          alt="Hero background desktop"
-          fill
-          priority
-          className="object-cover hidden md:block"
-          quality={100}
-        />
-
-        {/* Shared Overlay */}
-        <div className="absolute inset-0 bg-black/10 dark:bg-black/20 sm:backdrop-blur-xs "></div>
+        {/* Gradient Overlay for better text legibility */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-50/50 to-slate-50 dark:via-slate-950/50 dark:to-slate-950" />
       </div>
 
-      <div className="relative z-10 flex-1 flex items-center justify-center px-4 sm:px-2 lg:px-8 py-12">
-        <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-y-16 gap-x-10 items-center">
+      <div className="relative z-10 flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-y-16 gap-x-12 items-center">
+          
           {/* Left Content */}
           <motion.div
-            className="space-y-10 text-center lg:text-left"
+            className="space-y-8 text-center lg:text-left"
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            custom={0}
           >
             <motion.div className="space-y-6" variants={fadeUp} custom={0.2}>
               <Badge
                 variant="outline"
-                className="mb-4 px-4 py-2 border-[#33BDC8] bg-[#2A9CA3] text-white font-medium"
+                className="px-4 py-1.5 border-[#33BDC8] bg-[#33BDC8]  dark:text-[#33BDC8] font-semibold"
               >
-                🔥Premium Aged Domains
+                🔥 Premium Aged Domains
               </Badge>
 
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl font-bold leading-tight break-words">
-                <span className="block dark:text-gray-700">
-                  Vetted Aged Domains With
-                </span>
-                <span className="block text-[#33BDC8]">Real Authority</span>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                Vetted Aged Domains With <br />
+                <span className="text-[#33BDC8]">Real Authority</span>
               </h1>
 
-              <p className="text-base sm:text-lg md:text-xl dark:text-gray-600 text-gray-100 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+              <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto lg:mx-0">
                 Get the edge with VettEdge — where Aged Domains mean business.
                 Supercharge your brand with SEO-rich domains.
               </p>
@@ -136,30 +113,24 @@ export function HeroSection() {
 
             {/* Search Bar */}
             <motion.div
-              className="px-3 max-w-2xl mx-auto lg:mx-0"
+              className="max-w-2xl mx-auto lg:mx-0"
               variants={fadeUp}
               custom={0.4}
             >
-              <form onSubmit={handleSearch} className="w-full">
-                <div className="relative w-full">
-                  {/* Search Icon */}
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 h-6 w-6" />
-
-                  {/* Input Field */}
+              <form onSubmit={handleSearch} className="relative group">
+                <div className="relative flex items-center">
+                  <Search className="absolute left-4 text-slate-400 group-focus-within:text-[#33BDC8] transition-colors h-5 w-5" />
                   <input
                     type="text"
                     placeholder="Search your domain..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full h-14 pl-12 pr-2 text-lg bg-white/90 border border-white/20 text-gray-800 placeholder:text-sm placeholder:text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#33BDC7] transition-all"
+                    className="w-full h-16 pl-12 pr-32 text-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white rounded-2xl shadow-xl focus:ring-2 focus:ring-[#33BDC8] outline-none transition-all"
                   />
-
-                  {/* Inline Search Button */}
                   <button
                     type="submit"
-                    className="absolute dark:text-gray-700 right-1 top-1/2 transform -translate-y-1/2 sm:h-10 h-9 px-4 sm:px-6 bg-[#33BDC7] hover:bg-[#2ba9b8] text-white font-semibold rounded-lg flex items-center justify-center text-lg shadow-md transition-all duration-200"
+                    className="absolute right-2 top-2 bottom-2 px-6 bg-[#33BDC8] hover:bg-[#2ba9b8] text-white font-bold rounded-xl shadow-lg transition-all active:scale-95"
                   >
-                    {/* <Search className="sm:h-4 sm:w-4 h-4 w-4 " /> */}
                     Search
                   </button>
                 </div>
@@ -167,166 +138,86 @@ export function HeroSection() {
             </motion.div>
           </motion.div>
 
-          {/* Right Content */}
+          {/* Right Content - Features & Metrics Card */}
           <motion.div
-            className="lg:pl-8 px-0 sm:px-0"
-            initial={{ opacity: 0, x: 50 }}
+            initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
+            transition={{ delay: 0.5, duration: 0.8 }}
           >
-            <Card className="bg-transparent backdrop-blur-sm text-gray-800 border border-white/20 shadow-2xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02]">
-              <CardContent className="p-4 sm:p-6 md:p-8 space-y-2 md:space-y-8">
-                {/* Features */}
-                <motion.div
-                  className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-3"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6, duration: 0.5 }}
-                ></motion.div>
-
-                <motion.div
-                  className="grid grid-cols-1 sm:grid-cols-3 gap-4"
-                  initial="hidden"
-                  animate="visible"
-                  variants={{
-                    hidden: {},
-                    visible: {
-                      transition: { staggerChildren: 0.15 },
-                    },
-                  }}
-                >
+            <Card className="bg-white/70 dark:bg-slate-900/40 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
+              <CardContent className="p-6 sm:p-8 space-y-8">
+                
+                {/* Icons Grid */}
+                <div className="grid grid-cols-3 gap-4">
                   {[
-                    {
-                      Icon: Search,
-                      color: "text-[#33BDC7]",
-                      bg: "from-[#33BDC7]/10 to-[#33BDC7]/20",
-                      title: "Search Aged Domains",
-                      desc: "Browse hundreds of valuable domains",
-                    },
-                    {
-                      Icon: TrendingUp,
-                      color: "text-purple-500",
-                      bg: "from-purple-500/10 to-purple-500/20",
-                      title: "View Domain Metrics",
-                      desc: "Check SEO, backlinks & authority",
-                    },
-                    {
-                      Icon: ShoppingBag,
-                      color: "text-green-500",
-                      bg: "from-green-500/10 to-green-500/20",
-                      title: "Buy Instantly",
-                      desc: "Secure the perfect domain for your brand",
-                    },
-                  ].map(({ Icon, color, bg, title, desc }, i) => (
-                    <motion.div
-                      key={i}
-                      className="text-center space-y-3 group"
-                      variants={fadeUp}
-                      custom={i * 0.2}
-                    >
-                      <div
-                        className={`w-8 h-8 sm:w-16 sm:h-10 flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-200`}
-                      >
-                        <Icon className={`h-5 w-5 sm:h-8 sm:w-8 ${color}`} />
+                    { Icon: Search, color: "text-[#33BDC8]", title: "Search", desc: "Browse domains" },
+                    { Icon: TrendingUp, color: "text-purple-500", title: "Metrics", desc: "SEO & Stats" },
+                    { Icon: ShoppingBag, color: "text-emerald-500", title: "Buy", desc: "Instant checkout" },
+                  ].map(({ Icon, color, title, desc }, i) => (
+                    <div key={i} className="text-center space-y-2">
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mx-auto bg-slate-100 dark:bg-slate-800 transition-transform hover:scale-110`}>
+                        <Icon className={`h-6 w-6 ${color}`} />
                       </div>
-                      <h4 className="font-semibold text-sm sm:text-base">
-                        {title}
-                      </h4>
-                      <p className="text-xs text-gray-600">{desc}</p>
-                    </motion.div>
+                      <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100">{title}</h4>
+                      <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">{desc}</p>
+                    </div>
                   ))}
-                </motion.div>
+                </div>
 
-                {/* Enhanced Live Metrics */}
-                <motion.div
-                  className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-4 sm:p-5 border border-gray-200 dark:border-gray-600 shadow-sm"
-                  variants={fadeUp}
-                  custom={0.8}
-                >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-4 gap-2">
-                    <h4 className="font-bold text-gray-700 dark:text-gray-200 text-sm sm:text-base flex items-center">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-                      Live Domain Metrics Preview
+                {/* Live Metrics Box */}
+                <div className="bg-slate-100/50 dark:bg-slate-950/50 rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="font-bold text-slate-900 dark:text-slate-100 text-sm flex items-center">
+                      <span className="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse" />
+                      Live Domain Metrics
                     </h4>
-                    <span className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded">
-                      Real-time
-                    </span>
+                    <Badge variant="secondary" className="text-[10px] uppercase tracking-wider">Real-time</Badge>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-3">
                     {[
-                      {
-                        label: "Domain Authority:",
-                        value: "65",
-                        color: "text-green-600",
-                      },
-                      {
-                        label: "Authority Links:",
-                        value: "4",
-                        color: "text-[#33BDC7]",
-                      },
-                      {
-                        label: "Monthly Traffic:",
-                        value: "15K",
-                        color: "text-purple-500",
-                      },
-                      {
-                        label: "Domain Age:",
-                        value: "5+ years",
-                        color: "text-orange-500",
-                      },
-                    ].map((metric, index) => (
-                      <div
-                        key={index}
-                        className="flex justify-between items-center bg-white dark:bg-gray-700/50 p-3 rounded-md"
-                      >
-                        <span className="text-gray-600 dark:text-gray-300 text-sm font-medium">
-                          {metric.label}
-                        </span>
-                        <span className={`${metric.color} font-bold text-base`}>
-                          {metric.value}
-                        </span>
+                      { label: "Authority", value: "65", color: "text-emerald-600 dark:text-emerald-400" },
+                      { label: "Links", value: "4K+", color: "text-[#33BDC8]" },
+                      { label: "Traffic", value: "15K", color: "text-purple-600 dark:text-purple-400" },
+                      { label: "Age", value: "5+ yrs", color: "text-orange-500" },
+                    ].map((m, i) => (
+                      <div key={i} className="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800 flex flex-col">
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{m.label}</span>
+                        <span className={`${m.color} font-bold text-lg`}>{m.value}</span>
                       </div>
                     ))}
                   </div>
-                </motion.div>
+                </div>
 
-                {/* CTA Button */}
-                <motion.div variants={fadeUp} custom={1}>
+                {/* Dynamic Footer Link */}
+                <div className="pt-2">
                   {!topDomain ? (
-                    <div className="flex flex-col items-center justify-center py-8">
-                      {/* Loader spinner */}
-                      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#38C172] mb-3"></div>
-                      <p className="text-sm text-gray-600 dark:text-gray-600">
-                        Fetching the most frequent domain...
-                      </p>
+                    <div className="flex flex-col items-center py-4">
+                      <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-[#33BDC8] mb-2" />
+                      <p className="text-xs text-slate-500">Finding top domains...</p>
                     </div>
                   ) : (
-                    <>
-                      <p className="mt-2 dark:text-gray-600 text-center text-sm text-gray-900 ">
-                        This domain is mostly watched and frequently added to
-                        carts — check it out.
+                    <div className="space-y-4">
+                      <p className="text-center text-xs text-slate-500 dark:text-slate-400">
+                        🔥 High demand domain spotted! Frequently added to carts.
                       </p>
-
-                      <Button
-                        className="w-full   bg-transparent hover:bg-transparent font-semibold h-12 sm:h-14 text-base sm:text-lg  transform hover:scale-[1.02] transition-all duration-200"
-                        size="lg"
-                        asChild
+                      <Button 
+                        asChild 
+                        className="w-full h-14 bg-[#33BDC8] hover:bg-[#2ba9b8] text-white rounded-xl shadow-lg group"
                       >
-                        <Link
-                          className="dark:text-gray-700"
-                          href={`/domains/${topDomain.id}`}
-                        >
-                          {topDomain.name}
-                          <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 ml-2" />
+                        <Link href={`/domains/${topDomain.id}`}>
+                          <span className="mr-2 font-bold tracking-wide uppercase">{topDomain.name}</span>
+                          <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                         </Link>
                       </Button>
-                    </>
+                    </div>
                   )}
-                </motion.div>
+                </div>
+
               </CardContent>
             </Card>
           </motion.div>
+
         </div>
       </div>
     </section>

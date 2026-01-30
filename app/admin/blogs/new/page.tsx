@@ -72,6 +72,7 @@ export default function AddBlogPage() {
     e.preventDefault();
     try {
     const blogData = {
+      id: formData.slug, // Add id field using slug
       slug: formData.slug,
       title: formData.title,
       excerpt: formData.excerpt,
@@ -80,13 +81,16 @@ export default function AddBlogPage() {
         name: formData.authorName,
         avatar: formData.authorAvatar,
       },
-        publishedAt: new Date(formData.publishedAt).toISOString(),
+      publishedAt: new Date(formData.publishedAt),
       readingTime: parseInt(formData.readingTime, 10),
+      readTime: `${formData.readingTime} min read`, // Add readTime field
       category: formData.category,
       tags,
       featured: formData.featured,
-        image: image || formData.image,
-      };
+      image: image || formData.image,
+    };
+
+    console.log("Submitting blog data:", JSON.stringify(blogData, null, 2));
 
       const res = await fetch("/api/blogs", {
         method: "POST",
@@ -94,11 +98,22 @@ export default function AddBlogPage() {
         body: JSON.stringify(blogData),
       });
 
-      if (!res.ok) throw new Error();
+      const responseData = await res.json();
+      console.log("API Response:", responseData);
+
+      if (!res.ok) {
+        throw new Error(responseData.error || responseData.message || "Failed to create blog");
+      }
+      
       toast({ title: "Success", description: "Blog created successfully" });
       router.push("/admin/blogs");
-    } catch (err) {
-      toast({ title: "Error", description: "Failed to create blog", variant: "destructive" });
+    } catch (err: any) {
+      console.error("Submit error:", err);
+      toast({ 
+        title: "Error", 
+        description: err.message || "Failed to create blog", 
+        variant: "destructive" 
+      });
     }
   };
 

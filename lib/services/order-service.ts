@@ -43,8 +43,8 @@ export class OrderService {
           _id: null,
           totalOrders: { $sum: 1 },
           totalRevenue: { $sum: "$totalAmount" },
-          completedOrders: {
-            $sum: { $cond: [{ $eq: ["$status", "completed"] }, 1, 0] },
+          CompletedOrders: {
+            $sum: { $cond: [{ $eq: ["$status", "Completed"] }, 1, 0] },
           },
           pendingOrders: {
             $sum: { $cond: [{ $eq: ["$status", "pending"] }, 1, 0] },
@@ -57,7 +57,7 @@ export class OrderService {
       stats[0] || {
         totalOrders: 0,
         totalRevenue: 0,
-        completedOrders: 0,
+        CompletedOrders: 0,
         pendingOrders: 0,
       }
     )

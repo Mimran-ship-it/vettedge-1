@@ -12,8 +12,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -169,7 +167,9 @@ const calculateAverageMetrics = (domains: Domain[]) => {
     trustFlow: Math.round(total.trustFlow / total.count),
     citationFlow: Math.round(total.citationFlow / total.count),
     spamScore: (total.spamScore / total.count).toFixed(1),
-    indexedPages: Math.round(total.indexedPages / total.count).toLocaleString(),
+    indexedPages: Math.round(
+      total.indexedPages / total.count
+    ).toLocaleString(),
     monthlyTraffic:
       total.monthlyTraffic / total.count > 1000
         ? `${(total.monthlyTraffic / total.count / 1000).toFixed(1)}K`
@@ -487,22 +487,6 @@ export function TopDomainsSection() {
   const hasTrafficData = availableDomains.some(
     (domain) => domain.metrics.monthlyTraffic
   );
-  const hasRefDomains = availableDomains.some(
-    (domain) => domain.metrics.referringDomains
-  );
-  const hasAuthLinks = availableDomains.some(
-    (domain) => domain.metrics.authorityLinksCount
-  );
-
-  const averageMetrics = calculateAverageMetrics(availableDomains);
-
-  const getTrendIcon = (value: number) => {
-    return value > 0 ? (
-      <ArrowUp className="w-4 h-4 text-green-400 inline" />
-    ) : (
-      <ArrowDown className="w-4 h-4 text-red-400 inline" />
-    );
-  };
 
   const getMetricDescription = (metric: string) => {
     switch (metric) {
@@ -586,11 +570,7 @@ export function TopDomainsSection() {
                 </span>
               </span>
               <span className="text-xs text-black/70 dark:text-blue-300">
-                DR:{" "}
-                <span className="font-bold">{domain.metrics.domainRank}</span>
-              </span>
-              <span className="text-xs text-black/70 dark:text-pink-300">
-                Age: <span className="font-bold">{domain.metrics.age}y</span>
+                DR: <span className="font-bold">{domain.metrics.domainRank}</span>
               </span>
             </div>
           </div>
@@ -610,66 +590,38 @@ export function TopDomainsSection() {
 
       {selectedDomain?._id === domain._id && (
         <div className="mt-4 pt-4 border-t border-cyan-800/50">
-          {loadingDomain ? (
-            <div className="space-y-4">
-              <Skeleton className="h-20 w-full bg-cyan-900/30" />
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <Skeleton key={i} className="h-16 bg-cyan-900/30" />
-                ))}
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div className="p-3 bg-[#E6F7F5] dark:bg-cyan-900/30">
-                  <p className="text-xs text-black/70 dark:text-cyan-300">
-                    Trust Flow
-                  </p>
-                  <p className="text-xl font-bold text-black dark:text-white">
-                    {selectedDomain.metrics.trustFlow || "N/A"}
+          {!loadingDomain && (
+            <div className="p-3">
+              {/* Simplified Inline Details for Quick View */}
+              <div className="grid grid-cols-3 gap-4 mb-3">
+                <div>
+                  <p className="text-xs text-gray-500">Trust Flow</p>
+                  <p className="font-bold">
+                    {selectedDomain.metrics.trustFlow}
                   </p>
                 </div>
-                <div className="p-3 bg-[#E6F7F5] dark:bg-cyan-900/30">
-                  <p className="text-xs text-black/70 dark:text-cyan-300">
-                    Citation Flow
-                  </p>
-                  <p className="text-xl font-bold text-black dark:text-white">
-                    {selectedDomain.metrics.citationFlow || "N/A"}
-                  </p>
-                </div>
-                <div className="p-3 bg-[#E6F7F5] dark:bg-cyan-900/30">
-                  <p className="text-xs text-black/70 dark:text-cyan-300">
-                    Organic Traffic
-                  </p>
-                  <p className="text-xl font-bold text-black dark:text-white">
+                <div>
+                  <p className="text-xs text-gray-500">Traffic</p>
+                  <p className="font-bold">
                     {selectedDomain.metrics.monthlyTraffic
                       ? selectedDomain.metrics.monthlyTraffic.toLocaleString()
                       : "N/A"}
                   </p>
                 </div>
-              </div>
-              <div className="mt-3 flex justify-between items-center">
                 <div>
-                  <p className="text-xs text-black/70 dark:text-gray-400">
-                    Price
-                  </p>
-                  <p className="text-lg font-bold text-black dark:text-white">
-                    ${selectedDomain.price}{" "}
-                    <span className="text-sm line-through text-black/50 dark:text-gray-500">
-                      ${selectedDomain.Actualprice}
-                    </span>
+                  <p className="text-xs text-gray-500">Price</p>
+                  <p className="font-bold text-[#2BA9B8]">
+                    ${selectedDomain.price}
                   </p>
                 </div>
-                <Button
-                  className="bg-[#2BA9B8] hover:bg-[#2BA9B8]/90 text-white"
-                  onClick={() => handleAddToCart(selectedDomain)}
-                >
-                  <ShoppingCart className="h-4 w-4 mr-1" />
-                  Add to Cart
-                </Button>
               </div>
-            </>
+              <Button
+                className="w-full bg-[#2BA9B8] text-white"
+                onClick={() => handleAddToCart(selectedDomain)}
+              >
+                Add to Cart
+              </Button>
+            </div>
           )}
         </div>
       )}
@@ -835,11 +787,13 @@ export function TopDomainsSection() {
                                 interval={0} // show all labels
                                 dy={3} // push labels slightly down
                                 className="dark:[&_*]:fill-white"
-                                tickFormatter={(name) =>
-                                  name.length > 10
-                                    ? `${name.slice(0, 8)}...`
-                                    : name
-                                } // truncate long names
+                                tickFormatter={
+                                  (name) =>
+                                    name.length > 10
+                                      ? `${name.slice(0, 8)}...`
+                                      : name
+                                  // truncate long names
+                                }
                               />
                               <YAxis
                                 stroke="#111827"
@@ -943,43 +897,9 @@ export function TopDomainsSection() {
 
               <CardContent className="flex-1 overflow-y-auto">
                 <div className="space-y-3">
-                  {activeTab === "da" &&
-                    topDomains.da.map((domain, index) =>
-                      renderDomainCard(domain, index)
-                    )}
-                  {activeTab === "dr" &&
-                    topDomains.dr.map((domain, index) =>
-                      renderDomainCard(domain, index)
-                    )}
-                  {activeTab === "tf" &&
-                    topDomains.tf.map((domain, index) =>
-                      renderDomainCard(domain, index)
-                    )}
-                  {activeTab === "cf" &&
-                    topDomains.cf.map((domain, index) =>
-                      renderDomainCard(domain, index)
-                    )}
-                  {activeTab === "score" &&
-                    topDomains.score.map((domain, index) =>
-                      renderDomainCard(domain, index)
-                    )}
-                  {activeTab === "refDomains" &&
-                    topDomains.refDomains.map((domain, index) =>
-                      renderDomainCard(domain, index)
-                    )}
-                  {activeTab === "authLinks" &&
-                    topDomains.authLinks.map((domain, index) =>
-                      renderDomainCard(domain, index)
-                    )}
-                  {activeTab === "traffic" &&
-                    hasTrafficData &&
-                    topDomains.traffic.map((domain, index) =>
-                      renderDomainCard(domain, index)
-                    )}
-                  {activeTab === "age" &&
-                    topDomains.age.map((domain, index) =>
-                      renderDomainCard(domain, index)
-                    )}
+                  {topDomains[activeTab as keyof typeof topDomains]?.map(
+                    (domain, index) => renderDomainCard(domain, index)
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -1002,40 +922,20 @@ export function TopDomainsSection() {
           ></div>
 
           <div
-            className={`relative bg-white p-6 border border-gray-200 shadow-xl rounded-xl dark:bg-gradient-to-br dark:from-cyan-950 dark:to-gray-950 dark:border-cyan-800/50 max-w-4xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${
+            className={`relative bg-white p-6 border border-gray-200 shadow-xl rounded-xl dark:bg-gray-900 dark:border-gray-800 max-w-4xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${
               isModalOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
             }`}
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors dark:bg-cyan-900/50 dark:text-cyan-300 dark:hover:bg-cyan-800/50"
+              className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
               onClick={closeModal}
             >
               <X className="w-5 h-5" />
             </button>
 
             {loadingDomain ? (
-              <div className="space-y-6">
-                <Skeleton className="h-10 w-64 bg-gray-200 dark:bg-cyan-900/30" />
-                <Skeleton className="h-6 w-full bg-gray-200 dark:bg-cyan-900/30" />
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <Skeleton className="h-6 w-40 bg-gray-200 dark:bg-cyan-900/30" />
-                    <div className="grid grid-cols-2 gap-4">
-                      {[1, 2, 3, 4, 5, 6].map((i) => (
-                        <Skeleton
-                          key={i}
-                          className="h-24 bg-gray-200 dark:bg-cyan-900/30"
-                        />
-                      ))}
-                    </div>
-                  </div>
-                  <div className="space-y-6">
-                    <Skeleton className="h-48 bg-gray-200 dark:bg-cyan-900/30" />
-                    <Skeleton className="h-48 bg-gray-200 dark:bg-cyan-900/30" />
-                  </div>
-                </div>
-              </div>
+              <Skeleton className="h-96 w-full" />
             ) : (
               <>
                 <div className="flex justify-between items-start mb-6">
@@ -1043,118 +943,113 @@ export function TopDomainsSection() {
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                       {selectedDomain.name}
                     </h2>
-                    <p className="text-gray-600 dark:text-cyan-300">
+                    <p className="text-gray-600 dark:text-gray-400">
                       {selectedDomain.description}
                     </p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* Left Column: Domain Metrics (Cleaned up) */}
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                       <div className="w-1.5 h-4 bg-[#2BA9B8] dark:bg-cyan-400 rounded-full mr-2"></div>
                       Domain Metrics
                     </h3>
-                    <div className="grid grid-cols-2 gap-4">
+
+                    {/* FLAT GRID LAYOUT - NO BOXES */}
+                    <div className="grid grid-cols-2 gap-y-6 gap-x-4">
                       <MetricCard
                         title="Domain Authority"
                         value={selectedDomain.metrics.domainAuthority || 0}
-                        change={2.5}
                         max={100}
                         color="cyan"
-                        icon={<TrendingUp className="w-4 h-4" />}
+                        icon={<TrendingUp />}
                       />
                       <MetricCard
                         title="Domain Rank"
                         value={selectedDomain.metrics.domainRank || 0}
-                        change={3.1}
                         max={100}
                         color="blue"
-                        icon={<BarChart3 className="w-4 h-4" />}
+                        icon={<BarChart3 />}
                       />
                       <MetricCard
                         title="Trust Flow"
                         value={selectedDomain.metrics.trustFlow || 0}
-                        change={1.8}
                         max={100}
                         color="purple"
-                        icon={<Shield className="w-4 h-4" />}
+                        icon={<Shield />}
                       />
                       <MetricCard
                         title="Citation Flow"
                         value={selectedDomain.metrics.citationFlow || 0}
-                        change={2.2}
                         max={100}
                         color="orange"
-                        icon={<Link className="w-4 h-4" />}
+                        icon={<Link />}
                       />
                       <MetricCard
                         title="Domain Age"
                         value={`${selectedDomain.metrics.age || 0} years`}
-                        change={0}
                         color="pink"
-                        icon={<Clock className="w-4 h-4" />}
+                        icon={<Clock />}
                       />
                       {selectedDomain.metrics.monthlyTraffic && (
                         <MetricCard
                           title="Monthly Traffic"
                           value={selectedDomain.metrics.monthlyTraffic.toLocaleString()}
-                          change={4.1}
                           color="teal"
-                          icon={<Globe className="w-4 h-4" />}
+                          icon={<Globe />}
                         />
                       )}
-
                       {selectedDomain.metrics.score && (
                         <MetricCard
                           title="Score"
                           value={selectedDomain.metrics.score}
-                          change={3.5}
                           max={100}
                           color="indigo"
-                          icon={<BarChart3 className="w-4 h-4" />}
+                          icon={<BarChart3 />}
                         />
                       )}
                       {selectedDomain.metrics.referringDomains && (
                         <MetricCard
                           title="Referring Domains"
                           value={selectedDomain.metrics.referringDomains.toLocaleString()}
-                          change={4.2}
                           color="teal"
-                          icon={<Link className="w-4 h-4" />}
+                          icon={<Link />}
                         />
                       )}
                       {selectedDomain.metrics.authorityLinksCount && (
                         <MetricCard
                           title="Authority Links"
                           value={selectedDomain.metrics.authorityLinksCount.toLocaleString()}
-                          change={3.7}
                           color="purple"
-                          icon={<Shield className="w-4 h-4" />}
+                          icon={<Shield />}
                         />
                       )}
                     </div>
                   </div>
 
+                  {/* Right Column: Pricing & Info (Cleaned up) */}
                   <div>
-                    <div className="bg-[#F0FDF9] border border-[#2BA9B8]/50 p-6 mb-6 dark:bg-cyan-900/20 dark:border-cyan-800/50">
+                    {/* Pricing Section - No Box */}
+                    <div className="mb-8">
                       <h3 className="text-lg font-semibold text-black dark:text-white mb-4">
                         Pricing Details
                       </h3>
                       <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                          <span className="text-black/70 dark:text-gray-400">
+                          <span className="text-gray-600 dark:text-gray-400">
                             List Price
                           </span>
-                          <span className="text-black/60 dark:text-gray-300 line-through">
+                          <span className="text-gray-400 line-through">
                             ${selectedDomain.Actualprice}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-black/70 dark:text-gray-400">
+                          <span className="text-gray-600 dark:text-gray-400">
                             Discount
                           </span>
-                          <span className="text-[#2BA9B8] dark:text-cyan-400">
+                          <span className="text-[#2BA9B8] dark:text-cyan-400 font-medium">
                             {Math.round(
                               (1 -
                                 selectedDomain.price /
@@ -1164,7 +1059,7 @@ export function TopDomainsSection() {
                             % OFF
                           </span>
                         </div>
-                        <div className="h-px bg-[#2BA9B8]/50 dark:bg-cyan-800/50 my-2"></div>
+                        <div className="h-px bg-gray-100 dark:bg-gray-800 my-2"></div>
                         <div className="flex justify-between items-center">
                           <span className="text-lg font-semibold text-black dark:text-white">
                             Your Price
@@ -1173,16 +1068,16 @@ export function TopDomainsSection() {
                             ${selectedDomain.price}
                           </span>
                         </div>
-                        <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                        <div className="flex flex-col sm:flex-row gap-3 mt-4">
                           <Button
                             className="flex-1 bg-[#2BA9B8] hover:bg-[#2BA9B8]/90 dark:bg-cyan-600 dark:hover:bg-cyan-700 text-white"
                             onClick={() => handleAddToCart(selectedDomain)}
                           >
-                            <ShoppingCart className="h-4 w-4 mr-1" />
+                            <ShoppingCart className="h-4 w-4 mr-2" />
                             Add to Cart
                           </Button>
                           <Button
-                            className="flex-1 bg-black hover:bg-black/90 dark:bg-red-600 dark:hover:bg-red-700 text-white"
+                            className="flex-1 bg-black hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-gray-200 text-white"
                             onClick={() => handleBuyNow(selectedDomain)}
                           >
                             Buy Now
@@ -1191,44 +1086,47 @@ export function TopDomainsSection() {
                       </div>
                     </div>
 
-                    <div className="bg-[#F0FDF9] border border-[#2BA9B8]/50 p-6 dark:bg-cyan-900/20 dark:border-cyan-800/50">
+                    {/* Divider */}
+                    <div className="h-px bg-gray-200 dark:bg-gray-800 mb-8"></div>
+
+                    {/* Info Section - No Box */}
+                    <div className="mb-6">
                       <h3 className="text-lg font-semibold text-black dark:text-white mb-4">
                         Domain Industry
                       </h3>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-2 mb-6">
                         {selectedDomain.tags.map((tag) => (
                           <Badge
                             key={tag}
-                            className="bg-[#2BA9B8]/50 text-black hover:bg-[#2BA9B8]/70 border-[#2BA9B8] dark:bg-cyan-800/50 dark:text-cyan-300 dark:hover:bg-cyan-700/50 dark:border-cyan-700"
+                            variant="secondary"
+                            className="bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-200"
                           >
                             {tag}
                           </Badge>
                         ))}
                       </div>
 
-                      <div className="mt-6">
-                        <h3 className="text-lg font-semibold text-black dark:text-white mb-3">
-                          Additional Info
-                        </h3>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <p className="text-sm text-black/70 dark:text-gray-400">
-                              Registrar
-                            </p>
-                            <p className="text-black dark:text-white">
-                              {selectedDomain.registrar || "GoDaddy"}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-black/70 dark:text-gray-400">
-                              Status
-                            </p>
-                            <div className="flex items-center">
-                              <span className="w-2 h-2 rounded-full bg-[#2BA9B8] dark:bg-cyan-500 mr-2"></span>
-                              <span className="text-black dark:text-white">
-                                Available
-                              </span>
-                            </div>
+                      <h3 className="text-lg font-semibold text-black dark:text-white mb-3">
+                        Additional Info
+                      </h3>
+                      <div className="grid grid-cols-2 gap-6">
+                        <div>
+                          <p className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-1">
+                            Registrar
+                          </p>
+                          <p className="text-black dark:text-white font-medium">
+                            {selectedDomain.registrar || "GoDaddy"}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-1">
+                            Status
+                          </p>
+                          <div className="flex items-center">
+                            <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+                            <span className="text-black dark:text-white font-medium">
+                              Available
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -1244,11 +1142,10 @@ export function TopDomainsSection() {
   );
 }
 
-// Helper component for metric cards
+// Completely redesigned MetricCard - Minimalist, no box
 const MetricCard = ({
   title,
   value,
-  change,
   max = 100,
   color = "cyan",
   icon,
@@ -1260,81 +1157,56 @@ const MetricCard = ({
   color?: string;
   icon?: React.ReactNode;
 }) => {
-  const getColorClass = () => {
-    switch (color) {
-      case "cyan":
-        return "bg-white dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-700";
-      case "blue":
-        return "bg-white dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700";
-      case "purple":
-        return "bg-white dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700";
-      case "teal":
-        return "bg-white dark:bg-teal-900/30 border border-teal-200 dark:border-teal-700";
-      case "orange":
-        return "bg-white dark:bg-orange-900/30 border border-orange-200 dark:border-orange-700";
-      case "pink":
-        return "bg-white dark:bg-pink-900/30 border border-pink-200 dark:border-pink-700";
-      case "red":
-        return "bg-white dark:bg-red-900/30 border border-red-200 dark:border-red-700";
-      case "green":
-        return "bg-white dark:bg-green-900/30 border border-green-200 dark:border-green-700";
-      case "yellow":
-        return "bg-white dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700";
-      case "indigo":
-        return "bg-white dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700";
-      default:
-        return "bg-white dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-700";
-    }
+  // Map color names to text colors
+  const colorMap: Record<string, string> = {
+    cyan: "text-cyan-600 dark:text-cyan-400",
+    blue: "text-blue-600 dark:text-blue-400",
+    purple: "text-purple-600 dark:text-purple-400",
+    orange: "text-orange-600 dark:text-orange-400",
+    pink: "text-pink-600 dark:text-pink-400",
+    teal: "text-teal-600 dark:text-teal-400",
+    indigo: "text-indigo-600 dark:text-indigo-400",
+    red: "text-red-600 dark:text-red-400",
+    green: "text-green-600 dark:text-green-400",
+    yellow: "text-yellow-600 dark:text-yellow-400",
   };
 
-  const getProgressColor = () => {
-    switch (color) {
-      case "cyan":
-        return "bg-gradient-to-r from-cyan-500 to-cyan-600 dark:from-cyan-400 dark:to-cyan-500";
-      case "blue":
-        return "bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500";
-      case "purple":
-        return "bg-gradient-to-r from-purple-500 to-purple-600 dark:from-purple-400 dark:to-purple-500";
-      case "teal":
-        return "bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500";
-      case "orange":
-        return "bg-gradient-to-r from-orange-500 to-orange-600 dark:from-orange-400 dark:to-orange-500";
-      case "pink":
-        return "bg-gradient-to-r from-pink-500 to-pink-600 dark:from-pink-400 dark:to-pink-500";
-      case "red":
-        return "bg-gradient-to-r from-red-500 to-red-600 dark:from-red-400 dark:to-red-500";
-      case "green":
-        return "bg-gradient-to-r from-green-500 to-green-600 dark:from-green-400 dark:to-green-500";
-      case "yellow":
-        return "bg-gradient-to-r from-yellow-500 to-yellow-600 dark:from-yellow-400 dark:to-yellow-500";
-      case "indigo":
-        return "bg-gradient-to-r from-indigo-500 to-indigo-600 dark:from-indigo-400 dark:to-indigo-500";
-      default:
-        return "bg-gradient-to-r from-cyan-500 to-cyan-600 dark:from-cyan-400 dark:to-cyan-500";
-    }
+  const bgMap: Record<string, string> = {
+    cyan: "bg-cyan-500",
+    blue: "bg-blue-500",
+    purple: "bg-purple-500",
+    orange: "bg-orange-500",
+    pink: "bg-pink-500",
+    teal: "bg-teal-500",
+    indigo: "bg-indigo-500",
+    red: "bg-red-500",
+    green: "bg-green-500",
+    yellow: "bg-yellow-500",
   };
+
+  const textColor = colorMap[color] || "text-gray-600";
+  const bgColor = bgMap[color] || "bg-gray-500";
 
   const numericValue =
-    typeof value === "string"
-      ? value === "N/A"
-        ? 0
-        : parseInt(value) || 0
-      : value;
+    typeof value === "string" ? (value === "N/A" ? 0 : parseInt(value)) : value;
   const progress = Math.min(100, Math.max(0, (numericValue / max) * 100));
 
   return (
-    <div className={`${getColorClass()} p-3 rounded-lg border`}>
-      <div className="flex items-center justify-between mb-1">
-        <p className="text-xs text-gray-600 dark:text-cyan-300 font-medium flex items-center">
-          {icon && <span className="mr-1">{icon}</span>}
-          {title}
-        </p>
+    <div className="flex flex-col gap-1">
+      <div
+        className={`flex items-center gap-2 text-sm font-medium ${textColor} mb-1`}
+      >
+        {icon && <span className="[&>svg]:w-4 [&>svg]:h-4">{icon}</span>}
+        <span>{title}</span>
       </div>
-      <p className="text-xl font-bold text-gray-800 dark:text-white">{value}</p>
+      <div className="text-2xl font-bold text-gray-900 dark:text-white">
+        {value}
+      </div>
+      {/* Optional minimalist progress bar */}
       {typeof value === "number" && max !== undefined && (
-        <div className="mt-2 h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+        <div className="h-1.5 w-full bg-gray-100 dark:bg-gray-800 rounded-full mt-1 overflow-hidden">
           <div
-            className={`h-full ${getProgressColor()} rounded-full transition-all duration-300`}
+            className={`h-full ${bgColor} rounded-full`}
             style={{ width: `${progress}%` }}
           ></div>
         </div>
