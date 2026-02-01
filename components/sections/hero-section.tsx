@@ -7,7 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { Search, TrendingUp, ShoppingBag, ArrowRight } from "lucide-react";
+import {
+  Search,
+  TrendingUp,
+  ShoppingBag,
+  ArrowRight,
+  Check,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/providers/cart-provider";
@@ -97,7 +103,7 @@ export function HeroSection() {
             <motion.div className="space-y-6" variants={fadeUp} custom={0.2}>
               <Badge
                 variant="outline"
-                className="px-4 py-1.5 border-[#33BDC8] bg-[#33BDC8]  dark:text-[#33BDC8] font-semibold"
+                className="px-4 py-1.5 border-[#33BDC8] bg-[#33BDC8]  dark:text-white font-semibold"
               >
                 🔥 Premium Aged Domains
               </Badge>
@@ -138,6 +144,24 @@ export function HeroSection() {
                 </div>
               </form>
             </motion.div>
+            <div className=" grid grid-cols-2">
+              <p className="flex items-center text-bold">
+                <Check strokeWidth={3} color="#00ff00" className="mr-2" />
+                100% manual vetting
+              </p>
+              <p className="flex items-center text-bold">
+                <Check strokeWidth={3} color="#00ff00" className="mr-2" />
+                Real SEO metrics
+              </p>
+              <p className="flex items-center text-bold">
+                <Check strokeWidth={3} color="#00ff00" className="mr-2" />
+                Instant ownership
+              </p>
+              <p className="flex items-center text-bold">
+                <Check strokeWidth={3} color="#00ff00" className="mr-2" />
+                No spam history
+              </p>
+            </div>
           </motion.div>
 
           {/* Right Content - Features & Metrics Card */}
