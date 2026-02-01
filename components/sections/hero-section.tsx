@@ -81,7 +81,7 @@ export function HeroSection() {
           alt="Hero background mobile"
           fill
           priority
-          className="block md:hidden object-cover opacity-100 dark:opacity-80"
+          className="block md:hidden object-fit opacity-100 dark:opacity-80"
           quality={80}
         />
         {/* Gradient Overlay for better text legibility */}
@@ -111,7 +111,7 @@ export function HeroSection() {
                   <span className="text-[#33BDC8]">Real Authority</span>
                 </h1>
 
-                <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                <p className="text-lg sm:text-xl text-slate-600 dark:text-white leading-relaxed max-w-2xl mx-auto lg:mx-0">
                   Get the edge with VettEdge — where Aged Domains mean business.
                   Supercharge your brand with SEO-rich domains.
                 </p>
@@ -133,12 +133,13 @@ export function HeroSection() {
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="w-full h-16 pl-12 pr-32 text-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white rounded-2xl shadow-xl focus:ring-2 focus:ring-[#33BDC8] outline-none transition-all"
                     />
-                    <button
+                    <Button
+                      variant="outline"
                       type="submit"
-                      className="absolute right-2 top-2 bottom-2 px-6 bg-[#33BDC8] hover:bg-[#2ba9b8] text-white font-bold rounded-xl shadow-lg transition-all active:scale-95"
+                      className="absolute right-2 top-4 bottom-2 px-6 bg-transparent border-[#33BDC8] text-[#33BDC8] hover:bg-[#33BDC8] hover:text-white rounded-xl transition-colors group"
                     >
                       Search
-                    </button>
+                    </Button>
                   </div>
                 </form>
               </motion.div>
@@ -168,7 +169,7 @@ export function HeroSection() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
             >
-              <Card className="bg-white/70 dark:bg-slate-900/40 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
+              <Card className="bg-white/70 rounded-lg dark:bg-slate-900/40 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
                 <CardContent className="p-6 sm:p-8 space-y-8">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center">
@@ -208,12 +209,12 @@ export function HeroSection() {
                     <div className="grid grid-cols-1 gap-3">
                       {[
                         {
-                          label: "Authority",
+                          label: "Rating",
                           value: "65",
                           color: "text-emerald-600 dark:text-emerald-400",
                         },
                         {
-                          label: "Links",
+                          label: "Authority Backlinks",
                           value: "4K+",
                           color: "text-[#33BDC8]",
                         },
@@ -255,8 +256,10 @@ export function HeroSection() {
                     ) : (
                       <div className="space-y-4">
                         <p className="text-center text-xs text-slate-500 dark:text-slate-400">
-                          🔥 High demand domain spotted! Frequently added to
-                          carts.
+                          🔥 High demand domain spotted!{" "}
+                          {topDomainCount
+                            ? `${topDomainCount} users added to cart`
+                            : "Frequently added to carts."}
                         </p>
                         <div className="flex gap-3">
                           <Button
@@ -271,7 +274,8 @@ export function HeroSection() {
                           </Button>
                           <Button
                             asChild
-                            className="flex-1 h-12 bg-[#33BDC8] hover:bg-[#2ba9b8] text-white rounded-xl shadow-lg"
+                            variant="outline"
+                            className="flex-1 h-12 border-[#33BDC8] text-[#33BDC8] hover:bg-[#33BDC8] hover:text-white rounded-xl group"
                           >
                             <Link href={`/checkout?domain=${topDomain.id}`}>
                               Buy Now
@@ -297,8 +301,9 @@ export function HeroSection() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button
                 asChild
+                variant="outline"
                 size="lg"
-                className="bg-[#33BDC8] hover:bg-[#2ba9b8] text-white px-8 py-3 md:px-12 md:py-4 rounded-xl shadow-lg group"
+                className="border-[#33BDC8] text-[#33BDC8] hover:bg-[#33BDC8] hover:text-white px-8 py-3 md:px-12 md:py-4 rounded-xl group"
               >
                 <Link href="/domains">
                   <span className="mr-2 font-semibold">
