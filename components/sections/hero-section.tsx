@@ -7,13 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { Search, ArrowRight, Check } from "lucide-react";
+import { Search, ArrowRight, Check, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/providers/cart-provider";
 
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
   const { getMostFrequentDomain } = useCart();
   const [topDomain, setTopDomain] = useState<{
@@ -81,7 +82,7 @@ export function HeroSection() {
           alt="Hero background mobile"
           fill
           priority
-          className="block md:hidden object-fit opacity-100 dark:opacity-80"
+          className="block md:hidden object-cover opacity-100 dark:opacity-80"
           quality={80}
         />
         {/* Gradient Overlay for better text legibility */}
@@ -101,7 +102,7 @@ export function HeroSection() {
               <motion.div className="space-y-6" variants={fadeUp} custom={0.2}>
                 <Badge
                   variant="outline"
-                  className="px-4 py-1.5 border-[#33BDC8] bg-[#33BDC8]  dark:text-white font-semibold"
+                  className="px-4 py-1.5 border-[#33BDC8] bg-[#33BDC8] dark:text-white font-semibold rounded-sm"
                 >
                   🔥 Premium Aged Domains
                 </Badge>
@@ -154,7 +155,7 @@ export function HeroSection() {
                     <Button
                       variant="outline"
                       type="submit"
-                      className="absolute right-2 top-4 bottom-2 px-6 bg-transparent border-[#33BDC8] text-[#33BDC8] hover:bg-[#33BDC8] hover:text-white rounded-xl transition-colors group"
+                      className="absolute right-2 top-4 bottom-2 px-6 bg-transparent border-[#33BDC8] text-white hover:bg-[#33BDC8] hover:text-white rounded-xl transition-colors group"
                     >
                       Search
                     </Button>
@@ -174,7 +175,7 @@ export function HeroSection() {
                     asChild
                     variant="outline"
                     size="lg"
-                    className="border-[#33BDC8] text-[#33BDC8] hover:bg-[#33BDC8] hover:text-white px-8 py-3 md:px-12 md:py-4 rounded-xl group"
+                    className="border-[#33BDC8] text-white hover:bg-[#33BDC8] hover:text-white px-8 py-3 md:px-12 md:py-4 rounded-xl group"
                   >
                     <Link href="/domains">
                       <span className="mr-2 font-semibold">
@@ -184,17 +185,15 @@ export function HeroSection() {
                     </Link>
                   </Button>
                   <Button
-                    asChild
                     variant="outline"
                     size="lg"
-                    className="border-[#33BDC8] text-[#33BDC8] hover:bg-[#33BDC8] hover:text-white px-8 py-3 md:px-12 md:py-4 rounded-xl group"
+                    className="border-[#33BDC8] text-white hover:bg-[#33BDC8] hover:text-white px-8 py-3 md:px-12 md:py-4 rounded-xl group"
+                    onClick={() => setModalOpen(true)}
                   >
-                    <Link href="/vetting-process">
-                      <span className="mr-2 font-semibold">
-                        How Vetting Works
-                      </span>
-                      <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                    </Link>
+                    <span className="mr-2 font-semibold">
+                      How Checkout Works
+                    </span>
+                    <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                   </Button>
                 </div>
               </motion.div>
@@ -218,7 +217,7 @@ export function HeroSection() {
                         className="object-contain mr-2"
                       />
                       <span className="font-bold text-xl text-slate-900 dark:text-slate-100">
-                        Live Domain Authority Snapshot
+                        Live Domain Metrics
                       </span>
                     </div>
                     <div className="flex items-center">
@@ -302,7 +301,7 @@ export function HeroSection() {
                           <Button
                             asChild
                             variant="outline"
-                            className="flex-1 h-12 border-[#33BDC8] text-[#33BDC8] hover:bg-[#33BDC8] hover:text-white rounded-xl group"
+                            className="flex-1 h-12 border-[#33BDC8] text-white hover:bg-[#33BDC8] hover:text-white rounded-xl group"
                           >
                             <Link href={`/domains/${topDomain.id}`}>
                               <span className="mr-2">View Full Metrics</span>
@@ -312,7 +311,7 @@ export function HeroSection() {
                           <Button
                             asChild
                             variant="outline"
-                            className="flex-1 h-12 border-[#33BDC8] text-[#33BDC8] hover:bg-[#33BDC8] hover:text-white rounded-xl group"
+                            className="flex-1 h-12 border-[#33BDC8] text-white hover:bg-[#33BDC8] hover:text-white rounded-xl group"
                           >
                             <Link href={`/checkout?domain=${topDomain.id}`}>
                               Buy Now
@@ -328,6 +327,24 @@ export function HeroSection() {
           </div>
         </div>
       </div>
+
+      {/* Modal for Tutorial Video */}
+      {modalOpen && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="relative bg-white dark:bg-slate-900 rounded-lg max-w-5xl w-full max-h-[90vh] overflow-hidden">
+            <button
+              onClick={() => setModalOpen(false)}
+              className="absolute top-4 right-4 z-10 text-slate-500 hover:text-black dark:text-slate-400 dark:hover:text-black"
+            >
+              <X className="h-6 w-6" />
+            </button>
+            <video controls className="w-full h-auto" autoPlay>
+              <source src="/tutorial.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
