@@ -85,7 +85,7 @@ export function HeroSection() {
           quality={80}
         />
         {/* Gradient Overlay for better text legibility */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-50/50 to-slate-50 dark:via-slate-950/50 dark:to-slate-950" />
+        <div className="absolute inset-0 bg-gradient-to-l from-transparent via-slate-50/50 to-slate-50 dark:via-slate-950/50 dark:to-slate-950" />
       </div>
 
       <div className="relative z-10 flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
@@ -111,12 +111,30 @@ export function HeroSection() {
                   <span className="text-[#33BDC8]">Real Authority</span>
                 </h1>
 
-                <p className="text-lg sm:text-xl text-slate-600 dark:text-white leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                {/* <p className="text-lg sm:text-xl text-slate-600 dark:text-white leading-relaxed max-w-2xl mx-auto lg:mx-0">
                   Get the edge with VettEdge — where Aged Domains mean business.
                   Supercharge your brand with SEO-rich domains.
-                </p>
+                </p> */}
               </motion.div>
 
+              <div className=" grid grid-cols-2">
+                <p className="flex items-center text-bold">
+                  <Check strokeWidth={3} color="#00ff00" className="mr-2" />
+                  100% manual vetting
+                </p>
+                <p className="flex items-center text-bold">
+                  <Check strokeWidth={3} color="#00ff00" className="mr-2" />
+                  Real SEO metrics
+                </p>
+                <p className="flex items-center text-bold">
+                  <Check strokeWidth={3} color="#00ff00" className="mr-2" />
+                  Instant ownership
+                </p>
+                <p className="flex items-center text-bold">
+                  <Check strokeWidth={3} color="#00ff00" className="mr-2" />
+                  No spam history
+                </p>
+              </div>
               {/* Search Bar */}
               <motion.div
                 className="max-w-2xl mx-auto lg:mx-0"
@@ -143,24 +161,43 @@ export function HeroSection() {
                   </div>
                 </form>
               </motion.div>
-              <div className=" grid grid-cols-2">
-                <p className="flex items-center text-bold">
-                  <Check strokeWidth={3} color="#00ff00" className="mr-2" />
-                  100% manual vetting
-                </p>
-                <p className="flex items-center text-bold">
-                  <Check strokeWidth={3} color="#00ff00" className="mr-2" />
-                  Real SEO metrics
-                </p>
-                <p className="flex items-center text-bold">
-                  <Check strokeWidth={3} color="#00ff00" className="mr-2" />
-                  Instant ownership
-                </p>
-                <p className="flex items-center text-bold">
-                  <Check strokeWidth={3} color="#00ff00" className="mr-2" />
-                  No spam history
-                </p>
-              </div>
+              {/* Additional Actions Section */}
+              <motion.div
+                className="mt-8 text-center"
+                initial="hidden"
+                animate="visible"
+                variants={fadeUp}
+                custom={1.0}
+              >
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="lg"
+                    className="border-[#33BDC8] text-[#33BDC8] hover:bg-[#33BDC8] hover:text-white px-8 py-3 md:px-12 md:py-4 rounded-xl group"
+                  >
+                    <Link href="/domains">
+                      <span className="mr-2 font-semibold">
+                        Search Premium Domains
+                      </span>
+                      <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </Button>
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="lg"
+                    className="border-[#33BDC8] text-[#33BDC8] hover:bg-[#33BDC8] hover:text-white px-8 py-3 md:px-12 md:py-4 rounded-xl group"
+                  >
+                    <Link href="/vetting-process">
+                      <span className="mr-2 font-semibold">
+                        How Vetting Works
+                      </span>
+                      <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </Button>
+                </div>
+              </motion.div>
             </motion.div>
 
             {/* Right Content - Features & Metrics Card */}
@@ -289,42 +326,6 @@ export function HeroSection() {
               </Card>
             </motion.div>
           </div>
-
-          {/* Additional Actions Section */}
-          <motion.div
-            className="mt-8 text-center"
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
-            custom={1.0}
-          >
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="border-[#33BDC8] text-[#33BDC8] hover:bg-[#33BDC8] hover:text-white px-8 py-3 md:px-12 md:py-4 rounded-xl group"
-              >
-                <Link href="/domains">
-                  <span className="mr-2 font-semibold">
-                    Search Premium Domains
-                  </span>
-                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="border-[#33BDC8] text-[#33BDC8] hover:bg-[#33BDC8] hover:text-white px-8 py-3 md:px-12 md:py-4 rounded-xl group"
-              >
-                <Link href="/vetting-process">
-                  <span className="mr-2 font-semibold">How Vetting Works</span>
-                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </Button>
-            </div>
-          </motion.div>
         </div>
       </div>
     </section>
