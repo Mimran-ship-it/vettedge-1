@@ -11,17 +11,22 @@ import { Search, ArrowRight, Check, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/providers/cart-provider";
+import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
 
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
-  const { getMostFrequentDomain } = useCart();
+  const { getMostFrequentDomain, addItem, clearCart } = useCart();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [topDomain, setTopDomain] = useState<{
     id: string;
     name: string;
   } | null>(null);
   const [topDomainCount, setTopDomainCount] = useState<number | null>(null);
+  const [fullDomain, setFullDomain] = useState<any>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -33,7 +38,11 @@ export function HeroSection() {
           console.log("Top domain from API:", data);
           if (!cancelled && data && data.id) {
             setTopDomain({ id: data.id, name: data.name });
-            setTopDomainCount;
+            // Fetch full domain data
+            fetch(`/api/domains/${data.id}`)
+              .then((res) => res.json())
+              .then((domain) => setFullDomain(domain))
+              .catch(() => {});
             return;
           }
         }
@@ -53,6 +62,34 @@ export function HeroSection() {
     e.preventDefault();
     if (searchQuery.trim()) {
       router.push(`/domains?search=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const handleBuyNow = () => {
+    if (!fullDomain || fullDomain.isSold || !fullDomain.isAvailable) {
+      toast({
+        title: "Domain Unavailable",
+        description: "This domain is no longer available for purchase.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    clearCart();
+
+    addItem({
+      id: fullDomain._id,
+      name: fullDomain.name,
+      price: fullDomain.price,
+      domain: fullDomain,
+      isSold: fullDomain.isSold,
+    });
+
+    if (!user) {
+      router.push("/auth/signin?redirect=/checkout");
+      return;
+    } else {
+      router.push("/checkout");
     }
   };
 
@@ -86,7 +123,7 @@ export function HeroSection() {
           quality={80}
         />
         {/* Gradient Overlay for better text legibility */}
-        <div className="absolute inset-0 bg-gradient-to-l from-transparent via-slate-50/50 to-slate-50 dark:via-slate-950/50 dark:to-slate-950" />
+        <div className="absolute inset-0 dark: bg-gradient-to-l dark:from-transparent   dark:via-slate-950/50 dark:to-slate-950" />
       </div>
 
       <div className="relative z-10 flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
@@ -94,7 +131,7 @@ export function HeroSection() {
           <div className="grid lg:grid-cols-2 gap-y-16 gap-x-12 items-center">
             {/* Left Content */}
             <motion.div
-              className="space-y-8 text-center lg:text-left"
+              className="left-card p-4 md:p-6 md:pb-3 space-y-6 text-center lg:text-left bg-white/70 rounded-lg dark:bg-slate-900/70 backdrop-blur-xss border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden h-full"
               initial="hidden"
               animate="visible"
               variants={fadeUp}
@@ -118,7 +155,7 @@ export function HeroSection() {
                 </p> */}
               </motion.div>
 
-              <div className=" grid grid-cols-2">
+              <div className=" grid grid-cols-2 dark:text-white">
                 <p className="flex items-center text-bold">
                   <Check strokeWidth={3} color="#00ff00" className="mr-2" />
                   100% manual vetting
@@ -155,7 +192,7 @@ export function HeroSection() {
                     <Button
                       variant="outline"
                       type="submit"
-                      className="absolute right-2 top-4 bottom-2 px-6 bg-transparent border-[#33BDC8] text-white hover:bg-[#33BDC8] hover:text-white rounded-xl transition-colors group"
+                      className="absolute right-2 top-4 bottom-2 px-6 bg-transparent border-[#33BDC8] dark:text-white hover:bg-[#33BDC8] rounded-xl transition-colors group"
                     >
                       Search
                     </Button>
@@ -175,7 +212,7 @@ export function HeroSection() {
                     asChild
                     variant="outline"
                     size="lg"
-                    className="border-[#33BDC8] text-white hover:bg-[#33BDC8] hover:text-white px-8 py-3 md:px-12 md:py-4 rounded-xl group"
+                    className="border-[#33BDC8] dark:text-white hover:bg-[#33BDC8] px-8 py-3 md:px-12 md:py-4 rounded-xl group shadow-md"
                   >
                     <Link href="/domains">
                       <span className="mr-2 font-semibold">
@@ -187,7 +224,7 @@ export function HeroSection() {
                   <Button
                     variant="outline"
                     size="lg"
-                    className="border-[#33BDC8] text-white hover:bg-[#33BDC8] hover:text-white px-8 py-3 md:px-12 md:py-4 rounded-xl group"
+                    className="border-[#33BDC8] dark:text-white hover:bg-[#33BDC8] px-8 py-3 md:px-12 md:py-4 rounded-xl group shadow-md"
                     onClick={() => setModalOpen(true)}
                   >
                     <span className="mr-2 font-semibold">
@@ -201,12 +238,13 @@ export function HeroSection() {
 
             {/* Right Content - Features & Metrics Card */}
             <motion.div
+              className="h-full"
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
             >
-              <Card className="bg-white/70 rounded-lg dark:bg-slate-900/40 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
-                <CardContent className="p-6 sm:p-8 space-y-8">
+              <Card className="bg-white/70 rounded-lg dark:bg-slate-900/70 backdrop-blur-xss border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
+                <CardContent className="p-4 md:p-6 md:pb-3 space-y-6">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center">
                       <Image
@@ -245,7 +283,7 @@ export function HeroSection() {
                     <div className="grid grid-cols-1 gap-3">
                       {[
                         {
-                          label: "Rating",
+                          label: "Domain Rating",
                           value: "65",
                           color: "text-emerald-600 dark:text-emerald-400",
                         },
@@ -301,7 +339,7 @@ export function HeroSection() {
                           <Button
                             asChild
                             variant="outline"
-                            className="flex-1 h-12 border-[#33BDC8] text-white hover:bg-[#33BDC8] hover:text-white rounded-xl group"
+                            className="flex-1 h-12 border-[#33BDC8] dark:text-white hover:bg-[#33BDC8] rounded-xl group"
                           >
                             <Link href={`/domains/${topDomain.id}`}>
                               <span className="mr-2">View Full Metrics</span>
@@ -309,13 +347,16 @@ export function HeroSection() {
                             </Link>
                           </Button>
                           <Button
-                            asChild
                             variant="outline"
-                            className="flex-1 h-12 border-[#33BDC8] text-white hover:bg-[#33BDC8] hover:text-white rounded-xl group"
+                            className="flex-1 h-12 border-[#33BDC8] dark:text-white hover:bg-[#33BDC8] rounded-xl group"
+                            onClick={handleBuyNow}
+                            disabled={
+                              !fullDomain ||
+                              !fullDomain.isAvailable ||
+                              fullDomain.isSold
+                            }
                           >
-                            <Link href={`/checkout?domain=${topDomain.id}`}>
-                              Buy Now
-                            </Link>
+                            Buy Now
                           </Button>
                         </div>
                       </div>
