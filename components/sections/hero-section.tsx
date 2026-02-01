@@ -7,12 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import {
-  Search,
-  TrendingUp,
-  ShoppingBag,
-  ArrowRight,
-} from "lucide-react";
+import { Search, TrendingUp, ShoppingBag, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/providers/cart-provider";
@@ -71,11 +66,19 @@ export function HeroSection() {
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/hero.png"
+          src="/artboard.png"
           alt="Hero background"
           fill
           priority
-          className="object-cover opacity-100 dark:opacity-80"
+          className="hidden md:block object-cover opacity-100 dark:opacity-80"
+          quality={80}
+        />
+        <Image
+          src="/hero-mobile.jpeg"
+          alt="Hero background mobile"
+          fill
+          priority
+          className="block md:hidden object-cover opacity-100 dark:opacity-80"
           quality={80}
         />
         {/* Gradient Overlay for better text legibility */}
@@ -84,7 +87,6 @@ export function HeroSection() {
 
       <div className="relative z-10 flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
         <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-y-16 gap-x-12 items-center">
-          
           {/* Left Content */}
           <motion.div
             className="space-y-8 text-center lg:text-left"
@@ -146,20 +148,40 @@ export function HeroSection() {
           >
             <Card className="bg-white/70 dark:bg-slate-900/40 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
               <CardContent className="p-6 sm:p-8 space-y-8">
-                
                 {/* Icons Grid */}
                 <div className="grid grid-cols-3 gap-4">
                   {[
-                    { Icon: Search, color: "text-[#33BDC8]", title: "Search", desc: "Browse domains" },
-                    { Icon: TrendingUp, color: "text-purple-500", title: "Metrics", desc: "SEO & Stats" },
-                    { Icon: ShoppingBag, color: "text-emerald-500", title: "Buy", desc: "Instant checkout" },
+                    {
+                      Icon: Search,
+                      color: "text-[#33BDC8]",
+                      title: "Search",
+                      desc: "Browse domains",
+                    },
+                    {
+                      Icon: TrendingUp,
+                      color: "text-purple-500",
+                      title: "Metrics",
+                      desc: "SEO & Stats",
+                    },
+                    {
+                      Icon: ShoppingBag,
+                      color: "text-emerald-500",
+                      title: "Buy",
+                      desc: "Instant checkout",
+                    },
                   ].map(({ Icon, color, title, desc }, i) => (
                     <div key={i} className="text-center space-y-2">
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mx-auto bg-slate-100 dark:bg-slate-800 transition-transform hover:scale-110`}>
+                      <div
+                        className={`w-12 h-12 rounded-2xl flex items-center justify-center mx-auto bg-slate-100 dark:bg-slate-800 transition-transform hover:scale-110`}
+                      >
                         <Icon className={`h-6 w-6 ${color}`} />
                       </div>
-                      <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100">{title}</h4>
-                      <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">{desc}</p>
+                      <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100">
+                        {title}
+                      </h4>
+                      <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
+                        {desc}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -171,19 +193,43 @@ export function HeroSection() {
                       <span className="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse" />
                       Live Domain Metrics
                     </h4>
-                    <Badge variant="secondary" className="text-[10px] uppercase tracking-wider">Real-time</Badge>
+                    <Badge
+                      variant="secondary"
+                      className="text-[10px] uppercase tracking-wider"
+                    >
+                      Real-time
+                    </Badge>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     {[
-                      { label: "Authority", value: "65", color: "text-emerald-600 dark:text-emerald-400" },
+                      {
+                        label: "Authority",
+                        value: "65",
+                        color: "text-emerald-600 dark:text-emerald-400",
+                      },
                       { label: "Links", value: "4K+", color: "text-[#33BDC8]" },
-                      { label: "Traffic", value: "15K", color: "text-purple-600 dark:text-purple-400" },
-                      { label: "Age", value: "5+ yrs", color: "text-orange-500" },
+                      {
+                        label: "Traffic",
+                        value: "15K",
+                        color: "text-purple-600 dark:text-purple-400",
+                      },
+                      {
+                        label: "Age",
+                        value: "5+ yrs",
+                        color: "text-orange-500",
+                      },
                     ].map((m, i) => (
-                      <div key={i} className="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800 flex flex-col">
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{m.label}</span>
-                        <span className={`${m.color} font-bold text-lg`}>{m.value}</span>
+                      <div
+                        key={i}
+                        className="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800 flex flex-col"
+                      >
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                          {m.label}
+                        </span>
+                        <span className={`${m.color} font-bold text-lg`}>
+                          {m.value}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -194,30 +240,33 @@ export function HeroSection() {
                   {!topDomain ? (
                     <div className="flex flex-col items-center py-4">
                       <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-[#33BDC8] mb-2" />
-                      <p className="text-xs text-slate-500">Finding top domains...</p>
+                      <p className="text-xs text-slate-500">
+                        Finding top domains...
+                      </p>
                     </div>
                   ) : (
                     <div className="space-y-4">
                       <p className="text-center text-xs text-slate-500 dark:text-slate-400">
-                        🔥 High demand domain spotted! Frequently added to carts.
+                        🔥 High demand domain spotted! Frequently added to
+                        carts.
                       </p>
-                      <Button 
-                        asChild 
+                      <Button
+                        asChild
                         className="w-full h-14 bg-[#33BDC8] hover:bg-[#2ba9b8] text-white rounded-xl shadow-lg group"
                       >
                         <Link href={`/domains/${topDomain.id}`}>
-                          <span className="mr-2 font-bold tracking-wide uppercase">{topDomain.name}</span>
+                          <span className="mr-2 font-bold tracking-wide uppercase">
+                            {topDomain.name}
+                          </span>
                           <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                         </Link>
                       </Button>
                     </div>
                   )}
                 </div>
-
               </CardContent>
             </Card>
           </motion.div>
-
         </div>
       </div>
     </section>
