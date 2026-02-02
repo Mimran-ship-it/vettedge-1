@@ -32,23 +32,19 @@ export function HeroSection() {
     let cancelled = false;
     const loadTop = async () => {
       try {
-        const res = await fetch("/api/domains", { cache: "no-store" });
+        const res = await fetch("/api/frequency/top", { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
-          console.log("Domains from API:", data);
-          if (!cancelled && data && Array.isArray(data)) {
-            // Filter for available domains (isSold: false), sort by score descending, take the first
-            const availableDomains = data.filter(
-              (domain: any) => !domain.isSold && domain.isAvailable,
-            );
-            if (availableDomains.length > 0) {
-              const topDomainData = availableDomains.sort(
-                (a: any, b: any) => b.metrics.score - a.metrics.score,
-              )[0];
-              setTopDomain({ id: topDomainData._id, name: topDomainData.name });
-              setFullDomain(topDomainData);
-              return;
-            }
+          console.log("Top domain from API:", data);
+          if (!cancelled && data && data.id) {
+            setTopDomain({ id: data.id, name: data.name });
+            setTopDomainCount(data.count || null);
+            // Fetch full domain data
+            fetch(`/api/domains/${data.id}`)
+              .then((res) => res.json())
+              .then((domain) => setFullDomain(domain))
+              .catch(() => {});
+            return;
           }
         }
       } catch {
@@ -137,22 +133,22 @@ export function HeroSection() {
     : [
         {
           label: "Domain Rating",
-          value: "65",
+          value: "...",
           color: "text-emerald-600 dark:text-emerald-400",
         },
         {
           label: "Authority Backlinks",
-          value: "4K+",
+          value: "...",
           color: "text-[#33BDC8]",
         },
         {
           label: "Traffic",
-          value: "15K",
+          value: "...",
           color: "text-purple-600 dark:text-purple-400",
         },
         {
           label: "Age",
-          value: "5+ yrs",
+          value: "...",
           color: "text-orange-500",
         },
       ];
@@ -178,7 +174,7 @@ export function HeroSection() {
           quality={80}
         />
         {/* Gradient Overlay for better text legibility */}
-        <div className="absolute inset-0 dark: bg-gradient-to-l dark:from-transparent   dark:via-slate-950/50 dark:to-slate-950" />
+        {/* <div className="absolute inset-0 dark: bg-gradient-to-l dark:from-transparent   dark:via-slate-950/50 dark:to-slate-950" /> */}
       </div>
 
       <div className="relative z-10 flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
@@ -186,7 +182,7 @@ export function HeroSection() {
           <div className="grid lg:grid-cols-2 gap-y-16 gap-x-12 items-center">
             {/* Left Content */}
             <motion.div
-              className="left-card p-4 md:p-6 md:pb-3 space-y-6 text-center lg:text-left bg-white/70 rounded-lg dark:bg-slate-900/70 backdrop-blur-xss border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden h-full"
+              className="left-card p-4 md:p-6 md:pb-3 space-y-6 text-center lg:text-left bg-[#33BDC8]/40 rounded-lg dark:bg-slate-900/70 backdrop-blur-xss border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden h-full"
               initial="hidden"
               animate="visible"
               variants={fadeUp}
@@ -199,7 +195,7 @@ export function HeroSection() {
                   🔥 Premium Aged Domains
                 </Badge>
 
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold line tracking-tight leading-[1.05] text-slate-900 dark:text-white">
                   Vetted Aged Domains With <br />
                   <span className="text-[#33BDC8]">Real Authority</span>
                 </h1>
@@ -239,10 +235,10 @@ export function HeroSection() {
                     <Search className="absolute left-4 text-slate-400 group-focus-within:text-[#33BDC8] transition-colors h-5 w-5" />
                     <input
                       type="text"
-                      placeholder="Search your domain..."
+                      placeholder="Search domains by keyword, niche, or industry"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full h-16 pl-12 pr-32 text-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white rounded-2xl shadow-xl focus:ring-2 focus:ring-[#33BDC8] outline-none transition-all"
+                      className="w-full  h-16 pl-12 pr-32 text-base bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white rounded-2xl shadow-xl focus:ring-2 focus:ring-[#33BDC8] outline-none transition-all"
                     />
                     <Button
                       variant="outline"
@@ -298,7 +294,7 @@ export function HeroSection() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
             >
-              <Card className="bg-white/70 rounded-lg dark:bg-slate-900/70 backdrop-blur-xss border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
+              <Card className="bg-[#33BDC8]/40 rounded-lg dark:bg-slate-900/70 backdrop-blur-xss border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
                 <CardContent className="p-4 md:p-6 md:pb-3 space-y-6">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center">
@@ -363,10 +359,10 @@ export function HeroSection() {
                       </div>
                     ) : (
                       <div className="space-y-4">
-                        <p className="text-center text-xs text-slate-500 dark:text-slate-400">
+                        <p className="text-center text-sm text-black dark:text-white">
                           🔥 High demand domain spotted!{" "}
                           {topDomainCount
-                            ? `${topDomainCount} users added to cart`
+                            ? `${topDomainCount} users added to their cart`
                             : "Frequently added to carts."}
                         </p>
                         <div className="flex gap-3">
