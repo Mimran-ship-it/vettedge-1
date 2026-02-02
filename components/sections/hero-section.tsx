@@ -32,18 +32,23 @@ export function HeroSection() {
     let cancelled = false;
     const loadTop = async () => {
       try {
-        const res = await fetch("/api/frequency/top", { cache: "no-store" });
+        const res = await fetch("/api/domains", { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
-          console.log("Top domain from API:", data);
-          if (!cancelled && data && data.id) {
-            setTopDomain({ id: data.id, name: data.name });
-            // Fetch full domain data
-            fetch(`/api/domains/${data.id}`)
-              .then((res) => res.json())
-              .then((domain) => setFullDomain(domain))
-              .catch(() => {});
-            return;
+          console.log("Domains from API:", data);
+          if (!cancelled && data && Array.isArray(data)) {
+            // Filter for available domains (isSold: false), sort by score descending, take the first
+            const availableDomains = data.filter(
+              (domain: any) => !domain.isSold && domain.isAvailable,
+            );
+            if (availableDomains.length > 0) {
+              const topDomainData = availableDomains.sort(
+                (a: any, b: any) => b.metrics.score - a.metrics.score,
+              )[0];
+              setTopDomain({ id: topDomainData._id, name: topDomainData.name });
+              setFullDomain(topDomainData);
+              return;
+            }
           }
         }
       } catch {
@@ -101,6 +106,56 @@ export function HeroSection() {
       transition: { delay: custom, duration: 0.6, ease: "easeOut" },
     }),
   };
+
+  const metrics = fullDomain
+    ? [
+        {
+          label: "Domain Rating",
+          value: fullDomain.metrics?.domainAuthority?.toString() || "N/A",
+          color: "text-emerald-600 dark:text-emerald-400",
+        },
+        {
+          label: "Authority Backlinks",
+          value: fullDomain.metrics?.referringDomains?.toString() || "N/A",
+          color: "text-[#33BDC8]",
+        },
+        {
+          label: "Traffic",
+          value: fullDomain.metrics?.monthlyTraffic
+            ? `${fullDomain.metrics.monthlyTraffic}K`
+            : "N/A",
+          color: "text-purple-600 dark:text-purple-400",
+        },
+        {
+          label: "Age",
+          value: fullDomain.metrics?.age
+            ? `${fullDomain.metrics.age} yrs`
+            : "N/A",
+          color: "text-orange-500",
+        },
+      ]
+    : [
+        {
+          label: "Domain Rating",
+          value: "65",
+          color: "text-emerald-600 dark:text-emerald-400",
+        },
+        {
+          label: "Authority Backlinks",
+          value: "4K+",
+          color: "text-[#33BDC8]",
+        },
+        {
+          label: "Traffic",
+          value: "15K",
+          color: "text-purple-600 dark:text-purple-400",
+        },
+        {
+          label: "Age",
+          value: "5+ yrs",
+          color: "text-orange-500",
+        },
+      ];
 
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
@@ -281,28 +336,7 @@ export function HeroSection() {
                     </div>
 
                     <div className="grid grid-cols-1 gap-3">
-                      {[
-                        {
-                          label: "Domain Rating",
-                          value: "65",
-                          color: "text-emerald-600 dark:text-emerald-400",
-                        },
-                        {
-                          label: "Authority Backlinks",
-                          value: "4K+",
-                          color: "text-[#33BDC8]",
-                        },
-                        {
-                          label: "Traffic",
-                          value: "15K",
-                          color: "text-purple-600 dark:text-purple-400",
-                        },
-                        {
-                          label: "Age",
-                          value: "5+ yrs",
-                          color: "text-orange-500",
-                        },
-                      ].map((m, i) => (
+                      {metrics.map((m, i) => (
                         <div
                           key={i}
                           className="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800 flex justify-between items-center"
