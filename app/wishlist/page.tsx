@@ -32,7 +32,7 @@ export default function WishlistPage() {
     return domains.filter(
       (domain) =>
         domain.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        domain.description?.toLowerCase().includes(searchQuery.toLowerCase())
+        domain.description?.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [domains, searchQuery]);
 
@@ -74,7 +74,7 @@ export default function WishlistPage() {
 
         // Find IDs that didn't return a domain (deleted) and remove them
         const missingIds = ids.filter(
-          (id) => !freshDomains.some((fetched: Domain) => fetched._id === id)
+          (id) => !freshDomains.some((fetched: Domain) => fetched._id === id),
         );
         const allUnavailableIds = [...unavailableIds, ...missingIds];
 
@@ -114,7 +114,7 @@ export default function WishlistPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+          <div className="flex flex-col max-w-7xl mx-auto md:flex-row justify-between items-start md:items-center gap-4 mb-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                 My Wishlist

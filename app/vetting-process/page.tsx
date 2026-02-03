@@ -220,7 +220,7 @@ export default function VettingProcessPage() {
                 transition={{ delay: index * 0.2, duration: 0.5 }}
               >
                 <Card className="text-center hover:shadow-lg hover:scale-[1.02] transition-all duration-300 dark:bg-gray-700 dark:border-gray-600">
-                  <CardContent className="pt-6">
+                  <CardContent className="pt-6 px-3">
                     <div className="w-16 h-16 border border-[#38C172] 2xl flex items-center justify-center mx-auto mb-4">
                       <metric.icon className="h-8 w-8 text-[#38C172]" />
                     </div>
@@ -273,7 +273,7 @@ export default function VettingProcessPage() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.2, duration: 0.5 }}
               >
-                <Card className="hover:shadow-xl hover:scale-[1.01] transition-all duration-300 dark:bg-gray-800 dark:border-gray-600">
+                <Card className="hover:shadow-xl hover:scale-[1.01] transition-all px-6 duration-300 dark:bg-gray-800 dark:border-gray-600">
                   <CardContent className="pt-6">
                     <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-6 space-y-4 sm:space-y-0">
                       {/* Icon - Hidden on mobile */}
@@ -343,7 +343,7 @@ export default function VettingProcessPage() {
               our quality criteria
             </p>
           </div>
-          <Card className="border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-700">
+          <Card className="border-red-300 p-6 bg-red-50 dark:bg-red-900/20 dark:border-red-700">
             <CardHeader>
               <CardTitle className="flex items-center text-red-700 dark:text-red-400">
                 <AlertTriangle className="h-6 w-6 mr-2" />

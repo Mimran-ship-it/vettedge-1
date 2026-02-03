@@ -409,7 +409,7 @@ export default function ContactPage() {
                 transition={{ delay: index * 0.15 }}
               >
                 <Card className="dark:bg-gray-700 dark:border-gray-600">
-                  <CardContent className="pt-6">
+                  <CardContent className="p-6">
                     <h3 className="text-base md:text-lg font-semibold text-[#33BDC7] dark:text-[#33BDC7] mb-2">
                       {question}
                     </h3>

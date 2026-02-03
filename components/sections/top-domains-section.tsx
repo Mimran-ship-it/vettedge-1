@@ -132,7 +132,7 @@ const generateChartData = (domains: Domain[], metric: string) => {
 // Calculate average metrics for available domains
 const calculateAverageMetrics = (domains: Domain[]) => {
   const availableDomains = domains.filter(
-    (domain) => domain.isAvailable && !domain.isSold
+    (domain) => domain.isAvailable && !domain.isSold,
   );
 
   if (availableDomains.length === 0) return {};
@@ -160,16 +160,14 @@ const calculateAverageMetrics = (domains: Domain[]) => {
         (domain.metrics.authorityLinksCount || 0),
       count: acc.count + 1,
     }),
-    { count: 0 }
+    { count: 0 },
   );
 
   return {
     trustFlow: Math.round(total.trustFlow / total.count),
     citationFlow: Math.round(total.citationFlow / total.count),
     spamScore: (total.spamScore / total.count).toFixed(1),
-    indexedPages: Math.round(
-      total.indexedPages / total.count
-    ).toLocaleString(),
+    indexedPages: Math.round(total.indexedPages / total.count).toLocaleString(),
     monthlyTraffic:
       total.monthlyTraffic / total.count > 1000
         ? `${(total.monthlyTraffic / total.count / 1000).toFixed(1)}K`
@@ -252,7 +250,7 @@ export function TopDomainsSection() {
 
   useEffect(() => {
     const filtered = allDomains?.filter(
-      (domain) => domain.isAvailable && !domain.isSold
+      (domain) => domain.isAvailable && !domain.isSold,
     );
     setAvailableDomains(filtered);
   }, [allDomains]);
@@ -263,7 +261,7 @@ export function TopDomainsSection() {
     const mql = window.matchMedia("(max-width: 640px)");
     const onChange = (e: MediaQueryListEvent | MediaQueryList) => {
       setIsSmallScreen(
-        "matches" in e ? e.matches : (e as MediaQueryList).matches
+        "matches" in e ? e.matches : (e as MediaQueryList).matches,
       );
     };
     // Set initial
@@ -298,28 +296,28 @@ export function TopDomainsSection() {
           sortedDomains = [...availableDomains].sort(
             (a, b) =>
               (b.metrics.domainAuthority || 0) -
-              (a.metrics.domainAuthority || 0)
+              (a.metrics.domainAuthority || 0),
           );
           break;
         case "dr":
           sortedDomains = [...availableDomains].sort(
-            (a, b) => (b.metrics.domainRank || 0) - (a.metrics.domainRank || 0)
+            (a, b) => (b.metrics.domainRank || 0) - (a.metrics.domainRank || 0),
           );
           break;
         case "tf":
           sortedDomains = [...availableDomains].sort(
-            (a, b) => (b.metrics.trustFlow || 0) - (a.metrics.trustFlow || 0)
+            (a, b) => (b.metrics.trustFlow || 0) - (a.metrics.trustFlow || 0),
           );
           break;
         case "cf":
           sortedDomains = [...availableDomains].sort(
             (a, b) =>
-              (b.metrics.citationFlow || 0) - (a.metrics.citationFlow || 0)
+              (b.metrics.citationFlow || 0) - (a.metrics.citationFlow || 0),
           );
           break;
         case "score":
           sortedDomains = [...availableDomains].sort(
-            (a, b) => (b.metrics.score || 0) - (a.metrics.score || 0)
+            (a, b) => (b.metrics.score || 0) - (a.metrics.score || 0),
           );
           break;
         case "traffic":
@@ -328,33 +326,33 @@ export function TopDomainsSection() {
             .sort(
               (a, b) =>
                 (b.metrics.monthlyTraffic || 0) -
-                (a.metrics.monthlyTraffic || 0)
+                (a.metrics.monthlyTraffic || 0),
             );
           break;
         case "age":
           sortedDomains = [...availableDomains].sort(
-            (a, b) => (b.metrics.age || 0) - (a.metrics.age || 0)
+            (a, b) => (b.metrics.age || 0) - (a.metrics.age || 0),
           );
           break;
         case "refDomains":
           sortedDomains = [...availableDomains].sort(
             (a, b) =>
               (b.metrics.referringDomains || 0) -
-              (a.metrics.referringDomains || 0)
+              (a.metrics.referringDomains || 0),
           );
           break;
         case "authLinks":
           sortedDomains = [...availableDomains].sort(
             (a, b) =>
               (b.metrics.authorityLinksCount || 0) -
-              (a.metrics.authorityLinksCount || 0)
+              (a.metrics.authorityLinksCount || 0),
           );
           break;
         default:
           sortedDomains = [...availableDomains].sort(
             (a, b) =>
               (b.metrics.domainAuthority || 0) -
-              (a.metrics.domainAuthority || 0)
+              (a.metrics.domainAuthority || 0),
           );
       }
 
@@ -442,7 +440,7 @@ export function TopDomainsSection() {
     da: [...availableDomains]
       .sort(
         (a, b) =>
-          (b.metrics.domainAuthority || 0) - (a.metrics.domainAuthority || 0)
+          (b.metrics.domainAuthority || 0) - (a.metrics.domainAuthority || 0),
       )
       .slice(0, 5),
     dr: [...availableDomains]
@@ -452,7 +450,7 @@ export function TopDomainsSection() {
       .filter((d) => d.metrics.monthlyTraffic)
       .sort(
         (a, b) =>
-          (b.metrics.monthlyTraffic || 0) - (a.metrics.monthlyTraffic || 0)
+          (b.metrics.monthlyTraffic || 0) - (a.metrics.monthlyTraffic || 0),
       )
       .slice(0, 5),
     age: [...availableDomains]
@@ -463,7 +461,7 @@ export function TopDomainsSection() {
       .slice(0, 5),
     cf: [...availableDomains]
       .sort(
-        (a, b) => (b.metrics.citationFlow || 0) - (a.metrics.citationFlow || 0)
+        (a, b) => (b.metrics.citationFlow || 0) - (a.metrics.citationFlow || 0),
       )
       .slice(0, 5),
     score: [...availableDomains]
@@ -472,20 +470,20 @@ export function TopDomainsSection() {
     refDomains: [...availableDomains]
       .sort(
         (a, b) =>
-          (b.metrics.referringDomains || 0) - (a.metrics.referringDomains || 0)
+          (b.metrics.referringDomains || 0) - (a.metrics.referringDomains || 0),
       )
       .slice(0, 5),
     authLinks: [...availableDomains]
       .sort(
         (a, b) =>
           (b.metrics.authorityLinksCount || 0) -
-          (a.metrics.authorityLinksCount || 0)
+          (a.metrics.authorityLinksCount || 0),
       )
       .slice(0, 5),
   };
 
   const hasTrafficData = availableDomains.some(
-    (domain) => domain.metrics.monthlyTraffic
+    (domain) => domain.metrics.monthlyTraffic,
   );
 
   const getMetricDescription = (metric: string) => {
@@ -570,7 +568,8 @@ export function TopDomainsSection() {
                 </span>
               </span>
               <span className="text-xs text-black/70 dark:text-blue-300">
-                DR: <span className="font-bold">{domain.metrics.domainRank}</span>
+                DR:{" "}
+                <span className="font-bold">{domain.metrics.domainRank}</span>
               </span>
             </div>
           </div>
@@ -700,14 +699,14 @@ export function TopDomainsSection() {
                   ) : (
                     <>
                       {/* Small Screen Chart - Vertical Bar Chart with Horizontal Labels */}
-                      <div className="sm:hidden h-full -mx-6   ">
+                      <div className="sm:hidden h-full">
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart
                             data={chartData}
                             margin={{
                               top: 10,
                               right: 10,
-                              left: -30,
+                              left: -20,
                               bottom: 0,
                             }}
                           >
@@ -762,17 +761,16 @@ export function TopDomainsSection() {
 
                       {/* Medium to Large Screen Chart - Vertical Bar Chart */}
                       <div className="hidden sm:block mb-10 h-full">
-                        <div className="w-[120%] sm:w-full ms-[-3rem] sm:ms-0 h-full">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <BarChart
-                              data={chartData}
-                              margin={{
-                                top: 20,
-                                right: 20,
-                                left: 0,
-                                bottom: 50,
-                              }} // extra bottom margin for vertical labels
-                            >
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart
+                            data={chartData}
+                            margin={{
+                              top: 20,
+                              right: 20,
+                              left: 0,
+                              bottom: 50,
+                            }} // extra bottom margin for vertical labels
+                          >
                               <CartesianGrid
                                 strokeDasharray="3 3"
                                 stroke="#cbd5e1"
@@ -824,7 +822,6 @@ export function TopDomainsSection() {
                             </BarChart>
                           </ResponsiveContainer>
                         </div>
-                      </div>
                     </>
                   )}
                 </div>
@@ -832,7 +829,7 @@ export function TopDomainsSection() {
             </Card>
 
             {/* Right Side: Top Domains */}
-            <Card className="flex flex-col h-full border border-[#2BA9B8]/20 bg-white backdrop-blur-sm shadow-sm dark:border-cyan-800/50 dark:bg-cyan-950/30">
+            <Card className="flex flex-col h-full border px-4 py-2 border-[#2BA9B8]/20 bg-white backdrop-blur-sm shadow-sm dark:border-cyan-800/50 dark:bg-cyan-950/30">
               <CardHeader>
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                   <CardTitle className="flex items-center mt-2 text-black dark:text-white">
@@ -898,7 +895,7 @@ export function TopDomainsSection() {
               <CardContent className="flex-1 overflow-y-auto">
                 <div className="space-y-3">
                   {topDomains[activeTab as keyof typeof topDomains]?.map(
-                    (domain, index) => renderDomainCard(domain, index)
+                    (domain, index) => renderDomainCard(domain, index),
                   )}
                 </div>
               </CardContent>
@@ -1054,7 +1051,7 @@ export function TopDomainsSection() {
                               (1 -
                                 selectedDomain.price /
                                   selectedDomain.Actualprice) *
-                                100
+                                100,
                             )}
                             % OFF
                           </span>

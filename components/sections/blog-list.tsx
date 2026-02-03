@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Clock, User } from "lucide-react"
-import { motion } from "framer-motion"
-import type { BlogPost } from "@/types/blog"
-import { Button } from "../ui/button"
+import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Clock, User } from "lucide-react";
+import { motion } from "framer-motion";
+import type { BlogPost } from "@/types/blog";
+import { Button } from "../ui/button";
 
 export default function BlogList({ posts }: { posts: BlogPost[] }) {
   return (
     <motion.div
-      className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+      className="grid md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto gap-8"
       initial="hidden"
       animate="visible"
       variants={{
@@ -55,9 +55,7 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
                   variant="default"
                   className="bg-[#33BDC7] hover:bg-[#2da9b2] text-white font-medium"
                 >
-                  <Link href={`/blog/${post.slug}`}>
-                    Read More
-                  </Link>
+                  <Link href={`/blog/${post.slug}`}>Read More</Link>
                 </Button>
                 <div className="text-xs text-gray-500 dark:text-gray-400">
                   {post.category}
@@ -68,5 +66,5 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
         </motion.div>
       ))}
     </motion.div>
-  )
+  );
 }

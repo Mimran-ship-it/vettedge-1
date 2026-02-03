@@ -65,6 +65,7 @@ export function ContactSection() {
               variant="home"
               headerTitle="Send us a Message"
               headerDescription="Get expert advice on domain selection and SEO potential"
+              className=""
             />
           </div>
 
@@ -88,7 +89,7 @@ export function ContactSection() {
                 {contactMethods.map((method, index) => (
                   <div key={index}>
                     <Card
-                      className="border-l-4 hover:shadow-lg transition-shadow bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600"
+                      className="border-l-4 hover:shadow-lg px-4 transition-shadow bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600"
                       style={{ borderLeftColor: "#33BDC7" }}
                     >
                       <CardContent className="pt-6">
@@ -122,7 +123,7 @@ export function ContactSection() {
                     color: "white",
                     border: "none",
                   }}
-                  className="dark:bg-[#33BDC7]"
+                  className="dark:bg-[#33BDC7] px-4"
                 >
                   <CardContent className="pt-6">
                     <h4 className="text-xl font-semibold mb-4 flex items-center">
