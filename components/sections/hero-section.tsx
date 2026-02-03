@@ -14,6 +14,11 @@ import { useCart } from "@/components/providers/cart-provider";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 
+// Helper function to format traffic numbers
+const formatTraffic = (traffic: number): string => {
+  return traffic.toString();
+};
+
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
@@ -118,7 +123,7 @@ export function HeroSection() {
         {
           label: "Traffic",
           value: fullDomain.metrics?.monthlyTraffic
-            ? `${fullDomain.metrics.monthlyTraffic}K`
+            ? formatTraffic(fullDomain.metrics.monthlyTraffic)
             : "N/A",
           color: "text-purple-600 dark:text-purple-400",
         },
