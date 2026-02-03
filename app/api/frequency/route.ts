@@ -9,21 +9,24 @@ export async function GET() {
     await connectDB();
 
     // Get all frequency records
-    const frequencies = await DomainFrequency.find().sort({ count: -1, updatedAt: -1 })
+    const frequencies = await DomainFrequency.find().sort({
+      count: -1,
+      updatedAt: -1,
+    });
 
     // Add type information for each frequency record
     const frequenciesWithType = await Promise.all(
       frequencies.map(async (freq) => {
         try {
-          const domain = await Domain.findById(freq.domainId)
+          const domain = await Domain.findById(freq.domainId);
           return {
             domainId: freq.domainId,
             name: freq.name,
             count: freq.count,
             createdAt: freq.createdAt,
             updatedAt: freq.updatedAt,
-            type: domain ? domain.type : 'unknown'
-          }
+            type: domain ? domain.type : "unknown",
+          };
         } catch (err) {
           return {
             domainId: freq.domainId,
@@ -31,10 +34,10 @@ export async function GET() {
             count: freq.count,
             createdAt: freq.createdAt,
             updatedAt: freq.updatedAt,
-            type: 'unknown'
-          }
+            type: "unknown",
+          };
         }
-      })
+      }),
     );
 
     return NextResponse.json({
